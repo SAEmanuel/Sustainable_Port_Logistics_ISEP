@@ -42,3 +42,6 @@
 /Users/jorgerodriguez/Desktop/Universidade/3_ano/1_Semestre/LEI-SEM5-PI-2025-26-3DJ-03/SEM5-PI-WEBAPI/obj/Debug/net9.0/SEM5-PI-WEBAPI.pdb
 /Users/jorgerodriguez/Desktop/Universidade/3_ano/1_Semestre/LEI-SEM5-PI-2025-26-3DJ-03/SEM5-PI-WEBAPI/obj/Debug/net9.0/SEM5-PI-WEBAPI.genruntimeconfig.cache
 /Users/jorgerodriguez/Desktop/Universidade/3_ano/1_Semestre/LEI-SEM5-PI-2025-26-3DJ-03/SEM5-PI-WEBAPI/obj/Debug/net9.0/ref/SEM5-PI-WEBAPI.dll
+/Users/jorgerodriguez/Desktop/Universidade/3_ano/1_Semestre/LEI-SEM5-PI-2025-26-3DJ-03/SEM5-PI-WEBAPI/bin/Debug/net9.0/Swashbuckle.AspNetCore.Swagger.dll
+/Users/jorgerodriguez/Desktop/Universidade/3_ano/1_Semestre/LEI-SEM5-PI-2025-26-3DJ-03/SEM5-PI-WEBAPI/bin/Debug/net9.0/Swashbuckle.AspNetCore.SwaggerGen.dll
+/Users/jorgerodriguez/Desktop/Universidade/3_ano/1_Semestre/LEI-SEM5-PI-2025-26-3DJ-03/SEM5-PI-WEBAPI/bin/Debug/net9.0/Swashbuckle.AspNetCore.SwaggerUI.dll
