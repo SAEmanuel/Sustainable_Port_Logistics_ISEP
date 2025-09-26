@@ -1,0 +1,43 @@
+@startuml
+skinparam packageStyle rectangle
+skinparam shadowing false
+skinparam linetype polyline
+skinparam classAttributeIconSize 0
+
+class Entity {
+    - String attribute
+    + Entity(attribute)
+    - validateAttribute(attribute)
+}
+
+class Repository {
+    + registerEntity(attribute)
+    - addEntity(entity)
+    - validateEntity(entity)
+}
+
+class RepositoryFactory {
+    - RepositoryFactory()
+    + getInstance() : RepositoryFactory
+    + getRepository()
+}
+
+class Controller {
+    + Controller(repository)
+    + registerEntity(attribute)
+}
+
+class UI {
+}
+
+UI .> Controller
+
+Controller .> RepositoryFactory : factory
+RepositoryFactory --> "1" Repository
+RepositoryFactory -> RepositoryFactory : instance
+
+Controller ..> Repository : repository
+
+Repository --> "1" Entity : register
+
+@enduml

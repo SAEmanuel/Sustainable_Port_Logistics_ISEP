@@ -1,0 +1,30 @@
+@startuml
+'skinparam monochrome true
+skinparam packageStyle rectangle
+'skinparam shadowing false
+
+skinparam rectangle{
+    BorderColor black
+}
+
+title Customer Use Case Diagram
+
+left to right direction
+
+rectangle "System Actors                       " as actors {
+    actor "Customer" as CST
+}
+
+rectangle "Customer App"  as usecases{
+    usecase "Consult my shows agenda" as cmsa
+    usecase "Approve/Reject proposal" as arp
+    usecase "Analyse proposal" as appsl
+    CST --> cmsa
+    CST --> arp
+    CST --> appsl
+
+}
+
+
+
+@enduml

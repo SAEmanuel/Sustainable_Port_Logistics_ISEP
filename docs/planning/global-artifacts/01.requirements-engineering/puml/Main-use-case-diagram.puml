@@ -1,0 +1,87 @@
+@startuml
+'skinparam monochrome true
+skinparam packageStyle rectangle
+'skinparam shadowing false
+
+skinparam rectangle{
+    BorderColor black
+}
+
+title Main Use Case Diagram
+
+left to right direction
+
+rectangle "System Actors                       " as actors {
+    actor "Admin" as ADM
+    actor "CRM Manager" as CRMM
+    actor "CRM Collaborator" as CRMCLTR
+    actor "Show Designer" as showdsg
+    actor "Drone Tech" as drntch
+
+
+}
+
+
+
+
+rectangle "Backoffice" as usecases{
+    usecase "Manage users" as mngusr
+    usecase "Manage proposal templates" as mngppt
+    usecase "Change client status" as ccstts
+    usecase "Manage clients" as mngc
+
+    ADM --> mngusr
+    CRMM --> mngppt
+    CRMM --> ccstts
+    CRMM --> mngc
+    rectangle "Show Managment" as showmng{
+        usecase "Schedule a show" as sdlshw
+        usecase "Generate show proposal and send to client" as gsppstc
+        usecase "Configure show's drone list" as cfgsdl
+        usecase "Submit show request" as subsreq
+        usecase "Create figure" as cf
+
+        CRMCLTR --> mngc
+        CRMCLTR --> sdlshw
+        CRMCLTR --> gsppstc
+        CRMCLTR --> cfgsdl
+        CRMCLTR --> subsreq
+        CRMCLTR --> cf
+        showdsg --> cf
+    }
+
+    rectangle "Drone Managment" as drnmng{
+            usecase "List drone inventory" as ldi
+            usecase "List drone's maintenance history" as ldmh
+            usecase "Receive drone from maintenance" as rdfm
+            usecase "Send drone for maintenance" as sdfm
+            usecase "Remove drone from inventory" as rdfi
+            usecase "Add drone to inventory" as adddti
+                    drntch --> ldi
+                    drntch --> ldmh
+                    drntch --> rdfm
+                    drntch --> sdfm
+                    drntch --> rdfi
+                    drntch --> adddti
+                    CRMCLTR --> ldi
+    }
+    rectangle "Drone Configuration" as drncfig{
+        usecase "Create Drone model" as cdmdl
+        usecase "Config drone language" as cdlng
+        drntch --> cdmdl
+        drntch --> cdlng
+    }
+}
+
+rectangle "Show Testing" as usecase{
+        usecase "Generate figure code" as gfcd
+        usecase "Generate show code" as gscd
+        usecase "Test figure" as tstfigure
+        usecase "Test show" as tstshw
+        drntch --> gfcd
+        drntch --> gscd
+        drntch --> tstfigure
+        drntch --> tstshw
+}
+
+@enduml

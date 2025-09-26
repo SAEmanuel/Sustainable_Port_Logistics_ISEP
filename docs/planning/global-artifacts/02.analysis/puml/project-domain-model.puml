@@ -1,0 +1,29 @@
+@startuml
+skinparam monochrome true
+skinparam packageStyle rectangle
+skinparam shadowing false
+
+left to right direction
+skinparam classAttributeIconSize 0
+hide circle
+hide methods
+
+title Simple Generic Domain Model Template
+
+' #########    Core Entities      ##########
+class EntityA {
+}
+
+class EntityB {
+}
+
+class EntityC {
+}
+
+EntityA "1" -- "*" EntityB : manages >
+EntityB "*" -- "1" EntityC : relates to >
+
+' #########    Associations      ##########
+EntityC "*" -- "*" EntityB : connects to >
+
+@enduml
