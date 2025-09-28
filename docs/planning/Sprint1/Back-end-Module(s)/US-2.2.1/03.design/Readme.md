@@ -1,54 +1,54 @@
-# USx -???
+Got it ✅ Here’s the same explanation in **English** and adapted so you can reuse it directly in your documentation.
 
-## 3. Design - User Story Realization 
+---
+
+# US2.2.1 – Create and manage vessel types
+
+## 3. Design – User Story Realization
 
 ### 3.1. Rationale
 
-_**Note that SSD - Alternative One is adopted.**_
+This section explains **which software class takes responsibility** for each interaction step, following the SSD (System Sequence Diagram) defined in the analysis.
 
-| Interaction ID                      | Question: Which class is responsible for...           | Answer | Justification (with patterns)                                                                                 |
-|:------------------------------------|:------------------------------------------------------|:-------|:--------------------------------------------------------------------------------------------------------------|
-| Step 1 :   	                        | 	... interacting with the actor?                      | x      | Pure Fabrication: there is no reason to assign this responsibility to any existing class in the Domain Model. |
-| 			  		                             | 	... coordinating the US?                             | y      | Controller                                                                                                    |
-| Step 2 : request data (skillName)		 | 	... displaying the form for the actor to input data? | z      | Pure Fabrication                                                                                              |
+| Interaction ID                                                  | Question: Which class is responsible for... | Answer                        | Justification (with patterns)                                                                                    |
+| --------------------------------------------------------------- | ------------------------------------------- | ----------------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| Step 1: Officer submits “Create VesselType”                     | …interacting with the actor?                | `VesselTypeController`        | **Controller** pattern: centralizes input handling from UI/API.                                                  |
+|                                                                 | …coordinating the US?                       | `VesselTypeAppService`        | **Application Service**: orchestrates domain logic and delegates to the domain model.                            |
+| Step 2: request data (name, description, capacity, constraints) | …validating business rules?                 | `VesselType` (Aggregate Root) | **Information Expert**: only the aggregate enforces its invariants (capacity > 0, constraints > 0, unique name). |
+| Step 3: persist VesselType                                      | …storing/retrieving VesselType?             | `VesselTypeRepository`        | **Repository**: abstracts persistence and provides access to aggregates.                                         |
+| Step 4: log action                                              | …recording audit trail?                     | `AuditService`                | **Pure Fabrication**: dedicated service for cross-cutting concerns.                                              |
 
-### Systematization ##
+**Systematization**
+According to this rationale, the conceptual classes promoted to software classes are:
 
-According to the taken rationale, the conceptual classes promoted to software classes are: 
+* `VesselType` (Aggregate Root)
 
-*none
+Other software classes (i.e., Pure Fabrication) identified:
 
-Other software classes (i.e. Pure Fabrication) identified: 
+* `VesselTypeController`
+* `VesselTypeAppService`
+* `VesselTypeRepository`
+* `AuditService`
 
-* none
+---
 
+### 3.2. Sequence Diagram (SD)
 
-## 3.2. Sequence Diagram (SD)
+This diagram illustrates the interactions between the classes for realizing the user story.
 
+**Full Diagram:**
+Shows the complete flow:
+`Officer → UI → Controller → AppService → VesselType → Repository → AuditService`.
+![SD](../01.requirements-engineering/puml/us2.2.1-sequence-diagram-alternative-1.svg)
 
-### Full Diagram
+---
 
-This diagram shows the full sequence of interactions between the classes involved in the realization of this user story.
+### 3.3. Class Diagram (CD)
 
-![Sequence Diagram - Full](svg/usx-sequence-diagram-full.svg)
+The class diagram for this US includes:
 
-### Split Diagrams
-
-The following diagram shows the same sequence of interactions between the classes involved in the realization of this user story, but it is split in partial diagrams to better illustrate the interactions between the classes.
-
-It uses Interaction Occurrence (a.k.a. Interaction Use).
-
-![Sequence Diagram - split](svg/usx-sequence-diagram-split.svg)
-
-
-**Get Skill Repository**
-
-![Sequence Diagram - Partial - Get Skill Repository](svg/usx-sequence-diagram-partial-get-skill-repository.svg)
-
-**Register Skill**
-
-![Sequence Diagram - Partial - Register Skill](svg/usx-sequence-diagram-partial-register-skill.svg)
-
-## 3.3. Class Diagram (CD)
-
-![Class Diagram](svg/usx-class-diagram.svg)
+* `VesselType` (Aggregate Root with attributes: name, description, capacityTEU, maxRows, maxBays, maxTiers).
+* `VesselTypeController` (handles requests from UI/API).
+* `VesselTypeAppService` (application service orchestrating use case).
+* `VesselTypeRepository` (persistence abstraction).
+* `AuditService` (responsible for audit logging).
