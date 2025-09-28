@@ -84,7 +84,7 @@
 
 You can render this with PlantUML.
 
-![SSD](./puml/us)
+![SSD](./puml/us2.2.1-sequence-diagram-alternative-1.svg)
 
 ---
 
