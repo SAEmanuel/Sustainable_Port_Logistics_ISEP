@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("SEM5-PI-WEBAPI")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+89421061a868398f7e61cde5c75190878205e1ef")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+0db9c9486253901d64360c8af1b273cdc963dbb2")]
 [assembly: System.Reflection.AssemblyProductAttribute("SEM5-PI-WEBAPI")]
 [assembly: System.Reflection.AssemblyTitleAttribute("SEM5-PI-WEBAPI")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
