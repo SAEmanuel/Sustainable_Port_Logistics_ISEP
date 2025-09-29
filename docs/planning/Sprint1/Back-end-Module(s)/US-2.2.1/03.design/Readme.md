@@ -1,7 +1,3 @@
-Got it ✅ Here’s the same explanation in **English** and adapted so you can reuse it directly in your documentation.
-
----
-
 # US2.2.1 – Create and manage vessel types
 
 ## 3. Design – User Story Realization
