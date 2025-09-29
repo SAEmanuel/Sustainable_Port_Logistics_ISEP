@@ -1,0 +1,35 @@
+@startuml
+actor "Logistics Operator" as Operator
+participant "Port Logistics System" as System
+
+activate Operator
+Operator -> System: Authenticate
+activate System
+System --> Operator: Authentication result
+deactivate System
+
+Operator -> System: Create staff member
+activate System
+System --> Operator: Confirmation of creation
+deactivate System
+
+Operator -> System: Filter staff members (to update)
+activate System
+System --> Operator: List of filtered members
+deactivate System
+
+Operator -> System: Update staff member data
+activate System
+System --> Operator: Confirmation of update
+deactivate System
+
+Operator -> System: Filter staff members (to deactivate)
+activate System
+System --> Operator: List of filtered members
+deactivate System
+
+Operator -> System: Deactivate staff member
+activate System
+System --> Operator: Confirmation of deactivation
+deactivate System
+@enduml
