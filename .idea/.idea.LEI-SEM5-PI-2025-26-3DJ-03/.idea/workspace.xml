@@ -9,11 +9,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="7e245589-3e0b-4589-828c-7331c6f89b35" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/SEM5-PI-WEBAPI/Domain/BusinessShared/Schedule.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/SEM5-PI-WEBAPI/Domain/BusinessShared/ShiftType.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/SEM5-PI-WEBAPI/Domain/BusinessShared/WeekDays.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/SEM5-PI-WEBAPI/Domain/Qualification/Qualification.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/SEM5-PI-WEBAPI/Domain/StaffMember/StaffMember.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SEM5-PI-WEBAPI/Domain/StaffMember/Qualification.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SEM5-PI-WEBAPI/Domain/StaffMember/QualificationId.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SEM5-PI-WEBAPI/Domain/StaffMember/StaffMemberId.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.LEI-SEM5-PI-2025-26-3DJ-03/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.LEI-SEM5-PI-2025-26-3DJ-03/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SEM5-PI-WEBAPI/Domain/StaffMember/StaffMember.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SEM5-PI-WEBAPI/Domain/StaffMember/StaffMember.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -23,27 +23,29 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
-  "lastFilter": {
-    "state": "OPEN",
-    "assignee": "FranciscoMofreitaSantos"
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;FranciscoMofreitaSantos&quot;
   }
-}]]></component>
-  <component name="GithubPullRequestsUISettings"><![CDATA[{
-  "selectedUrlAndAccountId": {
-    "url": "git@github.com:Departamento-de-Engenharia-Informatica/LEI-SEM5-PI-2025-26-3DJ-03.git",
-    "accountId": "b42fcd1b-01f9-46f2-af94-4b57ae7ab9d2"
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;git@github.com:Departamento-de-Engenharia-Informatica/LEI-SEM5-PI-2025-26-3DJ-03.git&quot;,
+    &quot;accountId&quot;: &quot;b42fcd1b-01f9-46f2-af94-4b57ae7ab9d2&quot;
   }
-}]]></component>
+}</component>
   <component name="HighlightingSettingsPerFile">
     <setting file="file://$PROJECT_DIR$/SEM5-PI-WEBAPI/Domain/BusinessShared/Schedule.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/SEM5-PI-WEBAPI/Domain/BusinessShared/ShiftType.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/SEM5-PI-WEBAPI/Domain/BusinessShared/WeekDays.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/SEM5-PI-WEBAPI/Domain/Qualification/Qualification.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/SEM5-PI-WEBAPI/Domain/StaffMember/Email.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/SEM5-PI-WEBAPI/Domain/StaffMember/PhoneNumber.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/SEM5-PI-WEBAPI/Domain/StaffMember/QualificationId.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/SEM5-PI-WEBAPI/Domain/StaffMember/StaffMember.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/SEM5-PI-WEBAPI/Domain/StaffMember/StaffMemberId.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/SEM5-PI-WEBAPI/Domain/StaffMember/StaffMemberStatus.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/5b89f76afc0d554d89281e5e28190c85dfa4c1cb2ffa499fc452654142743c9/JsonConstructorAttribute.cs" root0="FORCE_HIGHLIGHTING" />
   </component>
   <component name="MetaFilesCheckinStateConfiguration" checkMetaFiles="true" />
   <component name="ProblemsViewState">
@@ -58,24 +60,25 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    ".NET Launch Settings Profile.SEM5-PI-WEBAPI: http.executor": "Run",
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "main",
-    "junie.onboarding.icon.badge.shown": "true",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "preferences.sourceCode.C#",
-    "to.speed.mode.migration.done": "true",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;.NET Launch Settings Profile.SEM5-PI-WEBAPI: http.executor&quot;: &quot;Run&quot;,
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.sourceCode.C#&quot;,
+    &quot;to.speed.mode.migration.done&quot;: &quot;true&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RunManager" selected=".NET Launch Settings Profile.SEM5-PI-WEBAPI: http">
     <configuration name="SEM5-PI-WEBAPI: http" type="LaunchSettings" factoryName=".NET Launch Settings Profile">
       <option name="LAUNCH_PROFILE_PROJECT_FILE_PATH" value="$PROJECT_DIR$/SEM5-PI-WEBAPI/SEM5-PI-WEBAPI.csproj" />
@@ -119,7 +122,7 @@
       <updated>1759096499319</updated>
       <workItem from="1759096500948" duration="7000" />
       <workItem from="1759168919029" duration="1229000" />
-      <workItem from="1759242771048" duration="4274000" />
+      <workItem from="1759242771048" duration="15136000" />
     </task>
     <task id="LOCAL-00001" summary="Email, PhoneNumber and StaffMember classes related to StaffMember created&#10;&#10;Issue: #18/#84">
       <option name="closed" value="true" />
@@ -129,7 +132,15 @@
       <option name="project" value="LOCAL" />
       <updated>1759244982507</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="StaffMember class created with respective attributes&#10;Issue: #18/#84">
+      <option name="closed" value="true" />
+      <created>1759247171246</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1759247171246</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -140,7 +151,8 @@
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
     <MESSAGE value="Email, PhoneNumber and StaffMember classes related to StaffMember created&#10;&#10;Issue: #18/#84" />
-    <option name="LAST_COMMIT_MESSAGE" value="Email, PhoneNumber and StaffMember classes related to StaffMember created&#10;&#10;Issue: #18/#84" />
+    <MESSAGE value="StaffMember class created with respective attributes&#10;Issue: #18/#84" />
+    <option name="LAST_COMMIT_MESSAGE" value="StaffMember class created with respective attributes&#10;Issue: #18/#84" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

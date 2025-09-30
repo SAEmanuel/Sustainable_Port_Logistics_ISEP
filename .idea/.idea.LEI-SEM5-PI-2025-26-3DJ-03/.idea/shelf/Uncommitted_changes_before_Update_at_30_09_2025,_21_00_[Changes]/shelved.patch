@@ -1,0 +1,209 @@
+Index: SEM5-PI-WEBAPI/Domain/StaffMember/StaffMember.cs
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>using SEM5_PI_WEBAPI.Domain.BusinessShared;\n\nnamespace SEM5_PI_WEBAPI.Domain.StaffMember;\n\npublic class StaffMember\n{\n    public Guid Id { get; }\n    public string MecanographicNumber { get; }\n    public string ShortName { get; set; }\n    private Email Email { get; set; }\n    private PhoneNumber Phone { get; set; }\n    private Schedule Schedule { get; set; }\n    private StaffMemberStatus Status { get; set; }\n\n    public StaffMember(Guid id, string mecanographicNumber, string shortName, Email email, PhoneNumber phone,\n        Schedule schedule, StaffMemberStatus status)\n    {\n        Id = id;\n        MecanographicNumber = mecanographicNumber;\n        ShortName = shortName;\n        Email = email;\n        Phone = phone;\n        Schedule = schedule;\n        Status = status;\n    }\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/SEM5-PI-WEBAPI/Domain/StaffMember/StaffMember.cs b/SEM5-PI-WEBAPI/Domain/StaffMember/StaffMember.cs
+--- a/SEM5-PI-WEBAPI/Domain/StaffMember/StaffMember.cs	(revision 7a0d34c29029732c7544ec5e2d235850bda88a10)
++++ b/SEM5-PI-WEBAPI/Domain/StaffMember/StaffMember.cs	(date 1759256490517)
+@@ -1,26 +1,85 @@
++using System.ComponentModel.DataAnnotations;
+ using SEM5_PI_WEBAPI.Domain.BusinessShared;
+ 
+ namespace SEM5_PI_WEBAPI.Domain.StaffMember;
+ 
+ public class StaffMember
+ {
+-    public Guid Id { get; }
+-    public string MecanographicNumber { get; }
++    [Key]
++    public Guid Id { get; private set; }
++    public string? MecanographicNumber { get; private set; }
++    
++    [MaxLength(20)]
+     public string ShortName { get; set; }
+     private Email Email { get; set; }
+     private PhoneNumber Phone { get; set; }
+     private Schedule Schedule { get; set; }
+     private StaffMemberStatus Status { get; set; }
++    
++    private readonly List<Qualification> _qualifications = new();
++    public IReadOnlyCollection<Qualification> Qualifications => _qualifications.AsReadOnly();
+ 
+-    public StaffMember(Guid id, string mecanographicNumber, string shortName, Email email, PhoneNumber phone,
++    public StaffMember(string shortName, Email email, PhoneNumber phone,
+         Schedule schedule, StaffMemberStatus status)
+     {
+-        Id = id;
+-        MecanographicNumber = mecanographicNumber;
++        Id = Guid.NewGuid();
+         ShortName = shortName;
+         Email = email;
+         Phone = phone;
+         Schedule = schedule;
+         Status = status;
+     }
+-}
+\ No newline at end of file
++
++    public void UpdateShortName(string newShortName)
++    {
++        if (string.IsNullOrWhiteSpace(newShortName))
++            throw new ArgumentException("ShortName cannot be empty");
++        ShortName = newShortName;
++    }
++
++    public void UpdateEmail(Email newEmail)
++    {
++        Email = newEmail ?? throw new ArgumentNullException(nameof(newEmail));
++    }
++
++    public void UpdatePhone(PhoneNumber newPhone)
++    {
++        Phone = newPhone ?? throw new ArgumentNullException(nameof(newPhone));
++    }
++
++    public void UpdateSchedule(Schedule newSchedule)
++    {
++        Schedule = newSchedule ?? throw new ArgumentNullException(nameof(newSchedule));
++    }
++
++    public void UpdateStatus(StaffMemberStatus newStatus)
++    {
++        Status = newStatus;
++    }
++    
++    public void AddQualification(Qualification qualification)
++    {
++        if (qualification == null)
++            throw new ArgumentNullException(nameof(qualification));
++        if (!_qualifications.Contains(qualification))
++            _qualifications.Add(qualification);
++    }
++
++    public void RemoveQualification(Qualification qualification)
++    {
++        if (qualification == null)
++            throw new ArgumentNullException(nameof(qualification));
++        _qualifications.Remove(qualification);
++    }
++    
++    public override bool Equals(object obj)
++    {
++        if (obj is StaffMember other)
++            return Id == other.Id;
++        return false;
++    }
++
++    public override int GetHashCode() => Id.GetHashCode();
++    
++}
++
+Index: SEM5-PI-WEBAPI/Domain/StaffMember/Qualification.cs
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/SEM5-PI-WEBAPI/Domain/StaffMember/Qualification.cs b/SEM5-PI-WEBAPI/Domain/StaffMember/Qualification.cs
+new file mode 100644
+--- /dev/null	(date 1759256470770)
++++ b/SEM5-PI-WEBAPI/Domain/StaffMember/Qualification.cs	(date 1759256470770)
+@@ -0,0 +1,26 @@
++using System.ComponentModel.DataAnnotations;
++
++namespace SEM5_PI_WEBAPI.Domain.StaffMember;
++
++public class Qualification
++{
++    [Key] 
++    public Guid Id { get; private set; }
++    public string? Code { get; private set; }
++    public string Name { get; private set; }
++
++
++    public Qualification(string name)
++    {
++        Id = Guid.NewGuid();
++        Name = name;
++    }
++
++    public override bool Equals(object? obj) =>
++        obj is Qualification other && Id == other.Id;
++
++    public override int GetHashCode() => Id.GetHashCode();
++
++
++    public override string ToString() => $"{Code}: {Name}";
++}
+\ No newline at end of file
+Index: .idea/.idea.LEI-SEM5-PI-2025-26-3DJ-03/.idea/workspace.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<project version=\"4\">\n  <component name=\"AutoGeneratedRunConfigurationManager\">\n    <projectFile profileName=\"http\">SEM5-PI-WEBAPI/SEM5-PI-WEBAPI.csproj</projectFile>\n    <projectFile profileName=\"https\">SEM5-PI-WEBAPI/SEM5-PI-WEBAPI.csproj</projectFile>\n  </component>\n  <component name=\"AutoImportSettings\">\n    <option name=\"autoReloadType\" value=\"SELECTIVE\" />\n  </component>\n  <component name=\"ChangeListManager\">\n    <list default=\"true\" id=\"7e245589-3e0b-4589-828c-7331c6f89b35\" name=\"Changes\" comment=\"\">\n      <change afterPath=\"$PROJECT_DIR$/SEM5-PI-WEBAPI/Domain/BusinessShared/Schedule.cs\" afterDir=\"false\" />\n      <change afterPath=\"$PROJECT_DIR$/SEM5-PI-WEBAPI/Domain/BusinessShared/ShiftType.cs\" afterDir=\"false\" />\n      <change afterPath=\"$PROJECT_DIR$/SEM5-PI-WEBAPI/Domain/BusinessShared/WeekDays.cs\" afterDir=\"false\" />\n      <change afterPath=\"$PROJECT_DIR$/SEM5-PI-WEBAPI/Domain/Qualification/Qualification.cs\" afterDir=\"false\" />\n      <change afterPath=\"$PROJECT_DIR$/SEM5-PI-WEBAPI/Domain/StaffMember/StaffMember.cs\" afterDir=\"false\" />\n    </list>\n    <option name=\"SHOW_DIALOG\" value=\"false\" />\n    <option name=\"HIGHLIGHT_CONFLICTS\" value=\"true\" />\n    <option name=\"HIGHLIGHT_NON_ACTIVE_CHANGELIST\" value=\"false\" />\n    <option name=\"LAST_RESOLUTION\" value=\"IGNORE\" />\n  </component>\n  <component name=\"Git.Settings\">\n    <option name=\"RECENT_GIT_ROOT_PATH\" value=\"$PROJECT_DIR$\" />\n  </component>\n  <component name=\"GitHubPullRequestSearchHistory\"><![CDATA[{\n  \"lastFilter\": {\n    \"state\": \"OPEN\",\n    \"assignee\": \"FranciscoMofreitaSantos\"\n  }\n}]]></component>\n  <component name=\"GithubPullRequestsUISettings\"><![CDATA[{\n  \"selectedUrlAndAccountId\": {\n    \"url\": \"git@github.com:Departamento-de-Engenharia-Informatica/LEI-SEM5-PI-2025-26-3DJ-03.git\",\n    \"accountId\": \"b42fcd1b-01f9-46f2-af94-4b57ae7ab9d2\"\n  }\n}]]></component>\n  <component name=\"HighlightingSettingsPerFile\">\n    <setting file=\"file://$PROJECT_DIR$/SEM5-PI-WEBAPI/Domain/BusinessShared/Schedule.cs\" root0=\"FORCE_HIGHLIGHTING\" />\n    <setting file=\"file://$PROJECT_DIR$/SEM5-PI-WEBAPI/Domain/BusinessShared/ShiftType.cs\" root0=\"FORCE_HIGHLIGHTING\" />\n    <setting file=\"file://$PROJECT_DIR$/SEM5-PI-WEBAPI/Domain/BusinessShared/WeekDays.cs\" root0=\"FORCE_HIGHLIGHTING\" />\n    <setting file=\"file://$PROJECT_DIR$/SEM5-PI-WEBAPI/Domain/Qualification/Qualification.cs\" root0=\"FORCE_HIGHLIGHTING\" />\n    <setting file=\"file://$PROJECT_DIR$/SEM5-PI-WEBAPI/Domain/StaffMember/Email.cs\" root0=\"FORCE_HIGHLIGHTING\" />\n    <setting file=\"file://$PROJECT_DIR$/SEM5-PI-WEBAPI/Domain/StaffMember/PhoneNumber.cs\" root0=\"FORCE_HIGHLIGHTING\" />\n    <setting file=\"file://$PROJECT_DIR$/SEM5-PI-WEBAPI/Domain/StaffMember/StaffMember.cs\" root0=\"FORCE_HIGHLIGHTING\" />\n    <setting file=\"file://$PROJECT_DIR$/SEM5-PI-WEBAPI/Domain/StaffMember/StaffMemberStatus.cs\" root0=\"FORCE_HIGHLIGHTING\" />\n  </component>\n  <component name=\"MetaFilesCheckinStateConfiguration\" checkMetaFiles=\"true\" />\n  <component name=\"ProblemsViewState\">\n    <option name=\"selectedTabId\" value=\"CurrentFile\" />\n  </component>\n  <component name=\"ProjectColorInfo\">{\n  &quot;customColor&quot;: &quot;&quot;,\n  &quot;associatedIndex&quot;: 5\n}</component>\n  <component name=\"ProjectId\" id=\"33LVmMtPyYFnA3SK4H8lisFgQg4\" />\n  <component name=\"ProjectViewState\">\n    <option name=\"hideEmptyMiddlePackages\" value=\"true\" />\n    <option name=\"showLibraryContents\" value=\"true\" />\n  </component>\n  <component name=\"PropertiesComponent\"><![CDATA[{\n  \"keyToString\": {\n    \".NET Launch Settings Profile.SEM5-PI-WEBAPI: http.executor\": \"Run\",\n    \"ModuleVcsDetector.initialDetectionPerformed\": \"true\",\n    \"RunOnceActivity.ShowReadmeOnStart\": \"true\",\n    \"RunOnceActivity.git.unshallow\": \"true\",\n    \"git-widget-placeholder\": \"main\",\n    \"junie.onboarding.icon.badge.shown\": \"true\",\n    \"node.js.detected.package.eslint\": \"true\",\n    \"node.js.detected.package.tslint\": \"true\",\n    \"node.js.selected.package.eslint\": \"(autodetect)\",\n    \"node.js.selected.package.tslint\": \"(autodetect)\",\n    \"nodejs_package_manager_path\": \"npm\",\n    \"settings.editor.selected.configurable\": \"preferences.sourceCode.C#\",\n    \"to.speed.mode.migration.done\": \"true\",\n    \"vue.rearranger.settings.migration\": \"true\"\n  }\n}]]></component>\n  <component name=\"RunManager\" selected=\".NET Launch Settings Profile.SEM5-PI-WEBAPI: http\">\n    <configuration name=\"SEM5-PI-WEBAPI: http\" type=\"LaunchSettings\" factoryName=\".NET Launch Settings Profile\">\n      <option name=\"LAUNCH_PROFILE_PROJECT_FILE_PATH\" value=\"$PROJECT_DIR$/SEM5-PI-WEBAPI/SEM5-PI-WEBAPI.csproj\" />\n      <option name=\"LAUNCH_PROFILE_TFM\" value=\"net9.0\" />\n      <option name=\"LAUNCH_PROFILE_NAME\" value=\"http\" />\n      <option name=\"USE_EXTERNAL_CONSOLE\" value=\"0\" />\n      <option name=\"USE_MONO\" value=\"0\" />\n      <option name=\"RUNTIME_ARGUMENTS\" value=\"\" />\n      <option name=\"GENERATE_APPLICATIONHOST_CONFIG\" value=\"1\" />\n      <option name=\"SHOW_IIS_EXPRESS_OUTPUT\" value=\"0\" />\n      <option name=\"SEND_DEBUG_REQUEST\" value=\"1\" />\n      <option name=\"ADDITIONAL_IIS_EXPRESS_ARGUMENTS\" value=\"\" />\n      <option name=\"AUTO_ATTACH_CHILDREN\" value=\"0\" />\n      <method v=\"2\">\n        <option name=\"Build\" />\n      </method>\n    </configuration>\n    <configuration name=\"SEM5-PI-WEBAPI: https\" type=\"LaunchSettings\" factoryName=\".NET Launch Settings Profile\">\n      <option name=\"LAUNCH_PROFILE_PROJECT_FILE_PATH\" value=\"$PROJECT_DIR$/SEM5-PI-WEBAPI/SEM5-PI-WEBAPI.csproj\" />\n      <option name=\"LAUNCH_PROFILE_TFM\" value=\"net9.0\" />\n      <option name=\"LAUNCH_PROFILE_NAME\" value=\"https\" />\n      <option name=\"USE_EXTERNAL_CONSOLE\" value=\"0\" />\n      <option name=\"USE_MONO\" value=\"0\" />\n      <option name=\"RUNTIME_ARGUMENTS\" value=\"\" />\n      <option name=\"GENERATE_APPLICATIONHOST_CONFIG\" value=\"1\" />\n      <option name=\"SHOW_IIS_EXPRESS_OUTPUT\" value=\"0\" />\n      <option name=\"SEND_DEBUG_REQUEST\" value=\"1\" />\n      <option name=\"ADDITIONAL_IIS_EXPRESS_ARGUMENTS\" value=\"\" />\n      <option name=\"AUTO_ATTACH_CHILDREN\" value=\"0\" />\n      <method v=\"2\">\n        <option name=\"Build\" />\n      </method>\n    </configuration>\n  </component>\n  <component name=\"TaskManager\">\n    <task active=\"true\" id=\"Default\" summary=\"Default task\">\n      <changelist id=\"7e245589-3e0b-4589-828c-7331c6f89b35\" name=\"Changes\" comment=\"\" />\n      <created>1759096499319</created>\n      <option name=\"number\" value=\"Default\" />\n      <option name=\"presentableId\" value=\"Default\" />\n      <updated>1759096499319</updated>\n      <workItem from=\"1759096500948\" duration=\"7000\" />\n      <workItem from=\"1759168919029\" duration=\"1229000\" />\n      <workItem from=\"1759242771048\" duration=\"4274000\" />\n    </task>\n    <task id=\"LOCAL-00001\" summary=\"Email, PhoneNumber and StaffMember classes related to StaffMember created&#10;&#10;Issue: #18/#84\">\n      <option name=\"closed\" value=\"true\" />\n      <created>1759244982507</created>\n      <option name=\"number\" value=\"00001\" />\n      <option name=\"presentableId\" value=\"LOCAL-00001\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1759244982507</updated>\n    </task>\n    <option name=\"localTasksCounter\" value=\"2\" />\n    <servers />\n  </component>\n  <component name=\"TypeScriptGeneratedFilesManager\">\n    <option name=\"version\" value=\"3\" />\n  </component>\n  <component name=\"UnityCheckinConfiguration\" checkUnsavedScenes=\"true\" />\n  <component name=\"UnityProjectConfiguration\" hasMinimizedUI=\"false\" />\n  <component name=\"VcsManagerConfiguration\">\n    <option name=\"CLEAR_INITIAL_COMMIT_MESSAGE\" value=\"true\" />\n    <MESSAGE value=\"Email, PhoneNumber and StaffMember classes related to StaffMember created&#10;&#10;Issue: #18/#84\" />\n    <option name=\"LAST_COMMIT_MESSAGE\" value=\"Email, PhoneNumber and StaffMember classes related to StaffMember created&#10;&#10;Issue: #18/#84\" />\n  </component>\n  <component name=\"XDebuggerManager\">\n    <breakpoint-manager>\n      <breakpoints>\n        <breakpoint enabled=\"true\" type=\"DotNet_Exception_Breakpoints\">\n          <properties exception=\"System.OperationCanceledException\" breakIfHandledByOtherCode=\"false\" displayValue=\"System.OperationCanceledException\" />\n          <option name=\"timeStamp\" value=\"1\" />\n        </breakpoint>\n        <breakpoint enabled=\"true\" type=\"DotNet_Exception_Breakpoints\">\n          <properties exception=\"System.Threading.Tasks.TaskCanceledException\" breakIfHandledByOtherCode=\"false\" displayValue=\"System.Threading.Tasks.TaskCanceledException\" />\n          <option name=\"timeStamp\" value=\"2\" />\n        </breakpoint>\n        <breakpoint enabled=\"true\" type=\"DotNet_Exception_Breakpoints\">\n          <properties exception=\"System.Threading.ThreadAbortException\" breakIfHandledByOtherCode=\"false\" displayValue=\"System.Threading.ThreadAbortException\" />\n          <option name=\"timeStamp\" value=\"3\" />\n        </breakpoint>\n      </breakpoints>\n    </breakpoint-manager>\n  </component>\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/.idea.LEI-SEM5-PI-2025-26-3DJ-03/.idea/workspace.xml b/.idea/.idea.LEI-SEM5-PI-2025-26-3DJ-03/.idea/workspace.xml
+--- a/.idea/.idea.LEI-SEM5-PI-2025-26-3DJ-03/.idea/workspace.xml	(revision 7a0d34c29029732c7544ec5e2d235850bda88a10)
++++ b/.idea/.idea.LEI-SEM5-PI-2025-26-3DJ-03/.idea/workspace.xml	(date 1759262404441)
+@@ -9,11 +9,9 @@
+   </component>
+   <component name="ChangeListManager">
+     <list default="true" id="7e245589-3e0b-4589-828c-7331c6f89b35" name="Changes" comment="">
+-      <change afterPath="$PROJECT_DIR$/SEM5-PI-WEBAPI/Domain/BusinessShared/Schedule.cs" afterDir="false" />
+-      <change afterPath="$PROJECT_DIR$/SEM5-PI-WEBAPI/Domain/BusinessShared/ShiftType.cs" afterDir="false" />
+-      <change afterPath="$PROJECT_DIR$/SEM5-PI-WEBAPI/Domain/BusinessShared/WeekDays.cs" afterDir="false" />
+-      <change afterPath="$PROJECT_DIR$/SEM5-PI-WEBAPI/Domain/Qualification/Qualification.cs" afterDir="false" />
+-      <change afterPath="$PROJECT_DIR$/SEM5-PI-WEBAPI/Domain/StaffMember/StaffMember.cs" afterDir="false" />
++      <change afterPath="$PROJECT_DIR$/SEM5-PI-WEBAPI/Domain/StaffMember/Qualification.cs" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/.idea/.idea.LEI-SEM5-PI-2025-26-3DJ-03/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.LEI-SEM5-PI-2025-26-3DJ-03/.idea/workspace.xml" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/SEM5-PI-WEBAPI/Domain/StaffMember/StaffMember.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SEM5-PI-WEBAPI/Domain/StaffMember/StaffMember.cs" afterDir="false" />
+     </list>
+     <option name="SHOW_DIALOG" value="false" />
+     <option name="HIGHLIGHT_CONFLICTS" value="true" />
+@@ -63,6 +61,7 @@
+     ".NET Launch Settings Profile.SEM5-PI-WEBAPI: http.executor": "Run",
+     "ModuleVcsDetector.initialDetectionPerformed": "true",
+     "RunOnceActivity.ShowReadmeOnStart": "true",
++    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
+     "RunOnceActivity.git.unshallow": "true",
+     "git-widget-placeholder": "main",
+     "junie.onboarding.icon.badge.shown": "true",
+@@ -119,7 +118,7 @@
+       <updated>1759096499319</updated>
+       <workItem from="1759096500948" duration="7000" />
+       <workItem from="1759168919029" duration="1229000" />
+-      <workItem from="1759242771048" duration="4274000" />
++      <workItem from="1759242771048" duration="10017000" />
+     </task>
+     <task id="LOCAL-00001" summary="Email, PhoneNumber and StaffMember classes related to StaffMember created&#10;&#10;Issue: #18/#84">
+       <option name="closed" value="true" />
+@@ -129,7 +128,15 @@
+       <option name="project" value="LOCAL" />
+       <updated>1759244982507</updated>
+     </task>
+-    <option name="localTasksCounter" value="2" />
++    <task id="LOCAL-00002" summary="StaffMember class created with respective attributes&#10;Issue: #18/#84">
++      <option name="closed" value="true" />
++      <created>1759247171246</created>
++      <option name="number" value="00002" />
++      <option name="presentableId" value="LOCAL-00002" />
++      <option name="project" value="LOCAL" />
++      <updated>1759247171246</updated>
++    </task>
++    <option name="localTasksCounter" value="3" />
+     <servers />
+   </component>
+   <component name="TypeScriptGeneratedFilesManager">
+@@ -140,7 +147,8 @@
+   <component name="VcsManagerConfiguration">
+     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
+     <MESSAGE value="Email, PhoneNumber and StaffMember classes related to StaffMember created&#10;&#10;Issue: #18/#84" />
+-    <option name="LAST_COMMIT_MESSAGE" value="Email, PhoneNumber and StaffMember classes related to StaffMember created&#10;&#10;Issue: #18/#84" />
++    <MESSAGE value="StaffMember class created with respective attributes&#10;Issue: #18/#84" />
++    <option name="LAST_COMMIT_MESSAGE" value="StaffMember class created with respective attributes&#10;Issue: #18/#84" />
+   </component>
+   <component name="XDebuggerManager">
+     <breakpoint-manager>
