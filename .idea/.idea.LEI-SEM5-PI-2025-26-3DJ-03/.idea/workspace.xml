@@ -9,26 +9,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="7e245589-3e0b-4589-828c-7331c6f89b35" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/SEM5-PI-WEBAPI/Domain/BusinessShared/Schedule.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SEM5-PI-WEBAPI/Domain/BusinessShared/ShiftType.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SEM5-PI-WEBAPI/Domain/BusinessShared/WeekDays.cs" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/SEM5-PI-WEBAPI/Domain/Qualification/Qualification.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/SEM5-PI-WEBAPI/Domain/StaffMember/Email.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/SEM5-PI-WEBAPI/Domain/StaffMember/PhoneNumber.cs" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/SEM5-PI-WEBAPI/Domain/StaffMember/StaffMember.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/SEM5-PI-WEBAPI/Domain/StaffMember/StaffMemberStatus.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.LEI-SEM5-PI-2025-26-3DJ-03/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.LEI-SEM5-PI-2025-26-3DJ-03/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SEM5-PI-WEBAPI/SEM5-PI-WEBAPI.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/SEM5-PI-WEBAPI/SEM5-PI-WEBAPI.csproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SEM5-PI-WEBAPI/obj/Debug/net9.0/SEM5-PI-WEBAPI.AssemblyInfo.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SEM5-PI-WEBAPI/obj/Debug/net9.0/SEM5-PI-WEBAPI.AssemblyInfo.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SEM5-PI-WEBAPI/obj/Debug/net9.0/SEM5-PI-WEBAPI.AssemblyInfoInputs.cache" beforeDir="false" afterPath="$PROJECT_DIR$/SEM5-PI-WEBAPI/obj/Debug/net9.0/SEM5-PI-WEBAPI.AssemblyInfoInputs.cache" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SEM5-PI-WEBAPI/obj/Debug/net9.0/SEM5-PI-WEBAPI.GeneratedMSBuildEditorConfig.editorconfig" beforeDir="false" afterPath="$PROJECT_DIR$/SEM5-PI-WEBAPI/obj/Debug/net9.0/SEM5-PI-WEBAPI.GeneratedMSBuildEditorConfig.editorconfig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SEM5-PI-WEBAPI/obj/Debug/net9.0/SEM5-PI-WEBAPI.assets.cache" beforeDir="false" afterPath="$PROJECT_DIR$/SEM5-PI-WEBAPI/obj/Debug/net9.0/SEM5-PI-WEBAPI.assets.cache" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SEM5-PI-WEBAPI/obj/Debug/net9.0/SEM5-PI-WEBAPI.csproj.AssemblyReference.cache" beforeDir="false" afterPath="$PROJECT_DIR$/SEM5-PI-WEBAPI/obj/Debug/net9.0/SEM5-PI-WEBAPI.csproj.AssemblyReference.cache" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SEM5-PI-WEBAPI/obj/SEM5-PI-WEBAPI.csproj.nuget.dgspec.json" beforeDir="false" afterPath="$PROJECT_DIR$/SEM5-PI-WEBAPI/obj/SEM5-PI-WEBAPI.csproj.nuget.dgspec.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SEM5-PI-WEBAPI/obj/SEM5-PI-WEBAPI.csproj.nuget.g.props" beforeDir="false" afterPath="$PROJECT_DIR$/SEM5-PI-WEBAPI/obj/SEM5-PI-WEBAPI.csproj.nuget.g.props" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SEM5-PI-WEBAPI/obj/SEM5-PI-WEBAPI.csproj.nuget.g.targets" beforeDir="false" afterPath="$PROJECT_DIR$/SEM5-PI-WEBAPI/obj/SEM5-PI-WEBAPI.csproj.nuget.g.targets" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SEM5-PI-WEBAPI/obj/project.assets.json" beforeDir="false" afterPath="$PROJECT_DIR$/SEM5-PI-WEBAPI/obj/project.assets.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SEM5-PI-WEBAPI/obj/project.nuget.cache" beforeDir="false" afterPath="$PROJECT_DIR$/SEM5-PI-WEBAPI/obj/project.nuget.cache" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SEM5-PI-WEBAPI/obj/project.packagespec.json" beforeDir="false" afterPath="$PROJECT_DIR$/SEM5-PI-WEBAPI/obj/project.packagespec.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SEM5-PI-WEBAPI/obj/rider.project.model.nuget.info" beforeDir="false" afterPath="$PROJECT_DIR$/SEM5-PI-WEBAPI/obj/rider.project.model.nuget.info" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SEM5-PI-WEBAPI/obj/rider.project.restore.info" beforeDir="false" afterPath="$PROJECT_DIR$/SEM5-PI-WEBAPI/obj/rider.project.restore.info" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -51,12 +36,16 @@
   }
 }]]></component>
   <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/SEM5-PI-WEBAPI/Domain/BusinessShared/Schedule.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/SEM5-PI-WEBAPI/Domain/BusinessShared/ShiftType.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/SEM5-PI-WEBAPI/Domain/BusinessShared/WeekDays.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/SEM5-PI-WEBAPI/Domain/Qualification/Qualification.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/SEM5-PI-WEBAPI/Domain/StaffMember/Email.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/SEM5-PI-WEBAPI/Domain/StaffMember/PhoneNumber.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/SEM5-PI-WEBAPI/Domain/StaffMember/StaffMember.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/SEM5-PI-WEBAPI/Domain/StaffMember/StaffMemberStatus.cs" root0="FORCE_HIGHLIGHTING" />
   </component>
+  <component name="MetaFilesCheckinStateConfiguration" checkMetaFiles="true" />
   <component name="ProblemsViewState">
     <option name="selectedTabId" value="CurrentFile" />
   </component>
@@ -130,16 +119,28 @@
       <updated>1759096499319</updated>
       <workItem from="1759096500948" duration="7000" />
       <workItem from="1759168919029" duration="1229000" />
-      <workItem from="1759242771048" duration="2031000" />
+      <workItem from="1759242771048" duration="4274000" />
     </task>
+    <task id="LOCAL-00001" summary="Email, PhoneNumber and StaffMember classes related to StaffMember created&#10;&#10;Issue: #18/#84">
+      <option name="closed" value="true" />
+      <created>1759244982507</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1759244982507</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
+  <component name="UnityCheckinConfiguration" checkUnsavedScenes="true" />
   <component name="UnityProjectConfiguration" hasMinimizedUI="false" />
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
+    <MESSAGE value="Email, PhoneNumber and StaffMember classes related to StaffMember created&#10;&#10;Issue: #18/#84" />
+    <option name="LAST_COMMIT_MESSAGE" value="Email, PhoneNumber and StaffMember classes related to StaffMember created&#10;&#10;Issue: #18/#84" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
