@@ -1,54 +1,27 @@
-# US 2.2.13 - Register and Manage Qualifications
+# US 2.2.13 – Register and Manage Qualifications
 
-## 3. Design - User Story Realization 
+## 3. Design – User Story Realization
 
 ### 3.1. Rationale
 
-_**Note that SSD - Alternative One is adopted.**_
+This design section explains how the core functionality of registering, updating, and listing qualifications will be realized from the perspective of user interaction with the system. It focuses on the coordination of application layers — UI, Controller, Service, Repository — and how data is validated, processed, persisted, and audited throughout this process.
 
-| Interaction ID                      | Question: Which class is responsible for...           | Answer | Justification (with patterns)                                                                                 |
-|:------------------------------------|:------------------------------------------------------|:-------|:--------------------------------------------------------------------------------------------------------------|
-| Step 1 :   	                        | 	... interacting with the actor?                      | x      | Pure Fabrication: there is no reason to assign this responsibility to any existing class in the Domain Model. |
-| 			  		                             | 	... coordinating the US?                             | y      | Controller                                                                                                    |
-| Step 2 : request data (skillName)		 | 	... displaying the form for the actor to input data? | z      | Pure Fabrication                                                                                              |
+The aim is to ensure clear separation of concerns, robust error handling, data integrity maintenance, and a workflow that is straightforward for the logistics operator to use.
 
-### Systematization ##
+The design reflects best practices for building maintainable, testable, and scalable applications by explicitly defining responsibilities and interactions between layers.
 
-According to the taken rationale, the conceptual classes promoted to software classes are: 
+---
 
-*none
+### 3.2. Sequence Diagram (SD)
 
-Other software classes (i.e. Pure Fabrication) identified: 
+This section provides three distinct sequence diagrams (in one), representing the main CRUD operations involved in this user story:
 
-* none
+1. **Create**: The process of registering a new Qualification. This includes validation of input fields (code, name) provided by the user, saving the new entity in the database, and recording audit logs to track the creation event.
 
+2. **Update**: The process for modifying an existing Qualification's data. It involves validating the changed data, ensuring that the qualification code remains unique, persisting the updates, and logging the changes for auditing purposes.
 
-## 3.2. Sequence Diagram (SD)
+3. **List**: The procedure to retrieve and filter Qualifications by code or name, returning the filtered list to the user interface.
 
+![SD](./svg/us2.2.13-sequence-diagram-full.svg)
 
-### Full Diagram
-
-This diagram shows the full sequence of interactions between the classes involved in the realization of this user story.
-
-![Sequence Diagram - Full](svg/usx-sequence-diagram-full.svg)
-
-### Split Diagrams
-
-The following diagram shows the same sequence of interactions between the classes involved in the realization of this user story, but it is split in partial diagrams to better illustrate the interactions between the classes.
-
-It uses Interaction Occurrence (a.k.a. Interaction Use).
-
-![Sequence Diagram - split](svg/usx-sequence-diagram-split.svg)
-
-
-**Get Skill Repository**
-
-![Sequence Diagram - Partial - Get Skill Repository](svg/usx-sequence-diagram-partial-get-skill-repository.svg)
-
-**Register Skill**
-
-![Sequence Diagram - Partial - Register Skill](svg/usx-sequence-diagram-partial-register-skill.svg)
-
-## 3.3. Class Diagram (CD)
-
-![Class Diagram](svg/usx-class-diagram.svg)
+These diagrams offer a precise technical blueprint to guide the implementation and testing of this user story, promoting clarity, consistency, and a thorough understanding among development team members.
