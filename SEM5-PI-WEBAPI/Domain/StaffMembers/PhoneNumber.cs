@@ -5,12 +5,13 @@ using System.Text.RegularExpressions;
 
 public class PhoneNumber
 {
-   
     private static readonly Regex PhoneRegex = new Regex(
         @"^\+?[1-9]\d{1,14}$", 
         RegexOptions.Compiled);
 
-    private string Number { get; }
+    public string Number { get; private set; }  
+
+    protected PhoneNumber() { } 
 
     public PhoneNumber(string number)
     {

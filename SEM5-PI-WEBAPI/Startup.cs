@@ -2,10 +2,12 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SEM5_PI_WEBAPI.Domain.Shared;
 using SEM5_PI_WEBAPI.Domain.Qualifications;
+using SEM5_PI_WEBAPI.Domain.StaffMembers;
 using SEM5_PI_WEBAPI.Domain.VesselsTypes;
 using SEM5_PI_WEBAPI.Infraestructure;
 using SEM5_PI_WEBAPI.Infraestructure.Qualifications;
 using SEM5_PI_WEBAPI.Infraestructure.Shared;
+using SEM5_PI_WEBAPI.Infraestructure.StaffMembers;
 using SEM5_PI_WEBAPI.Infraestructure.VesselsTypes;
 
 namespace SEM5_PI_WEBAPI
@@ -59,8 +61,12 @@ namespace SEM5_PI_WEBAPI
 
             services.AddTransient<IQualificationRepository, QualificationRepository>();
             services.AddTransient<QualificationService>();
+            
             services.AddTransient<IVesselTypeRepository, VesselTypeRepository>();
             services.AddTransient<VesselTypeService>();
+            
+            services.AddTransient<IStaffMemberRepository, StaffMemberRepository>();
+            services.AddTransient<StaffMemberService>();
         }
     }
 }

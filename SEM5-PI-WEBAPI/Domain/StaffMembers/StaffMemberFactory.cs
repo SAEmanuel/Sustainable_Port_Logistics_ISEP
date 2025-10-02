@@ -4,9 +4,9 @@ using SEM5_PI_WEBAPI.Domain.Shared;
 
 namespace SEM5_PI_WEBAPI.Domain.StaffMembers;
 
-public class StaffMemberFactory
+public static class StaffMemberFactory
 {
-    public StaffMember Create(
+    public static StaffMember Create(
         string shortName,
         string mecanographicNumber,
         Email email,
@@ -22,6 +22,7 @@ public class StaffMemberFactory
 
         var staffMember = new StaffMember(
             shortName,
+            mecanographicNumber,
             email ?? throw new BusinessRuleValidationException("Email is required."),
             phone ?? throw new BusinessRuleValidationException("Phone number is required."),
             schedule ?? throw new BusinessRuleValidationException("Schedule is required."),

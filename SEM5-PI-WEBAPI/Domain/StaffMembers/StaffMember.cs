@@ -7,34 +7,45 @@ namespace SEM5_PI_WEBAPI.Domain.StaffMembers;
 
 public class StaffMember : Entity<StaffMemberId>
 {
-    [MaxLength(20)] public string ShortName { get; set; }
-    [MaxLength(7)] public string MecanographicNumber { get; private set; }
-    public Email Email { get; set; }
-    public PhoneNumber Phone { get; set; }
-    public Schedule Schedule { get; set; }
-    public bool IsActive { get; set; }
+    [MaxLength(20)]
+    public string ShortName { get; private set; }
+
+    [MaxLength(7)]
+    public string MecanographicNumber { get; private set; }
+
+    public Email Email { get; private set; }
+    public PhoneNumber Phone { get; private set; }
+    public Schedule Schedule { get; private set; }
+    public bool IsActive { get; private set; }
     public List<Qualification> Qualifications { get; private set; }
 
-    protected StaffMember()
-    {
-    }
+    // Construtor protegido → só a Factory ou EF podem instanciar
+    protected StaffMember() { }
 
-    public StaffMember(string shortName, Email email, PhoneNumber phone,
-        Schedule schedule, bool isActive, List<Qualification>? qualifications)
+    internal StaffMember(
+        string shortName,
+        string mecanographicNumber,
+        Email email,
+        PhoneNumber phone,
+        Schedule schedule,
+        bool isActive,
+        List<Qualification> qualifications)
     {
         Id = new StaffMemberId(Guid.NewGuid());
         ShortName = shortName;
-        Email = email;
-        Phone = phone;
-        Schedule = schedule;
+        MecanographicNumber = mecanographicNumber;
+        Email = email ?? throw new BusinessRuleValidationException("Email is required.");
+        Phone = phone ?? throw new BusinessRuleValidationException("Phone number is required.");
+        Schedule = schedule ?? throw new BusinessRuleValidationException("Schedule is required.");
         IsActive = isActive;
         Qualifications = qualifications ?? new List<Qualification>();
     }
+    
 
     public void UpdateShortName(string newShortName)
     {
         if (string.IsNullOrWhiteSpace(newShortName))
-            throw new ArgumentException("ShortName cannot be empty");
+            throw new BusinessRuleValidationException("ShortName cannot be empty.");
         ShortName = newShortName;
     }
 
@@ -63,7 +74,7 @@ public class StaffMember : Entity<StaffMemberId>
         if (!Qualifications.Contains(qualification))
             Qualifications.Add(qualification);
         else
-            throw new BusinessRuleValidationException("Duplicated Qualification, not added...");
+            throw new BusinessRuleValidationException("Duplicated Qualification, not added.");
     }
 
     public void RemoveQualification(Qualification qualification)
@@ -71,12 +82,7 @@ public class StaffMember : Entity<StaffMemberId>
         Qualifications.Remove(qualification);
     }
 
-    public void SetMecanographicNumber(string mec)
-    {
-        MecanographicNumber = mec;
-    }
-
-    public override bool Equals(object obj)
+    public override bool Equals(object? obj)
     {
         if (obj is StaffMember other)
             return Id == other.Id;

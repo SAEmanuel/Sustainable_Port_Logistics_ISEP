@@ -23,15 +23,45 @@ namespace SEM5_PI_WEBAPI.Migrations
 
                     b.Property<string>("Code")
                         .IsRequired()
+                        .HasMaxLength(15)
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Name")
                         .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("StaffMemberId")
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
+                    b.HasIndex("StaffMemberId");
+
                     b.ToTable("Qualifications");
+                });
+
+            modelBuilder.Entity("SEM5_PI_WEBAPI.Domain.StaffMembers.StaffMember", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("MecanographicNumber")
+                        .IsRequired()
+                        .HasMaxLength(7)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ShortName")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("StaffMember");
                 });
 
             modelBuilder.Entity("SEM5_PI_WEBAPI.Domain.VesselsTypes.VesselType", b =>
@@ -61,6 +91,87 @@ namespace SEM5_PI_WEBAPI.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("VesselType");
+                });
+
+            modelBuilder.Entity("SEM5_PI_WEBAPI.Domain.Qualifications.Qualification", b =>
+                {
+                    b.HasOne("SEM5_PI_WEBAPI.Domain.StaffMembers.StaffMember", null)
+                        .WithMany("Qualifications")
+                        .HasForeignKey("StaffMemberId");
+                });
+
+            modelBuilder.Entity("SEM5_PI_WEBAPI.Domain.StaffMembers.StaffMember", b =>
+                {
+                    b.OwnsOne("SEM5_PI_WEBAPI.Domain.BusinessShared.Schedule", "Schedule", b1 =>
+                        {
+                            b1.Property<string>("StaffMemberId")
+                                .HasColumnType("TEXT");
+
+                            b1.Property<int>("Days")
+                                .HasColumnType("INTEGER")
+                                .HasColumnName("Days");
+
+                            b1.Property<int>("Shift")
+                                .HasColumnType("INTEGER")
+                                .HasColumnName("Shift");
+
+                            b1.HasKey("StaffMemberId");
+
+                            b1.ToTable("StaffMember");
+
+                            b1.WithOwner()
+                                .HasForeignKey("StaffMemberId");
+                        });
+
+                    b.OwnsOne("SEM5_PI_WEBAPI.Domain.StaffMembers.Email", "Email", b1 =>
+                        {
+                            b1.Property<string>("StaffMemberId")
+                                .HasColumnType("TEXT");
+
+                            b1.Property<string>("Address")
+                                .IsRequired()
+                                .HasColumnType("TEXT")
+                                .HasColumnName("Email");
+
+                            b1.HasKey("StaffMemberId");
+
+                            b1.ToTable("StaffMember");
+
+                            b1.WithOwner()
+                                .HasForeignKey("StaffMemberId");
+                        });
+
+                    b.OwnsOne("SEM5_PI_WEBAPI.Domain.StaffMembers.PhoneNumber", "Phone", b1 =>
+                        {
+                            b1.Property<string>("StaffMemberId")
+                                .HasColumnType("TEXT");
+
+                            b1.Property<string>("Number")
+                                .IsRequired()
+                                .HasColumnType("TEXT")
+                                .HasColumnName("Phone");
+
+                            b1.HasKey("StaffMemberId");
+
+                            b1.ToTable("StaffMember");
+
+                            b1.WithOwner()
+                                .HasForeignKey("StaffMemberId");
+                        });
+
+                    b.Navigation("Email")
+                        .IsRequired();
+
+                    b.Navigation("Phone")
+                        .IsRequired();
+
+                    b.Navigation("Schedule")
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("SEM5_PI_WEBAPI.Domain.StaffMembers.StaffMember", b =>
+                {
+                    b.Navigation("Qualifications");
                 });
 #pragma warning restore 612, 618
         }

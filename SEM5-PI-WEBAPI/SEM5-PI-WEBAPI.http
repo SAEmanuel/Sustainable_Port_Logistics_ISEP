@@ -18,18 +18,20 @@ GET {{portURL}}/api/VesselType
 Accept: application/json
 
 ###
-GET {{portURL}}/api/VesselType/af438dc7-ddb5-41b2-b7d4-18504bceeab2
+GET {{portURL}}/api/StaffMembers
 Accept: application/json
 
 ###
-POST {{portURL}}/api/VesselType
+POST {{portURL}}/api/StaffMembers
 Content-Type: application/json
 Accept: application/json
 
 {
-  "name": "Panamax",
-  "description": "Medium size vessel",
-  "maxBays": 20,
-  "maxRows": 15,
-  "maxTiers": 10
+  "id": "d1234567-89ab-cdef-0123-456789abcdef",
+  "shortName": "Paulo Mendes",
+  "mecanographicNumber": "125001",
+  "email": { "address": "mendy@gmail.com" },
+  "phone": { "number": "+351912345678" },
+  "schedule": { "shift": "Morning", "days": 31 },
+  "isActive": true
 }
