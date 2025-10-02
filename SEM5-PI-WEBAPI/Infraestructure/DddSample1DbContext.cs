@@ -9,6 +9,7 @@ namespace SEM5_PI_WEBAPI.Infraestructure
     public class DddSample1DbContext : DbContext
     {
         public DbSet<Qualification> Qualifications { get; set; }
+        public DbSet<VesselType> VesselType { get; set; }
         
 
         public DddSample1DbContext(DbContextOptions options) : base(options)

@@ -20,7 +20,9 @@ public class QualificationService
         var list = await this._repo.GetAllAsync();
 
         List<QualificationDto> listDto = list.ConvertAll<QualificationDto>(q =>
-            new QualificationDto(q.Id.AsGuid(), q.Name, q.Code));
+            new QualificationDto(q.Id.AsGuid(),
+                q.Name,
+                q.Code));
 
         return listDto;
     }
@@ -32,7 +34,9 @@ public class QualificationService
         if (q == null)
             return null;
 
-        return new QualificationDto(q.Id.AsGuid(), q.Name, q.Code);
+        return new QualificationDto(q.Id.AsGuid(),
+            q.Name,
+            q.Code);
     }
 
     public async Task<string> GenerateNextQualificationCodeAsync()

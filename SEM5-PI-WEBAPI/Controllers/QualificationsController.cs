@@ -20,10 +20,10 @@ public class QualificationsController : ControllerBase
     {
         return Ok(await _service.GetAllAsync());
     }
-    
-    
+
+    // GET: api/Products/5
     [HttpGet("{id}")]
-    public async Task<ActionResult<QualificationDto>> GetById(Guid id)
+    public async Task<ActionResult<QualificationDto>> GetGetById(Guid id)
     {
         var q = await _service.GetByIdAsync(new QualificationId(id));
 
@@ -42,7 +42,7 @@ public class QualificationsController : ControllerBase
         {
             var q = await _service.AddAsync(dto);
 
-            return CreatedAtAction(nameof(GetById), new { id = q.Id }, q);
+            return CreatedAtAction(nameof(GetGetById), new { id = q.Id }, q);
         }
         catch (BusinessRuleValidationException ex)
         {

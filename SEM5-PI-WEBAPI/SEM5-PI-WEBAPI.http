@@ -12,3 +12,7 @@ Accept: application/json
   "name": "Truck Driver",
   "code": "TRD-11"
 }
+
+###
+GET {{portURL}}/api/VesselType
+Accept: application/json

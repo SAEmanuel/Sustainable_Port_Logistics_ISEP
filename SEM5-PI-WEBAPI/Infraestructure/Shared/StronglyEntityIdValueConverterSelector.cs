@@ -35,13 +35,15 @@ namespace SEM5_PI_WEBAPI.Infraestructure.Shared
                 {
                     var converterType = typeof(EntityIdValueConverter<>).MakeGenericType(underlyingModelType);
 
-                    yield return _converters.GetOrAdd((underlyingModelType, typeof(String)), _ =>
-                    {
-                        return new ValueConverterInfo(
-                            modelClrType: modelClrType,
-                            providerClrType: typeof(String),
-                            factory: valueConverterInfo => (ValueConverter)Activator.CreateInstance(converterType, valueConverterInfo.MappingHints));
-                    });
+                    yield return _converters.GetOrAdd((underlyingModelType, typeof(String)),
+                        _ =>
+                        {
+                            return new ValueConverterInfo(
+                                modelClrType: modelClrType,
+                                providerClrType: typeof(String),
+                                factory: valueConverterInfo => (ValueConverter)Activator.CreateInstance(converterType,
+                                    valueConverterInfo.MappingHints));
+                        });
                 }
             }
         }

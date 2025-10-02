@@ -26,7 +26,8 @@ public class Email
     }
 
     public override bool Equals(object? obj) =>
-        obj is Email other && Address.Equals(other.Address, StringComparison.OrdinalIgnoreCase);
+        obj is Email other && Address.Equals(other.Address,
+            StringComparison.OrdinalIgnoreCase);
 
 
     public override int GetHashCode() => Address.ToLowerInvariant().GetHashCode();
