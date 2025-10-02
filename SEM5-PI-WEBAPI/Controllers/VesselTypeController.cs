@@ -48,7 +48,7 @@ namespace SEM5_PI_WEBAPI.Controllers
             }
             catch (BusinessRuleValidationException e)
             {
-                return BadRequest(new {e.Message});
+                return BadRequest(e.Message);
             }
         }
         

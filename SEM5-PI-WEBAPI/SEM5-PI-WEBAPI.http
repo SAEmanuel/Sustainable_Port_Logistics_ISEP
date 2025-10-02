@@ -18,6 +18,24 @@ GET {{portURL}}/api/VesselType
 Accept: application/json
 
 ###
+GET {{portURL}}/api/VesselType/a26f724a-b072-47db-b492-a02364408ff7
+Accept: application/json
+
+###
+POST {{portURL}}/api/VesselType
+Content-Type: application/json
+Accept: application/json
+
+{
+  "name": "Panamax",
+  "description": "Medium size vessel",
+  "maxBays": 20,
+  "maxRows": 15,
+  "maxTiers": 10
+}
+
+
+###
 GET {{portURL}}/api/StaffMembers
 Accept: application/json
 

@@ -35,6 +35,11 @@ namespace SEM5_PI_WEBAPI.Domain.VesselsTypes
 
         public async Task<VesselTypeDto> AddAsync(CreatingVesselTypeDto vesselTypeDto)
         {
+            var exists = (await GetAllAsync()).Any(q => string.Equals(q.Name, vesselTypeDto.Name, StringComparison.CurrentCultureIgnoreCase));
+
+            if (exists) throw new BusinessRuleValidationException($"VesselType with name '{vesselTypeDto.Name}' already exists.");
+            
+            
             VesselType newVesselType = VesselTypeFactory.CreateBasicVesselType(vesselTypeDto);
             
             await _vesselTypeRepository.AddAsync(newVesselType);
