@@ -21,7 +21,7 @@ public class Qualification : Entity<QualificationId>, IAggregateRoot
     public void ChangeName(string newName)
     {
         if (string.IsNullOrWhiteSpace(newName))
-            throw new ArgumentException("Name cannot be empty");
+            throw new BusinessRuleValidationException("Name cannot be empty!");
         Name = newName;
     }
     

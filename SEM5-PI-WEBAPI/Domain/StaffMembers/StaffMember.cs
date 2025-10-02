@@ -7,27 +7,28 @@ namespace SEM5_PI_WEBAPI.Domain.StaffMembers;
 
 public class StaffMember : Entity<StaffMemberId>
 {
-    
-    [MaxLength(20)]
-    public string ShortName { get; set; }
-    public string? MecanographicNumber { get; private set; }
-    private Email Email { get; set; }
-    private PhoneNumber Phone { get; set; }
-    private Schedule Schedule { get; set; }
-    private StaffMemberStatus Status { get; set; }
-    
-    private readonly List<Qualification> _qualifications = new();
-    public IReadOnlyCollection<Qualification> Qualifications => _qualifications.AsReadOnly();
+    [MaxLength(20)] public string ShortName { get; set; }
+    [MaxLength(7)] public string MecanographicNumber { get; private set; }
+    public Email Email { get; set; }
+    public PhoneNumber Phone { get; set; }
+    public Schedule Schedule { get; set; }
+    public bool IsActive { get; set; }
+    public List<Qualification> Qualifications { get; private set; }
+
+    protected StaffMember()
+    {
+    }
 
     public StaffMember(string shortName, Email email, PhoneNumber phone,
-        Schedule schedule, StaffMemberStatus status)
+        Schedule schedule, bool isActive, List<Qualification>? qualifications)
     {
         Id = new StaffMemberId(Guid.NewGuid());
         ShortName = shortName;
         Email = email;
         Phone = phone;
         Schedule = schedule;
-        Status = status;
+        IsActive = isActive;
+        Qualifications = qualifications ?? new List<Qualification>();
     }
 
     public void UpdateShortName(string newShortName)
@@ -39,39 +40,42 @@ public class StaffMember : Entity<StaffMemberId>
 
     public void UpdateEmail(Email newEmail)
     {
-        Email = newEmail ?? throw new ArgumentNullException(nameof(newEmail));
+        Email = newEmail ?? throw new BusinessRuleValidationException("Invalid email!");
     }
 
     public void UpdatePhone(PhoneNumber newPhone)
     {
-        Phone = newPhone ?? throw new ArgumentNullException(nameof(newPhone));
+        Phone = newPhone ?? throw new BusinessRuleValidationException("Invalid Phone number!");
     }
 
     public void UpdateSchedule(Schedule newSchedule)
     {
-        Schedule = newSchedule ?? throw new ArgumentNullException(nameof(newSchedule));
+        Schedule = newSchedule ?? throw new BusinessRuleValidationException("Invalid Schedule!");
     }
 
-    public void UpdateStatus(StaffMemberStatus newStatus)
+    public void ToggleStatus()
     {
-        Status = newStatus;
+        IsActive = !IsActive;
     }
-    
+
     public void AddQualification(Qualification qualification)
     {
-        if (qualification == null)
-            throw new ArgumentNullException(nameof(qualification));
-        if (!_qualifications.Contains(qualification))
-            _qualifications.Add(qualification);
+        if (!Qualifications.Contains(qualification))
+            Qualifications.Add(qualification);
+        else
+            throw new BusinessRuleValidationException("Duplicated Qualification, not added...");
     }
 
     public void RemoveQualification(Qualification qualification)
     {
-        if (qualification == null)
-            throw new ArgumentNullException(nameof(qualification));
-        _qualifications.Remove(qualification);
+        Qualifications.Remove(qualification);
     }
-    
+
+    public void SetMecanographicNumber(string mec)
+    {
+        MecanographicNumber = mec;
+    }
+
     public override bool Equals(object obj)
     {
         if (obj is StaffMember other)
@@ -80,6 +84,4 @@ public class StaffMember : Entity<StaffMemberId>
     }
 
     public override int GetHashCode() => Id.GetHashCode();
-    
 }
-
