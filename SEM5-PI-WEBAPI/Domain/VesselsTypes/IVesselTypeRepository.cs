@@ -6,6 +6,8 @@ namespace SEM5_PI_WEBAPI.Domain.VesselsTypes
     {
         Task<VesselType?> GetByNameAsync(string name);
         Task<List<VesselType>> GetByDescriptionAsync(string description);
+        
+        Task<List<VesselType>> FilterAsync(string? name,string? description,string? query);
     }
 }
 

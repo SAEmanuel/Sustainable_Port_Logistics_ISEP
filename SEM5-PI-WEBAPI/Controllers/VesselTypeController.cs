@@ -95,7 +95,7 @@ namespace SEM5_PI_WEBAPI.Controllers
             try
             {
                 var vesselTypeDto = await _service.AddAsync(dto);
-                _logger.LogInformation("API Response (201): VesselType created with ID = {Id}", vesselTypeDto.Id);
+                _logger.LogInformation("API Response (201): Vessel Type created with ID = {Id}", vesselTypeDto.Id);
                 return CreatedAtAction(nameof(GetById), new { id = vesselTypeDto.Id }, vesselTypeDto);
             }
             catch (BusinessRuleValidationException e)
@@ -104,7 +104,29 @@ namespace SEM5_PI_WEBAPI.Controllers
                 return BadRequest(e.Message);
             }
         }
-        
+
+
+        [HttpGet("filter")]
+        public async Task<ActionResult<List<VesselTypeDto>>> Filter(string? name, string? description,
+            string? query)
+        {
+            _logger.LogInformation("API Request: Filtering Vessel/s Type/s with filters -> Name = {Name}, Description = {Description}, Query = {Query}", name, description, query);
+
+            try
+            {
+                var listVesselsTypes = await _service.FilterAsync(name,description,query);
+                
+                _logger.LogInformation("API Response (200): Found {Count} Vessel/s Type/s -> {@Vessels}", listVesselsTypes.Count,listVesselsTypes);
+                
+                return Ok(listVesselsTypes);
+            }
+            catch (BusinessRuleValidationException e)
+            {
+                _logger.LogWarning("API Response (404): No Vessel/s Type/s matched filters.");
+                return NotFound(e.Message);
+            }
+            
+        }
         
         
         

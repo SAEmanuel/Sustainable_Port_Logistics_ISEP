@@ -109,6 +109,20 @@ namespace SEM5_PI_WEBAPI.Domain.VesselsTypes
 
             return listVesselsTypesDto;
         }
+
+        public async Task<List<VesselTypeDto>> FilterAsync(string? name, string? description, string? query)
+        {
+            _logger.LogInformation("Business Domain: Filtering VesselTypes with filters -> Name = {Name}, Description = {Description}, Query = {Query}", name, description, query);
+
+            var listVesselsTypesInDb = await _vesselTypeRepository.FilterAsync(name,description,query);
+            
+            if(listVesselsTypesInDb.Count == 0)
+                throw new BusinessRuleValidationException($"No Vessel/s Type/s Found with filters -> Name = {name}, Description = {description}, Query = {query}");
+            
+            _logger.LogInformation("Business Domain: Where found [{Count}] Vessel/s Type/s with filters -> Name = {Name}, Description = {Description}, Query = {Query}",listVesselsTypesInDb.Count,name, description, query);
+            
+            return listVesselsTypesInDb.Select(instance => VesselTypeFactory.CreateDtoVesselType(instance)).ToList();
+        }
     }
 }
 

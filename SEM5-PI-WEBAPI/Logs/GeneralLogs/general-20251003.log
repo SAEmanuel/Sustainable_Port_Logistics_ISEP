@@ -237,3 +237,480 @@ WHERE trim(lower("v"."Description")) = @__Trim_0
 [17:05:49 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - ──────│ ✔ COMPLETED GET /api/VesselType/description/Medium%20size%20vessele with 404 in 3.337 ms
 [17:05:49 INF] Microsoft.AspNetCore.Hosting.Diagnostics                               - Request finished HTTP/1.1 GET http://localhost:5008/api/VesselType/description/Medium size vessele - 404 61 application/json; charset=utf-8 3.8062ms
 [17:05:59 INF] Microsoft.Hosting.Lifetime                                             - Application is shutting down...
+[17:09:29 INF]  - Starting web host
+[17:09:30 INF] Microsoft.Hosting.Lifetime                                             - Now listening on: http://localhost:5008
+[17:09:30 INF] Microsoft.Hosting.Lifetime                                             - Application started. Press Ctrl+C to shut down.
+[17:09:30 INF] Microsoft.Hosting.Lifetime                                             - Hosting environment: Development
+[17:09:30 INF] Microsoft.Hosting.Lifetime                                             - Content root path: /Users/jorgerodriguez/Desktop/Universidade/3_ano/1_Semestre/LEI-SEM5-PI-2025-26-3DJ-03/SEM5-PI-WEBAPI
+[17:09:47 INF] Microsoft.AspNetCore.Hosting.Diagnostics                               - Request starting HTTP/1.1 GET http://localhost:5008/api/VesselType - null null
+[17:09:47 WRN] Microsoft.AspNetCore.HttpsPolicy.HttpsRedirectionMiddleware            - Failed to determine the https port for redirect.
+[17:09:47 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - ┌───────────────────────────────────────────────
+[17:09:47 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - │ HTTP GET /api/VesselType
+[17:09:47 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - │ From IP: 127.0.0.1
+[17:09:47 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - └───────────────────────────────────────────────
+[17:09:47 INF] Microsoft.AspNetCore.Routing.EndpointMiddleware                        - Executing endpoint 'SEM5_PI_WEBAPI.Controllers.VesselTypeController.GetAll (SEM5-PI-WEBAPI)'
+[17:09:47 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Route matched with {action = "GetAll", controller = "VesselType"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[System.Collections.Generic.List`1[SEM5_PI_WEBAPI.Domain.VesselsTypes.VesselTypeDto]]] GetAll() on controller SEM5_PI_WEBAPI.Controllers.VesselTypeController (SEM5-PI-WEBAPI).
+[17:09:47 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Executing action method SEM5_PI_WEBAPI.Controllers.VesselTypeController.GetAll (SEM5-PI-WEBAPI) - Validation state: "Valid"
+[17:09:47 INF] SEM5_PI_WEBAPI.Controllers.VesselTypeController                        - API Request: Get All Vessels Types on DataBase
+[17:09:47 INF] SEM5_PI_WEBAPI.Domain.VesselsTypes.VesselTypeService                   - Business Domain: Request to fetch all Vessel Types.
+[17:09:48 INF] Microsoft.EntityFrameworkCore.Database.Command                         - Executed DbCommand (20ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT "v"."Id", "v"."Capacity", "v"."Description", "v"."MaxBays", "v"."MaxRows", "v"."MaxTiers", "v"."Name"
+FROM "VesselType" AS "v"
+[17:09:49 INF] SEM5_PI_WEBAPI.Domain.VesselsTypes.VesselTypeService                   - Business Domain: Found [1] Vessel Types in database.
+[17:09:49 INF] SEM5_PI_WEBAPI.Domain.VesselsTypes.VesselTypeService                   - Business Domain: Returning [1] Vessel Types DTOs.
+[17:09:49 WRN] SEM5_PI_WEBAPI.Controllers.VesselTypeController                        - API Response (200): A total of 1 were found -> [{"Id":"c7798221-c758-47fd-a343-21d49b78c806","Name":"Panamax","Description":"Medium size vessel","MaxBays":20,"MaxRows":15,"MaxTiers":10,"Capacity":3000,"$type":"VesselTypeDto"}]
+[17:09:49 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Executed action method SEM5_PI_WEBAPI.Controllers.VesselTypeController.GetAll (SEM5-PI-WEBAPI), returned result Microsoft.AspNetCore.Mvc.OkObjectResult in 1354.711ms.
+[17:09:49 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ObjectResultExecutor           - Executing OkObjectResult, writing value of type 'System.Collections.Generic.List`1[[SEM5_PI_WEBAPI.Domain.VesselsTypes.VesselTypeDto, SEM5-PI-WEBAPI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+[17:09:49 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Executed action SEM5_PI_WEBAPI.Controllers.VesselTypeController.GetAll (SEM5-PI-WEBAPI) in 1565.8274ms
+[17:09:49 INF] Microsoft.AspNetCore.Routing.EndpointMiddleware                        - Executed endpoint 'SEM5_PI_WEBAPI.Controllers.VesselTypeController.GetAll (SEM5-PI-WEBAPI)'
+[17:09:49 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - ──────│ ✔ COMPLETED GET /api/VesselType with 200 in 1586.827 ms
+[17:09:49 INF] Microsoft.AspNetCore.Hosting.Diagnostics                               - Request finished HTTP/1.1 GET http://localhost:5008/api/VesselType - 200 157 application/json; charset=utf-8 1620.485ms
+[17:10:00 INF] Microsoft.AspNetCore.Hosting.Diagnostics                               - Request starting HTTP/1.1 POST http://localhost:5008/api/VesselType - application/json 115
+[17:10:00 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - ┌───────────────────────────────────────────────
+[17:10:00 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - │ HTTP POST /api/VesselType
+[17:10:00 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - │ From IP: 127.0.0.1
+[17:10:00 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - └───────────────────────────────────────────────
+[17:10:00 INF] Microsoft.AspNetCore.Routing.EndpointMiddleware                        - Executing endpoint 'SEM5_PI_WEBAPI.Controllers.VesselTypeController.Create (SEM5-PI-WEBAPI)'
+[17:10:00 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Route matched with {action = "Create", controller = "VesselType"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[SEM5_PI_WEBAPI.Domain.VesselsTypes.VesselTypeDto]] Create(SEM5_PI_WEBAPI.Domain.VesselsTypes.CreatingVesselTypeDto) on controller SEM5_PI_WEBAPI.Controllers.VesselTypeController (SEM5-PI-WEBAPI).
+[17:10:00 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Executing action method SEM5_PI_WEBAPI.Controllers.VesselTypeController.Create (SEM5-PI-WEBAPI) - Validation state: "Valid"
+[17:10:00 INF] SEM5_PI_WEBAPI.Controllers.VesselTypeController                        - API Request: Add Vessel Type with body = {"Name":"Panamaxx","Description":"Medium size vessel","MaxBays":20,"MaxRows":15,"MaxTiers":10,"$type":"CreatingVesselTypeDto"}
+[17:10:00 INF] SEM5_PI_WEBAPI.Domain.VesselsTypes.VesselTypeService                   - Business Domain: Request to add new Vessel Type with Name = Panamaxx
+[17:10:00 INF] SEM5_PI_WEBAPI.Domain.VesselsTypes.VesselTypeService                   - Business Domain: Request to fetch all Vessel Types.
+[17:10:00 INF] Microsoft.EntityFrameworkCore.Database.Command                         - Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT "v"."Id", "v"."Capacity", "v"."Description", "v"."MaxBays", "v"."MaxRows", "v"."MaxTiers", "v"."Name"
+FROM "VesselType" AS "v"
+[17:10:00 INF] SEM5_PI_WEBAPI.Domain.VesselsTypes.VesselTypeService                   - Business Domain: Found [1] Vessel Types in database.
+[17:10:00 INF] SEM5_PI_WEBAPI.Domain.VesselsTypes.VesselTypeService                   - Business Domain: Returning [1] Vessel Types DTOs.
+[17:10:00 INF] Microsoft.EntityFrameworkCore.Database.Command                         - Executed DbCommand (12ms) [Parameters=[@p0='?' (Size = 36), @p1='?' (DbType = Single), @p2='?' (Size = 18), @p3='?' (DbType = Int32), @p4='?' (DbType = Int32), @p5='?' (DbType = Int32), @p6='?' (Size = 8)], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO "VesselType" ("Id", "Capacity", "Description", "MaxBays", "MaxRows", "MaxTiers", "Name")
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6);
+[17:10:00 INF] SEM5_PI_WEBAPI.Domain.VesselsTypes.VesselTypeService                   - Business Domain: Vessel Type created successfully with ID = 6ef8bcdf-0e7b-46e2-af0a-c03804c8731f
+[17:10:00 INF] SEM5_PI_WEBAPI.Controllers.VesselTypeController                        - API Response (201): VesselType created with ID = "6ef8bcdf-0e7b-46e2-af0a-c03804c8731f"
+[17:10:00 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Executed action method SEM5_PI_WEBAPI.Controllers.VesselTypeController.Create (SEM5-PI-WEBAPI), returned result Microsoft.AspNetCore.Mvc.CreatedAtActionResult in 221.9934ms.
+[17:10:00 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ObjectResultExecutor           - Executing CreatedAtActionResult, writing value of type 'SEM5_PI_WEBAPI.Domain.VesselsTypes.VesselTypeDto'.
+[17:10:00 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Executed action SEM5_PI_WEBAPI.Controllers.VesselTypeController.Create (SEM5-PI-WEBAPI) in 319.8822ms
+[17:10:00 INF] Microsoft.AspNetCore.Routing.EndpointMiddleware                        - Executed endpoint 'SEM5_PI_WEBAPI.Controllers.VesselTypeController.Create (SEM5-PI-WEBAPI)'
+[17:10:00 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - ──────│ ✔ COMPLETED POST /api/VesselType with 201 in 335.381 ms
+[17:10:00 INF] Microsoft.AspNetCore.Hosting.Diagnostics                               - Request finished HTTP/1.1 POST http://localhost:5008/api/VesselType - 201 156 application/json; charset=utf-8 340.5414ms
+[17:10:06 INF] Microsoft.AspNetCore.Hosting.Diagnostics                               - Request starting HTTP/1.1 GET http://localhost:5008/api/VesselType - null null
+[17:10:06 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - ┌───────────────────────────────────────────────
+[17:10:06 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - │ HTTP GET /api/VesselType
+[17:10:06 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - │ From IP: 127.0.0.1
+[17:10:06 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - └───────────────────────────────────────────────
+[17:10:06 INF] Microsoft.AspNetCore.Routing.EndpointMiddleware                        - Executing endpoint 'SEM5_PI_WEBAPI.Controllers.VesselTypeController.GetAll (SEM5-PI-WEBAPI)'
+[17:10:06 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Route matched with {action = "GetAll", controller = "VesselType"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[System.Collections.Generic.List`1[SEM5_PI_WEBAPI.Domain.VesselsTypes.VesselTypeDto]]] GetAll() on controller SEM5_PI_WEBAPI.Controllers.VesselTypeController (SEM5-PI-WEBAPI).
+[17:10:06 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Executing action method SEM5_PI_WEBAPI.Controllers.VesselTypeController.GetAll (SEM5-PI-WEBAPI) - Validation state: "Valid"
+[17:10:06 INF] SEM5_PI_WEBAPI.Controllers.VesselTypeController                        - API Request: Get All Vessels Types on DataBase
+[17:10:06 INF] SEM5_PI_WEBAPI.Domain.VesselsTypes.VesselTypeService                   - Business Domain: Request to fetch all Vessel Types.
+[17:10:06 INF] Microsoft.EntityFrameworkCore.Database.Command                         - Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT "v"."Id", "v"."Capacity", "v"."Description", "v"."MaxBays", "v"."MaxRows", "v"."MaxTiers", "v"."Name"
+FROM "VesselType" AS "v"
+[17:10:06 INF] SEM5_PI_WEBAPI.Domain.VesselsTypes.VesselTypeService                   - Business Domain: Found [2] Vessel Types in database.
+[17:10:06 INF] SEM5_PI_WEBAPI.Domain.VesselsTypes.VesselTypeService                   - Business Domain: Returning [2] Vessel Types DTOs.
+[17:10:06 WRN] SEM5_PI_WEBAPI.Controllers.VesselTypeController                        - API Response (200): A total of 2 were found -> [{"Id":"c7798221-c758-47fd-a343-21d49b78c806","Name":"Panamax","Description":"Medium size vessel","MaxBays":20,"MaxRows":15,"MaxTiers":10,"Capacity":3000,"$type":"VesselTypeDto"},{"Id":"6ef8bcdf-0e7b-46e2-af0a-c03804c8731f","Name":"Panamaxx","Description":"Medium size vessel","MaxBays":20,"MaxRows":15,"MaxTiers":10,"Capacity":3000,"$type":"VesselTypeDto"}]
+[17:10:06 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Executed action method SEM5_PI_WEBAPI.Controllers.VesselTypeController.GetAll (SEM5-PI-WEBAPI), returned result Microsoft.AspNetCore.Mvc.OkObjectResult in 66.9182ms.
+[17:10:06 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ObjectResultExecutor           - Executing OkObjectResult, writing value of type 'System.Collections.Generic.List`1[[SEM5_PI_WEBAPI.Domain.VesselsTypes.VesselTypeDto, SEM5-PI-WEBAPI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+[17:10:06 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Executed action SEM5_PI_WEBAPI.Controllers.VesselTypeController.GetAll (SEM5-PI-WEBAPI) in 74.4002ms
+[17:10:06 INF] Microsoft.AspNetCore.Routing.EndpointMiddleware                        - Executed endpoint 'SEM5_PI_WEBAPI.Controllers.VesselTypeController.GetAll (SEM5-PI-WEBAPI)'
+[17:10:06 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - ──────│ ✔ COMPLETED GET /api/VesselType with 200 in 75.4 ms
+[17:10:06 INF] Microsoft.AspNetCore.Hosting.Diagnostics                               - Request finished HTTP/1.1 GET http://localhost:5008/api/VesselType - 200 314 application/json; charset=utf-8 76.378ms
+[17:10:17 INF] Microsoft.AspNetCore.Hosting.Diagnostics                               - Request starting HTTP/1.1 GET http://localhost:5008/api/VesselType/description/Medium size vessele - null null
+[17:10:17 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - ┌───────────────────────────────────────────────
+[17:10:17 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - │ HTTP GET /api/VesselType/description/Medium%20size%20vessele
+[17:10:17 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - │ From IP: 127.0.0.1
+[17:10:17 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - └───────────────────────────────────────────────
+[17:10:17 INF] Microsoft.AspNetCore.Routing.EndpointMiddleware                        - Executing endpoint 'SEM5_PI_WEBAPI.Controllers.VesselTypeController.GetByDescription (SEM5-PI-WEBAPI)'
+[17:10:17 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Route matched with {action = "GetByDescription", controller = "VesselType"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[System.Collections.Generic.List`1[SEM5_PI_WEBAPI.Domain.VesselsTypes.VesselTypeDto]]] GetByDescription(System.String) on controller SEM5_PI_WEBAPI.Controllers.VesselTypeController (SEM5-PI-WEBAPI).
+[17:10:17 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Executing action method SEM5_PI_WEBAPI.Controllers.VesselTypeController.GetByDescription (SEM5-PI-WEBAPI) - Validation state: "Valid"
+[17:10:17 INF] SEM5_PI_WEBAPI.Controllers.VesselTypeController                        - API Request: Fetching Vessel/s Type/s with Description = Medium size vessele
+[17:10:17 INF] SEM5_PI_WEBAPI.Domain.VesselsTypes.VesselTypeService                   - Business Domain: Request to fetch Vessel/s Type/s with Description = Medium size vessele
+[17:10:18 INF] Microsoft.EntityFrameworkCore.Database.Command                         - Executed DbCommand (1ms) [Parameters=[@__Trim_0='?' (Size = 19)], CommandType='"Text"', CommandTimeout='30']
+SELECT "v"."Id", "v"."Capacity", "v"."Description", "v"."MaxBays", "v"."MaxRows", "v"."MaxTiers", "v"."Name"
+FROM "VesselType" AS "v"
+WHERE trim(lower("v"."Description")) = @__Trim_0
+[17:10:18 WRN] SEM5_PI_WEBAPI.Controllers.VesselTypeController                        - API Error (404): Vessel/s Type/s with Description = Medium size vessele -> NOT FOUND
+[17:10:18 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Executed action method SEM5_PI_WEBAPI.Controllers.VesselTypeController.GetByDescription (SEM5-PI-WEBAPI), returned result Microsoft.AspNetCore.Mvc.NotFoundObjectResult in 138.0247ms.
+[17:10:18 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ObjectResultExecutor           - Executing NotFoundObjectResult, writing value of type 'System.String'.
+[17:10:18 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Executed action SEM5_PI_WEBAPI.Controllers.VesselTypeController.GetByDescription (SEM5-PI-WEBAPI) in 140.1977ms
+[17:10:18 INF] Microsoft.AspNetCore.Routing.EndpointMiddleware                        - Executed endpoint 'SEM5_PI_WEBAPI.Controllers.VesselTypeController.GetByDescription (SEM5-PI-WEBAPI)'
+[17:10:18 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - ──────│ ✔ COMPLETED GET /api/VesselType/description/Medium%20size%20vessele with 404 in 147.849 ms
+[17:10:18 INF] Microsoft.AspNetCore.Hosting.Diagnostics                               - Request finished HTTP/1.1 GET http://localhost:5008/api/VesselType/description/Medium size vessele - 404 65 application/json; charset=utf-8 149.2184ms
+[17:10:24 INF] Microsoft.AspNetCore.Hosting.Diagnostics                               - Request starting HTTP/1.1 GET http://localhost:5008/api/VesselType/description/Medium size vessel - null null
+[17:10:24 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - ┌───────────────────────────────────────────────
+[17:10:24 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - │ HTTP GET /api/VesselType/description/Medium%20size%20vessel
+[17:10:24 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - │ From IP: 127.0.0.1
+[17:10:24 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - └───────────────────────────────────────────────
+[17:10:24 INF] Microsoft.AspNetCore.Routing.EndpointMiddleware                        - Executing endpoint 'SEM5_PI_WEBAPI.Controllers.VesselTypeController.GetByDescription (SEM5-PI-WEBAPI)'
+[17:10:24 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Route matched with {action = "GetByDescription", controller = "VesselType"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[System.Collections.Generic.List`1[SEM5_PI_WEBAPI.Domain.VesselsTypes.VesselTypeDto]]] GetByDescription(System.String) on controller SEM5_PI_WEBAPI.Controllers.VesselTypeController (SEM5-PI-WEBAPI).
+[17:10:24 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Executing action method SEM5_PI_WEBAPI.Controllers.VesselTypeController.GetByDescription (SEM5-PI-WEBAPI) - Validation state: "Valid"
+[17:10:24 INF] SEM5_PI_WEBAPI.Controllers.VesselTypeController                        - API Request: Fetching Vessel/s Type/s with Description = Medium size vessel
+[17:10:24 INF] SEM5_PI_WEBAPI.Domain.VesselsTypes.VesselTypeService                   - Business Domain: Request to fetch Vessel/s Type/s with Description = Medium size vessel
+[17:10:24 INF] Microsoft.EntityFrameworkCore.Database.Command                         - Executed DbCommand (0ms) [Parameters=[@__Trim_0='?' (Size = 18)], CommandType='"Text"', CommandTimeout='30']
+SELECT "v"."Id", "v"."Capacity", "v"."Description", "v"."MaxBays", "v"."MaxRows", "v"."MaxTiers", "v"."Name"
+FROM "VesselType" AS "v"
+WHERE trim(lower("v"."Description")) = @__Trim_0
+[17:10:24 INF] SEM5_PI_WEBAPI.Domain.VesselsTypes.VesselTypeService                   - Business Domain: Where found [2] Vessel/s Type/s with Description = Medium size vessel found successfully.
+[17:10:24 WRN] SEM5_PI_WEBAPI.Controllers.VesselTypeController                        - API Response (200): Vessel/s Type/s with requested Description where found: [{"Id":"c7798221-c758-47fd-a343-21d49b78c806","Name":"Panamax","Description":"Medium size vessel","MaxBays":20,"MaxRows":15,"MaxTiers":10,"Capacity":3000,"$type":"VesselTypeDto"},{"Id":"6ef8bcdf-0e7b-46e2-af0a-c03804c8731f","Name":"Panamaxx","Description":"Medium size vessel","MaxBays":20,"MaxRows":15,"MaxTiers":10,"Capacity":3000,"$type":"VesselTypeDto"}]
+[17:10:24 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Executed action method SEM5_PI_WEBAPI.Controllers.VesselTypeController.GetByDescription (SEM5-PI-WEBAPI), returned result Microsoft.AspNetCore.Mvc.OkObjectResult in 10.3095ms.
+[17:10:24 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ObjectResultExecutor           - Executing OkObjectResult, writing value of type 'System.Collections.Generic.List`1[[SEM5_PI_WEBAPI.Domain.VesselsTypes.VesselTypeDto, SEM5-PI-WEBAPI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+[17:10:24 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Executed action SEM5_PI_WEBAPI.Controllers.VesselTypeController.GetByDescription (SEM5-PI-WEBAPI) in 12.5508ms
+[17:10:24 INF] Microsoft.AspNetCore.Routing.EndpointMiddleware                        - Executed endpoint 'SEM5_PI_WEBAPI.Controllers.VesselTypeController.GetByDescription (SEM5-PI-WEBAPI)'
+[17:10:24 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - ──────│ ✔ COMPLETED GET /api/VesselType/description/Medium%20size%20vessel with 200 in 13.337 ms
+[17:10:24 INF] Microsoft.AspNetCore.Hosting.Diagnostics                               - Request finished HTTP/1.1 GET http://localhost:5008/api/VesselType/description/Medium size vessel - 200 314 application/json; charset=utf-8 15.404ms
+[17:10:38 INF] Microsoft.AspNetCore.Hosting.Diagnostics                               - Request starting HTTP/1.1 POST http://localhost:5008/api/VesselType - application/json 77
+[17:10:38 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - ┌───────────────────────────────────────────────
+[17:10:38 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - │ HTTP POST /api/VesselType
+[17:10:38 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - │ From IP: 127.0.0.1
+[17:10:38 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - └───────────────────────────────────────────────
+[17:10:38 INF] Microsoft.AspNetCore.Routing.EndpointMiddleware                        - Executing endpoint 'SEM5_PI_WEBAPI.Controllers.VesselTypeController.Create (SEM5-PI-WEBAPI)'
+[17:10:38 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Route matched with {action = "Create", controller = "VesselType"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[SEM5_PI_WEBAPI.Domain.VesselsTypes.VesselTypeDto]] Create(SEM5_PI_WEBAPI.Domain.VesselsTypes.CreatingVesselTypeDto) on controller SEM5_PI_WEBAPI.Controllers.VesselTypeController (SEM5-PI-WEBAPI).
+[17:10:38 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Executing action method SEM5_PI_WEBAPI.Controllers.VesselTypeController.Create (SEM5-PI-WEBAPI) - Validation state: "Valid"
+[17:10:38 INF] SEM5_PI_WEBAPI.Controllers.VesselTypeController                        - API Request: Add Vessel Type with body = {"Name":"Panamaxx3","Description":null,"MaxBays":20,"MaxRows":15,"MaxTiers":10,"$type":"CreatingVesselTypeDto"}
+[17:10:38 INF] SEM5_PI_WEBAPI.Domain.VesselsTypes.VesselTypeService                   - Business Domain: Request to add new Vessel Type with Name = Panamaxx3
+[17:10:38 INF] SEM5_PI_WEBAPI.Domain.VesselsTypes.VesselTypeService                   - Business Domain: Request to fetch all Vessel Types.
+[17:10:38 INF] Microsoft.EntityFrameworkCore.Database.Command                         - Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT "v"."Id", "v"."Capacity", "v"."Description", "v"."MaxBays", "v"."MaxRows", "v"."MaxTiers", "v"."Name"
+FROM "VesselType" AS "v"
+[17:10:38 INF] SEM5_PI_WEBAPI.Domain.VesselsTypes.VesselTypeService                   - Business Domain: Found [2] Vessel Types in database.
+[17:10:38 INF] SEM5_PI_WEBAPI.Domain.VesselsTypes.VesselTypeService                   - Business Domain: Returning [2] Vessel Types DTOs.
+[17:10:38 INF] Microsoft.EntityFrameworkCore.Database.Command                         - Executed DbCommand (0ms) [Parameters=[@p0='?' (Size = 36), @p1='?' (DbType = Single), @p2='?' (Size = 14), @p3='?' (DbType = Int32), @p4='?' (DbType = Int32), @p5='?' (DbType = Int32), @p6='?' (Size = 9)], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO "VesselType" ("Id", "Capacity", "Description", "MaxBays", "MaxRows", "MaxTiers", "Name")
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6);
+[17:10:38 INF] SEM5_PI_WEBAPI.Domain.VesselsTypes.VesselTypeService                   - Business Domain: Vessel Type created successfully with ID = 9b8058aa-72b0-4e99-b4fc-0972aa48bb4a
+[17:10:38 INF] SEM5_PI_WEBAPI.Controllers.VesselTypeController                        - API Response (201): VesselType created with ID = "9b8058aa-72b0-4e99-b4fc-0972aa48bb4a"
+[17:10:38 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Executed action method SEM5_PI_WEBAPI.Controllers.VesselTypeController.Create (SEM5-PI-WEBAPI), returned result Microsoft.AspNetCore.Mvc.CreatedAtActionResult in 7.245ms.
+[17:10:38 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ObjectResultExecutor           - Executing CreatedAtActionResult, writing value of type 'SEM5_PI_WEBAPI.Domain.VesselsTypes.VesselTypeDto'.
+[17:10:38 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Executed action SEM5_PI_WEBAPI.Controllers.VesselTypeController.Create (SEM5-PI-WEBAPI) in 10.2706ms
+[17:10:38 INF] Microsoft.AspNetCore.Routing.EndpointMiddleware                        - Executed endpoint 'SEM5_PI_WEBAPI.Controllers.VesselTypeController.Create (SEM5-PI-WEBAPI)'
+[17:10:38 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - ──────│ ✔ COMPLETED POST /api/VesselType with 201 in 11.266 ms
+[17:10:38 INF] Microsoft.AspNetCore.Hosting.Diagnostics                               - Request finished HTTP/1.1 POST http://localhost:5008/api/VesselType - 201 153 application/json; charset=utf-8 12.2717ms
+[17:10:46 INF] Microsoft.AspNetCore.Hosting.Diagnostics                               - Request starting HTTP/1.1 GET http://localhost:5008/api/VesselType/description/ - null null
+[17:10:46 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - ┌───────────────────────────────────────────────
+[17:10:46 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - │ HTTP GET /api/VesselType/description/
+[17:10:46 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - │ From IP: 127.0.0.1
+[17:10:46 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - └───────────────────────────────────────────────
+[17:10:46 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - ──────│ ✔ COMPLETED GET /api/VesselType/description/ with 404 in 0.149 ms
+[17:10:46 INF] Microsoft.AspNetCore.Hosting.Diagnostics                               - Request finished HTTP/1.1 GET http://localhost:5008/api/VesselType/description/ - 404 0 null 1.7237ms
+[17:10:46 INF] Microsoft.AspNetCore.Hosting.Diagnostics                               - Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://localhost:5008/api/VesselType/description/, Response status code: 404
+[17:11:05 INF] Microsoft.AspNetCore.Hosting.Diagnostics                               - Request starting HTTP/1.1 GET http://localhost:5008/api/VesselType - null null
+[17:11:05 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - ┌───────────────────────────────────────────────
+[17:11:05 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - │ HTTP GET /api/VesselType
+[17:11:05 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - │ From IP: 127.0.0.1
+[17:11:05 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - └───────────────────────────────────────────────
+[17:11:05 INF] Microsoft.AspNetCore.Routing.EndpointMiddleware                        - Executing endpoint 'SEM5_PI_WEBAPI.Controllers.VesselTypeController.GetAll (SEM5-PI-WEBAPI)'
+[17:11:05 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Route matched with {action = "GetAll", controller = "VesselType"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[System.Collections.Generic.List`1[SEM5_PI_WEBAPI.Domain.VesselsTypes.VesselTypeDto]]] GetAll() on controller SEM5_PI_WEBAPI.Controllers.VesselTypeController (SEM5-PI-WEBAPI).
+[17:11:05 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Executing action method SEM5_PI_WEBAPI.Controllers.VesselTypeController.GetAll (SEM5-PI-WEBAPI) - Validation state: "Valid"
+[17:11:05 INF] SEM5_PI_WEBAPI.Controllers.VesselTypeController                        - API Request: Get All Vessels Types on DataBase
+[17:11:05 INF] SEM5_PI_WEBAPI.Domain.VesselsTypes.VesselTypeService                   - Business Domain: Request to fetch all Vessel Types.
+[17:11:05 INF] Microsoft.EntityFrameworkCore.Database.Command                         - Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT "v"."Id", "v"."Capacity", "v"."Description", "v"."MaxBays", "v"."MaxRows", "v"."MaxTiers", "v"."Name"
+FROM "VesselType" AS "v"
+[17:11:05 INF] SEM5_PI_WEBAPI.Domain.VesselsTypes.VesselTypeService                   - Business Domain: Found [3] Vessel Types in database.
+[17:11:05 INF] SEM5_PI_WEBAPI.Domain.VesselsTypes.VesselTypeService                   - Business Domain: Returning [3] Vessel Types DTOs.
+[17:11:05 WRN] SEM5_PI_WEBAPI.Controllers.VesselTypeController                        - API Response (200): A total of 3 were found -> [{"Id":"c7798221-c758-47fd-a343-21d49b78c806","Name":"Panamax","Description":"Medium size vessel","MaxBays":20,"MaxRows":15,"MaxTiers":10,"Capacity":3000,"$type":"VesselTypeDto"},{"Id":"6ef8bcdf-0e7b-46e2-af0a-c03804c8731f","Name":"Panamaxx","Description":"Medium size vessel","MaxBays":20,"MaxRows":15,"MaxTiers":10,"Capacity":3000,"$type":"VesselTypeDto"},{"Id":"9b8058aa-72b0-4e99-b4fc-0972aa48bb4a","Name":"Panamaxx3","Description":"No description","MaxBays":20,"MaxRows":15,"MaxTiers":10,"Capacity":3000,"$type":"VesselTypeDto"}]
+[17:11:05 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Executed action method SEM5_PI_WEBAPI.Controllers.VesselTypeController.GetAll (SEM5-PI-WEBAPI), returned result Microsoft.AspNetCore.Mvc.OkObjectResult in 1.5307ms.
+[17:11:05 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ObjectResultExecutor           - Executing OkObjectResult, writing value of type 'System.Collections.Generic.List`1[[SEM5_PI_WEBAPI.Domain.VesselsTypes.VesselTypeDto, SEM5-PI-WEBAPI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+[17:11:05 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Executed action SEM5_PI_WEBAPI.Controllers.VesselTypeController.GetAll (SEM5-PI-WEBAPI) in 2.4165ms
+[17:11:05 INF] Microsoft.AspNetCore.Routing.EndpointMiddleware                        - Executed endpoint 'SEM5_PI_WEBAPI.Controllers.VesselTypeController.GetAll (SEM5-PI-WEBAPI)'
+[17:11:05 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - ──────│ ✔ COMPLETED GET /api/VesselType with 200 in 2.923 ms
+[17:11:05 INF] Microsoft.AspNetCore.Hosting.Diagnostics                               - Request finished HTTP/1.1 GET http://localhost:5008/api/VesselType - 200 468 application/json; charset=utf-8 3.8001ms
+[17:11:12 INF] Microsoft.AspNetCore.Hosting.Diagnostics                               - Request starting HTTP/1.1 GET http://localhost:5008/api/VesselType/description/No description - null null
+[17:11:12 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - ┌───────────────────────────────────────────────
+[17:11:12 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - │ HTTP GET /api/VesselType/description/No%20description
+[17:11:12 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - │ From IP: 127.0.0.1
+[17:11:12 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - └───────────────────────────────────────────────
+[17:11:12 INF] Microsoft.AspNetCore.Routing.EndpointMiddleware                        - Executing endpoint 'SEM5_PI_WEBAPI.Controllers.VesselTypeController.GetByDescription (SEM5-PI-WEBAPI)'
+[17:11:12 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Route matched with {action = "GetByDescription", controller = "VesselType"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[System.Collections.Generic.List`1[SEM5_PI_WEBAPI.Domain.VesselsTypes.VesselTypeDto]]] GetByDescription(System.String) on controller SEM5_PI_WEBAPI.Controllers.VesselTypeController (SEM5-PI-WEBAPI).
+[17:11:12 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Executing action method SEM5_PI_WEBAPI.Controllers.VesselTypeController.GetByDescription (SEM5-PI-WEBAPI) - Validation state: "Valid"
+[17:11:12 INF] SEM5_PI_WEBAPI.Controllers.VesselTypeController                        - API Request: Fetching Vessel/s Type/s with Description = No description
+[17:11:12 INF] SEM5_PI_WEBAPI.Domain.VesselsTypes.VesselTypeService                   - Business Domain: Request to fetch Vessel/s Type/s with Description = No description
+[17:11:12 INF] Microsoft.EntityFrameworkCore.Database.Command                         - Executed DbCommand (0ms) [Parameters=[@__Trim_0='?' (Size = 14)], CommandType='"Text"', CommandTimeout='30']
+SELECT "v"."Id", "v"."Capacity", "v"."Description", "v"."MaxBays", "v"."MaxRows", "v"."MaxTiers", "v"."Name"
+FROM "VesselType" AS "v"
+WHERE trim(lower("v"."Description")) = @__Trim_0
+[17:11:12 INF] SEM5_PI_WEBAPI.Domain.VesselsTypes.VesselTypeService                   - Business Domain: Where found [1] Vessel/s Type/s with Description = No description found successfully.
+[17:11:12 WRN] SEM5_PI_WEBAPI.Controllers.VesselTypeController                        - API Response (200): Vessel/s Type/s with requested Description where found: [{"Id":"9b8058aa-72b0-4e99-b4fc-0972aa48bb4a","Name":"Panamaxx3","Description":"No description","MaxBays":20,"MaxRows":15,"MaxTiers":10,"Capacity":3000,"$type":"VesselTypeDto"}]
+[17:11:12 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Executed action method SEM5_PI_WEBAPI.Controllers.VesselTypeController.GetByDescription (SEM5-PI-WEBAPI), returned result Microsoft.AspNetCore.Mvc.OkObjectResult in 3.2288ms.
+[17:11:12 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ObjectResultExecutor           - Executing OkObjectResult, writing value of type 'System.Collections.Generic.List`1[[SEM5_PI_WEBAPI.Domain.VesselsTypes.VesselTypeDto, SEM5-PI-WEBAPI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+[17:11:12 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Executed action SEM5_PI_WEBAPI.Controllers.VesselTypeController.GetByDescription (SEM5-PI-WEBAPI) in 5.361ms
+[17:11:12 INF] Microsoft.AspNetCore.Routing.EndpointMiddleware                        - Executed endpoint 'SEM5_PI_WEBAPI.Controllers.VesselTypeController.GetByDescription (SEM5-PI-WEBAPI)'
+[17:11:12 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - ──────│ ✔ COMPLETED GET /api/VesselType/description/No%20description with 200 in 6.099 ms
+[17:11:12 INF] Microsoft.AspNetCore.Hosting.Diagnostics                               - Request finished HTTP/1.1 GET http://localhost:5008/api/VesselType/description/No description - 200 155 application/json; charset=utf-8 7.0194ms
+[17:11:34 INF] Microsoft.AspNetCore.Hosting.Diagnostics                               - Request starting HTTP/1.1 GET http://localhost:5008/api/VesselType/description/Medium size vessele - null null
+[17:11:34 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - ┌───────────────────────────────────────────────
+[17:11:34 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - │ HTTP GET /api/VesselType/description/Medium%20size%20vessele
+[17:11:34 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - │ From IP: 127.0.0.1
+[17:11:34 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - └───────────────────────────────────────────────
+[17:11:34 INF] Microsoft.AspNetCore.Routing.EndpointMiddleware                        - Executing endpoint 'SEM5_PI_WEBAPI.Controllers.VesselTypeController.GetByDescription (SEM5-PI-WEBAPI)'
+[17:11:34 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Route matched with {action = "GetByDescription", controller = "VesselType"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[System.Collections.Generic.List`1[SEM5_PI_WEBAPI.Domain.VesselsTypes.VesselTypeDto]]] GetByDescription(System.String) on controller SEM5_PI_WEBAPI.Controllers.VesselTypeController (SEM5-PI-WEBAPI).
+[17:11:34 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Executing action method SEM5_PI_WEBAPI.Controllers.VesselTypeController.GetByDescription (SEM5-PI-WEBAPI) - Validation state: "Valid"
+[17:11:34 INF] SEM5_PI_WEBAPI.Controllers.VesselTypeController                        - API Request: Fetching Vessel/s Type/s with Description = Medium size vessele
+[17:11:34 INF] SEM5_PI_WEBAPI.Domain.VesselsTypes.VesselTypeService                   - Business Domain: Request to fetch Vessel/s Type/s with Description = Medium size vessele
+[17:11:34 INF] Microsoft.EntityFrameworkCore.Database.Command                         - Executed DbCommand (0ms) [Parameters=[@__Trim_0='?' (Size = 19)], CommandType='"Text"', CommandTimeout='30']
+SELECT "v"."Id", "v"."Capacity", "v"."Description", "v"."MaxBays", "v"."MaxRows", "v"."MaxTiers", "v"."Name"
+FROM "VesselType" AS "v"
+WHERE trim(lower("v"."Description")) = @__Trim_0
+[17:11:34 WRN] SEM5_PI_WEBAPI.Controllers.VesselTypeController                        - API Error (404): Vessel/s Type/s with Description = Medium size vessele -> NOT FOUND
+[17:11:34 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Executed action method SEM5_PI_WEBAPI.Controllers.VesselTypeController.GetByDescription (SEM5-PI-WEBAPI), returned result Microsoft.AspNetCore.Mvc.NotFoundObjectResult in 1.829ms.
+[17:11:34 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ObjectResultExecutor           - Executing NotFoundObjectResult, writing value of type 'System.String'.
+[17:11:34 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Executed action SEM5_PI_WEBAPI.Controllers.VesselTypeController.GetByDescription (SEM5-PI-WEBAPI) in 3.3808ms
+[17:11:34 INF] Microsoft.AspNetCore.Routing.EndpointMiddleware                        - Executed endpoint 'SEM5_PI_WEBAPI.Controllers.VesselTypeController.GetByDescription (SEM5-PI-WEBAPI)'
+[17:11:34 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - ──────│ ✔ COMPLETED GET /api/VesselType/description/Medium%20size%20vessele with 404 in 3.916 ms
+[17:11:34 INF] Microsoft.AspNetCore.Hosting.Diagnostics                               - Request finished HTTP/1.1 GET http://localhost:5008/api/VesselType/description/Medium size vessele - 404 65 application/json; charset=utf-8 5.0433ms
+[17:12:17 INF] Microsoft.AspNetCore.Hosting.Diagnostics                               - Request starting HTTP/1.1 GET http://localhost:5008/api/VesselType/name/Panamax - null null
+[17:12:17 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - ┌───────────────────────────────────────────────
+[17:12:17 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - │ HTTP GET /api/VesselType/name/Panamax
+[17:12:17 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - │ From IP: 127.0.0.1
+[17:12:17 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - └───────────────────────────────────────────────
+[17:12:17 INF] Microsoft.AspNetCore.Routing.EndpointMiddleware                        - Executing endpoint 'SEM5_PI_WEBAPI.Controllers.VesselTypeController.GetByName (SEM5-PI-WEBAPI)'
+[17:12:17 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Route matched with {action = "GetByName", controller = "VesselType"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[SEM5_PI_WEBAPI.Domain.VesselsTypes.VesselTypeDto]] GetByName(System.String) on controller SEM5_PI_WEBAPI.Controllers.VesselTypeController (SEM5-PI-WEBAPI).
+[17:12:17 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Executing action method SEM5_PI_WEBAPI.Controllers.VesselTypeController.GetByName (SEM5-PI-WEBAPI) - Validation state: "Valid"
+[17:12:17 INF] SEM5_PI_WEBAPI.Controllers.VesselTypeController                        - API Request: Fetching Vessel Type with Name = Panamax
+[17:12:17 INF] SEM5_PI_WEBAPI.Domain.VesselsTypes.VesselTypeService                   - Business Domain: Request to fetch Vessel Type with ID = Panamax
+[17:12:17 INF] Microsoft.EntityFrameworkCore.Database.Command                         - Executed DbCommand (0ms) [Parameters=[@__Trim_0='?' (Size = 7)], CommandType='"Text"', CommandTimeout='30']
+SELECT "v"."Id", "v"."Capacity", "v"."Description", "v"."MaxBays", "v"."MaxRows", "v"."MaxTiers", "v"."Name"
+FROM "VesselType" AS "v"
+WHERE trim(lower("v"."Name")) = @__Trim_0
+LIMIT 1
+[17:12:17 INF] SEM5_PI_WEBAPI.Domain.VesselsTypes.VesselTypeService                   - Business Domain: Vessel Type with Name = Panamax found successfully.
+[17:12:17 WRN] SEM5_PI_WEBAPI.Controllers.VesselTypeController                        - API Response (200): Vessel Type with Name = Panamax -> FOUND
+[17:12:17 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Executed action method SEM5_PI_WEBAPI.Controllers.VesselTypeController.GetByName (SEM5-PI-WEBAPI), returned result Microsoft.AspNetCore.Mvc.OkObjectResult in 42.7831ms.
+[17:12:17 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ObjectResultExecutor           - Executing OkObjectResult, writing value of type 'SEM5_PI_WEBAPI.Domain.VesselsTypes.VesselTypeDto'.
+[17:12:17 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Executed action SEM5_PI_WEBAPI.Controllers.VesselTypeController.GetByName (SEM5-PI-WEBAPI) in 45.896ms
+[17:12:17 INF] Microsoft.AspNetCore.Routing.EndpointMiddleware                        - Executed endpoint 'SEM5_PI_WEBAPI.Controllers.VesselTypeController.GetByName (SEM5-PI-WEBAPI)'
+[17:12:17 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - ──────│ ✔ COMPLETED GET /api/VesselType/name/Panamax with 200 in 57.708 ms
+[17:12:17 INF] Microsoft.AspNetCore.Hosting.Diagnostics                               - Request finished HTTP/1.1 GET http://localhost:5008/api/VesselType/name/Panamax - 200 155 application/json; charset=utf-8 60.2963ms
+[17:12:23 INF] Microsoft.AspNetCore.Hosting.Diagnostics                               - Request starting HTTP/1.1 GET http://localhost:5008/api/VesselType/name/Panamaxx - null null
+[17:12:23 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - ┌───────────────────────────────────────────────
+[17:12:23 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - │ HTTP GET /api/VesselType/name/Panamaxx
+[17:12:23 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - │ From IP: 127.0.0.1
+[17:12:23 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - └───────────────────────────────────────────────
+[17:12:23 INF] Microsoft.AspNetCore.Routing.EndpointMiddleware                        - Executing endpoint 'SEM5_PI_WEBAPI.Controllers.VesselTypeController.GetByName (SEM5-PI-WEBAPI)'
+[17:12:23 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Route matched with {action = "GetByName", controller = "VesselType"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[SEM5_PI_WEBAPI.Domain.VesselsTypes.VesselTypeDto]] GetByName(System.String) on controller SEM5_PI_WEBAPI.Controllers.VesselTypeController (SEM5-PI-WEBAPI).
+[17:12:23 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Executing action method SEM5_PI_WEBAPI.Controllers.VesselTypeController.GetByName (SEM5-PI-WEBAPI) - Validation state: "Valid"
+[17:12:23 INF] SEM5_PI_WEBAPI.Controllers.VesselTypeController                        - API Request: Fetching Vessel Type with Name = Panamaxx
+[17:12:23 INF] SEM5_PI_WEBAPI.Domain.VesselsTypes.VesselTypeService                   - Business Domain: Request to fetch Vessel Type with ID = Panamaxx
+[17:12:23 INF] Microsoft.EntityFrameworkCore.Database.Command                         - Executed DbCommand (0ms) [Parameters=[@__Trim_0='?' (Size = 8)], CommandType='"Text"', CommandTimeout='30']
+SELECT "v"."Id", "v"."Capacity", "v"."Description", "v"."MaxBays", "v"."MaxRows", "v"."MaxTiers", "v"."Name"
+FROM "VesselType" AS "v"
+WHERE trim(lower("v"."Name")) = @__Trim_0
+LIMIT 1
+[17:12:23 INF] SEM5_PI_WEBAPI.Domain.VesselsTypes.VesselTypeService                   - Business Domain: Vessel Type with Name = Panamaxx found successfully.
+[17:12:23 WRN] SEM5_PI_WEBAPI.Controllers.VesselTypeController                        - API Response (200): Vessel Type with Name = Panamaxx -> FOUND
+[17:12:23 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Executed action method SEM5_PI_WEBAPI.Controllers.VesselTypeController.GetByName (SEM5-PI-WEBAPI), returned result Microsoft.AspNetCore.Mvc.OkObjectResult in 2.6983ms.
+[17:12:23 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ObjectResultExecutor           - Executing OkObjectResult, writing value of type 'SEM5_PI_WEBAPI.Domain.VesselsTypes.VesselTypeDto'.
+[17:12:23 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Executed action SEM5_PI_WEBAPI.Controllers.VesselTypeController.GetByName (SEM5-PI-WEBAPI) in 4.0754ms
+[17:12:23 INF] Microsoft.AspNetCore.Routing.EndpointMiddleware                        - Executed endpoint 'SEM5_PI_WEBAPI.Controllers.VesselTypeController.GetByName (SEM5-PI-WEBAPI)'
+[17:12:23 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - ──────│ ✔ COMPLETED GET /api/VesselType/name/Panamaxx with 200 in 4.617 ms
+[17:12:23 INF] Microsoft.AspNetCore.Hosting.Diagnostics                               - Request finished HTTP/1.1 GET http://localhost:5008/api/VesselType/name/Panamaxx - 200 156 application/json; charset=utf-8 5.5685ms
+[17:12:28 INF] Microsoft.AspNetCore.Hosting.Diagnostics                               - Request starting HTTP/1.1 GET http://localhost:5008/api/VesselType/name/Panamaxx3 - null null
+[17:12:28 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - ┌───────────────────────────────────────────────
+[17:12:28 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - │ HTTP GET /api/VesselType/name/Panamaxx3
+[17:12:28 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - │ From IP: 127.0.0.1
+[17:12:28 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - └───────────────────────────────────────────────
+[17:12:28 INF] Microsoft.AspNetCore.Routing.EndpointMiddleware                        - Executing endpoint 'SEM5_PI_WEBAPI.Controllers.VesselTypeController.GetByName (SEM5-PI-WEBAPI)'
+[17:12:28 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Route matched with {action = "GetByName", controller = "VesselType"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[SEM5_PI_WEBAPI.Domain.VesselsTypes.VesselTypeDto]] GetByName(System.String) on controller SEM5_PI_WEBAPI.Controllers.VesselTypeController (SEM5-PI-WEBAPI).
+[17:12:28 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Executing action method SEM5_PI_WEBAPI.Controllers.VesselTypeController.GetByName (SEM5-PI-WEBAPI) - Validation state: "Valid"
+[17:12:28 INF] SEM5_PI_WEBAPI.Controllers.VesselTypeController                        - API Request: Fetching Vessel Type with Name = Panamaxx3
+[17:12:28 INF] SEM5_PI_WEBAPI.Domain.VesselsTypes.VesselTypeService                   - Business Domain: Request to fetch Vessel Type with ID = Panamaxx3
+[17:12:28 INF] Microsoft.EntityFrameworkCore.Database.Command                         - Executed DbCommand (0ms) [Parameters=[@__Trim_0='?' (Size = 9)], CommandType='"Text"', CommandTimeout='30']
+SELECT "v"."Id", "v"."Capacity", "v"."Description", "v"."MaxBays", "v"."MaxRows", "v"."MaxTiers", "v"."Name"
+FROM "VesselType" AS "v"
+WHERE trim(lower("v"."Name")) = @__Trim_0
+LIMIT 1
+[17:12:28 INF] SEM5_PI_WEBAPI.Domain.VesselsTypes.VesselTypeService                   - Business Domain: Vessel Type with Name = Panamaxx3 found successfully.
+[17:12:28 WRN] SEM5_PI_WEBAPI.Controllers.VesselTypeController                        - API Response (200): Vessel Type with Name = Panamaxx3 -> FOUND
+[17:12:28 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Executed action method SEM5_PI_WEBAPI.Controllers.VesselTypeController.GetByName (SEM5-PI-WEBAPI), returned result Microsoft.AspNetCore.Mvc.OkObjectResult in 1.7407ms.
+[17:12:28 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ObjectResultExecutor           - Executing OkObjectResult, writing value of type 'SEM5_PI_WEBAPI.Domain.VesselsTypes.VesselTypeDto'.
+[17:12:28 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Executed action SEM5_PI_WEBAPI.Controllers.VesselTypeController.GetByName (SEM5-PI-WEBAPI) in 3.3035ms
+[17:12:28 INF] Microsoft.AspNetCore.Routing.EndpointMiddleware                        - Executed endpoint 'SEM5_PI_WEBAPI.Controllers.VesselTypeController.GetByName (SEM5-PI-WEBAPI)'
+[17:12:28 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - ──────│ ✔ COMPLETED GET /api/VesselType/name/Panamaxx3 with 200 in 4.926 ms
+[17:12:28 INF] Microsoft.AspNetCore.Hosting.Diagnostics                               - Request finished HTTP/1.1 GET http://localhost:5008/api/VesselType/name/Panamaxx3 - 200 153 application/json; charset=utf-8 6.4501ms
+[17:12:31 INF] Microsoft.AspNetCore.Hosting.Diagnostics                               - Request starting HTTP/1.1 GET http://localhost:5008/api/VesselType/name/Panamaxx33 - null null
+[17:12:31 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - ┌───────────────────────────────────────────────
+[17:12:31 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - │ HTTP GET /api/VesselType/name/Panamaxx33
+[17:12:31 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - │ From IP: 127.0.0.1
+[17:12:31 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - └───────────────────────────────────────────────
+[17:12:31 INF] Microsoft.AspNetCore.Routing.EndpointMiddleware                        - Executing endpoint 'SEM5_PI_WEBAPI.Controllers.VesselTypeController.GetByName (SEM5-PI-WEBAPI)'
+[17:12:31 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Route matched with {action = "GetByName", controller = "VesselType"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[SEM5_PI_WEBAPI.Domain.VesselsTypes.VesselTypeDto]] GetByName(System.String) on controller SEM5_PI_WEBAPI.Controllers.VesselTypeController (SEM5-PI-WEBAPI).
+[17:12:31 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Executing action method SEM5_PI_WEBAPI.Controllers.VesselTypeController.GetByName (SEM5-PI-WEBAPI) - Validation state: "Valid"
+[17:12:31 INF] SEM5_PI_WEBAPI.Controllers.VesselTypeController                        - API Request: Fetching Vessel Type with Name = Panamaxx33
+[17:12:31 INF] SEM5_PI_WEBAPI.Domain.VesselsTypes.VesselTypeService                   - Business Domain: Request to fetch Vessel Type with ID = Panamaxx33
+[17:12:31 INF] Microsoft.EntityFrameworkCore.Database.Command                         - Executed DbCommand (0ms) [Parameters=[@__Trim_0='?' (Size = 10)], CommandType='"Text"', CommandTimeout='30']
+SELECT "v"."Id", "v"."Capacity", "v"."Description", "v"."MaxBays", "v"."MaxRows", "v"."MaxTiers", "v"."Name"
+FROM "VesselType" AS "v"
+WHERE trim(lower("v"."Name")) = @__Trim_0
+LIMIT 1
+[17:12:31 WRN] SEM5_PI_WEBAPI.Controllers.VesselTypeController                        - API Error (404): Vessel Type with Name = Panamaxx33 -> NOT FOUND
+[17:12:31 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Executed action method SEM5_PI_WEBAPI.Controllers.VesselTypeController.GetByName (SEM5-PI-WEBAPI), returned result Microsoft.AspNetCore.Mvc.NotFoundObjectResult in 2.5702ms.
+[17:12:31 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ObjectResultExecutor           - Executing NotFoundObjectResult, writing value of type 'System.String'.
+[17:12:31 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Executed action SEM5_PI_WEBAPI.Controllers.VesselTypeController.GetByName (SEM5-PI-WEBAPI) in 4.6968ms
+[17:12:31 INF] Microsoft.AspNetCore.Routing.EndpointMiddleware                        - Executed endpoint 'SEM5_PI_WEBAPI.Controllers.VesselTypeController.GetByName (SEM5-PI-WEBAPI)'
+[17:12:31 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - ──────│ ✔ COMPLETED GET /api/VesselType/name/Panamaxx33 with 404 in 5.299 ms
+[17:12:31 INF] Microsoft.AspNetCore.Hosting.Diagnostics                               - Request finished HTTP/1.1 GET http://localhost:5008/api/VesselType/name/Panamaxx33 - 404 45 application/json; charset=utf-8 5.9254ms
+[17:12:42 INF] Microsoft.Hosting.Lifetime                                             - Application is shutting down...
+[18:09:32 INF]  - Starting web host
+[18:09:32 INF] Microsoft.Hosting.Lifetime                                             - Now listening on: http://localhost:5008
+[18:09:32 INF] Microsoft.Hosting.Lifetime                                             - Application started. Press Ctrl+C to shut down.
+[18:09:32 INF] Microsoft.Hosting.Lifetime                                             - Hosting environment: Development
+[18:09:32 INF] Microsoft.Hosting.Lifetime                                             - Content root path: /Users/jorgerodriguez/Desktop/Universidade/3_ano/1_Semestre/LEI-SEM5-PI-2025-26-3DJ-03/SEM5-PI-WEBAPI
+[18:10:44 INF] Microsoft.AspNetCore.Hosting.Diagnostics                               - Request starting HTTP/1.1 GET http://localhost:5008/api/vesseltype/filter?name=pan - null null
+[18:10:44 WRN] Microsoft.AspNetCore.HttpsPolicy.HttpsRedirectionMiddleware            - Failed to determine the https port for redirect.
+[18:10:44 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - ┌───────────────────────────────────────────────
+[18:10:44 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - │ HTTP GET /api/vesseltype/filter
+[18:10:44 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - │ From IP: 127.0.0.1
+[18:10:44 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - └───────────────────────────────────────────────
+[18:10:44 INF] Microsoft.AspNetCore.Routing.EndpointMiddleware                        - Executing endpoint 'SEM5_PI_WEBAPI.Controllers.VesselTypeController.Filter (SEM5-PI-WEBAPI)'
+[18:10:44 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Route matched with {action = "Filter", controller = "VesselType"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[System.Collections.Generic.List`1[SEM5_PI_WEBAPI.Domain.VesselsTypes.VesselTypeDto]]] Filter(System.String, System.String, System.String) on controller SEM5_PI_WEBAPI.Controllers.VesselTypeController (SEM5-PI-WEBAPI).
+[18:10:44 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Executing action method SEM5_PI_WEBAPI.Controllers.VesselTypeController.Filter (SEM5-PI-WEBAPI) - Validation state: "Valid"
+[18:10:44 INF] SEM5_PI_WEBAPI.Controllers.VesselTypeController                        - API Request: Filtering VesselTypes with filters -> Name = pan, Description = null, Query = null
+[18:10:44 INF] SEM5_PI_WEBAPI.Domain.VesselsTypes.VesselTypeService                   - Business Domain: Filtering VesselTypes with filters -> Name = pan, Description = null, Query = null
+[18:10:45 INF] Microsoft.EntityFrameworkCore.Database.Command                         - Executed DbCommand (13ms) [Parameters=[@__normalizedName_0='?' (Size = 3)], CommandType='"Text"', CommandTimeout='30']
+SELECT "v"."Id", "v"."Capacity", "v"."Description", "v"."MaxBays", "v"."MaxRows", "v"."MaxTiers", "v"."Name"
+FROM "VesselType" AS "v"
+WHERE instr(lower("v"."Name"), @__normalizedName_0) > 0
+[18:10:45 INF] SEM5_PI_WEBAPI.Controllers.VesselTypeController                        - API Response (200): Found 3 VesselTypes -> [{"Id":"c7798221-c758-47fd-a343-21d49b78c806","Name":"Panamax","Description":"Medium size vessel","MaxBays":20,"MaxRows":15,"MaxTiers":10,"Capacity":3000,"$type":"VesselTypeDto"},{"Id":"6ef8bcdf-0e7b-46e2-af0a-c03804c8731f","Name":"Panamaxx","Description":"Medium size vessel","MaxBays":20,"MaxRows":15,"MaxTiers":10,"Capacity":3000,"$type":"VesselTypeDto"},{"Id":"9b8058aa-72b0-4e99-b4fc-0972aa48bb4a","Name":"Panamaxx3","Description":"No description","MaxBays":20,"MaxRows":15,"MaxTiers":10,"Capacity":3000,"$type":"VesselTypeDto"}]
+[18:10:45 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Executed action method SEM5_PI_WEBAPI.Controllers.VesselTypeController.Filter (SEM5-PI-WEBAPI), returned result Microsoft.AspNetCore.Mvc.OkObjectResult in 1357.4462ms.
+[18:10:45 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ObjectResultExecutor           - Executing OkObjectResult, writing value of type 'System.Collections.Generic.List`1[[SEM5_PI_WEBAPI.Domain.VesselsTypes.VesselTypeDto, SEM5-PI-WEBAPI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+[18:10:46 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Executed action SEM5_PI_WEBAPI.Controllers.VesselTypeController.Filter (SEM5-PI-WEBAPI) in 1712.0555ms
+[18:10:46 INF] Microsoft.AspNetCore.Routing.EndpointMiddleware                        - Executed endpoint 'SEM5_PI_WEBAPI.Controllers.VesselTypeController.Filter (SEM5-PI-WEBAPI)'
+[18:10:46 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - ──────│ ✔ COMPLETED GET /api/vesseltype/filter with 200 in 1747.64 ms
+[18:10:46 INF] Microsoft.AspNetCore.Hosting.Diagnostics                               - Request finished HTTP/1.1 GET http://localhost:5008/api/vesseltype/filter?name=pan - 200 468 application/json; charset=utf-8 1783.9574ms
+[18:11:18 INF] Microsoft.AspNetCore.Hosting.Diagnostics                               - Request starting HTTP/1.1 GET http://localhost:5008/api/vesseltype/filter?description=medium - null null
+[18:11:18 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - ┌───────────────────────────────────────────────
+[18:11:18 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - │ HTTP GET /api/vesseltype/filter
+[18:11:18 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - │ From IP: 127.0.0.1
+[18:11:18 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - └───────────────────────────────────────────────
+[18:11:18 INF] Microsoft.AspNetCore.Routing.EndpointMiddleware                        - Executing endpoint 'SEM5_PI_WEBAPI.Controllers.VesselTypeController.Filter (SEM5-PI-WEBAPI)'
+[18:11:18 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Route matched with {action = "Filter", controller = "VesselType"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[System.Collections.Generic.List`1[SEM5_PI_WEBAPI.Domain.VesselsTypes.VesselTypeDto]]] Filter(System.String, System.String, System.String) on controller SEM5_PI_WEBAPI.Controllers.VesselTypeController (SEM5-PI-WEBAPI).
+[18:11:18 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Executing action method SEM5_PI_WEBAPI.Controllers.VesselTypeController.Filter (SEM5-PI-WEBAPI) - Validation state: "Valid"
+[18:11:18 INF] SEM5_PI_WEBAPI.Controllers.VesselTypeController                        - API Request: Filtering VesselTypes with filters -> Name = null, Description = medium, Query = null
+[18:11:18 INF] SEM5_PI_WEBAPI.Domain.VesselsTypes.VesselTypeService                   - Business Domain: Filtering VesselTypes with filters -> Name = null, Description = medium, Query = null
+[18:11:18 INF] Microsoft.EntityFrameworkCore.Database.Command                         - Executed DbCommand (0ms) [Parameters=[@__normalizedDesc_0='?' (Size = 6)], CommandType='"Text"', CommandTimeout='30']
+SELECT "v"."Id", "v"."Capacity", "v"."Description", "v"."MaxBays", "v"."MaxRows", "v"."MaxTiers", "v"."Name"
+FROM "VesselType" AS "v"
+WHERE instr(lower("v"."Description"), @__normalizedDesc_0) > 0
+[18:11:18 INF] SEM5_PI_WEBAPI.Controllers.VesselTypeController                        - API Response (200): Found 2 VesselTypes -> [{"Id":"c7798221-c758-47fd-a343-21d49b78c806","Name":"Panamax","Description":"Medium size vessel","MaxBays":20,"MaxRows":15,"MaxTiers":10,"Capacity":3000,"$type":"VesselTypeDto"},{"Id":"6ef8bcdf-0e7b-46e2-af0a-c03804c8731f","Name":"Panamaxx","Description":"Medium size vessel","MaxBays":20,"MaxRows":15,"MaxTiers":10,"Capacity":3000,"$type":"VesselTypeDto"}]
+[18:11:18 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Executed action method SEM5_PI_WEBAPI.Controllers.VesselTypeController.Filter (SEM5-PI-WEBAPI), returned result Microsoft.AspNetCore.Mvc.OkObjectResult in 20.164ms.
+[18:11:18 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ObjectResultExecutor           - Executing OkObjectResult, writing value of type 'System.Collections.Generic.List`1[[SEM5_PI_WEBAPI.Domain.VesselsTypes.VesselTypeDto, SEM5-PI-WEBAPI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+[18:11:18 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Executed action SEM5_PI_WEBAPI.Controllers.VesselTypeController.Filter (SEM5-PI-WEBAPI) in 23.2518ms
+[18:11:18 INF] Microsoft.AspNetCore.Routing.EndpointMiddleware                        - Executed endpoint 'SEM5_PI_WEBAPI.Controllers.VesselTypeController.Filter (SEM5-PI-WEBAPI)'
+[18:11:18 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - ──────│ ✔ COMPLETED GET /api/vesseltype/filter with 200 in 23.986 ms
+[18:11:18 INF] Microsoft.AspNetCore.Hosting.Diagnostics                               - Request finished HTTP/1.1 GET http://localhost:5008/api/vesseltype/filter?description=medium - 200 314 application/json; charset=utf-8 27.388ms
+[18:11:33 INF] Microsoft.AspNetCore.Hosting.Diagnostics                               - Request starting HTTP/1.1 GET http://localhost:5008/api/vesseltype/filter?query=feed - null null
+[18:11:33 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - ┌───────────────────────────────────────────────
+[18:11:33 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - │ HTTP GET /api/vesseltype/filter
+[18:11:33 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - │ From IP: 127.0.0.1
+[18:11:33 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - └───────────────────────────────────────────────
+[18:11:33 INF] Microsoft.AspNetCore.Routing.EndpointMiddleware                        - Executing endpoint 'SEM5_PI_WEBAPI.Controllers.VesselTypeController.Filter (SEM5-PI-WEBAPI)'
+[18:11:33 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Route matched with {action = "Filter", controller = "VesselType"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[System.Collections.Generic.List`1[SEM5_PI_WEBAPI.Domain.VesselsTypes.VesselTypeDto]]] Filter(System.String, System.String, System.String) on controller SEM5_PI_WEBAPI.Controllers.VesselTypeController (SEM5-PI-WEBAPI).
+[18:11:33 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Executing action method SEM5_PI_WEBAPI.Controllers.VesselTypeController.Filter (SEM5-PI-WEBAPI) - Validation state: "Valid"
+[18:11:33 INF] SEM5_PI_WEBAPI.Controllers.VesselTypeController                        - API Request: Filtering VesselTypes with filters -> Name = null, Description = null, Query = feed
+[18:11:33 INF] SEM5_PI_WEBAPI.Domain.VesselsTypes.VesselTypeService                   - Business Domain: Filtering VesselTypes with filters -> Name = null, Description = null, Query = feed
+[18:11:33 INF] Microsoft.EntityFrameworkCore.Database.Command                         - Executed DbCommand (0ms) [Parameters=[@__normalizedQuery_0='?' (Size = 4)], CommandType='"Text"', CommandTimeout='30']
+SELECT "v"."Id", "v"."Capacity", "v"."Description", "v"."MaxBays", "v"."MaxRows", "v"."MaxTiers", "v"."Name"
+FROM "VesselType" AS "v"
+WHERE instr(lower("v"."Name"), @__normalizedQuery_0) > 0 OR instr(lower("v"."Description"), @__normalizedQuery_0) > 0
+[18:11:33 INF] SEM5_PI_WEBAPI.Controllers.VesselTypeController                        - API Response (200): Found 0 VesselTypes -> []
+[18:11:33 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Executed action method SEM5_PI_WEBAPI.Controllers.VesselTypeController.Filter (SEM5-PI-WEBAPI), returned result Microsoft.AspNetCore.Mvc.OkObjectResult in 92.3121ms.
+[18:11:33 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ObjectResultExecutor           - Executing OkObjectResult, writing value of type 'System.Collections.Generic.List`1[[SEM5_PI_WEBAPI.Domain.VesselsTypes.VesselTypeDto, SEM5-PI-WEBAPI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+[18:11:33 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Executed action SEM5_PI_WEBAPI.Controllers.VesselTypeController.Filter (SEM5-PI-WEBAPI) in 100.2713ms
+[18:11:33 INF] Microsoft.AspNetCore.Routing.EndpointMiddleware                        - Executed endpoint 'SEM5_PI_WEBAPI.Controllers.VesselTypeController.Filter (SEM5-PI-WEBAPI)'
+[18:11:33 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - ──────│ ✔ COMPLETED GET /api/vesseltype/filter with 200 in 101.079 ms
+[18:11:33 INF] Microsoft.AspNetCore.Hosting.Diagnostics                               - Request finished HTTP/1.1 GET http://localhost:5008/api/vesseltype/filter?query=feed - 200 2 application/json; charset=utf-8 102.306ms
+[18:17:21 INF] Microsoft.AspNetCore.Hosting.Diagnostics                               - Request starting HTTP/1.1 GET http://localhost:5008/api/vesseltype/filter?name=pan - null null
+[18:17:21 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - ┌───────────────────────────────────────────────
+[18:17:21 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - │ HTTP GET /api/vesseltype/filter
+[18:17:21 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - │ From IP: 127.0.0.1
+[18:17:21 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - └───────────────────────────────────────────────
+[18:17:21 INF] Microsoft.AspNetCore.Routing.EndpointMiddleware                        - Executing endpoint 'SEM5_PI_WEBAPI.Controllers.VesselTypeController.Filter (SEM5-PI-WEBAPI)'
+[18:17:21 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Route matched with {action = "Filter", controller = "VesselType"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[System.Collections.Generic.List`1[SEM5_PI_WEBAPI.Domain.VesselsTypes.VesselTypeDto]]] Filter(System.String, System.String, System.String) on controller SEM5_PI_WEBAPI.Controllers.VesselTypeController (SEM5-PI-WEBAPI).
+[18:17:21 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Executing action method SEM5_PI_WEBAPI.Controllers.VesselTypeController.Filter (SEM5-PI-WEBAPI) - Validation state: "Valid"
+[18:17:21 INF] SEM5_PI_WEBAPI.Controllers.VesselTypeController                        - API Request: Filtering Vessel/s Type/s with filters -> Name = pan, Description = null, Query = null
+[18:17:21 INF] SEM5_PI_WEBAPI.Domain.VesselsTypes.VesselTypeService                   - Business Domain: Filtering VesselTypes with filters -> Name = pan, Description = null, Query = null
+[18:17:21 INF] Microsoft.EntityFrameworkCore.Database.Command                         - Executed DbCommand (0ms) [Parameters=[@__normalizedName_0='?' (Size = 3)], CommandType='"Text"', CommandTimeout='30']
+SELECT "v"."Id", "v"."Capacity", "v"."Description", "v"."MaxBays", "v"."MaxRows", "v"."MaxTiers", "v"."Name"
+FROM "VesselType" AS "v"
+WHERE instr(lower("v"."Name"), @__normalizedName_0) > 0
+[18:17:21 INF] SEM5_PI_WEBAPI.Domain.VesselsTypes.VesselTypeService                   - Business Domain: Where found [3] Vessel/s Type/s with filters -> Name = pan, Description = null, Query = null
+[18:17:21 INF] SEM5_PI_WEBAPI.Controllers.VesselTypeController                        - API Response (200): Found 3 Vessel/s Type/s -> [{"Id":"c7798221-c758-47fd-a343-21d49b78c806","Name":"Panamax","Description":"Medium size vessel","MaxBays":20,"MaxRows":15,"MaxTiers":10,"Capacity":3000,"$type":"VesselTypeDto"},{"Id":"6ef8bcdf-0e7b-46e2-af0a-c03804c8731f","Name":"Panamaxx","Description":"Medium size vessel","MaxBays":20,"MaxRows":15,"MaxTiers":10,"Capacity":3000,"$type":"VesselTypeDto"},{"Id":"9b8058aa-72b0-4e99-b4fc-0972aa48bb4a","Name":"Panamaxx3","Description":"No description","MaxBays":20,"MaxRows":15,"MaxTiers":10,"Capacity":3000,"$type":"VesselTypeDto"}]
+[18:17:21 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Executed action method SEM5_PI_WEBAPI.Controllers.VesselTypeController.Filter (SEM5-PI-WEBAPI), returned result Microsoft.AspNetCore.Mvc.OkObjectResult in 10.094ms.
+[18:17:21 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ObjectResultExecutor           - Executing OkObjectResult, writing value of type 'System.Collections.Generic.List`1[[SEM5_PI_WEBAPI.Domain.VesselsTypes.VesselTypeDto, SEM5-PI-WEBAPI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+[18:17:21 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Executed action SEM5_PI_WEBAPI.Controllers.VesselTypeController.Filter (SEM5-PI-WEBAPI) in 12.2526ms
+[18:17:21 INF] Microsoft.AspNetCore.Routing.EndpointMiddleware                        - Executed endpoint 'SEM5_PI_WEBAPI.Controllers.VesselTypeController.Filter (SEM5-PI-WEBAPI)'
+[18:17:21 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - ──────│ ✔ COMPLETED GET /api/vesseltype/filter with 200 in 20.402 ms
+[18:17:21 INF] Microsoft.AspNetCore.Hosting.Diagnostics                               - Request finished HTTP/1.1 GET http://localhost:5008/api/vesseltype/filter?name=pan - 200 468 application/json; charset=utf-8 21.5098ms
+[18:17:42 INF] Microsoft.AspNetCore.Hosting.Diagnostics                               - Request starting HTTP/1.1 GET http://localhost:5008/api/vesseltype/filter?description=medium - null null
+[18:17:42 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - ┌───────────────────────────────────────────────
+[18:17:42 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - │ HTTP GET /api/vesseltype/filter
+[18:17:42 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - │ From IP: 127.0.0.1
+[18:17:42 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - └───────────────────────────────────────────────
+[18:17:42 INF] Microsoft.AspNetCore.Routing.EndpointMiddleware                        - Executing endpoint 'SEM5_PI_WEBAPI.Controllers.VesselTypeController.Filter (SEM5-PI-WEBAPI)'
+[18:17:42 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Route matched with {action = "Filter", controller = "VesselType"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[System.Collections.Generic.List`1[SEM5_PI_WEBAPI.Domain.VesselsTypes.VesselTypeDto]]] Filter(System.String, System.String, System.String) on controller SEM5_PI_WEBAPI.Controllers.VesselTypeController (SEM5-PI-WEBAPI).
+[18:17:42 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Executing action method SEM5_PI_WEBAPI.Controllers.VesselTypeController.Filter (SEM5-PI-WEBAPI) - Validation state: "Valid"
+[18:17:42 INF] SEM5_PI_WEBAPI.Controllers.VesselTypeController                        - API Request: Filtering Vessel/s Type/s with filters -> Name = null, Description = medium, Query = null
+[18:17:42 INF] SEM5_PI_WEBAPI.Domain.VesselsTypes.VesselTypeService                   - Business Domain: Filtering VesselTypes with filters -> Name = null, Description = medium, Query = null
+[18:17:42 INF] Microsoft.EntityFrameworkCore.Database.Command                         - Executed DbCommand (0ms) [Parameters=[@__normalizedDesc_0='?' (Size = 6)], CommandType='"Text"', CommandTimeout='30']
+SELECT "v"."Id", "v"."Capacity", "v"."Description", "v"."MaxBays", "v"."MaxRows", "v"."MaxTiers", "v"."Name"
+FROM "VesselType" AS "v"
+WHERE instr(lower("v"."Description"), @__normalizedDesc_0) > 0
+[18:17:42 INF] SEM5_PI_WEBAPI.Domain.VesselsTypes.VesselTypeService                   - Business Domain: Where found [2] Vessel/s Type/s with filters -> Name = null, Description = medium, Query = null
+[18:17:42 INF] SEM5_PI_WEBAPI.Controllers.VesselTypeController                        - API Response (200): Found 2 Vessel/s Type/s -> [{"Id":"c7798221-c758-47fd-a343-21d49b78c806","Name":"Panamax","Description":"Medium size vessel","MaxBays":20,"MaxRows":15,"MaxTiers":10,"Capacity":3000,"$type":"VesselTypeDto"},{"Id":"6ef8bcdf-0e7b-46e2-af0a-c03804c8731f","Name":"Panamaxx","Description":"Medium size vessel","MaxBays":20,"MaxRows":15,"MaxTiers":10,"Capacity":3000,"$type":"VesselTypeDto"}]
+[18:17:42 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Executed action method SEM5_PI_WEBAPI.Controllers.VesselTypeController.Filter (SEM5-PI-WEBAPI), returned result Microsoft.AspNetCore.Mvc.OkObjectResult in 2.0377ms.
+[18:17:42 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ObjectResultExecutor           - Executing OkObjectResult, writing value of type 'System.Collections.Generic.List`1[[SEM5_PI_WEBAPI.Domain.VesselsTypes.VesselTypeDto, SEM5-PI-WEBAPI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+[18:17:42 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Executed action SEM5_PI_WEBAPI.Controllers.VesselTypeController.Filter (SEM5-PI-WEBAPI) in 3.2165ms
+[18:17:42 INF] Microsoft.AspNetCore.Routing.EndpointMiddleware                        - Executed endpoint 'SEM5_PI_WEBAPI.Controllers.VesselTypeController.Filter (SEM5-PI-WEBAPI)'
+[18:17:42 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - ──────│ ✔ COMPLETED GET /api/vesseltype/filter with 200 in 3.577 ms
+[18:17:42 INF] Microsoft.AspNetCore.Hosting.Diagnostics                               - Request finished HTTP/1.1 GET http://localhost:5008/api/vesseltype/filter?description=medium - 200 314 application/json; charset=utf-8 5.7286ms
+[18:17:52 INF] Microsoft.Hosting.Lifetime                                             - Application is shutting down...
+[18:17:59 INF]  - Starting web host
+[18:17:59 INF] Microsoft.Hosting.Lifetime                                             - Now listening on: http://localhost:5008
+[18:17:59 INF] Microsoft.Hosting.Lifetime                                             - Application started. Press Ctrl+C to shut down.
+[18:17:59 INF] Microsoft.Hosting.Lifetime                                             - Hosting environment: Development
+[18:17:59 INF] Microsoft.Hosting.Lifetime                                             - Content root path: /Users/jorgerodriguez/Desktop/Universidade/3_ano/1_Semestre/LEI-SEM5-PI-2025-26-3DJ-03/SEM5-PI-WEBAPI
+[18:18:05 INF] Microsoft.AspNetCore.Hosting.Diagnostics                               - Request starting HTTP/1.1 GET http://localhost:5008/api/vesseltype/filter?name=pan - null null
+[18:18:05 WRN] Microsoft.AspNetCore.HttpsPolicy.HttpsRedirectionMiddleware            - Failed to determine the https port for redirect.
+[18:18:05 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - ┌───────────────────────────────────────────────
+[18:18:05 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - │ HTTP GET /api/vesseltype/filter
+[18:18:05 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - │ From IP: 127.0.0.1
+[18:18:05 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - └───────────────────────────────────────────────
+[18:18:05 INF] Microsoft.AspNetCore.Routing.EndpointMiddleware                        - Executing endpoint 'SEM5_PI_WEBAPI.Controllers.VesselTypeController.Filter (SEM5-PI-WEBAPI)'
+[18:18:05 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Route matched with {action = "Filter", controller = "VesselType"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[System.Collections.Generic.List`1[SEM5_PI_WEBAPI.Domain.VesselsTypes.VesselTypeDto]]] Filter(System.String, System.String, System.String) on controller SEM5_PI_WEBAPI.Controllers.VesselTypeController (SEM5-PI-WEBAPI).
+[18:18:05 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Executing action method SEM5_PI_WEBAPI.Controllers.VesselTypeController.Filter (SEM5-PI-WEBAPI) - Validation state: "Valid"
+[18:18:05 INF] SEM5_PI_WEBAPI.Controllers.VesselTypeController                        - API Request: Filtering Vessel/s Type/s with filters -> Name = pan, Description = null, Query = null
+[18:18:05 INF] SEM5_PI_WEBAPI.Domain.VesselsTypes.VesselTypeService                   - Business Domain: Filtering VesselTypes with filters -> Name = pan, Description = null, Query = null
+[18:18:06 INF] Microsoft.EntityFrameworkCore.Database.Command                         - Executed DbCommand (15ms) [Parameters=[@__normalizedName_0='?' (Size = 3)], CommandType='"Text"', CommandTimeout='30']
+SELECT "v"."Id", "v"."Capacity", "v"."Description", "v"."MaxBays", "v"."MaxRows", "v"."MaxTiers", "v"."Name"
+FROM "VesselType" AS "v"
+WHERE instr(lower("v"."Name"), @__normalizedName_0) > 0
+[18:18:06 INF] SEM5_PI_WEBAPI.Domain.VesselsTypes.VesselTypeService                   - Business Domain: Where found [3] Vessel/s Type/s with filters -> Name = pan, Description = null, Query = null
+[18:18:06 INF] SEM5_PI_WEBAPI.Controllers.VesselTypeController                        - API Response (200): Found 3 Vessel/s Type/s -> [{"Id":"c7798221-c758-47fd-a343-21d49b78c806","Name":"Panamax","Description":"Medium size vessel","MaxBays":20,"MaxRows":15,"MaxTiers":10,"Capacity":3000,"$type":"VesselTypeDto"},{"Id":"6ef8bcdf-0e7b-46e2-af0a-c03804c8731f","Name":"Panamaxx","Description":"Medium size vessel","MaxBays":20,"MaxRows":15,"MaxTiers":10,"Capacity":3000,"$type":"VesselTypeDto"},{"Id":"9b8058aa-72b0-4e99-b4fc-0972aa48bb4a","Name":"Panamaxx3","Description":"No description","MaxBays":20,"MaxRows":15,"MaxTiers":10,"Capacity":3000,"$type":"VesselTypeDto"}]
+[18:18:06 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Executed action method SEM5_PI_WEBAPI.Controllers.VesselTypeController.Filter (SEM5-PI-WEBAPI), returned result Microsoft.AspNetCore.Mvc.OkObjectResult in 1429.1476ms.
+[18:18:06 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ObjectResultExecutor           - Executing OkObjectResult, writing value of type 'System.Collections.Generic.List`1[[SEM5_PI_WEBAPI.Domain.VesselsTypes.VesselTypeDto, SEM5-PI-WEBAPI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+[18:18:06 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Executed action SEM5_PI_WEBAPI.Controllers.VesselTypeController.Filter (SEM5-PI-WEBAPI) in 1680.9351ms
+[18:18:06 INF] Microsoft.AspNetCore.Routing.EndpointMiddleware                        - Executed endpoint 'SEM5_PI_WEBAPI.Controllers.VesselTypeController.Filter (SEM5-PI-WEBAPI)'
+[18:18:06 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - ──────│ ✔ COMPLETED GET /api/vesseltype/filter with 200 in 1711.791 ms
+[18:18:06 INF] Microsoft.AspNetCore.Hosting.Diagnostics                               - Request finished HTTP/1.1 GET http://localhost:5008/api/vesseltype/filter?name=pan - 200 468 application/json; charset=utf-8 1750.3592ms
+[18:18:09 INF] Microsoft.AspNetCore.Hosting.Diagnostics                               - Request starting HTTP/1.1 GET http://localhost:5008/api/vesseltype/filter?description=medium - null null
+[18:18:09 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - ┌───────────────────────────────────────────────
+[18:18:09 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - │ HTTP GET /api/vesseltype/filter
+[18:18:09 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - │ From IP: 127.0.0.1
+[18:18:09 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - └───────────────────────────────────────────────
+[18:18:09 INF] Microsoft.AspNetCore.Routing.EndpointMiddleware                        - Executing endpoint 'SEM5_PI_WEBAPI.Controllers.VesselTypeController.Filter (SEM5-PI-WEBAPI)'
+[18:18:09 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Route matched with {action = "Filter", controller = "VesselType"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[System.Collections.Generic.List`1[SEM5_PI_WEBAPI.Domain.VesselsTypes.VesselTypeDto]]] Filter(System.String, System.String, System.String) on controller SEM5_PI_WEBAPI.Controllers.VesselTypeController (SEM5-PI-WEBAPI).
+[18:18:09 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Executing action method SEM5_PI_WEBAPI.Controllers.VesselTypeController.Filter (SEM5-PI-WEBAPI) - Validation state: "Valid"
+[18:18:09 INF] SEM5_PI_WEBAPI.Controllers.VesselTypeController                        - API Request: Filtering Vessel/s Type/s with filters -> Name = null, Description = medium, Query = null
+[18:18:09 INF] SEM5_PI_WEBAPI.Domain.VesselsTypes.VesselTypeService                   - Business Domain: Filtering VesselTypes with filters -> Name = null, Description = medium, Query = null
+[18:18:09 INF] Microsoft.EntityFrameworkCore.Database.Command                         - Executed DbCommand (0ms) [Parameters=[@__normalizedDesc_0='?' (Size = 6)], CommandType='"Text"', CommandTimeout='30']
+SELECT "v"."Id", "v"."Capacity", "v"."Description", "v"."MaxBays", "v"."MaxRows", "v"."MaxTiers", "v"."Name"
+FROM "VesselType" AS "v"
+WHERE instr(lower("v"."Description"), @__normalizedDesc_0) > 0
+[18:18:09 INF] SEM5_PI_WEBAPI.Domain.VesselsTypes.VesselTypeService                   - Business Domain: Where found [2] Vessel/s Type/s with filters -> Name = null, Description = medium, Query = null
+[18:18:09 INF] SEM5_PI_WEBAPI.Controllers.VesselTypeController                        - API Response (200): Found 2 Vessel/s Type/s -> [{"Id":"c7798221-c758-47fd-a343-21d49b78c806","Name":"Panamax","Description":"Medium size vessel","MaxBays":20,"MaxRows":15,"MaxTiers":10,"Capacity":3000,"$type":"VesselTypeDto"},{"Id":"6ef8bcdf-0e7b-46e2-af0a-c03804c8731f","Name":"Panamaxx","Description":"Medium size vessel","MaxBays":20,"MaxRows":15,"MaxTiers":10,"Capacity":3000,"$type":"VesselTypeDto"}]
+[18:18:09 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Executed action method SEM5_PI_WEBAPI.Controllers.VesselTypeController.Filter (SEM5-PI-WEBAPI), returned result Microsoft.AspNetCore.Mvc.OkObjectResult in 20.6272ms.
+[18:18:09 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ObjectResultExecutor           - Executing OkObjectResult, writing value of type 'System.Collections.Generic.List`1[[SEM5_PI_WEBAPI.Domain.VesselsTypes.VesselTypeDto, SEM5-PI-WEBAPI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+[18:18:09 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Executed action SEM5_PI_WEBAPI.Controllers.VesselTypeController.Filter (SEM5-PI-WEBAPI) in 23.6523ms
+[18:18:09 INF] Microsoft.AspNetCore.Routing.EndpointMiddleware                        - Executed endpoint 'SEM5_PI_WEBAPI.Controllers.VesselTypeController.Filter (SEM5-PI-WEBAPI)'
+[18:18:09 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - ──────│ ✔ COMPLETED GET /api/vesseltype/filter with 200 in 24.333 ms
+[18:18:09 INF] Microsoft.AspNetCore.Hosting.Diagnostics                               - Request finished HTTP/1.1 GET http://localhost:5008/api/vesseltype/filter?description=medium - 200 314 application/json; charset=utf-8 27.2512ms
+[18:18:18 INF] Microsoft.Hosting.Lifetime                                             - Application is shutting down...
