@@ -5,3 +5,29 @@
 [15:20:20 INF] SEM5_PI_WEBAPI.Controllers.VesselTypeController         - API Request: Get All Vessels Types on DataBase
 [15:20:21 WRN] SEM5_PI_WEBAPI.Controllers.VesselTypeController         - API Response (200): A total of 1 were found -> [{"Id":"c7798221-c758-47fd-a343-21d49b78c806","Name":"Panamax","Description":"Medium size vessel","MaxBays":20,"MaxRows":15,"MaxTiers":10,"Capacity":3000,"$type":"VesselTypeDto"}]
 [15:20:21 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware      - ──────│ ✔ COMPLETED GET /api/VesselType with 200 in 906.942 ms
+[16:28:09 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware      - ┌───────────────────────────────────────────────
+[16:28:09 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware      - │ HTTP GET /api/VesselType/id/e998a588-9930-4c37-be42-09ef91415763
+[16:28:09 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware      - │ From IP: 127.0.0.1
+[16:28:09 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware      - └───────────────────────────────────────────────
+[16:28:09 INF] SEM5_PI_WEBAPI.Controllers.VesselTypeController         - API Request: Fetching Vessel Type with ID = "e998a588-9930-4c37-be42-09ef91415763"
+[16:28:09 INF] SEM5_PI_WEBAPI.Domain.VesselsTypes.VesselTypeService    - Business Domain: Request to fetch Vessel Type with ID = e998a588-9930-4c37-be42-09ef91415763
+[16:28:10 WRN] SEM5_PI_WEBAPI.Controllers.VesselTypeController         - API Error (404): Vessel Type with ID = "e998a588-9930-4c37-be42-09ef91415763" -> NOT FOUND
+[16:28:10 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware      - ──────│ ✔ COMPLETED GET /api/VesselType/id/e998a588-9930-4c37-be42-09ef91415763 with 404 in 1251.02 ms
+[16:28:17 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware      - ┌───────────────────────────────────────────────
+[16:28:17 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware      - │ HTTP GET /api/VesselType/name/Panamax
+[16:28:17 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware      - │ From IP: 127.0.0.1
+[16:28:17 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware      - └───────────────────────────────────────────────
+[16:28:17 INF] SEM5_PI_WEBAPI.Controllers.VesselTypeController         - API Request: Fetching Vessel Type with Name = Panamax
+[16:28:17 INF] SEM5_PI_WEBAPI.Domain.VesselsTypes.VesselTypeService    - Business Domain: Request to fetch Vessel Type with ID = Panamax
+[16:28:17 INF] SEM5_PI_WEBAPI.Domain.VesselsTypes.VesselTypeService    - Business Domain: Vessel Type with Name = Panamax found successfully.
+[16:28:17 WRN] SEM5_PI_WEBAPI.Controllers.VesselTypeController         - API Response (200): Vessel Type with Name = Panamax -> FOUND
+[16:28:17 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware      - ──────│ ✔ COMPLETED GET /api/VesselType/name/Panamax with 200 in 327.653 ms
+[16:29:08 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware      - ┌───────────────────────────────────────────────
+[16:29:08 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware      - │ HTTP GET /api/VesselType/id/c7798221-c758-47fd-a343-21d49b78c806
+[16:29:08 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware      - │ From IP: 127.0.0.1
+[16:29:08 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware      - └───────────────────────────────────────────────
+[16:29:08 INF] SEM5_PI_WEBAPI.Controllers.VesselTypeController         - API Request: Fetching Vessel Type with ID = "c7798221-c758-47fd-a343-21d49b78c806"
+[16:29:08 INF] SEM5_PI_WEBAPI.Domain.VesselsTypes.VesselTypeService    - Business Domain: Request to fetch Vessel Type with ID = c7798221-c758-47fd-a343-21d49b78c806
+[16:29:08 INF] SEM5_PI_WEBAPI.Domain.VesselsTypes.VesselTypeService    - Business Domain: Vessel Type with ID = c7798221-c758-47fd-a343-21d49b78c806 found successfully.
+[16:29:08 WRN] SEM5_PI_WEBAPI.Controllers.VesselTypeController         - API Response (200): Vessel Type with ID = "c7798221-c758-47fd-a343-21d49b78c806" -> FOUND
+[16:29:08 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware      - ──────│ ✔ COMPLETED GET /api/VesselType/id/c7798221-c758-47fd-a343-21d49b78c806 with 200 in 61.602 ms

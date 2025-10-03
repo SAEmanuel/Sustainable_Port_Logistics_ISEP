@@ -33,7 +33,7 @@ namespace SEM5_PI_WEBAPI.Controllers
             return Ok(listVesselTypeDtos);
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("id/{id:guid}")]
         public async Task<ActionResult<VesselTypeDto>> GetById(Guid id)
         {
             _logger.LogInformation("API Request: Fetching Vessel Type with ID = {Id}", id);
@@ -47,6 +47,24 @@ namespace SEM5_PI_WEBAPI.Controllers
             catch (BusinessRuleValidationException ex)
             {
                 _logger.LogWarning("API Error (404): Vessel Type with ID = {Id} -> NOT FOUND", id);
+                return NotFound(ex.Message);
+            }
+        }
+
+        [HttpGet("name/{name}")]
+        public async Task<ActionResult<VesselTypeDto>> GetByName(string name)
+        {
+            try
+            {
+                _logger.LogInformation("API Request: Fetching Vessel Type with Name = {Name}", name);
+                
+                var vesselTypeDto = await _service.GetByNameAsync(name);
+                _logger.LogWarning("API Response (200): Vessel Type with Name = {Name} -> FOUND", name);
+                return Ok(vesselTypeDto);
+            }
+            catch (BusinessRuleValidationException ex)
+            {
+                _logger.LogWarning("API Error (404): Vessel Type with Name = {Id} -> NOT FOUND", name);
                 return NotFound(ex.Message);
             }
         }
