@@ -1,0 +1,55 @@
+@startuml
+actor "Port Authority Officer" as Officer
+boundary "API (VesselTypeController)" as Controller
+control "VesselTypeService" as Service
+entity "VesselTypeRepository" as Repo
+entity "UnitOfWork" as UoW
+control "VesselTypeFactory" as Factory
+collections "Audit/Logs (ILogger/Serilog)" as Log
+
+== Create ==
+Officer -> Controller : POST /api/VesselType (CreatingVesselTypeDto)
+Controller -> Service : AddAsync(dto)
+Service -> Repo : GetByNameAsync(dto.Name)?
+Repo --> Service : null / VesselType
+Service -> Service : validate constraints (name length, bays > 0, tiers > 0…)
+Service -> Factory : CreateBasicVesselType(dto)
+Factory --> Service : VesselType(entity)
+Service -> Repo : AddAsync(entity)
+Repo --> Service : entity persisted
+Service -> UoW : CommitAsync()
+UoW --> Service : transaction committed
+Service -> Factory : CreateDtoVesselType(entity)
+Factory --> Service : VesselTypeDto
+Service -> Log : log(CREATE, officerId, vesselTypeId, outcome=SUCCESS)
+Service --> Controller : VesselTypeDto
+Controller --> Officer : 201 Created (VesselTypeDto)
+
+== Update ==
+Officer -> Controller : PUT /api/VesselType/{id} (fields…)
+Controller -> Service : UpdateAsync(id, dto)
+Service -> Repo : GetByIdAsync(id)
+Repo --> Service : VesselType
+Service -> Service : validate changes (unique name, dimensions > 0…)
+Service -> Repo : Save(updated entity)
+Repo --> Service : entity updated
+Service -> UoW : CommitAsync()
+UoW --> Service : transaction committed
+Service -> Factory : CreateDtoVesselType(updated)
+Factory --> Service : VesselTypeDto
+Service -> Log : log(UPDATE, officerId, vesselTypeId, outcome=SUCCESS)
+Service --> Controller : VesselTypeDto
+Controller --> Officer : 200 OK (VesselTypeDto)
+
+== Search ==
+Officer -> Controller : GET /api/VesselType/filter?query=pan
+Controller -> Service : FilterAsync(query)
+Service -> Repo : FilterAsync(query) (name/description contains query)
+Repo --> Service : List<VesselType>
+Service -> Factory : CreateDtoVesselType(list)
+Factory --> Service : List<VesselTypeDto>
+Service -> Log : log(SEARCH, officerId, query, outcome=SUCCESS)
+Service --> Controller : List<VesselTypeDto>
+Controller --> Officer : 200 OK (list)
+
+@enduml

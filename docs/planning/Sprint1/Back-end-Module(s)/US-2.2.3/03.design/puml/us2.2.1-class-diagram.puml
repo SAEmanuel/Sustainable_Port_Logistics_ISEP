@@ -1,0 +1,110 @@
+@startuml
+
+package "Domain" {
+  class VesselType {
+    - string Name
+    - string Description
+    - int MaxBays
+    - int MaxRows
+    - int MaxTiers
+    - float Capacity
+    + ChangeName(string)
+    + ChangeDescription(string)
+    + ChangeDimensions(int,int,int)
+  }
+
+  class VesselTypeId {
+    - Guid Value
+    + AsGuid() : Guid
+  }
+
+  class BusinessRuleValidationException
+}
+
+package "DTOs" {
+  class CreatingVesselTypeDto {
+    + string Name
+    + string Description
+    + int MaxBays
+    + int MaxRows
+    + int MaxTiers
+  }
+
+  class VesselTypeDto {
+    + Guid Id
+    + string Name
+    + string Description
+    + int MaxBays
+    + int MaxRows
+    + int MaxTiers
+    + float Capacity
+  }
+}
+
+package "Application" {
+  class VesselTypeService {
+    + GetAllAsync() : List<VesselTypeDto>
+    + GetByIdAsync(VesselTypeId) : VesselTypeDto
+    + GetByNameAsync(string) : VesselTypeDto
+    + FilterAsync(string?, string?, string?) : List<VesselTypeDto>
+    + AddAsync(CreatingVesselTypeDto) : VesselTypeDto
+    + UpdateAsync(Guid, CreatingVesselTypeDto) : VesselTypeDto
+  }
+
+  class VesselTypeFactory {
+    + CreateBasicVesselType(CreatingVesselTypeDto) : VesselType
+    + CreateDtoVesselType(VesselType) : VesselTypeDto
+  }
+}
+
+package "Infrastructure" {
+  interface IVesselTypeRepository {
+    + GetAllAsync() : List<VesselType>
+    + GetByIdAsync(VesselTypeId) : VesselType
+    + GetByNameAsync(string) : VesselType?
+    + FilterAsync(string?, string?, string?) : List<VesselType>
+    + AddAsync(VesselType)
+  }
+
+  class VesselTypeRepository implements IVesselTypeRepository {
+  }
+
+  interface IUnitOfWork {
+    + CommitAsync()
+  }
+
+  class UnitOfWork implements IUnitOfWork {
+  }
+}
+
+package "Presentation" {
+  class VesselTypeController {
+    + GetAll() : List<VesselTypeDto>
+    + GetById(Guid) : VesselTypeDto
+    + GetByName(string) : VesselTypeDto
+    + Filter(string?, string?) : List<VesselTypeDto>
+    + Create(CreatingVesselTypeDto) : VesselTypeDto
+  }
+}
+
+package "Cross-cutting" {
+  interface ILogger<T> {
+    + LogInformation(string, params)
+    + LogWarning(string, params)
+    + LogError(string, params)
+  }
+}
+
+' ---------------- Relations -----------------
+VesselType "1" *-- "1" VesselTypeId
+VesselTypeService --> IVesselTypeRepository
+VesselTypeService --> IUnitOfWork
+VesselTypeService --> VesselTypeFactory
+VesselTypeService --> ILogger
+VesselTypeRepository --> VesselType
+VesselTypeFactory --> VesselType
+VesselTypeFactory --> VesselTypeDto
+VesselTypeController --> VesselTypeService
+VesselTypeController --> ILogger
+
+@enduml
