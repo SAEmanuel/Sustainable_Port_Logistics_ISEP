@@ -31,3 +31,51 @@
 [16:29:08 INF] SEM5_PI_WEBAPI.Domain.VesselsTypes.VesselTypeService    - Business Domain: Vessel Type with ID = c7798221-c758-47fd-a343-21d49b78c806 found successfully.
 [16:29:08 WRN] SEM5_PI_WEBAPI.Controllers.VesselTypeController         - API Response (200): Vessel Type with ID = "c7798221-c758-47fd-a343-21d49b78c806" -> FOUND
 [16:29:08 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware      - ──────│ ✔ COMPLETED GET /api/VesselType/id/c7798221-c758-47fd-a343-21d49b78c806 with 200 in 61.602 ms
+[17:04:42 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware      - ┌───────────────────────────────────────────────
+[17:04:42 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware      - │ HTTP GET /api/VesselType/name/Panamax
+[17:04:42 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware      - │ From IP: 127.0.0.1
+[17:04:42 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware      - └───────────────────────────────────────────────
+[17:04:42 INF] SEM5_PI_WEBAPI.Controllers.VesselTypeController         - API Request: Fetching Vessel Type with Name = Panamax
+[17:04:42 INF] SEM5_PI_WEBAPI.Domain.VesselsTypes.VesselTypeService    - Business Domain: Request to fetch Vessel Type with ID = Panamax
+[17:04:44 INF] SEM5_PI_WEBAPI.Domain.VesselsTypes.VesselTypeService    - Business Domain: Vessel Type with Name = Panamax found successfully.
+[17:04:44 WRN] SEM5_PI_WEBAPI.Controllers.VesselTypeController         - API Response (200): Vessel Type with Name = Panamax -> FOUND
+[17:04:44 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware      - ──────│ ✔ COMPLETED GET /api/VesselType/name/Panamax with 200 in 1474.644 ms
+[17:04:48 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware      - ┌───────────────────────────────────────────────
+[17:04:48 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware      - │ HTTP GET /api/VesselType/name/Panamaxx
+[17:04:48 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware      - │ From IP: 127.0.0.1
+[17:04:48 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware      - └───────────────────────────────────────────────
+[17:04:48 INF] SEM5_PI_WEBAPI.Controllers.VesselTypeController         - API Request: Fetching Vessel Type with Name = Panamaxx
+[17:04:48 INF] SEM5_PI_WEBAPI.Domain.VesselsTypes.VesselTypeService    - Business Domain: Request to fetch Vessel Type with ID = Panamaxx
+[17:04:48 WRN] SEM5_PI_WEBAPI.Controllers.VesselTypeController         - API Error (404): Vessel Type with Name = Panamaxx -> NOT FOUND
+[17:04:48 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware      - ──────│ ✔ COMPLETED GET /api/VesselType/name/Panamaxx with 404 in 20.57 ms
+[17:04:56 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware      - ┌───────────────────────────────────────────────
+[17:04:56 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware      - │ HTTP GET /api/VesselType/name/
+[17:04:56 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware      - │ From IP: 127.0.0.1
+[17:04:56 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware      - └───────────────────────────────────────────────
+[17:04:56 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware      - ──────│ ✔ COMPLETED GET /api/VesselType/name/ with 404 in 0.092 ms
+[17:05:26 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware      - ┌───────────────────────────────────────────────
+[17:05:26 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware      - │ HTTP GET /api/VesselType/name/Panamax
+[17:05:26 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware      - │ From IP: 127.0.0.1
+[17:05:26 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware      - └───────────────────────────────────────────────
+[17:05:26 INF] SEM5_PI_WEBAPI.Controllers.VesselTypeController         - API Request: Fetching Vessel Type with Name = Panamax
+[17:05:26 INF] SEM5_PI_WEBAPI.Domain.VesselsTypes.VesselTypeService    - Business Domain: Request to fetch Vessel Type with ID = Panamax
+[17:05:26 INF] SEM5_PI_WEBAPI.Domain.VesselsTypes.VesselTypeService    - Business Domain: Vessel Type with Name = Panamax found successfully.
+[17:05:26 WRN] SEM5_PI_WEBAPI.Controllers.VesselTypeController         - API Response (200): Vessel Type with Name = Panamax -> FOUND
+[17:05:26 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware      - ──────│ ✔ COMPLETED GET /api/VesselType/name/Panamax with 200 in 44.289 ms
+[17:05:37 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware      - ┌───────────────────────────────────────────────
+[17:05:37 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware      - │ HTTP GET /api/VesselType/description/Medium%20size%20vessel
+[17:05:37 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware      - │ From IP: 127.0.0.1
+[17:05:37 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware      - └───────────────────────────────────────────────
+[17:05:37 INF] SEM5_PI_WEBAPI.Controllers.VesselTypeController         - API Request: Fetching Vessel Type with Description = Medium size vessel
+[17:05:37 INF] SEM5_PI_WEBAPI.Domain.VesselsTypes.VesselTypeService    - Business Domain: Request to fetch Vessel Type with Description = Medium size vessel
+[17:05:37 INF] SEM5_PI_WEBAPI.Domain.VesselsTypes.VesselTypeService    - Business Domain: Where found [1] Vessels Types with Description = Medium size vessel found successfully.
+[17:05:37 WRN] SEM5_PI_WEBAPI.Controllers.VesselTypeController         - API Response (200): Vessel/s Type/s with requested Description where found: [{"Id":"c7798221-c758-47fd-a343-21d49b78c806","Name":"Panamax","Description":"Medium size vessel","MaxBays":20,"MaxRows":15,"MaxTiers":10,"Capacity":3000,"$type":"VesselTypeDto"}]
+[17:05:37 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware      - ──────│ ✔ COMPLETED GET /api/VesselType/description/Medium%20size%20vessel with 200 in 28.74 ms
+[17:05:49 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware      - ┌───────────────────────────────────────────────
+[17:05:49 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware      - │ HTTP GET /api/VesselType/description/Medium%20size%20vessele
+[17:05:49 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware      - │ From IP: 127.0.0.1
+[17:05:49 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware      - └───────────────────────────────────────────────
+[17:05:49 INF] SEM5_PI_WEBAPI.Controllers.VesselTypeController         - API Request: Fetching Vessel Type with Description = Medium size vessele
+[17:05:49 INF] SEM5_PI_WEBAPI.Domain.VesselsTypes.VesselTypeService    - Business Domain: Request to fetch Vessel Type with Description = Medium size vessele
+[17:05:49 WRN] SEM5_PI_WEBAPI.Controllers.VesselTypeController         - API Error (404): Vessel Type with Description = Medium size vessele -> NOT FOUND
+[17:05:49 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware      - ──────│ ✔ COMPLETED GET /api/VesselType/description/Medium%20size%20vessele with 404 in 3.337 ms

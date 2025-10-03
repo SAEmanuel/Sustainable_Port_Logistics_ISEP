@@ -26,6 +26,10 @@ GET {{portURL}}/api/VesselType/name/Panamax
 Accept: application/json
 
 ###
+GET {{portURL}}/api/VesselType/description/Medium size vessele
+Accept: application/json
+
+###
 POST {{portURL}}/api/VesselType
 Content-Type: application/json
 Accept: application/json

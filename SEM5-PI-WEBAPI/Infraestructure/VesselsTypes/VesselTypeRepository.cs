@@ -17,6 +17,12 @@ namespace SEM5_PI_WEBAPI.Infraestructure.VesselsTypes
             return await _context.VesselType
                 .FirstOrDefaultAsync(x => x.Name.ToLower().Trim() == name.ToLower().Trim());
         }
+        
+        public async Task<List<VesselType>> GetByDescriptionAsync(string description)
+        {
+            return await _context.VesselType
+                .Where(x => x.Description.ToLower().Trim() == description.ToLower().Trim()).ToListAsync();
+        }
 
     }
 }

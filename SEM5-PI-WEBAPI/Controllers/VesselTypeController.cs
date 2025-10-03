@@ -68,6 +68,24 @@ namespace SEM5_PI_WEBAPI.Controllers
                 return NotFound(ex.Message);
             }
         }
+        
+        [HttpGet("description/{description}")]
+        public async Task<ActionResult<List<VesselTypeDto>>> GetByDescription(string description)
+        {
+            try
+            {
+                _logger.LogInformation("API Request: Fetching Vessel/s Type/s with Description = {Description}", description);
+                
+                var listVesselTypeDto = await _service.GetByDescriptionAsync(description);
+                _logger.LogWarning("API Response (200): Vessel/s Type/s with requested Description where found: {@vesselTypeDto}",listVesselTypeDto);
+                return Ok(listVesselTypeDto);
+            }
+            catch (BusinessRuleValidationException ex)
+            {
+                _logger.LogWarning("API Error (404): Vessel/s Type/s with Description = {Description} -> NOT FOUND", description);
+                return NotFound(ex.Message);
+            }
+        }
 
         [HttpPost]
         public async Task<ActionResult<VesselTypeDto>> Create(CreatingVesselTypeDto dto)
