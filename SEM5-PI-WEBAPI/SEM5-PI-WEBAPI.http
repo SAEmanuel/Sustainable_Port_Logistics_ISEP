@@ -18,7 +18,7 @@ GET {{portURL}}/api/VesselType
 Accept: application/json
 
 ###
-GET {{portURL}}/api/VesselType/a26f724a-b072-47db-b492-a02364408ff7
+GET {{portURL}}/api/VesselType/e998a588-9930-4c37-be42-09ef91415763
 Accept: application/json
 
 ###

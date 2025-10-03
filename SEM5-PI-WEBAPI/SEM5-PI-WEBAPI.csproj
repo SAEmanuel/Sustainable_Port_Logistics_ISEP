@@ -30,6 +30,8 @@
 
   <ItemGroup>
     <Folder Include="Logs\" />
+    <Folder Include="Logs\GeneralLogs\" />
+    <Folder Include="Logs\VesselsTypes\" />
   </ItemGroup>
 
 </Project>

@@ -30,8 +30,14 @@ namespace SEM5_PI_WEBAPI
 
                 .WriteTo.Logger(lc => lc
                     .Filter.ByIncludingOnly(e=>
-                        e.Properties.ContainsKey("SourceContext") &&
-                        e.Properties["SourceContext"].ToString().Contains("SEM5_PI_WEBAPI.Domain.VesselsTypes"))
+                        e.Properties.ContainsKey("SourceContext") &&(
+                            e.Properties["SourceContext"].ToString().Contains("SEM5_PI_WEBAPI.Domain.VesselsTypes")
+                            ||
+                            e.Properties["SourceContext"].ToString().Contains("RequestLogsMiddleware")
+                            ||
+                            e.Properties["SourceContext"].ToString().Contains("SEM5_PI_WEBAPI.Controllers.VesselTypeController")
+                            )
+                        )
                     .WriteTo.File("Logs/VesselsTypes/vesseltype-.log",
                         rollingInterval: RollingInterval.Day,
                         outputTemplate: "[{Timestamp:HH:mm:ss} {Level:u3}] {SourceContext} - {Message:lj}{NewLine}{Exception}")

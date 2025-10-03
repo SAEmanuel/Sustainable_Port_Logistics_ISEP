@@ -47,6 +47,8 @@ namespace SEM5_PI_WEBAPI
 
             app.UseRouting();
 
+            app.UseMiddleware<RequestLogsMiddleware>();
+
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
