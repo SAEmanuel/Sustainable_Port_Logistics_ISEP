@@ -1,0 +1,39 @@
+@startuml
+skinparam monochrome true
+skinparam packageStyle rectangle
+skinparam shadowing false
+left to right direction
+hide circles
+hide methods
+
+title Domain Model (Excerpt) - US2.2.3 Register & Update Docks
+
+package "Dock Registry Aggregate" {
+    class Dock <<AggregateRoot>>
+    class DockNameOrNumber <<ValueObject>>
+    class DockLocation <<ValueObject>>
+    class DockDimensions <<ValueObject>>
+    class AllowedVesselType <<ValueObject>>
+}
+
+package "Vessel Type Catalog" {
+    class VesselType <<AggregateRoot>>
+}
+
+package "Operations" {
+    class VesselVisitNotification <<Entity>>
+}
+
+' ---- Composition inside Dock ----
+Dock "1" --- "1" DockNameOrNumber : has >
+Dock "1" --- "1" DockLocation : has >
+Dock "1" --- "1" DockDimensions : has >
+Dock "1" --- "0..*" AllowedVesselType : has >
+
+' ---- Cross-aggregate references ----
+AllowedVesselType "*" --- "1" VesselType : refers >
+
+' ---- Vessel Visit assignment ----
+VesselVisitNotification "*" --- "0..1" Dock : assigned to >
+
+@enduml
