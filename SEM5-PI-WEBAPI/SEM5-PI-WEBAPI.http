@@ -77,6 +77,16 @@ GET {{portURL}}/api/Vessel/owner/Evergreen Marinee
 Accept: application/json
 
 ###
+PATCH http://localhost:5008/api/vessel/imo/IMO 9319466
+Content-Type: application/json
+
+{
+  "owner": "Evergreen Marine Ltdddd",
+  "name" : "Jorge Ubaldo"
+}
+
+
+###
 POST {{portURL}}/api/Vessel
 Content-Type: application/json
 Accept: application/json

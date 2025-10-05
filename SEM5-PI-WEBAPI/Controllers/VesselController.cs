@@ -23,16 +23,20 @@ public class VesselController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<List<VesselDto>>> GetAllAsync()
     {
-        _logger.LogInformation("API Request: Get All Vessels on DataBase");
-            
-        var listVesselDtos = await _service.GetAllAsync();
-            
-        if (listVesselDtos.Count > 0) 
+
+        try
+        {
+            _logger.LogInformation("API Request: Get All Vessels on DataBase");
+            var listVesselDtos = await _service.GetAllAsync();
             _logger.LogWarning("API Response (200): A total of {count} were found -> {@Vessels}", listVesselDtos.Count, listVesselDtos);
-        else 
-            _logger.LogWarning("API Response (400): No Vessels found on DataBase"); 
-            
-        return Ok(listVesselDtos);
+            return Ok(listVesselDtos);
+        }
+        catch (BusinessRuleValidationException e)
+        {
+            _logger.LogWarning("API Response (404): No Vessels found on DataBase");
+            return NotFound(e.Message);
+        }
+        
     }
 
     
@@ -49,7 +53,7 @@ public class VesselController : ControllerBase
         }
         catch (BusinessRuleValidationException ex)
         {
-            _logger.LogWarning("API Error (404): Vessel with ID = {Id} -> NOT FOUND", id);
+            _logger.LogWarning("API Response (404): Vessel with ID = {Id} -> NOT FOUND", id);
             return NotFound(ex.Message);
         }
     }
@@ -89,7 +93,7 @@ public class VesselController : ControllerBase
         }
         catch (BusinessRuleValidationException e)
         {
-            _logger.LogWarning("API Error (404): {Message}", e.Message);
+            _logger.LogWarning("API Response (404): {Message}", e.Message);
             return NotFound(e.Message);
         }
     }
@@ -110,7 +114,7 @@ public class VesselController : ControllerBase
         }
         catch (BusinessRuleValidationException e)
         {
-            _logger.LogWarning("API Error (404): {Message}", e.Message);
+            _logger.LogWarning("API Response (404): {Message}", e.Message);
             return NotFound(e.Message);
         }
     }
@@ -131,8 +135,50 @@ public class VesselController : ControllerBase
         }
         catch (BusinessRuleValidationException e)
         {
-            _logger.LogWarning("API Error (404): {Message}", e.Message);
+            _logger.LogWarning("API Response (404): {Message}", e.Message);
             return NotFound(e.Message);
         }
     }
+
+    [HttpGet("filter")]
+    public async Task<ActionResult<List<VesselDto>>> GetByFilterAsync(string? name, string imo, string ownerName,string query)
+    {
+        _logger.LogInformation("API Request: Filtering Vessel/s Type/s with filters.");
+
+        try
+        {
+            var vesselListDto = await _service.GetFilterAsync(name,imo,ownerName,query);
+            
+            _logger.LogInformation("API Response (200): Found {Count} Vessel/s -> {@Vessels}", vesselListDto.Count,vesselListDto);
+
+            return Ok(vesselListDto);
+        }
+        catch (BusinessRuleValidationException e)
+        {
+            _logger.LogWarning("API Response (404): {Message}", e.Message);
+            return NotFound(e.Message);
+        }
+    }
+    
+    [HttpPatch("imo/{imo}")]
+    public async Task<ActionResult<VesselDto>> PatchByImoAsync(string imo, [FromBody] UpdatingVesselDto? dto)
+    {
+        if (dto == null) return BadRequest("No changes provided.");
+
+        try
+        {
+            _logger.LogInformation("API Request: Partial update for Vessel with IMO = {IMO}", imo);
+
+            var vesselDto = await _service.PatchByImoAsync(imo, dto);
+
+            _logger.LogInformation("API Response (200): Vessel with IMO = {IMO} patched successfully", imo);
+            return Ok(vesselDto);
+        }
+        catch (BusinessRuleValidationException e)
+        {
+            _logger.LogWarning("API Error (400): {Message}", e.Message);
+            return BadRequest(e.Message);
+        }
+    }
+
 }

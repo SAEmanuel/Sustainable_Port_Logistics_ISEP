@@ -25,12 +25,9 @@ public class VesselService
             
         var listVesselsInDb = await _vesselRepository.GetAllAsync();
             
-        if (listVesselsInDb.Count > 0) 
-            _logger.LogInformation("Business Domain: Found [{Count}] Vessel in database.", listVesselsInDb.Count);
-        else
-        {
-            _logger.LogWarning("Business Domain: No Vessels were found in database.");
-        }
+        if (listVesselsInDb.Count == 0) throw new BusinessRuleValidationException("No Vessel/s where found on DB.");
+        
+        _logger.LogInformation("Business Domain: Found [{Count}] Vessel in database.", listVesselsInDb.Count);
 
         var listVesselsDto = listVesselsInDb
             .Select(instance => VesselFactory.CreateVesselDto(instance))
@@ -130,4 +127,42 @@ public class VesselService
         
         return vesselListDto;
     }
+
+    public async Task<List<VesselDto>> GetFilterAsync(string? name, string? imo, string? ownerName,string? query)
+    {
+        _logger.LogInformation("Business Domain: Filtering Vessels with filters -> [Name = {Name} | IMO Number = {Imo} | Owner Name = {owner} | Query = {query}]", name,imo,ownerName,query);
+
+        ImoNumber? imoNumber = null;
+        if (imo != null) imoNumber = new ImoNumber(imo);
+
+        var vesselListOnDb = await _vesselRepository.GetFilterAsync(name,imoNumber,ownerName,query);
+
+        if (vesselListOnDb.Count > 0) throw new BusinessRuleValidationException($"No Vessel/s Type/s Found with filters -> Name = {name}, IMO Number = {imo}, Owner Name = {ownerName},Query = {query}");
+        
+        _logger.LogInformation("Business Domain: Where found [{Count}] Vessel/s Type/s with filters",vesselListOnDb.Count);
+
+        return vesselListOnDb.Select(VesselFactory.CreateVesselDto).ToList();
+    }
+
+    public async Task<VesselDto> PatchByImoAsync(string imo, UpdatingVesselDto dto)
+    {
+        var imoNumber = new ImoNumber(imo);
+
+        var vessel = await _vesselRepository.GetByImoNumberAsync(imoNumber);
+
+        if (vessel == null)
+            throw new BusinessRuleValidationException($"No Vessel found with IMO {imo}.");
+
+        if (!string.IsNullOrWhiteSpace(dto.Name))
+            vessel.UpdateName(dto.Name);
+
+        if (!string.IsNullOrWhiteSpace(dto.Owner))
+            vessel.UpdateOwner(dto.Owner);
+        
+
+        await _unitOfWork.CommitAsync();
+
+        return VesselFactory.CreateVesselDto(vessel);
+    }
+
 }

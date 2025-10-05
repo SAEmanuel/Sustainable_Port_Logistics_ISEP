@@ -32,5 +32,28 @@ public class VesselRepository : BaseRepository<Vessel,VesselId> , IVesselReposit
         return await _context.Vessel
             .Where(v => v.Owner.Trim().ToLower() == ownerName.Trim().ToLower()).ToListAsync<Vessel>();
     }
+
+    public async Task<List<Vessel>> GetFilterAsync(string? name, ImoNumber? imoNumber, string? ownerName, string? query)
+    {
+        var normalizedName = name?.Trim().ToLower();
+        var normalizedOwnerName = ownerName?.Trim().ToLower();
+        var normalizedQuery = query?.Trim().ToLower();
+
+        var queryable = _context.Vessel.AsQueryable();
+
+        if (!string.IsNullOrWhiteSpace(normalizedName))
+            queryable = queryable.Where(v => v.Name.ToLower().Trim().Contains(normalizedName));
     
+        if (!string.IsNullOrWhiteSpace(normalizedOwnerName))
+            queryable = queryable.Where(v => v.Owner.Trim().ToLower().Contains(normalizedOwnerName));
+        
+        if (imoNumber != null)
+            queryable = queryable.Where(v => v.ImoNumber.Value == imoNumber.Value);
+        
+        if (!string.IsNullOrWhiteSpace(normalizedQuery))
+            queryable = queryable.Where(v => v.Name.ToLower().Trim().Contains(normalizedQuery) || v.Owner.ToLower().Trim().Contains(normalizedQuery) || v.ImoNumber.Value.ToString().Contains(normalizedQuery));
+        
+        return await queryable.ToListAsync();
+    }
+
 }
