@@ -1,0 +1,22 @@
+@startuml
+actor "Port Authority Officer" as Officer
+boundary "System" as System
+
+
+== Register Storage Area ==
+Officer -> System : Submit new StorageArea(type, location, maxCapacity, occupancy, docks?, distances?)
+System --> Officer : Confirmation (StorageAreaDto with Id)
+
+== Update Storage Area ==
+Officer -> System : Submit update StorageArea(id, type?, location?, capacity?, occupancy?, docks?, distances?)
+System --> Officer : Confirmation (Updated StorageAreaDto)
+
+== Validation ==
+Officer -> System : Attempt register/update with occupancy > capacity
+System --> Officer : Error (BusinessRuleValidationException)
+
+== Query ==
+Officer -> System : Request details of StorageArea(id)
+System --> Officer : StorageAreaDto
+
+@enduml
