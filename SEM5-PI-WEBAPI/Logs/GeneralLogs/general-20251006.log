@@ -1713,3 +1713,9 @@ ORDER BY "s1"."Id", "s2"."QualificationsId", "s2"."StaffMemberId"
 [16:35:00 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - ──────│ ✔ COMPLETED GET /api/StaffMembers/name/Paulo%20Mendes%20Updated with 200 in 54.141 ms
 [16:35:00 INF] Microsoft.AspNetCore.Hosting.Diagnostics                               - Request finished HTTP/1.1 GET http://localhost:5008/api/StaffMembers/name/Paulo Mendes Updated - 200 302 application/json; charset=utf-8 62.2361ms
 [16:35:06 INF] Microsoft.Hosting.Lifetime                                             - Application is shutting down...
+[18:39:25 INF]  - Starting web host
+[18:39:25 INF] Microsoft.Hosting.Lifetime                                             - Now listening on: http://localhost:5008
+[18:39:25 INF] Microsoft.Hosting.Lifetime                                             - Application started. Press Ctrl+C to shut down.
+[18:39:25 INF] Microsoft.Hosting.Lifetime                                             - Hosting environment: Development
+[18:39:25 INF] Microsoft.Hosting.Lifetime                                             - Content root path: /Users/jorgerodriguez/Desktop/Universidade/3_ano/1_Semestre/LEI-SEM5-PI-2025-26-3DJ-03/SEM5-PI-WEBAPI
+[18:39:29 INF] Microsoft.Hosting.Lifetime                                             - Application is shutting down...

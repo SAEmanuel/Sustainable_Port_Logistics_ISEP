@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using SEM5_PI_WEBAPI.Domain.Shared;
 namespace SEM5_PI_WEBAPI.Domain.ValueObjects;
 
+[Owned]
 public class TaxNumber : IValueObject
 {
     public string Value { get; private set; }

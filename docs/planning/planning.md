@@ -62,7 +62,6 @@ will be tracked in GitHub Issues and documented in the following way:
 | [US-2.2.1](./Sprint1/Back-end-Module(s)/US-2.2.1)   | 1231274 & 1230444   |          |          |
 | [US-2.2.2](./Sprint1/Back-end-Module(s)/US-2.2.2)   | 1231274             |          |          |
 | [US-2.2.3](./Sprint1/Back-end-Module(s)/US-2.2.3)   | 1230444             |          |          |
-| [US-2.2.4](./Sprint1/Back-end-Module(s)/US-2.2.4)   | All Members         |          |          |
 | [US-2.2.5](./Sprint1/Back-end-Module(s)/US-2.2.5)   | 1211225             |          |          |
 | [US-2.2.6](./Sprint1/Back-end-Module(s)/US-2.2.6)   | 1211225             |          |          |
 | [US-2.2.7](./Sprint1/Back-end-Module(s)/US-2.2.7)   | All Members         |          |          |

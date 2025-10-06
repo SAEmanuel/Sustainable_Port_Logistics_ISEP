@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using SEM5_PI_WEBAPI.Domain.Containers;
 using SEM5_PI_WEBAPI.Domain.Shared;
 using SEM5_PI_WEBAPI.Domain.Qualifications;
 using SEM5_PI_WEBAPI.Domain.StaffMembers;
@@ -7,7 +8,9 @@ using SEM5_PI_WEBAPI.Domain.Vessels;
 using SEM5_PI_WEBAPI.Domain.VesselsTypes;
 using SEM5_PI_WEBAPI.Domain.ShippingAgentOrganizations;
 using SEM5_PI_WEBAPI.Domain.ShippingAgentRepresentatives;
+using SEM5_PI_WEBAPI.Domain.StorageAreas;
 using SEM5_PI_WEBAPI.Infraestructure;
+using SEM5_PI_WEBAPI.Infraestructure.Containers;
 using SEM5_PI_WEBAPI.Infraestructure.Qualifications;
 using SEM5_PI_WEBAPI.Infraestructure.Shared;
 using SEM5_PI_WEBAPI.Infraestructure.StaffMembers;
@@ -15,6 +18,7 @@ using SEM5_PI_WEBAPI.Infraestructure.Vessels;
 using SEM5_PI_WEBAPI.Infraestructure.VesselsTypes;
 using SEM5_PI_WEBAPI.Infraestructure.ShippingAgentOrganizations;
 using SEM5_PI_WEBAPI.Infraestructure.ShippingAgentRepresentatives;
+using SEM5_PI_WEBAPI.Infraestructure.StorageAreas;
 
 namespace SEM5_PI_WEBAPI
 {
@@ -84,6 +88,12 @@ namespace SEM5_PI_WEBAPI
             
             services.AddTransient<IShippingAgentRepresentativeRepository, ShippingAgentRepresentativeRepository>();
             services.AddTransient<ShippingAgentRepresentativeService>();
+
+            services.AddTransient<IContainerRepository,ContainerRepository >();
+            services.AddTransient<ContainerService>();
+            
+            services.AddTransient<IStorageAreaRepository, StorageAreaRepository>();
+            services.AddTransient<StorageAreaService>();
         }
     }
 }
