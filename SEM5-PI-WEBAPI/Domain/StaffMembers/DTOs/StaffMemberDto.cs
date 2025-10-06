@@ -12,7 +12,7 @@ public class StaffMemberDto
     public PhoneNumber Phone { get; set; }
     public Schedule Schedule { get; set; }
     public bool IsActive { get; set; }
-    public List<QualificationId> QualificationIds { get; }  // <-- só os IDs
+    public List<Guid> QualificationIds { get; }  
 
     public StaffMemberDto(
         Guid id,
@@ -22,7 +22,7 @@ public class StaffMemberDto
         PhoneNumber phone,
         Schedule schedule,
         bool isActive,
-        List<QualificationId> qualificationIds)
+        List<Guid> qualificationIds)
     {
         Id = id;
         ShortName = shortName;

@@ -1,7 +1,7 @@
 using SEM5_PI_WEBAPI.Domain.BusinessShared;
 using SEM5_PI_WEBAPI.Domain.Qualifications;
 
-namespace SEM5_PI_WEBAPI.Domain.StaffMembers;
+namespace SEM5_PI_WEBAPI.Domain.StaffMembers.DTOs;
 
 public class CreatingStaffMemberDto
 {
@@ -10,9 +10,9 @@ public class CreatingStaffMemberDto
     public PhoneNumber Phone { get; set; }
     public Schedule Schedule { get; set; }
     public bool IsActive { get; set; }
-    public List<QualificationId> QualificationIds { get; set; }
+    public List<Guid>? QualificationIds { get; set; }
 
-    public CreatingStaffMemberDto(string shortName, Email email, PhoneNumber phone, Schedule schedule, bool isActive, List<QualificationId> qualificationIds)
+    public CreatingStaffMemberDto(string shortName, Email email, PhoneNumber phone, Schedule schedule, bool isActive, List<Guid>? qualificationIds)
     {
         ShortName = shortName;
         Email = email;

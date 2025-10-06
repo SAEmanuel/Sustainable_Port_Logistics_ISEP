@@ -18,7 +18,7 @@ GET {{portURL}}/api/VesselType
 Accept: application/json
 
 ###
-GET {{portURL}}/api/VesselType/id/c7798221-c758-47fd-a343-21d49b78c806
+GET {{portURL}}/api/VesselType/id/b928c0c9-90c8-4e41-9a6d-59ec1ffef048
 Accept: application/json
 
 ###
@@ -26,7 +26,7 @@ GET {{portURL}}/api/VesselType/name/Panamax
 Accept: application/json
 
 ###
-GET {{portURL}}/api/VesselType/description/Medium size vessel
+GET {{portURL}}/api/VesselType/description/size vessel
 Accept: application/json
 
 ###
@@ -122,10 +122,26 @@ Accept: application/json
   "vesselTypeId": "c7798221-c758-47fd-a343-21d49b78c806"
 }
 
-
+### --- STAFF MEMBERS ---
 
 ###
 GET {{portURL}}/api/StaffMembers
+Accept: application/json
+
+###
+GET {{portURL}}/api/StaffMembers/a0f285f4-b361-4ca5-a31f-1bfc0ad34f54
+Accept: application/json
+
+###
+GET {{portURL}}/api/StaffMembers/mec/1250001
+Accept: application/json
+
+###
+GET {{portURL}}/api/StaffMembers/name/Paulo Mendes Updated
+Accept: application/json
+
+###
+GET {{portURL}}/api/StaffMembers/status/true
 Accept: application/json
 
 ###
@@ -134,11 +150,24 @@ Content-Type: application/json
 Accept: application/json
 
 {
-  "id": "d1234567-89ab-cdef-0123-456789abcdef",
   "shortName": "Paulo Mendes",
-  "mecanographicNumber": "125001",
   "email": { "address": "mendy@gmail.com" },
   "phone": { "number": "+351912345678" },
   "schedule": { "shift": "Morning", "days": 31 },
-  "isActive": true
+  "isActive": true,
+  "qualificationIds": ["274b013d-da0d-4e9b-8b83-73c019ce8104"]
 }
+
+###
+PATCH {{portURL}}/api/StaffMembers/a0f285f4-b361-4ca5-a31f-1bfc0ad34f54
+Content-Type: application/json
+Accept: application/json
+
+{
+  "shortName": "Paulo Mendes Updated",
+  "email": { "address": "mendy-updated@gmail.com" }
+}
+
+###
+PATCH {{portURL}}/api/StaffMembers/a0f285f4-b361-4ca5-a31f-1bfc0ad34f54/toggle
+Accept: application/json

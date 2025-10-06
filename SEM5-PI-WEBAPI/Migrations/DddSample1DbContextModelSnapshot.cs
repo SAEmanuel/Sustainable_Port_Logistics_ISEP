@@ -16,6 +16,21 @@ namespace SEM5_PI_WEBAPI.Migrations
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "9.0.9");
 
+            modelBuilder.Entity("QualificationStaffMember", b =>
+                {
+                    b.Property<string>("QualificationsId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("StaffMemberId")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("QualificationsId", "StaffMemberId");
+
+                    b.HasIndex("StaffMemberId");
+
+                    b.ToTable("StaffMemberQualifications", (string)null);
+                });
+
             modelBuilder.Entity("SEM5_PI_WEBAPI.Domain.Qualifications.Qualification", b =>
                 {
                     b.Property<string>("Id")
@@ -31,12 +46,7 @@ namespace SEM5_PI_WEBAPI.Migrations
                         .HasMaxLength(150)
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("StaffMemberId")
-                        .HasColumnType("TEXT");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("StaffMemberId");
 
                     b.ToTable("Qualifications");
                 });
@@ -123,11 +133,19 @@ namespace SEM5_PI_WEBAPI.Migrations
                     b.ToTable("VesselType");
                 });
 
-            modelBuilder.Entity("SEM5_PI_WEBAPI.Domain.Qualifications.Qualification", b =>
+            modelBuilder.Entity("QualificationStaffMember", b =>
                 {
+                    b.HasOne("SEM5_PI_WEBAPI.Domain.Qualifications.Qualification", null)
+                        .WithMany()
+                        .HasForeignKey("QualificationsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("SEM5_PI_WEBAPI.Domain.StaffMembers.StaffMember", null)
-                        .WithMany("Qualifications")
-                        .HasForeignKey("StaffMemberId");
+                        .WithMany()
+                        .HasForeignKey("StaffMemberId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("SEM5_PI_WEBAPI.Domain.StaffMembers.StaffMember", b =>
@@ -227,11 +245,6 @@ namespace SEM5_PI_WEBAPI.Migrations
 
                     b.Navigation("ImoNumber")
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("SEM5_PI_WEBAPI.Domain.StaffMembers.StaffMember", b =>
-                {
-                    b.Navigation("Qualifications");
                 });
 #pragma warning restore 612, 618
         }

@@ -9,21 +9,30 @@ public class StaffMemberEntityTypeConfiguration : IEntityTypeConfiguration<Staff
     public void Configure(EntityTypeBuilder<StaffMember> builder)
     {
         builder.HasKey(k => k.Id);
-        
+
+        builder.Property(s => s.ShortName)
+            .IsRequired();
+
+        builder.Property(s => s.MecanographicNumber)
+            .IsRequired();
+
+        builder.Property(s => s.IsActive)
+            .IsRequired();
+
         builder.OwnsOne(s => s.Email, email =>
         {
             email.Property(e => e.Address)
                 .HasColumnName("Email")
                 .IsRequired();
         });
-        
+
         builder.OwnsOne(s => s.Phone, phone =>
         {
             phone.Property(p => p.Number)
                 .HasColumnName("Phone")
                 .IsRequired();
         });
-        
+
         builder.OwnsOne(s => s.Schedule, schedule =>
         {
             schedule.Property(sch => sch.Shift)
@@ -35,5 +44,9 @@ public class StaffMemberEntityTypeConfiguration : IEntityTypeConfiguration<Staff
                 .IsRequired();
         });
         
+        builder
+            .HasMany(s => s.Qualifications)
+            .WithMany() 
+            .UsingEntity(join => join.ToTable("StaffMemberQualifications"));
     }
 }

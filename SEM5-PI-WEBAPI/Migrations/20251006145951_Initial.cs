@@ -5,11 +5,24 @@
 namespace SEM5_PI_WEBAPI.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class Initial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.CreateTable(
+                name: "Qualifications",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "TEXT", nullable: false),
+                    Code = table.Column<string>(type: "TEXT", maxLength: 15, nullable: false),
+                    Name = table.Column<string>(type: "TEXT", maxLength: 150, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Qualifications", x => x.Id);
+                });
+
             migrationBuilder.CreateTable(
                 name: "StaffMember",
                 columns: table => new
@@ -46,22 +59,27 @@ namespace SEM5_PI_WEBAPI.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Qualifications",
+                name: "StaffMemberQualifications",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "TEXT", nullable: false),
-                    Code = table.Column<string>(type: "TEXT", maxLength: 15, nullable: false),
-                    Name = table.Column<string>(type: "TEXT", maxLength: 150, nullable: false),
-                    StaffMemberId = table.Column<string>(type: "TEXT", nullable: true)
+                    QualificationsId = table.Column<string>(type: "TEXT", nullable: false),
+                    StaffMemberId = table.Column<string>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Qualifications", x => x.Id);
+                    table.PrimaryKey("PK_StaffMemberQualifications", x => new { x.QualificationsId, x.StaffMemberId });
                     table.ForeignKey(
-                        name: "FK_Qualifications_StaffMember_StaffMemberId",
+                        name: "FK_StaffMemberQualifications_Qualifications_QualificationsId",
+                        column: x => x.QualificationsId,
+                        principalTable: "Qualifications",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_StaffMemberQualifications_StaffMember_StaffMemberId",
                         column: x => x.StaffMemberId,
                         principalTable: "StaffMember",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -86,8 +104,8 @@ namespace SEM5_PI_WEBAPI.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Qualifications_StaffMemberId",
-                table: "Qualifications",
+                name: "IX_StaffMemberQualifications_StaffMemberId",
+                table: "StaffMemberQualifications",
                 column: "StaffMemberId");
 
             migrationBuilder.CreateIndex(
@@ -106,10 +124,13 @@ namespace SEM5_PI_WEBAPI.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Qualifications");
+                name: "StaffMemberQualifications");
 
             migrationBuilder.DropTable(
                 name: "Vessel");
+
+            migrationBuilder.DropTable(
+                name: "Qualifications");
 
             migrationBuilder.DropTable(
                 name: "StaffMember");

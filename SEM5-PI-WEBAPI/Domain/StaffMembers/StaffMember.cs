@@ -7,20 +7,19 @@ namespace SEM5_PI_WEBAPI.Domain.StaffMembers;
 
 public class StaffMember : Entity<StaffMemberId>
 {
-    [MaxLength(20)]
-    public string ShortName { get; private set; }
+    [MaxLength(20)] public string ShortName { get; private set; }
 
-    [MaxLength(7)]
-    public string MecanographicNumber { get; private set; }
+    [MaxLength(7)] public string MecanographicNumber { get; private set; }
 
     public Email Email { get; private set; }
     public PhoneNumber Phone { get; private set; }
     public Schedule Schedule { get; private set; }
-    public bool IsActive { get; private set; }
+    public bool IsActive { get; set; }
     public List<Qualification> Qualifications { get; private set; }
 
-    // Construtor protegido → só a Factory ou EF podem instanciar
-    protected StaffMember() { }
+    protected StaffMember()
+    {
+    }
 
     internal StaffMember(
         string shortName,
@@ -40,7 +39,7 @@ public class StaffMember : Entity<StaffMemberId>
         IsActive = isActive;
         Qualifications = qualifications ?? new List<Qualification>();
     }
-    
+
 
     public void UpdateShortName(string newShortName)
     {
@@ -71,10 +70,9 @@ public class StaffMember : Entity<StaffMemberId>
 
     public void AddQualification(Qualification qualification)
     {
-        if (!Qualifications.Contains(qualification))
-            Qualifications.Add(qualification);
-        else
+        if (Qualifications.Any(q => q.Id == qualification.Id))
             throw new BusinessRuleValidationException("Duplicated Qualification, not added.");
+        Qualifications.Add(qualification);
     }
 
     public void RemoveQualification(Qualification qualification)

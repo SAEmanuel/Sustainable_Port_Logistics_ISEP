@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using SEM5_PI_WEBAPI.Domain.Qualifications;
 using SEM5_PI_WEBAPI.Domain.StaffMembers;
 using SEM5_PI_WEBAPI.Infraestructure.Shared;
 
@@ -6,7 +7,54 @@ namespace SEM5_PI_WEBAPI.Infraestructure.StaffMembers;
 
 public class StaffMemberRepository : BaseRepository<StaffMember, StaffMemberId>, IStaffMemberRepository
 {
-    public StaffMemberRepository(DddSample1DbContext context):base(context.StaffMember)
+    private readonly DbSet<StaffMember> _staffMembers;
+
+    public StaffMemberRepository(DddSample1DbContext context) : base(context.StaffMember)
     {
+        _staffMembers = context.StaffMember;
+    }
+
+    public async Task<List<StaffMember>> GetAllAsync()
+    {
+        return await _staffMembers
+            .Include(s => s.Qualifications)
+            .ToListAsync();
+    }
+
+    public async Task<StaffMember?> GetByIdAsync(StaffMemberId id)
+    {
+        return await _staffMembers
+            .Include(s => s.Qualifications)
+            .FirstOrDefaultAsync(s => s.Id == id);
+    }
+
+    public async Task<StaffMember?> GetByMecNumberAsync(string mec)
+    {
+        return await _staffMembers
+            .Include(s => s.Qualifications)
+            .FirstOrDefaultAsync(s => s.MecanographicNumber == mec);
+    }
+
+    public async Task<StaffMember?> GetByNameAsync(string name)
+    {
+        return await _staffMembers
+            .Include(s => s.Qualifications)
+            .FirstOrDefaultAsync(s => s.ShortName == name);
+    }
+
+    public async Task<List<StaffMember>> GetByStatusAsync(bool status)
+    {
+        return await _staffMembers
+            .Include(s => s.Qualifications)
+            .Where(s => s.IsActive == status)
+            .ToListAsync();
+    }
+
+    public async Task<List<StaffMember>> GetByQualificationsAsync(List<QualificationId> ids)
+    {
+        return await _staffMembers
+            .Include(s => s.Qualifications)
+            .Where(s => s.Qualifications.Any(q => ids.Contains(q.Id)))
+            .ToListAsync();
     }
 }
