@@ -11,7 +11,6 @@ public class TaxNumber : IValueObject
     public string Value { get; private set; }
     public string CountryCode { get; private set; }
 
-    //Diferentes códigos para país
     private static readonly Dictionary<string, Regex> VatRegexes = new(StringComparer.OrdinalIgnoreCase)
     {
         { "AT", new Regex(@"^ATU\d{8}$", RegexOptions.Compiled) },                   // Austria
@@ -43,6 +42,8 @@ public class TaxNumber : IValueObject
         { "SE", new Regex(@"^SE\d{12}$", RegexOptions.Compiled) }                    // Suecia
     };
 
+    protected TaxNumber() { }
+    
     public TaxNumber(string taxNumber)
     {
         if (string.IsNullOrWhiteSpace(taxNumber))

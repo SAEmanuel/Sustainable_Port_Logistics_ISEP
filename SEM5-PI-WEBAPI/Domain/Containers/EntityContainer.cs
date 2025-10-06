@@ -47,8 +47,10 @@ public class EntityContainer : Entity<ContainerId>, IAggregateRoot
         this.Status = DefaultContainerStatus;
     }
 
-    public void ChangeStatus(ContainerStatus status) => SetContainerStatus(status);
-    public void ChangeWeightKg(double weightKg) => SetContainerWeightKg(weightKg);
+    public void UpdateStatus(ContainerStatus status) => SetContainerStatus(status);
+    public void UpdateType(ContainerType type) => SetContainerType(type);
+    public void UpdateWeightKg(double weightKg) => SetContainerWeightKg(weightKg);
+    public void UpdateDescription(string description) => SetContainerDescription(description);
     
     
     private void SetContainerWeightKg(double weightKg)
@@ -64,6 +66,11 @@ public class EntityContainer : Entity<ContainerId>, IAggregateRoot
         this.Status = status;
     }
 
+    private void SetContainerType(ContainerType type)
+    {
+        this.Type = type;
+    }
+
     private void SetContainerDescription(string description)
     {
         if (string.IsNullOrWhiteSpace(description)) throw new BusinessRuleValidationException("Description can't be null or whitespace.");
@@ -75,9 +82,9 @@ public class EntityContainer : Entity<ContainerId>, IAggregateRoot
     
     
     public override bool Equals(object? obj) =>
-        obj is EntityContainer otherContainer && this.Id.Equals(otherContainer.Id) && String.Equals(ISOId, otherContainer.ISOId);
+        obj is EntityContainer otherContainer && this.Id.Equals(otherContainer.Id) && this.ISOId.Equals(otherContainer.ISOId);
 
-    public override int GetHashCode() => Id.GetHashCode();
+    public override int GetHashCode() => HashCode.Combine(this.ISOId,Id);
 
     public override string ToString() => $"Container [{ISOId}] - {Description} ({Type}) Status: {Status} Weight: {WeightKg})";
 }

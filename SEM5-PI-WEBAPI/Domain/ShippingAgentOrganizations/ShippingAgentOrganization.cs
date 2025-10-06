@@ -10,6 +10,8 @@ public class ShippingAgentOrganization : Entity<ShippingAgentOrganizationId>, IA
     public string Address { get; set; }
     public TaxNumber Taxnumber { get; set; }
 
+    protected ShippingAgentOrganization() { }
+    
     public ShippingAgentOrganization(string code,string legalName,string altName, string address, TaxNumber taxNumber)
     {
         Code = code;

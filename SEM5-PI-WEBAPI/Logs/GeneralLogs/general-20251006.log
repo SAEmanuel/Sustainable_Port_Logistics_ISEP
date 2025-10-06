@@ -1749,3 +1749,52 @@ ORDER BY "s"."Id", "s1"."QualificationsId", "s1"."StaffMemberId"
 [18:39:25 INF] Microsoft.Hosting.Lifetime                                             - Hosting environment: Development
 [18:39:25 INF] Microsoft.Hosting.Lifetime                                             - Content root path: /Users/jorgerodriguez/Desktop/Universidade/3_ano/1_Semestre/LEI-SEM5-PI-2025-26-3DJ-03/SEM5-PI-WEBAPI
 [18:39:29 INF] Microsoft.Hosting.Lifetime                                             - Application is shutting down...
+[19:58:53 INF]  - Starting web host
+[19:58:53 INF] Microsoft.Hosting.Lifetime                                             - Now listening on: http://localhost:5008
+[19:58:53 INF] Microsoft.Hosting.Lifetime                                             - Application started. Press Ctrl+C to shut down.
+[19:58:53 INF] Microsoft.Hosting.Lifetime                                             - Hosting environment: Development
+[19:58:53 INF] Microsoft.Hosting.Lifetime                                             - Content root path: /Users/jorgerodriguez/Desktop/Universidade/3_ano/1_Semestre/LEI-SEM5-PI-2025-26-3DJ-03/SEM5-PI-WEBAPI
+[19:58:55 INF] Microsoft.Hosting.Lifetime                                             - Application is shutting down...
+[20:29:11 INF]  - Starting web host
+[20:29:11 INF] Microsoft.Hosting.Lifetime                                             - Now listening on: http://localhost:5008
+[20:29:11 INF] Microsoft.Hosting.Lifetime                                             - Application started. Press Ctrl+C to shut down.
+[20:29:11 INF] Microsoft.Hosting.Lifetime                                             - Hosting environment: Development
+[20:29:11 INF] Microsoft.Hosting.Lifetime                                             - Content root path: /Users/jorgerodriguez/Desktop/Universidade/3_ano/1_Semestre/LEI-SEM5-PI-2025-26-3DJ-03/SEM5-PI-WEBAPI
+[20:29:58 INF] Microsoft.AspNetCore.Hosting.Diagnostics                               - Request starting HTTP/1.1 GET http://localhost:5008/api/Container - null null
+[20:29:58 WRN] Microsoft.AspNetCore.HttpsPolicy.HttpsRedirectionMiddleware            - Failed to determine the https port for redirect.
+[20:29:58 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - ┌───────────────────────────────────────────────
+[20:29:58 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - │ HTTP GET /api/Container
+[20:29:58 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - │ From IP: 127.0.0.1
+[20:29:58 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - └───────────────────────────────────────────────
+[20:29:58 INF] Microsoft.AspNetCore.Routing.EndpointMiddleware                        - Executing endpoint 'SEM5_PI_WEBAPI.Controllers.ContainerController.GetAllAsync (SEM5-PI-WEBAPI)'
+[20:29:58 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Route matched with {action = "GetAll", controller = "Container"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[System.Collections.Generic.List`1[SEM5_PI_WEBAPI.Domain.Containers.ContainerDto]]] GetAllAsync() on controller SEM5_PI_WEBAPI.Controllers.ContainerController (SEM5-PI-WEBAPI).
+[20:29:58 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Executing action method SEM5_PI_WEBAPI.Controllers.ContainerController.GetAllAsync (SEM5-PI-WEBAPI) - Validation state: "Valid"
+[20:29:58 INF] SEM5_PI_WEBAPI.Controllers.ContainerController                         - API Request: Get All Containers on DataBase
+[20:29:58 INF] SEM5_PI_WEBAPI.Domain.Containers.ContainerService                      - Business Domain: Request to fetch all Containers.
+[20:29:59 INF] Microsoft.EntityFrameworkCore.Database.Command                         - Executed DbCommand (16ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT "c"."Id", "c"."Description", "c"."Status", "c"."Type", "c"."WeightKg", "c"."IsoCode"
+FROM "Containers" AS "c"
+[20:29:59 WRN] SEM5_PI_WEBAPI.Controllers.ContainerController                         - API Response (404): No Containers found on DataBase
+[20:29:59 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Executed action method SEM5_PI_WEBAPI.Controllers.ContainerController.GetAllAsync (SEM5-PI-WEBAPI), returned result Microsoft.AspNetCore.Mvc.NotFoundObjectResult in 1406.0674ms.
+[20:29:59 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ObjectResultExecutor           - Executing NotFoundObjectResult, writing value of type 'System.String'.
+[20:29:59 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Executed action SEM5_PI_WEBAPI.Controllers.ContainerController.GetAllAsync (SEM5-PI-WEBAPI) in 1606.5415ms
+[20:29:59 INF] Microsoft.AspNetCore.Routing.EndpointMiddleware                        - Executed endpoint 'SEM5_PI_WEBAPI.Controllers.ContainerController.GetAllAsync (SEM5-PI-WEBAPI)'
+[20:29:59 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - ──────│ ✔ COMPLETED GET /api/Container with 404 in 1629.571 ms
+[20:29:59 INF] Microsoft.AspNetCore.Hosting.Diagnostics                               - Request finished HTTP/1.1 GET http://localhost:5008/api/Container - 404 32 application/json; charset=utf-8 1678.3425ms
+[20:30:13 INF] Microsoft.AspNetCore.Hosting.Diagnostics                               - Request starting HTTP/1.1 POST http://localhost:5008/api/Container - application/json 128
+[20:30:13 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - ┌───────────────────────────────────────────────
+[20:30:13 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - │ HTTP POST /api/Container
+[20:30:13 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - │ From IP: 127.0.0.1
+[20:30:13 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - └───────────────────────────────────────────────
+[20:30:13 INF] Microsoft.AspNetCore.Routing.EndpointMiddleware                        - Executing endpoint 'SEM5_PI_WEBAPI.Controllers.ContainerController.CreateAsync (SEM5-PI-WEBAPI)'
+[20:30:13 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Route matched with {action = "Create", controller = "Container"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[SEM5_PI_WEBAPI.Domain.Containers.ContainerDto]] CreateAsync(SEM5_PI_WEBAPI.Domain.Containers.CreatingContainerDto) on controller SEM5_PI_WEBAPI.Controllers.ContainerController (SEM5-PI-WEBAPI).
+[20:30:13 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Executing action method SEM5_PI_WEBAPI.Controllers.ContainerController.CreateAsync (SEM5-PI-WEBAPI) - Validation state: "Valid"
+[20:30:13 INF] SEM5_PI_WEBAPI.Controllers.ContainerController                         - API Request: Add Container with body = {"IsoCode":"MSCU1234567","Description":"Standard dry container with electronics","Type":"Dry","WeightKg":12000,"$type":"CreatingContainerDto"}
+[20:30:13 INF] SEM5_PI_WEBAPI.Domain.Containers.ContainerService                      - Business Domain: Request to add new Container with ISO Code = MSCU1234567
+[20:30:13 WRN] SEM5_PI_WEBAPI.Controllers.ContainerController                         - API Error (404): Invalid ISO 6346 code: check digit does not match.
+[20:30:13 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Executed action method SEM5_PI_WEBAPI.Controllers.ContainerController.CreateAsync (SEM5-PI-WEBAPI), returned result Microsoft.AspNetCore.Mvc.BadRequestObjectResult in 6.1727ms.
+[20:30:13 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ObjectResultExecutor           - Executing BadRequestObjectResult, writing value of type 'System.String'.
+[20:30:13 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Executed action SEM5_PI_WEBAPI.Controllers.ContainerController.CreateAsync (SEM5-PI-WEBAPI) in 67.8449ms
+[20:30:13 INF] Microsoft.AspNetCore.Routing.EndpointMiddleware                        - Executed endpoint 'SEM5_PI_WEBAPI.Controllers.ContainerController.CreateAsync (SEM5-PI-WEBAPI)'
+[20:30:13 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - ──────│ ✔ COMPLETED POST /api/Container with 400 in 77.336 ms
+[20:30:13 INF] Microsoft.AspNetCore.Hosting.Diagnostics                               - Request finished HTTP/1.1 POST http://localhost:5008/api/Container - 400 52 application/json; charset=utf-8 81.1088ms

@@ -31,6 +31,29 @@ namespace SEM5_PI_WEBAPI.Migrations
                     b.ToTable("StaffMemberQualifications", (string)null);
                 });
 
+            modelBuilder.Entity("SEM5_PI_WEBAPI.Domain.Containers.EntityContainer", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<double>("WeightKg")
+                        .HasColumnType("REAL");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Containers", (string)null);
+                });
+
             modelBuilder.Entity("SEM5_PI_WEBAPI.Domain.Qualifications.Qualification", b =>
                 {
                     b.Property<string>("Id")
@@ -49,6 +72,68 @@ namespace SEM5_PI_WEBAPI.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Qualifications");
+                });
+
+            modelBuilder.Entity("SEM5_PI_WEBAPI.Domain.ShippingAgentOrganizations.ShippingAgentOrganization", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Address")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("AltName")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("LegalName")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Code")
+                        .IsUnique();
+
+                    b.ToTable("ShippingAgentOrganizations", (string)null);
+                });
+
+            modelBuilder.Entity("SEM5_PI_WEBAPI.Domain.ShippingAgentRepresentatives.ShippingAgentRepresentative", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("CitizenId")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Nationality")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("PhoneNumber")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
+
+                    b.ToTable("ShippingAgentRepresentative");
                 });
 
             modelBuilder.Entity("SEM5_PI_WEBAPI.Domain.StaffMembers.StaffMember", b =>
@@ -72,6 +157,16 @@ namespace SEM5_PI_WEBAPI.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("StaffMember");
+                });
+
+            modelBuilder.Entity("SEM5_PI_WEBAPI.Domain.StorageAreas.StorageArea", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("StorageArea");
                 });
 
             modelBuilder.Entity("SEM5_PI_WEBAPI.Domain.Vessels.Vessel", b =>
@@ -145,6 +240,58 @@ namespace SEM5_PI_WEBAPI.Migrations
                         .WithMany()
                         .HasForeignKey("StaffMemberId")
                         .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("SEM5_PI_WEBAPI.Domain.Containers.EntityContainer", b =>
+                {
+                    b.OwnsOne("SEM5_PI_WEBAPI.Domain.ValueObjects.Iso6346Code", "ISOId", b1 =>
+                        {
+                            b1.Property<string>("EntityContainerId")
+                                .HasColumnType("TEXT");
+
+                            b1.Property<string>("Value")
+                                .IsRequired()
+                                .HasColumnType("TEXT")
+                                .HasColumnName("IsoCode");
+
+                            b1.HasKey("EntityContainerId");
+
+                            b1.ToTable("Containers");
+
+                            b1.WithOwner()
+                                .HasForeignKey("EntityContainerId");
+                        });
+
+                    b.Navigation("ISOId")
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("SEM5_PI_WEBAPI.Domain.ShippingAgentOrganizations.ShippingAgentOrganization", b =>
+                {
+                    b.OwnsOne("SEM5_PI_WEBAPI.Domain.ValueObjects.TaxNumber", "Taxnumber", b1 =>
+                        {
+                            b1.Property<string>("ShippingAgentOrganizationId")
+                                .HasColumnType("TEXT");
+
+                            b1.Property<string>("CountryCode")
+                                .IsRequired()
+                                .HasColumnType("TEXT");
+
+                            b1.Property<string>("Value")
+                                .IsRequired()
+                                .HasColumnType("TEXT")
+                                .HasColumnName("TaxNumber");
+
+                            b1.HasKey("ShippingAgentOrganizationId");
+
+                            b1.ToTable("ShippingAgentOrganizations");
+
+                            b1.WithOwner()
+                                .HasForeignKey("ShippingAgentOrganizationId");
+                        });
+
+                    b.Navigation("Taxnumber")
                         .IsRequired();
                 });
 

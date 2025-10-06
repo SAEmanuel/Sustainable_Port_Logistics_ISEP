@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using SEM5_PI_WEBAPI.Domain.Containers;
+using SEM5_PI_WEBAPI.Domain.ValueObjects;
 
 namespace SEM5_PI_WEBAPI.Infraestructure.Containers;
 
@@ -8,7 +9,29 @@ public class ContainerEntityTypeConfiguration : IEntityTypeConfiguration<EntityC
 {
     public void Configure(EntityTypeBuilder<EntityContainer> builder)
     {
-        //builder.ToTable("Qualifications", SchemaNames.DDDSample1);
-        builder.HasKey(b => b.Id);
+        builder.ToTable("Containers");
+        
+        builder.HasKey(c => c.Id);
+
+        builder.OwnsOne(c => c.ISOId, iso =>
+        {
+            iso.Property(i => i.Value)
+                .HasColumnName("IsoCode")
+                .IsRequired();
+            
+        });
+
+        builder.Property(c => c.Description)
+            .IsRequired();
+
+        builder.Property(c => c.Type)
+            .IsRequired();
+
+        builder.Property(c => c.Status)
+            .IsRequired();
+        
+        builder.Property(c => c.WeightKg)
+            .IsRequired();
+
     }
 }

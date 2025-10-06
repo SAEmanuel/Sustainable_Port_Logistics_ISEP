@@ -13,6 +13,11 @@ Accept: application/json
   "code": "TRD-11"
 }
 
+
+
+### --- VESSEL TYPE ---
+
+
 ###
 GET {{portURL}}/api/VesselType
 Accept: application/json
@@ -56,6 +61,9 @@ Accept: application/json
 
 
 
+### --- VESSEL ---
+
+
 ###
 GET {{portURL}}/api/Vessel
 Accept: application/json
@@ -84,7 +92,6 @@ Content-Type: application/json
   "owner": "Evergreen Marine Ltdddd",
   "name" : "Jo"
 }
-
 
 ###
 POST {{portURL}}/api/Vessel
@@ -121,6 +128,68 @@ Accept: application/json
   "owner": "OOCL",
   "vesselTypeId": "c7798221-c758-47fd-a343-21d49b78c806"
 }
+
+
+
+### --- CONTAINER ---
+
+###
+GET {{portURL}}/api/Container
+Accept: application/json
+
+###
+GET {{portURL}}/api/Container/id/
+Accept: application/json
+
+###
+GET {{portURL}}/api/Container/iso/
+Accept: application/json
+
+###
+POST {{portURL}}/api/Container
+Content-Type: application/json
+Accept: application/json
+
+{
+  "isoCode": "MSCU1234567",
+  "description": "Standard dry container with electronics",
+  "type": "Dry",
+  "weightKg": 12000
+}
+
+###
+POST {{portURL}}/api/Container
+Content-Type: application/json
+Accept: application/json
+
+{
+  "isoCode": "OOLU7654321",
+  "description": "Reefer container for perishable goods",
+  "type": "Reefer",
+  "weightKg": 8500
+}
+
+###
+POST {{portURL}}/api/Container
+Content-Type: application/json
+Accept: application/json
+
+{
+  "isoCode": "HLCU9988776",
+  "description": "Tank container carrying chemicals",
+  "type": "Tank",
+  "weightKg": 14500
+}
+
+###
+PATCH {{portURL}}/api/Container/update/MSCU1234567
+Content-Type: application/json
+Accept: application/json
+
+{
+  "description": "Dry container updated with fragile electronics"
+}
+
 
 ### --- STAFF MEMBERS ---
 

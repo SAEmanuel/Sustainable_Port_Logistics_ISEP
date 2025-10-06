@@ -8,6 +8,8 @@ namespace SEM5_PI_WEBAPI.Infraestructure.ShippingAgentOrganizations
     {
         public void Configure(EntityTypeBuilder<ShippingAgentOrganization> builder)
         {
+            builder.ToTable("ShippingAgentOrganizations");
+
             builder.HasKey(b => b.Id);
 
             builder.Property(b => b.Code)
@@ -22,8 +24,12 @@ namespace SEM5_PI_WEBAPI.Infraestructure.ShippingAgentOrganizations
             builder.Property(b => b.Address)
                 .IsRequired();
 
-            builder.Property(b => b.Taxnumber)
-                .IsRequired();
+            builder.OwnsOne(b => b.Taxnumber, tax =>
+            {
+                tax.Property(t => t.Value)
+                    .HasColumnName("TaxNumber")
+                    .IsRequired();
+            });
 
             builder.HasIndex(b => b.Code).IsUnique();
         }

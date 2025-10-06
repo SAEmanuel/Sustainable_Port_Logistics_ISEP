@@ -55,6 +55,26 @@ public class ContainerController : ControllerBase
         }
     }
     
+    [HttpGet("iso/{isoNumber}")]
+    public async Task<ActionResult<ContainerDto>> GetById(string isoNumber)
+    {
+        try
+        {
+            _logger.LogInformation("API Request: Fetching Container with ISO Number = {Id}", isoNumber);
+            
+            var vesselDto = await _service.GetByIsoAsync(isoNumber);
+            
+            _logger.LogWarning("API Response (200): Container with ID = {Id} -> FOUND", isoNumber);
+            
+            return Ok(vesselDto);
+        }
+        catch (BusinessRuleValidationException ex)
+        {
+            _logger.LogWarning("API Response (404): Container with ID = {Id} -> NOT FOUND", isoNumber);
+            return NotFound(ex.Message);
+        }
+    }
+    
     
     [HttpPost]
     public async Task<ActionResult<ContainerDto>> CreateAsync(CreatingContainerDto creatingContainerDto)
@@ -74,4 +94,26 @@ public class ContainerController : ControllerBase
             return BadRequest(e.Message);
         }
     }
+
+    [HttpPatch("update/{isoNumber}")]
+    public async Task<ActionResult<ContainerDto>> UpdateAsync(string isoNumber, [FromBody] UpdatingContainerDto? dto)
+    {
+        if (dto == null) return BadRequest("No changes provided.");
+    
+        try
+        {
+            _logger.LogInformation("API Request: Partial update for Container with ISO Number = {ISO}", isoNumber);
+
+            var containerDto = await _service.PatchByIsoAsync(isoNumber, dto);
+
+            _logger.LogInformation("API Response (200): Container with ISO = {ISO} patched successfully", isoNumber);
+            return Ok(containerDto);
+        }
+        catch (BusinessRuleValidationException e)
+        {
+            _logger.LogWarning("API Error (400): {Message}", e.Message);
+            return BadRequest(e.Message);
+        }
+    }
+
 }

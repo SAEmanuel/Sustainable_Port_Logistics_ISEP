@@ -10,17 +10,14 @@ public class ContainerService
     private readonly IUnitOfWork _unitOfWork;
     private readonly ILogger<ContainerService> _logger;
     private readonly IContainerRepository _containerRepository;
-    private readonly IVesselRepository _vesselRepository;
-    private readonly IStorageAreaRepository _storageAreaRepository;
 
     public ContainerService(IUnitOfWork unitOfWork, ILogger<ContainerService> logger,
-        IContainerRepository containerRepository, IVesselRepository vesselRepository, IStorageAreaRepository storageAreaRepository)
+        IContainerRepository containerRepository)
     {
         this._unitOfWork = unitOfWork;
         this._logger = logger;
         this._containerRepository = containerRepository;
-        this._vesselRepository = vesselRepository;
-        this._storageAreaRepository = storageAreaRepository;
+
     }
     
     public async Task<List<ContainerDto>> GetAllAsync()
@@ -74,6 +71,49 @@ public class ContainerService
         _logger.LogInformation("Business Domain: Container Created Successfully with Iso Code [{ISO}] and System ID [{ID}].",createdContainer.ISOId, createdContainer.Id);
 
         return ContainerFactory.CreateContainerDto(createdContainer);
+    }
+
+    public async Task<ContainerDto> GetByIsoAsync(string id)
+    {
+        Iso6346Code inId = new  Iso6346Code(id);
+
+        _logger.LogInformation("Business Domain: Request to fetch Container with ISO Number = {Id}", inId);
+
+        EntityContainer? containerOnDb = await _containerRepository.GetByIsoNumberAsync(inId);
+        
+        if(containerOnDb == null)
+            throw new BusinessRuleValidationException($"No Container Found with ID : {inId}");
+            
+        _logger.LogInformation("Business Domain: Container with ISO Number = {Id} found successfully.", inId);
+
+        return ContainerFactory.CreateContainerDto(containerOnDb);
+            
+    }
+
+    public async Task<ContainerDto> PatchByIsoAsync(string iso, UpdatingContainerDto dto)
+    {
+        var isoNumber = new Iso6346Code(iso);
+
+        var container = await _containerRepository.GetByIsoNumberAsync(isoNumber);
+
+        if (container == null)
+            throw new BusinessRuleValidationException($"No Container found with ISO {isoNumber}.");
+
+        if (!string.IsNullOrWhiteSpace(dto.Description))
+            container.UpdateDescription(dto.Description);
+
+        if (dto.Type != null)
+            container.UpdateType(dto.Type.Value);
+    
+        if (dto.Status != null)
+            container.UpdateStatus(dto.Status.Value);
+    
+        if (dto.WeightKg != null)
+            container.UpdateWeightKg(dto.WeightKg.Value);
+
+        await _unitOfWork.CommitAsync();
+
+        return ContainerFactory.CreateContainerDto(container);
     }
 
 

@@ -11,6 +11,22 @@ namespace SEM5_PI_WEBAPI.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
+                name: "Containers",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "TEXT", nullable: false),
+                    IsoCode = table.Column<string>(type: "TEXT", nullable: false),
+                    Description = table.Column<string>(type: "TEXT", nullable: false),
+                    Type = table.Column<int>(type: "INTEGER", nullable: false),
+                    Status = table.Column<int>(type: "INTEGER", nullable: false),
+                    WeightKg = table.Column<double>(type: "REAL", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Containers", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Qualifications",
                 columns: table => new
                 {
@@ -21,6 +37,39 @@ namespace SEM5_PI_WEBAPI.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Qualifications", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ShippingAgentOrganizations",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "TEXT", nullable: false),
+                    Code = table.Column<string>(type: "TEXT", nullable: false),
+                    LegalName = table.Column<string>(type: "TEXT", nullable: false),
+                    AltName = table.Column<string>(type: "TEXT", nullable: false),
+                    Address = table.Column<string>(type: "TEXT", nullable: false),
+                    TaxNumber = table.Column<string>(type: "TEXT", nullable: false),
+                    Taxnumber_CountryCode = table.Column<string>(type: "TEXT", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ShippingAgentOrganizations", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ShippingAgentRepresentative",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "TEXT", nullable: false),
+                    Name = table.Column<string>(type: "TEXT", nullable: false),
+                    CitizenId = table.Column<string>(type: "TEXT", nullable: false),
+                    Nationality = table.Column<string>(type: "TEXT", nullable: false),
+                    Email = table.Column<string>(type: "TEXT", nullable: false),
+                    PhoneNumber = table.Column<string>(type: "TEXT", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ShippingAgentRepresentative", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -39,6 +88,17 @@ namespace SEM5_PI_WEBAPI.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_StaffMember", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "StorageArea",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "TEXT", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_StorageArea", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -104,6 +164,18 @@ namespace SEM5_PI_WEBAPI.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_ShippingAgentOrganizations_Code",
+                table: "ShippingAgentOrganizations",
+                column: "Code",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ShippingAgentRepresentative_Name",
+                table: "ShippingAgentRepresentative",
+                column: "Name",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_StaffMemberQualifications_StaffMemberId",
                 table: "StaffMemberQualifications",
                 column: "StaffMemberId");
@@ -124,7 +196,19 @@ namespace SEM5_PI_WEBAPI.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "Containers");
+
+            migrationBuilder.DropTable(
+                name: "ShippingAgentOrganizations");
+
+            migrationBuilder.DropTable(
+                name: "ShippingAgentRepresentative");
+
+            migrationBuilder.DropTable(
                 name: "StaffMemberQualifications");
+
+            migrationBuilder.DropTable(
+                name: "StorageArea");
 
             migrationBuilder.DropTable(
                 name: "Vessel");
