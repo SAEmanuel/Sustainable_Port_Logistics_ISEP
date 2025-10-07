@@ -6,24 +6,20 @@ namespace SEM5_PI_WEBAPI.Domain.CargoManifests
     {
         public string Code { get; private set; }
         public CargoManifestType Type { get; private set; }
-        public DateTime CreatedAt { get; private set; }
+        public DateTime? CreatedAt { get; private set; }
         public string? SubmittedBy { get; private set; }
-        public Guid StorageAreaId { get; private set; }
-        public Guid VesselVisitNotificationId { get; private set; }
 
         private readonly List<CargoManifestEntry> _containerEntries;
 
 
         public CargoManifest(List<CargoManifestEntry> containerEntries, string code, CargoManifestType type,
-            DateTime createdAt, string? submittedBy, Guid storageAreaId, Guid vesselVisitNotificationId)
+            DateTime createdAt, string? submittedBy)
         {
             _containerEntries = containerEntries;
             Code = code;
             Type = type;
             CreatedAt = createdAt;
             SubmittedBy = submittedBy;
-            StorageAreaId = storageAreaId;
-            VesselVisitNotificationId = vesselVisitNotificationId;
         }
 
         public bool IsLoading() => Type == CargoManifestType.Loading;
