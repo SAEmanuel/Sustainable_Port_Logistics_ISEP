@@ -30,7 +30,9 @@
 
   <ItemGroup>
     <Folder Include="Logs\" />
+    <Folder Include="Logs\Containers\" />
     <Folder Include="Logs\GeneralLogs\" />
+    <Folder Include="Logs\StorageArea\" />
     <Folder Include="Logs\VesselsTypes\" />
     <Folder Include="Logs\Vessels\" />
   </ItemGroup>

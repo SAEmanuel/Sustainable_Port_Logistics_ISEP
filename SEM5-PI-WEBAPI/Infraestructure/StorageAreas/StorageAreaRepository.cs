@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using SEM5_PI_WEBAPI.Domain.StorageAreas;
+using SEM5_PI_WEBAPI.Domain.ValueObjects;
 using SEM5_PI_WEBAPI.Infraestructure.Shared;
 
 namespace SEM5_PI_WEBAPI.Infraestructure.StorageAreas;
@@ -12,4 +13,10 @@ public class StorageAreaRepository : BaseRepository<StorageArea,StorageAreaId>, 
     {
         _context = context;
     }
+
+    public async Task<StorageArea?> GetByNameAsync(string name)
+    {
+        return await _context.StorageArea.FirstOrDefaultAsync(x => x.Name.ToLower().Trim() == name.ToLower().Trim());
+    }
+    
 }

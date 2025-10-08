@@ -40,7 +40,7 @@ public class StorageAreaEntityTypeConfiguration : IEntityTypeConfiguration<Stora
             });
 
             nav.Property(d => d.Distance)
-                .HasColumnName("DistanceKm")
+                .HasColumnName("Distance")
                 .IsRequired();
         });
 

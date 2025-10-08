@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
@@ -10,6 +11,21 @@ namespace SEM5_PI_WEBAPI.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.CreateTable(
+                name: "CargoManifests",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "TEXT", nullable: false),
+                    Code = table.Column<string>(type: "TEXT", maxLength: 8, nullable: false),
+                    Type = table.Column<int>(type: "INTEGER", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    SubmittedBy = table.Column<string>(type: "TEXT", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CargoManifests", x => x.Id);
+                });
+
             migrationBuilder.CreateTable(
                 name: "Containers",
                 columns: table => new
@@ -24,6 +40,22 @@ namespace SEM5_PI_WEBAPI.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Containers", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Dock",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "TEXT", nullable: false),
+                    Code = table.Column<string>(type: "TEXT", nullable: false),
+                    Location = table.Column<string>(type: "TEXT", maxLength: 150, nullable: false),
+                    LengthM = table.Column<double>(type: "REAL", nullable: false),
+                    DepthM = table.Column<double>(type: "REAL", nullable: false),
+                    MaxDraftM = table.Column<double>(type: "REAL", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Dock", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -91,14 +123,21 @@ namespace SEM5_PI_WEBAPI.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "StorageArea",
+                name: "StorageAreas",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "TEXT", nullable: false)
+                    Id = table.Column<string>(type: "TEXT", nullable: false),
+                    Name = table.Column<string>(type: "TEXT", nullable: false),
+                    Description = table.Column<string>(type: "TEXT", nullable: true),
+                    Type = table.Column<int>(type: "INTEGER", nullable: false),
+                    MaxBays = table.Column<int>(type: "INTEGER", nullable: false),
+                    MaxRows = table.Column<int>(type: "INTEGER", nullable: false),
+                    MaxTiers = table.Column<int>(type: "INTEGER", nullable: false),
+                    CurrentCapacityTeu = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_StorageArea", x => x.Id);
+                    table.PrimaryKey("PK_StorageAreas", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -116,6 +155,52 @@ namespace SEM5_PI_WEBAPI.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_VesselType", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "CargoManifestEntry",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "TEXT", nullable: false),
+                    ContainerId = table.Column<string>(type: "TEXT", nullable: false),
+                    Bay = table.Column<int>(type: "INTEGER", nullable: false),
+                    Row = table.Column<int>(type: "INTEGER", nullable: false),
+                    Tier = table.Column<int>(type: "INTEGER", nullable: false),
+                    CargoManifestId = table.Column<string>(type: "TEXT", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CargoManifestEntry", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_CargoManifestEntry_CargoManifests_CargoManifestId",
+                        column: x => x.CargoManifestId,
+                        principalTable: "CargoManifests",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_CargoManifestEntry_Containers_ContainerId",
+                        column: x => x.ContainerId,
+                        principalTable: "Containers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "DockAllowedVesselTypes",
+                columns: table => new
+                {
+                    VesselTypeId = table.Column<string>(type: "TEXT", nullable: false),
+                    DockId = table.Column<string>(type: "TEXT", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_DockAllowedVesselTypes", x => new { x.DockId, x.VesselTypeId });
+                    table.ForeignKey(
+                        name: "FK_DockAllowedVesselTypes_Dock_DockId",
+                        column: x => x.DockId,
+                        principalTable: "Dock",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -143,6 +228,26 @@ namespace SEM5_PI_WEBAPI.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "StorageAreaDockDistance",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
+                    DockCode = table.Column<string>(type: "TEXT", nullable: false),
+                    Distance = table.Column<float>(type: "REAL", nullable: false),
+                    StorageAreaId = table.Column<string>(type: "TEXT", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_StorageAreaDockDistance", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_StorageAreaDockDistance_StorageAreas_StorageAreaId",
+                        column: x => x.StorageAreaId,
+                        principalTable: "StorageAreas",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Vessel",
                 columns: table => new
                 {
@@ -164,6 +269,22 @@ namespace SEM5_PI_WEBAPI.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_CargoManifestEntry_CargoManifestId",
+                table: "CargoManifestEntry",
+                column: "CargoManifestId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CargoManifestEntry_ContainerId",
+                table: "CargoManifestEntry",
+                column: "ContainerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Dock_Code",
+                table: "Dock",
+                column: "Code",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_ShippingAgentOrganizations_Code",
                 table: "ShippingAgentOrganizations",
                 column: "Code",
@@ -181,6 +302,11 @@ namespace SEM5_PI_WEBAPI.Migrations
                 column: "StaffMemberId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_StorageAreaDockDistance_StorageAreaId",
+                table: "StorageAreaDockDistance",
+                column: "StorageAreaId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Vessel_VesselTypeId",
                 table: "Vessel",
                 column: "VesselTypeId");
@@ -196,7 +322,10 @@ namespace SEM5_PI_WEBAPI.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Containers");
+                name: "CargoManifestEntry");
+
+            migrationBuilder.DropTable(
+                name: "DockAllowedVesselTypes");
 
             migrationBuilder.DropTable(
                 name: "ShippingAgentOrganizations");
@@ -208,16 +337,28 @@ namespace SEM5_PI_WEBAPI.Migrations
                 name: "StaffMemberQualifications");
 
             migrationBuilder.DropTable(
-                name: "StorageArea");
+                name: "StorageAreaDockDistance");
 
             migrationBuilder.DropTable(
                 name: "Vessel");
+
+            migrationBuilder.DropTable(
+                name: "CargoManifests");
+
+            migrationBuilder.DropTable(
+                name: "Containers");
+
+            migrationBuilder.DropTable(
+                name: "Dock");
 
             migrationBuilder.DropTable(
                 name: "Qualifications");
 
             migrationBuilder.DropTable(
                 name: "StaffMember");
+
+            migrationBuilder.DropTable(
+                name: "StorageAreas");
 
             migrationBuilder.DropTable(
                 name: "VesselType");

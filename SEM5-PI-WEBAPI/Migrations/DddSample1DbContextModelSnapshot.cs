@@ -540,7 +540,7 @@ namespace SEM5_PI_WEBAPI.Migrations
 
                             b1.Property<float>("Distance")
                                 .HasColumnType("REAL")
-                                .HasColumnName("DistanceKm");
+                                .HasColumnName("Distance");
 
                             b1.Property<string>("StorageAreaId")
                                 .IsRequired()

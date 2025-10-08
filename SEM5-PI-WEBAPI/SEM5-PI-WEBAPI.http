@@ -197,6 +197,48 @@ Accept: application/json
 }
 
 
+### --- STORAGE AREAS ---
+
+###
+GET http://localhost:5008/api/storageareas
+Accept: application/json
+
+###
+GET http://localhost:5008/api/storageareas/id/GUID_AQUI
+Accept: application/json
+
+###
+GET http://localhost:5008/api/storageareas/name/Yard%20A
+Accept: application/json
+
+###
+GET http://localhost:5008/api/storageareas/distances?name=Yard%20A
+Accept: application/json
+
+###
+GET http://localhost:5008/api/storageareas/distances?id=GUID_AQUI
+Accept: application/json
+
+
+###
+POST http://localhost:5008/api/storageareas
+Content-Type: application/json
+Accept: application/json
+
+{
+  "name": "Yard A",
+  "description": "Main yard near Dock 1",
+  "type": "Yard",
+  "maxBays": 5,
+  "maxRows": 4,
+  "maxTiers": 3,
+  "distancesToDocks": [
+    { "dockCode": "DCK001", "distance": 0.5 },
+    { "dockCode": "DCK002", "distance": 1.2 }
+  ]
+}
+
+
 ### --- STAFF MEMBERS ---
 
 ###

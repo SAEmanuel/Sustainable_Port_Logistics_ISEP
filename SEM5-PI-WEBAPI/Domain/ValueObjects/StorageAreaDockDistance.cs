@@ -10,15 +10,15 @@ public class StorageAreaDockDistance : IValueObject
     public float Distance { get; private set; }
 
     private StorageAreaDockDistance() { }
-    public StorageAreaDockDistance(DockCode dock, float distanceKm)
+    public StorageAreaDockDistance(DockCode dock, float distance)
     {
         if (dock == null)
             throw new BusinessRuleValidationException("Dock cannot be null");
 
-        if (distanceKm < 0)
+        if (distance < 0)
             throw new BusinessRuleValidationException("Distance cannot be negative.");
 
         Dock = dock;
-        Distance = distanceKm;
+        Distance = distance;
     }
 }

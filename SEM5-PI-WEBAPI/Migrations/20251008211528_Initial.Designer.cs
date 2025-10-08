@@ -11,8 +11,8 @@ using SEM5_PI_WEBAPI.Infraestructure;
 namespace SEM5_PI_WEBAPI.Migrations
 {
     [DbContext(typeof(DddSample1DbContext))]
-    [Migration("20251008182846_UpdateStorageAreaDockDistance")]
-    partial class UpdateStorageAreaDockDistance
+    [Migration("20251008211528_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -57,7 +57,7 @@ namespace SEM5_PI_WEBAPI.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("CargoManifest");
+                    b.ToTable("CargoManifests", (string)null);
                 });
 
             modelBuilder.Entity("SEM5_PI_WEBAPI.Domain.CargoManifests.CargoManifestEntries.CargoManifestEntry", b =>
@@ -69,6 +69,7 @@ namespace SEM5_PI_WEBAPI.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("CargoManifestId")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("ContainerId")
@@ -352,7 +353,9 @@ namespace SEM5_PI_WEBAPI.Migrations
                 {
                     b.HasOne("SEM5_PI_WEBAPI.Domain.CargoManifests.CargoManifest", null)
                         .WithMany("ContainerEntries")
-                        .HasForeignKey("CargoManifestId");
+                        .HasForeignKey("CargoManifestId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("SEM5_PI_WEBAPI.Domain.Containers.EntityContainer", "Container")
                         .WithMany()
@@ -540,7 +543,7 @@ namespace SEM5_PI_WEBAPI.Migrations
 
                             b1.Property<float>("Distance")
                                 .HasColumnType("REAL")
-                                .HasColumnName("DistanceKm");
+                                .HasColumnName("Distance");
 
                             b1.Property<string>("StorageAreaId")
                                 .IsRequired()
