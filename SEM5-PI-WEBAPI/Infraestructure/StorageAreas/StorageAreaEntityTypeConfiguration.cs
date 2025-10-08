@@ -26,23 +26,22 @@ public class StorageAreaEntityTypeConfiguration : IEntityTypeConfiguration<Stora
         builder.Property(b => b.MaxTiers).IsRequired();
         builder.Property(b => b.CurrentCapacityTeu).IsRequired();
 
-        builder.OwnsMany(sa => sa.DistancesToDocks, d =>
+        builder.OwnsMany(sa => sa.DistancesToDocks, nav =>
         {
-            d.ToTable("StorageAreaDockDistances");
+            nav.WithOwner().HasForeignKey("StorageAreaId"); 
+            nav.Property<Guid>("Id");
+            nav.HasKey("Id");
 
-            d.WithOwner().HasForeignKey("StorageAreaId");
+            nav.OwnsOne(d => d.Dock, dock =>
+            {
+                dock.Property(p => p.Value)
+                    .HasColumnName("DockCode")
+                    .IsRequired();
+            });
 
-            d.Property(p => p.Dock)
-                .HasConversion(
-                    v => v.Value,         // DockCode -> string
-                    v => new DockCode(v))     // string -> DockCode
-                .HasColumnName("DockCode")
+            nav.Property(d => d.Distance)
+                .HasColumnName("DistanceKm")
                 .IsRequired();
-
-            d.Property(p => p.Distance)
-                .IsRequired();
-
-            d.HasKey("StorageAreaId", "DockCode");
         });
 
         builder.Ignore(b => b.MaxCapacityTeu);

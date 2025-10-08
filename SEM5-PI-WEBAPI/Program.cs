@@ -71,7 +71,37 @@ namespace SEM5_PI_WEBAPI
                         rollingInterval: RollingInterval.Day,
                         outputTemplate: "[{Timestamp:HH:mm:ss} {Level:u3}] {SourceContext,-55} - {Message:lj}{NewLine}{Exception}")
                 )
+                
+                .WriteTo.Logger(lc => lc
+                    .Filter.ByIncludingOnly(e=>
+                        e.Properties.ContainsKey("SourceContext") &&(
+                            e.Properties["SourceContext"].ToString().Contains("SEM5_PI_WEBAPI.Domain.StorageAreas")
+                            ||
+                            e.Properties["SourceContext"].ToString().Contains("RequestLogsMiddleware")
+                            ||
+                            e.Properties["SourceContext"].ToString().Contains("SEM5_PI_WEBAPI.Controllers.StorageAreaController")
+                        )
+                    )
+                    .WriteTo.File("Logs/StorageArea/storageArea-.log",
+                        rollingInterval: RollingInterval.Day,
+                        outputTemplate: "[{Timestamp:HH:mm:ss} {Level:u3}] {SourceContext,-55} - {Message:lj}{NewLine}{Exception}")
+                )
 
+                .WriteTo.Logger(lc => lc
+                    .Filter.ByIncludingOnly(e=>
+                        e.Properties.ContainsKey("SourceContext") &&(
+                            e.Properties["SourceContext"].ToString().Contains("SEM5_PI_WEBAPI.Domain.Containers")
+                            ||
+                            e.Properties["SourceContext"].ToString().Contains("RequestLogsMiddleware")
+                            ||
+                            e.Properties["SourceContext"].ToString().Contains("SEM5_PI_WEBAPI.Controllers.ContainerController")
+                        )
+                    )
+                    .WriteTo.File("Logs/Containers/container-.log",
+                        rollingInterval: RollingInterval.Day,
+                        outputTemplate: "[{Timestamp:HH:mm:ss} {Level:u3}] {SourceContext,-55} - {Message:lj}{NewLine}{Exception}")
+                )
+                
                 .CreateLogger();
 
 
