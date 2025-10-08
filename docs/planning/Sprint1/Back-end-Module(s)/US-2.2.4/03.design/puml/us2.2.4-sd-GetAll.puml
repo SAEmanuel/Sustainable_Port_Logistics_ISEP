@@ -1,0 +1,32 @@
+@startuml
+actor "Port Authority Officer" as Officer
+boundary "API Controller" as Controller
+control "StorageAreaService" as Service
+entity "StorageAreaRepository" as Repo
+collections "Audit Log" as Audit
+
+== Update Storage Area ==
+Officer -> Controller : PATCH /api/storageareas/{id} {dto}
+activate Controller
+Controller -> Service : UpdateAsync(id, dto)
+activate Service
+
+Service -> Repo : GetByIdAsync(id)
+activate Repo
+Repo --> Service : StorageArea or null
+deactivate Repo
+
+Service -> Service : Apply updates (name?, type?, capacity?, docks?, distances?)
+
+Service -> Repo : CommitAsync()
+activate Repo
+Repo --> Service : (ack)
+deactivate Repo
+
+Service -> Audit : log(UPDATE, officerId, storageArea.Id, timestamp, SUCCESS)
+
+Service --> Controller : StorageAreaDto
+deactivate Service
+Controller --> Officer : 200 OK (StorageAreaDto)
+deactivate Controller
+@enduml

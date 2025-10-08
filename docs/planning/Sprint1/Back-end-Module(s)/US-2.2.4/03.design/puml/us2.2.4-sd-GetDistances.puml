@@ -1,0 +1,24 @@
+@startuml
+actor "Port Authority Officer" as Officer
+boundary "API Controller" as Controller
+control "StorageAreaService" as Service
+entity "StorageAreaRepository" as Repo
+
+== Get Distances to Docks ==
+Officer -> Controller : GET /api/storageareas/distances?name=x&id=y
+activate Controller
+Controller -> Service : GetDistancesToDockAsync(name?, id?)
+activate Service
+
+Service -> Repo : GetByNameAsync(name) OR GetByIdAsync(id)
+activate Repo
+Repo --> Service : StorageArea
+deactivate Repo
+
+Service -> Service : Extract Distances (DockCode, Distance)
+
+Service --> Controller : List<StorageAreaDockDistanceDto>
+deactivate Service
+Controller --> Officer : 200 OK (StorageAreaDockDistanceDto*)
+deactivate Controller
+@enduml

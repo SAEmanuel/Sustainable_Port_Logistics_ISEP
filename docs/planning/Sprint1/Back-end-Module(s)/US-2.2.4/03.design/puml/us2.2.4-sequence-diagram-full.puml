@@ -1,0 +1,99 @@
+@startuml
+actor "Port Authority Officer" as Officer
+boundary "API Controller" as Controller
+control "StorageAreaService" as Service
+entity "StorageAreaRepository" as Repo
+control "StorageAreaFactory" as Factory
+collections "Audit Log" as Audit
+
+== Create Storage Area ==
+Officer -> Controller : POST /api/storageareas {dto}
+activate Controller
+Controller -> Service : CreateAsync(dto)
+activate Service
+
+Service -> Repo : GetByNameAsync(dto.Name)
+activate Repo
+Repo --> Service : StorageArea? (null if not exists)
+deactivate Repo
+
+Service -> Factory : CreateStorageArea(dto)
+activate Factory
+Factory --> Service : StorageArea
+deactivate Factory
+
+Service -> Repo : AddAsync(storageArea)
+activate Repo
+Repo --> Service : (ack)
+deactivate Repo
+
+Service -> Audit : log(CREATE, officerId, storageArea.Name, timestamp, SUCCESS)
+deactivate Service
+Service --> Controller : StorageAreaDto
+deactivate Controller
+Controller --> Officer : 201 Created (StorageAreaDto)
+
+== Update Storage Area ==
+Officer -> Controller : PATCH /api/storageareas/{id} {dto}
+activate Controller
+Controller -> Service : UpdateAsync(id, dto)
+activate Service
+
+Service -> Repo : GetByIdAsync(id)
+activate Repo
+Repo --> Service : StorageArea or null
+deactivate Repo
+
+Service -> Service : Apply updates (name?, type?, capacity?, docks?, distances?)
+
+Service -> Repo : CommitAsync()
+activate Repo
+Repo --> Service : (ack)
+deactivate Repo
+
+Service -> Audit : log(UPDATE, officerId, storageArea.Id, timestamp, SUCCESS)
+deactivate Service
+Service --> Controller : StorageAreaDto
+deactivate Controller
+Controller --> Officer : 200 OK (StorageAreaDto)
+
+== Get All Storage Areas ==
+Officer -> Controller : GET /api/storageareas
+activate Controller
+Controller -> Service : GetAllAsync()
+activate Service
+
+Service -> Repo : GetAllAsync()
+activate Repo
+Repo --> Service : List<StorageArea>
+deactivate Repo
+
+Service -> Factory : CreateStorageAreaDto(area*)
+activate Factory
+Factory --> Service : StorageAreaDto*
+deactivate Factory
+
+deactivate Service
+Service --> Controller : List<StorageAreaDto>
+deactivate Controller
+Controller --> Officer : 200 OK (StorageAreaDto*)
+
+== Get Distances to Docks ==
+Officer -> Controller : GET /api/storageareas/distances?name=x&id=y
+activate Controller
+Controller -> Service : GetDistancesToDockAsync(name?, id?)
+activate Service
+
+Service -> Repo : GetByNameAsync(name) OR GetByIdAsync(id)
+activate Repo
+Repo --> Service : StorageArea
+deactivate Repo
+
+Service -> Service : Extract Distances (DockCode, Distance)
+
+deactivate Service
+Service --> Controller : List<StorageAreaDockDistanceDto>
+deactivate Controller
+Controller --> Officer : 200 OK (StorageAreaDockDistanceDto*)
+
+@enduml

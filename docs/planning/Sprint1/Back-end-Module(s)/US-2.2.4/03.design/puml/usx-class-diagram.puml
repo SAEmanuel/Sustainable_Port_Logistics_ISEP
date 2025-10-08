@@ -3,41 +3,108 @@ skinparam packageStyle rectangle
 skinparam shadowing false
 skinparam linetype polyline
 skinparam classAttributeIconSize 0
+left to right direction
 
-class Entity {
-    - String attribute
-    + Entity(attribute)
-    - validateAttribute(attribute)
+title Class Diagram (Excerpt) – US2.2.4 Register & Update Storage Areas
+
+' ==== Domain Layer ====
+package "Domain :: StorageAreas" {
+    class StorageArea <<AggregateRoot>> {
+        - Name : string
+        - Description : string
+        - Type : StorageAreaType
+        - MaxBays : int
+        - MaxRows : int
+        - MaxTiers : int
+        - CurrentCapacityTeu : int
+        - DistancesToDocks : List<StorageAreaDockDistance>
+        --
+        + PlaceContainer(iso,row,bay,tier)
+        + RemoveContainer(row,bay,tier)
+        + AssignDock(dock, distance)
+    }
+
+    class StorageAreaDockDistance <<ValueObject>> {
+        - DockCode : string
+        - DistanceKm : float
+    }
+
+    class StorageAreaFactory {
+        + CreateStorageArea(dto: CreatingStorageAreaDto) : StorageArea
+        + CreateStorageAreaDto(area: StorageArea) : StorageAreaDto
+    }
 }
 
-class Repository {
-    + registerEntity(attribute)
-    - addEntity(entity)
-    - validateEntity(entity)
+' ==== DTOs ====
+package "Application DTOs" {
+    class CreatingStorageAreaDto {
+        + Name : string
+        + Description : string
+        + Type : StorageAreaType
+        + MaxBays : int
+        + MaxRows : int
+        + MaxTiers : int
+        + DistancesToDocks : List<StorageAreaDockDistanceDto>
+    }
+
+    class StorageAreaDto {
+        + Id : Guid
+        + Name : string
+        + Description : string
+        + Type : StorageAreaType
+        + MaxCapacityTeu : int
+        + CurrentCapacityTeu : int
+        + DistancesToDocks : List<StorageAreaDockDistanceDto>
+    }
+
+    class StorageAreaDockDistanceDto {
+        + DockCode : string
+        + DistanceKm : float
+    }
 }
 
-class RepositoryFactory {
-    - RepositoryFactory()
-    + getInstance() : RepositoryFactory
-    + getRepository()
+' ==== Application Layer ====
+package "Application :: Services" {
+    class StorageAreaService {
+        + GetAllAsync() : List<StorageAreaDto>
+        + GetByIdAsync(id: StorageAreaId) : StorageAreaDto
+        + GetByNameAsync(name: string) : StorageAreaDto
+        + GetDistancesToDockAsync(name?, id?) : List<StorageAreaDockDistanceDto>
+        + CreateAsync(dto: CreatingStorageAreaDto) : StorageAreaDto
+    }
 }
 
-class Controller {
-    + Controller(repository)
-    + registerEntity(attribute)
+' ==== Infrastructure ====
+package "Infrastructure :: Repositories" {
+    interface IStorageAreaRepository {
+        + GetAllAsync() : List<StorageArea>
+        + GetByIdAsync(id: StorageAreaId) : StorageArea?
+        + GetByNameAsync(name: string) : StorageArea?
+        + AddAsync(area: StorageArea)
+    }
+
+    class StorageAreaRepository implements IStorageAreaRepository
 }
 
-class UI {
+' ==== Interface ====
+package "Interface :: API" {
+    class StorageAreasController {
+        + GetAllAsync() : ActionResult<List<StorageAreaDto>>
+        + GetByIdAsync(id: Guid) : ActionResult<StorageAreaDto>
+        + GetByNameAsync(name: string) : ActionResult<StorageAreaDto>
+        + GetDistancesToDockAsync(name?, id?) : ActionResult<List<StorageAreaDockDistanceDto>>
+        + CreateAsync(dto: CreatingStorageAreaDto) : ActionResult<StorageAreaDto>
+    }
 }
 
-UI .> Controller
-
-Controller .> RepositoryFactory : factory
-RepositoryFactory --> "1" Repository
-RepositoryFactory -> RepositoryFactory : instance
-
-Controller ..> Repository : repository
-
-Repository --> "1" Entity : register
+' ==== Relationships ====
+StorageAreasController --> StorageAreaService : uses
+StorageAreaService --> IStorageAreaRepository : uses
+StorageAreaService --> StorageAreaFactory : uses
+StorageAreaFactory --> StorageArea
+StorageAreaFactory --> CreatingStorageAreaDto
+StorageAreaFactory --> StorageAreaDto
+StorageArea --> StorageAreaDockDistance
+StorageAreaDto --> StorageAreaDockDistanceDto
 
 @enduml

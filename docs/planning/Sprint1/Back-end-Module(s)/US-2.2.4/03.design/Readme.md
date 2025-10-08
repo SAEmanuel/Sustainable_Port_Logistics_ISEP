@@ -1,54 +1,65 @@
-# USx -???
+# US2.2.4 – Register and Update Storage Areas
 
-## 3. Design - User Story Realization 
+## 3. Design - User Story Realization
 
 ### 3.1. Rationale
 
-_**Note that SSD - Alternative One is adopted.**_
+***Note that SSD – Alternative One is adopted.***
 
-| Interaction ID                      | Question: Which class is responsible for...           | Answer | Justification (with patterns)                                                                                 |
-|:------------------------------------|:------------------------------------------------------|:-------|:--------------------------------------------------------------------------------------------------------------|
-| Step 1 :   	                        | 	... interacting with the actor?                      | x      | Pure Fabrication: there is no reason to assign this responsibility to any existing class in the Domain Model. |
-| 			  		                             | 	... coordinating the US?                             | y      | Controller                                                                                                    |
-| Step 2 : request data (skillName)		 | 	... displaying the form for the actor to input data? | z      | Pure Fabrication                                                                                              |
+| Interaction ID | Question: Which class is responsible for...                  | Answer                        | Justification (with patterns)                                                                                |
+| :------------- | :----------------------------------------------------------- | :---------------------------- | :----------------------------------------------------------------------------------------------------------- |
+| Step 1         | … interacting with the actor?                                | `StorageAreasController`      | **Controller pattern**: it handles API requests and delegates work to the application/service layer.         |
+| Step 2         | … coordinating the User Story (application flow)?            | `StorageAreaService`          | **Application Service**: coordinates business logic and enforces rules before interacting with repositories. |
+| Step 3         | … creating the domain object (`StorageArea`)?                | `StorageAreaFactory`          | **Factory pattern**: centralizes creation logic for `StorageArea` and its DTOs.                              |
+| Step 4         | … enforcing business rules (e.g., occupancy ≤ max capacity)? | `StorageArea` (AggregateRoot) | **Domain Model / Aggregate Root**: ensures invariants and encapsulates validation logic.                     |
+| Step 5         | … persisting and retrieving storage areas?                   | `IStorageAreaRepository`      | **Repository pattern**: abstracts persistence and ensures aggregate consistency.                             |
+| Step 6         | … handling transaction management?                           | `IUnitOfWork`                 | **Unit of Work pattern**: ensures atomic operations across repositories.                                     |
 
-### Systematization ##
+### Systematization
 
-According to the taken rationale, the conceptual classes promoted to software classes are: 
+According to the rationale above, the conceptual classes promoted to software classes are:
 
-*none
+* `StorageAreasController`
+* `StorageAreaService`
+* `StorageAreaFactory`
 
-Other software classes (i.e. Pure Fabrication) identified: 
+Other software classes (i.e. Pure Fabrication) identified:
 
-* none
+* `StorageAreaDto`, `CreatingStorageAreaDto`, `UpdatingStorageAreaDto`
 
+---
 
 ## 3.2. Sequence Diagram (SD)
-
 
 ### Full Diagram
 
 This diagram shows the full sequence of interactions between the classes involved in the realization of this user story.
 
-![Sequence Diagram - Full](svg/usx-sequence-diagram-full.svg)
+![Sequence Diagram - Full](./puml/us2.2.4-sequence-diagram-full.svg)
 
 ### Split Diagrams
 
-The following diagram shows the same sequence of interactions between the classes involved in the realization of this user story, but it is split in partial diagrams to better illustrate the interactions between the classes.
+The following diagrams illustrate the same interactions, split for readability.
 
-It uses Interaction Occurrence (a.k.a. Interaction Use).
+**Get All**
 
-![Sequence Diagram - split](svg/usx-sequence-diagram-split.svg)
+![Sequence Diagram - Partial - Get Repository](./puml/us2.2.4-sd-GetAll.svg)
 
+**Register Storage Area**
 
-**Get Skill Repository**
+![Sequence Diagram - Partial - Register Storage Area](./puml/us2.2.4-sd-create.svg)
 
-![Sequence Diagram - Partial - Get Skill Repository](svg/usx-sequence-diagram-partial-get-skill-repository.svg)
+**Update Storage Area**
 
-**Register Skill**
+![Sequence Diagram - Partial - Update Storage Area](./puml/us2.2.4-sd-update.svg)
 
-![Sequence Diagram - Partial - Register Skill](svg/usx-sequence-diagram-partial-register-skill.svg)
+**Get Distances**
+
+![Sequence Diagram - Partial - Update Storage Area](./puml/us2.2.4-sd-GetDistances.svg)
+
+---
 
 ## 3.3. Class Diagram (CD)
 
-![Class Diagram](svg/usx-class-diagram.svg)
+![Class Diagram](./puml/us2.2.4-class-diagram.svg)
+

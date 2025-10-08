@@ -1,0 +1,36 @@
+@startuml
+actor "Port Authority Officer" as Officer
+boundary "API Controller" as Controller
+control "StorageAreaService" as Service
+entity "StorageAreaRepository" as Repo
+control "StorageAreaFactory" as Factory
+collections "Audit Log" as Audit
+
+== Create Storage Area ==
+Officer -> Controller : POST /api/storageareas {dto}
+activate Controller
+Controller -> Service : CreateAsync(dto)
+activate Service
+
+Service -> Repo : GetByNameAsync(dto.Name)
+activate Repo
+Repo --> Service : StorageArea? (null if not exists)
+deactivate Repo
+
+Service -> Factory : CreateStorageArea(dto)
+activate Factory
+Factory --> Service : StorageArea
+deactivate Factory
+
+Service -> Repo : AddAsync(storageArea)
+activate Repo
+Repo --> Service : (ack)
+deactivate Repo
+
+Service -> Audit : log(CREATE, officerId, storageArea.Name, timestamp, SUCCESS)
+
+Service --> Controller : StorageAreaDto
+deactivate Service
+Controller --> Officer : 201 Created (StorageAreaDto)
+deactivate Controller
+@enduml
