@@ -15,6 +15,12 @@ namespace SEM5_PI_WEBAPI.Domain.CargoManifests
         private readonly List<CargoManifestEntry> _containerEntries;
 
         public IReadOnlyCollection<CargoManifestEntry> ContainerEntries => _containerEntries.AsReadOnly();
+        
+        protected CargoManifest()
+        {
+            _containerEntries = new List<CargoManifestEntry>();
+        }
+
 
         public CargoManifest(List<CargoManifestEntry> containerEntries, string code, CargoManifestType type,
             DateTime createdAt, string submittedBy)

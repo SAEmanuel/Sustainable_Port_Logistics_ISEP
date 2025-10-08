@@ -34,3 +34,1101 @@
 [11:08:43 INF] Microsoft.Hosting.Lifetime                                             - Hosting environment: Development
 [11:08:43 INF] Microsoft.Hosting.Lifetime                                             - Content root path: C:\Users\35193\RiderProjects\LEI-SEM5-PI-2025-26-3DJ-03\SEM5-PI-WEBAPI
 [11:08:56 INF] Microsoft.Hosting.Lifetime                                             - Application is shutting down...
+[23:34:16 INF]  - Starting web host
+[23:34:17 FTL] Microsoft.AspNetCore.Hosting.Diagnostics                               - Application startup exception
+System.InvalidOperationException: Action 'SEM5_PI_WEBAPI.Controllers.CargoManifestController.GetAll (SEM5-PI-WEBAPI)' does not have an attribute route. Action methods on controllers annotated with ApiControllerAttribute must be attribute routed.
+   at Microsoft.AspNetCore.Mvc.ApplicationModels.ApiBehaviorApplicationModelProvider.EnsureActionIsAttributeRouted(ActionModel actionModel)
+   at Microsoft.AspNetCore.Mvc.ApplicationModels.ApiBehaviorApplicationModelProvider.OnProvidersExecuting(ApplicationModelProviderContext context)
+   at Microsoft.AspNetCore.Mvc.ApplicationModels.ApplicationModelFactory.CreateApplicationModel(IEnumerable`1 controllerTypes)
+   at Microsoft.AspNetCore.Mvc.ApplicationModels.ControllerActionDescriptorProvider.GetDescriptors()
+   at Microsoft.AspNetCore.Mvc.ApplicationModels.ControllerActionDescriptorProvider.OnProvidersExecuting(ActionDescriptorProviderContext context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.DefaultActionDescriptorCollectionProvider.UpdateCollection()
+   at Microsoft.AspNetCore.Mvc.Infrastructure.DefaultActionDescriptorCollectionProvider.Initialize()
+   at Microsoft.AspNetCore.Mvc.Infrastructure.DefaultActionDescriptorCollectionProvider.GetChangeToken()
+   at Microsoft.Extensions.Primitives.ChangeToken.ChangeTokenRegistration`1..ctor(Func`1 changeTokenProducer, Action`1 changeTokenConsumer, TState state)
+   at Microsoft.Extensions.Primitives.ChangeToken.OnChange(Func`1 changeTokenProducer, Action changeTokenConsumer)
+   at Microsoft.AspNetCore.Mvc.Routing.ActionEndpointDataSourceBase.Subscribe()
+   at Microsoft.AspNetCore.Builder.ControllerEndpointRouteBuilderExtensions.GetOrCreateDataSource(IEndpointRouteBuilder endpoints)
+   at Microsoft.AspNetCore.Builder.ControllerEndpointRouteBuilderExtensions.MapControllers(IEndpointRouteBuilder endpoints)
+   at SEM5_PI_WEBAPI.Startup.<>c.<Configure>b__5_0(IEndpointRouteBuilder endpoints) in /Users/franciscosantos/Desktop/LEI-SEM5-PI-2025-26-3DJ-03/SEM5-PI-WEBAPI/Startup.cs:line 68
+   at Microsoft.AspNetCore.Builder.EndpointRoutingApplicationBuilderExtensions.UseEndpoints(IApplicationBuilder builder, Action`1 configure)
+   at SEM5_PI_WEBAPI.Startup.Configure(IApplicationBuilder app, IWebHostEnvironment env) in /Users/franciscosantos/Desktop/LEI-SEM5-PI-2025-26-3DJ-03/SEM5-PI-WEBAPI/Startup.cs:line 66
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+   at System.Reflection.RuntimeMethodInfo.Invoke(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+   at Microsoft.AspNetCore.Hosting.ConfigureBuilder.Invoke(Object instance, IApplicationBuilder builder)
+   at Microsoft.AspNetCore.Hosting.GenericWebHostService.StartAsync(CancellationToken cancellationToken)
+[23:34:17 ERR] Microsoft.Extensions.Hosting.Internal.Host                             - Hosting failed to start
+System.InvalidOperationException: Action 'SEM5_PI_WEBAPI.Controllers.CargoManifestController.GetAll (SEM5-PI-WEBAPI)' does not have an attribute route. Action methods on controllers annotated with ApiControllerAttribute must be attribute routed.
+   at Microsoft.AspNetCore.Mvc.ApplicationModels.ApiBehaviorApplicationModelProvider.EnsureActionIsAttributeRouted(ActionModel actionModel)
+   at Microsoft.AspNetCore.Mvc.ApplicationModels.ApiBehaviorApplicationModelProvider.OnProvidersExecuting(ApplicationModelProviderContext context)
+   at Microsoft.AspNetCore.Mvc.ApplicationModels.ApplicationModelFactory.CreateApplicationModel(IEnumerable`1 controllerTypes)
+   at Microsoft.AspNetCore.Mvc.ApplicationModels.ControllerActionDescriptorProvider.GetDescriptors()
+   at Microsoft.AspNetCore.Mvc.ApplicationModels.ControllerActionDescriptorProvider.OnProvidersExecuting(ActionDescriptorProviderContext context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.DefaultActionDescriptorCollectionProvider.UpdateCollection()
+   at Microsoft.AspNetCore.Mvc.Infrastructure.DefaultActionDescriptorCollectionProvider.Initialize()
+   at Microsoft.AspNetCore.Mvc.Infrastructure.DefaultActionDescriptorCollectionProvider.GetChangeToken()
+   at Microsoft.Extensions.Primitives.ChangeToken.ChangeTokenRegistration`1..ctor(Func`1 changeTokenProducer, Action`1 changeTokenConsumer, TState state)
+   at Microsoft.Extensions.Primitives.ChangeToken.OnChange(Func`1 changeTokenProducer, Action changeTokenConsumer)
+   at Microsoft.AspNetCore.Mvc.Routing.ActionEndpointDataSourceBase.Subscribe()
+   at Microsoft.AspNetCore.Builder.ControllerEndpointRouteBuilderExtensions.GetOrCreateDataSource(IEndpointRouteBuilder endpoints)
+   at Microsoft.AspNetCore.Builder.ControllerEndpointRouteBuilderExtensions.MapControllers(IEndpointRouteBuilder endpoints)
+   at SEM5_PI_WEBAPI.Startup.<>c.<Configure>b__5_0(IEndpointRouteBuilder endpoints) in /Users/franciscosantos/Desktop/LEI-SEM5-PI-2025-26-3DJ-03/SEM5-PI-WEBAPI/Startup.cs:line 68
+   at Microsoft.AspNetCore.Builder.EndpointRoutingApplicationBuilderExtensions.UseEndpoints(IApplicationBuilder builder, Action`1 configure)
+   at SEM5_PI_WEBAPI.Startup.Configure(IApplicationBuilder app, IWebHostEnvironment env) in /Users/franciscosantos/Desktop/LEI-SEM5-PI-2025-26-3DJ-03/SEM5-PI-WEBAPI/Startup.cs:line 66
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+   at System.Reflection.RuntimeMethodInfo.Invoke(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+   at Microsoft.AspNetCore.Hosting.ConfigureBuilder.Invoke(Object instance, IApplicationBuilder builder)
+   at Microsoft.AspNetCore.Hosting.GenericWebHostService.StartAsync(CancellationToken cancellationToken)
+   at Microsoft.Extensions.Hosting.Internal.Host.<StartAsync>b__14_1(IHostedService service, CancellationToken token)
+   at Microsoft.Extensions.Hosting.Internal.Host.ForeachService[T](IEnumerable`1 services, CancellationToken token, Boolean concurrent, Boolean abortOnFirstException, List`1 exceptions, Func`3 operation)
+[23:34:17 FTL]  - Host terminated unexpectedly
+System.InvalidOperationException: Action 'SEM5_PI_WEBAPI.Controllers.CargoManifestController.GetAll (SEM5-PI-WEBAPI)' does not have an attribute route. Action methods on controllers annotated with ApiControllerAttribute must be attribute routed.
+   at Microsoft.AspNetCore.Mvc.ApplicationModels.ApiBehaviorApplicationModelProvider.EnsureActionIsAttributeRouted(ActionModel actionModel)
+   at Microsoft.AspNetCore.Mvc.ApplicationModels.ApiBehaviorApplicationModelProvider.OnProvidersExecuting(ApplicationModelProviderContext context)
+   at Microsoft.AspNetCore.Mvc.ApplicationModels.ApplicationModelFactory.CreateApplicationModel(IEnumerable`1 controllerTypes)
+   at Microsoft.AspNetCore.Mvc.ApplicationModels.ControllerActionDescriptorProvider.GetDescriptors()
+   at Microsoft.AspNetCore.Mvc.ApplicationModels.ControllerActionDescriptorProvider.OnProvidersExecuting(ActionDescriptorProviderContext context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.DefaultActionDescriptorCollectionProvider.UpdateCollection()
+   at Microsoft.AspNetCore.Mvc.Infrastructure.DefaultActionDescriptorCollectionProvider.Initialize()
+   at Microsoft.AspNetCore.Mvc.Infrastructure.DefaultActionDescriptorCollectionProvider.GetChangeToken()
+   at Microsoft.Extensions.Primitives.ChangeToken.ChangeTokenRegistration`1..ctor(Func`1 changeTokenProducer, Action`1 changeTokenConsumer, TState state)
+   at Microsoft.Extensions.Primitives.ChangeToken.OnChange(Func`1 changeTokenProducer, Action changeTokenConsumer)
+   at Microsoft.AspNetCore.Mvc.Routing.ActionEndpointDataSourceBase.Subscribe()
+   at Microsoft.AspNetCore.Builder.ControllerEndpointRouteBuilderExtensions.GetOrCreateDataSource(IEndpointRouteBuilder endpoints)
+   at Microsoft.AspNetCore.Builder.ControllerEndpointRouteBuilderExtensions.MapControllers(IEndpointRouteBuilder endpoints)
+   at SEM5_PI_WEBAPI.Startup.<>c.<Configure>b__5_0(IEndpointRouteBuilder endpoints) in /Users/franciscosantos/Desktop/LEI-SEM5-PI-2025-26-3DJ-03/SEM5-PI-WEBAPI/Startup.cs:line 68
+   at Microsoft.AspNetCore.Builder.EndpointRoutingApplicationBuilderExtensions.UseEndpoints(IApplicationBuilder builder, Action`1 configure)
+   at SEM5_PI_WEBAPI.Startup.Configure(IApplicationBuilder app, IWebHostEnvironment env) in /Users/franciscosantos/Desktop/LEI-SEM5-PI-2025-26-3DJ-03/SEM5-PI-WEBAPI/Startup.cs:line 66
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+   at System.Reflection.RuntimeMethodInfo.Invoke(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+   at Microsoft.AspNetCore.Hosting.ConfigureBuilder.Invoke(Object instance, IApplicationBuilder builder)
+   at Microsoft.AspNetCore.Hosting.GenericWebHostService.StartAsync(CancellationToken cancellationToken)
+   at Microsoft.Extensions.Hosting.Internal.Host.<StartAsync>b__14_1(IHostedService service, CancellationToken token)
+   at Microsoft.Extensions.Hosting.Internal.Host.ForeachService[T](IEnumerable`1 services, CancellationToken token, Boolean concurrent, Boolean abortOnFirstException, List`1 exceptions, Func`3 operation)
+   at Microsoft.Extensions.Hosting.Internal.Host.StartAsync(CancellationToken cancellationToken)
+   at Microsoft.Extensions.Hosting.HostingAbstractionsHostExtensions.RunAsync(IHost host, CancellationToken token)
+   at Microsoft.Extensions.Hosting.HostingAbstractionsHostExtensions.RunAsync(IHost host, CancellationToken token)
+   at Microsoft.Extensions.Hosting.HostingAbstractionsHostExtensions.Run(IHost host)
+   at SEM5_PI_WEBAPI.Program.Main(String[] args) in /Users/franciscosantos/Desktop/LEI-SEM5-PI-2025-26-3DJ-03/SEM5-PI-WEBAPI/Program.cs:line 12
+[23:35:08 INF]  - Starting web host
+[23:35:08 INF] Microsoft.Hosting.Lifetime                                             - Now listening on: http://localhost:5008
+[23:35:08 INF] Microsoft.Hosting.Lifetime                                             - Application started. Press Ctrl+C to shut down.
+[23:35:08 INF] Microsoft.Hosting.Lifetime                                             - Hosting environment: Development
+[23:35:08 INF] Microsoft.Hosting.Lifetime                                             - Content root path: /Users/franciscosantos/Desktop/LEI-SEM5-PI-2025-26-3DJ-03/SEM5-PI-WEBAPI
+[23:35:28 INF] Microsoft.AspNetCore.Hosting.Diagnostics                               - Request starting HTTP/1.1 GET http://localhost:5008/api/StaffMembers - null null
+[23:35:28 WRN] Microsoft.AspNetCore.HttpsPolicy.HttpsRedirectionMiddleware            - Failed to determine the https port for redirect.
+[23:35:28 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - ┌───────────────────────────────────────────────
+[23:35:28 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - │ HTTP GET /api/StaffMembers
+[23:35:28 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - │ From IP: 127.0.0.1
+[23:35:28 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - └───────────────────────────────────────────────
+[23:35:28 INF] Microsoft.AspNetCore.Routing.EndpointMiddleware                        - Executing endpoint 'SEM5_PI_WEBAPI.Controllers.StaffMembersController.GetAll (SEM5-PI-WEBAPI)'
+[23:35:28 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Route matched with {action = "GetAll", controller = "StaffMembers"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[System.Collections.Generic.IEnumerable`1[SEM5_PI_WEBAPI.Domain.StaffMembers.StaffMemberDto]]] GetAll() on controller SEM5_PI_WEBAPI.Controllers.StaffMembersController (SEM5-PI-WEBAPI).
+[23:35:28 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Executing action method SEM5_PI_WEBAPI.Controllers.StaffMembersController.GetAll (SEM5-PI-WEBAPI) - Validation state: "Valid"
+[23:35:28 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Executed action SEM5_PI_WEBAPI.Controllers.StaffMembersController.GetAll (SEM5-PI-WEBAPI) in 545.078ms
+[23:35:28 INF] Microsoft.AspNetCore.Routing.EndpointMiddleware                        - Executed endpoint 'SEM5_PI_WEBAPI.Controllers.StaffMembersController.GetAll (SEM5-PI-WEBAPI)'
+[23:35:28 ERR] Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddleware      - An unhandled exception has occurred while executing the request.
+System.InvalidOperationException: No suitable constructor was found for entity type 'CargoManifest'. The following constructors had parameters that could not be bound to properties of the entity type: 
+    Cannot bind 'containerEntries' in 'CargoManifest(List<CargoManifestEntry> containerEntries, string code, CargoManifestType type, DateTime createdAt, string submittedBy)'
+Note that only mapped properties can be bound to constructor parameters. Navigations to related entities, including references to owned types, cannot be bound.
+   at Microsoft.EntityFrameworkCore.Metadata.Internal.ConstructorBindingFactory.GetBindings[T](T type, Func`5 bindToProperty, Func`5 bind, InstantiationBinding& constructorBinding, InstantiationBinding& serviceOnlyBinding)
+   at Microsoft.EntityFrameworkCore.Metadata.Internal.ConstructorBindingFactory.GetBindings(IMutableEntityType entityType, InstantiationBinding& constructorBinding, InstantiationBinding& serviceOnlyBinding)
+   at Microsoft.EntityFrameworkCore.Metadata.Conventions.ConstructorBindingConvention.ProcessModelFinalizing(IConventionModelBuilder modelBuilder, IConventionContext`1 context)
+   at Microsoft.EntityFrameworkCore.Metadata.Conventions.Internal.ConventionDispatcher.ImmediateConventionScope.OnModelFinalizing(IConventionModelBuilder modelBuilder)
+   at Microsoft.EntityFrameworkCore.Metadata.Conventions.Internal.ConventionDispatcher.OnModelFinalizing(IConventionModelBuilder modelBuilder)
+   at Microsoft.EntityFrameworkCore.Metadata.Internal.Model.FinalizeModel()
+   at Microsoft.EntityFrameworkCore.Infrastructure.ModelRuntimeInitializer.Initialize(IModel model, Boolean designTime, IDiagnosticsLogger`1 validationLogger)
+   at Microsoft.EntityFrameworkCore.Infrastructure.ModelSource.CreateModel(DbContext context, ModelCreationDependencies modelCreationDependencies, Boolean designTime)
+   at Microsoft.EntityFrameworkCore.Infrastructure.ModelSource.GetModel(DbContext context, ModelCreationDependencies modelCreationDependencies, Boolean designTime)
+   at Microsoft.EntityFrameworkCore.Internal.DbContextServices.CreateModel(Boolean designTime)
+   at Microsoft.EntityFrameworkCore.Internal.DbContextServices.get_Model()
+   at Microsoft.EntityFrameworkCore.Infrastructure.EntityFrameworkServicesBuilder.<>c.<TryAddCoreServices>b__8_4(IServiceProvider p)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitCache(ServiceCallSite callSite, RuntimeResolverContext context, ServiceProviderEngineScope serviceProviderEngine, RuntimeResolverLock lockType)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitScopeCache(ServiceCallSite callSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitConstructor(ConstructorCallSite constructorCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitCache(ServiceCallSite callSite, RuntimeResolverContext context, ServiceProviderEngineScope serviceProviderEngine, RuntimeResolverLock lockType)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitScopeCache(ServiceCallSite callSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitConstructor(ConstructorCallSite constructorCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitCache(ServiceCallSite callSite, RuntimeResolverContext context, ServiceProviderEngineScope serviceProviderEngine, RuntimeResolverLock lockType)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitScopeCache(ServiceCallSite callSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitConstructor(ConstructorCallSite constructorCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitCache(ServiceCallSite callSite, RuntimeResolverContext context, ServiceProviderEngineScope serviceProviderEngine, RuntimeResolverLock lockType)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitScopeCache(ServiceCallSite callSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitConstructor(ConstructorCallSite constructorCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitCache(ServiceCallSite callSite, RuntimeResolverContext context, ServiceProviderEngineScope serviceProviderEngine, RuntimeResolverLock lockType)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitScopeCache(ServiceCallSite callSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitConstructor(ConstructorCallSite constructorCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitCache(ServiceCallSite callSite, RuntimeResolverContext context, ServiceProviderEngineScope serviceProviderEngine, RuntimeResolverLock lockType)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitScopeCache(ServiceCallSite callSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.Resolve(ServiceCallSite callSite, ServiceProviderEngineScope scope)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.DynamicServiceProviderEngine.<>c__DisplayClass2_0.<RealizeService>b__0(ServiceProviderEngineScope scope)
+   at Microsoft.Extensions.DependencyInjection.ServiceProvider.GetService(ServiceIdentifier serviceIdentifier, ServiceProviderEngineScope serviceProviderEngineScope)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.ServiceProviderEngineScope.GetService(Type serviceType)
+   at Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService(IServiceProvider provider, Type serviceType)
+   at Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService[T](IServiceProvider provider)
+   at Microsoft.EntityFrameworkCore.DbContext.get_DbContextDependencies()
+   at Microsoft.EntityFrameworkCore.DbContext.get_ContextServices()
+   at Microsoft.EntityFrameworkCore.DbContext.get_Model()
+   at Microsoft.EntityFrameworkCore.Internal.InternalDbSet`1.get_EntityType()
+   at Microsoft.EntityFrameworkCore.Internal.InternalDbSet`1.CheckState()
+   at Microsoft.EntityFrameworkCore.Internal.InternalDbSet`1.get_EntityQueryable()
+   at Microsoft.EntityFrameworkCore.Internal.InternalDbSet`1.System.Linq.IQueryable.get_Provider()
+   at Microsoft.EntityFrameworkCore.EntityFrameworkQueryableExtensions.Include[TEntity,TProperty](IQueryable`1 source, Expression`1 navigationPropertyPath)
+   at SEM5_PI_WEBAPI.Infraestructure.StaffMembers.StaffMemberRepository.GetAllAsync() in /Users/franciscosantos/Desktop/LEI-SEM5-PI-2025-26-3DJ-03/SEM5-PI-WEBAPI/Infraestructure/StaffMembers/StaffMemberRepository.cs:line 19
+   at SEM5_PI_WEBAPI.Domain.StaffMembers.StaffMemberService.GetAllAsync() in /Users/franciscosantos/Desktop/LEI-SEM5-PI-2025-26-3DJ-03/SEM5-PI-WEBAPI/Domain/StaffMembers/StaffMemberService.cs:line 25
+   at SEM5_PI_WEBAPI.Controllers.StaffMembersController.GetAll() in /Users/franciscosantos/Desktop/LEI-SEM5-PI-2025-26-3DJ-03/SEM5-PI-WEBAPI/Controllers/StaffMembersController.cs:line 23
+   at lambda_method4(Closure, Object)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.AwaitableObjectResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Logged|12_1(ControllerActionInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|7_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware.InvokeAsync(HttpContext context) in /Users/franciscosantos/Desktop/LEI-SEM5-PI-2025-26-3DJ-03/SEM5-PI-WEBAPI/Domain/Shared/RequestLogsMiddleware.cs:line 23
+   at Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddlewareImpl.Invoke(HttpContext context)
+[23:35:28 INF] Microsoft.AspNetCore.Hosting.Diagnostics                               - Request finished HTTP/1.1 GET http://localhost:5008/api/StaffMembers - 500 null text/plain; charset=utf-8 645.9926ms
+[23:35:55 INF] Microsoft.AspNetCore.Hosting.Diagnostics                               - Request starting HTTP/1.1 GET http://localhost:5008/api/StaffMembers - null null
+[23:35:55 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - ┌───────────────────────────────────────────────
+[23:35:55 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - │ HTTP GET /api/StaffMembers
+[23:35:55 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - │ From IP: 127.0.0.1
+[23:35:55 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - └───────────────────────────────────────────────
+[23:35:55 INF] Microsoft.AspNetCore.Routing.EndpointMiddleware                        - Executing endpoint 'SEM5_PI_WEBAPI.Controllers.StaffMembersController.GetAll (SEM5-PI-WEBAPI)'
+[23:35:55 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Route matched with {action = "GetAll", controller = "StaffMembers"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[System.Collections.Generic.IEnumerable`1[SEM5_PI_WEBAPI.Domain.StaffMembers.StaffMemberDto]]] GetAll() on controller SEM5_PI_WEBAPI.Controllers.StaffMembersController (SEM5-PI-WEBAPI).
+[23:35:55 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Executing action method SEM5_PI_WEBAPI.Controllers.StaffMembersController.GetAll (SEM5-PI-WEBAPI) - Validation state: "Valid"
+[23:35:55 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Executed action SEM5_PI_WEBAPI.Controllers.StaffMembersController.GetAll (SEM5-PI-WEBAPI) in 59.5102ms
+[23:35:55 INF] Microsoft.AspNetCore.Routing.EndpointMiddleware                        - Executed endpoint 'SEM5_PI_WEBAPI.Controllers.StaffMembersController.GetAll (SEM5-PI-WEBAPI)'
+[23:35:55 ERR] Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddleware      - An unhandled exception has occurred while executing the request.
+System.InvalidOperationException: No suitable constructor was found for entity type 'CargoManifest'. The following constructors had parameters that could not be bound to properties of the entity type: 
+    Cannot bind 'containerEntries' in 'CargoManifest(List<CargoManifestEntry> containerEntries, string code, CargoManifestType type, DateTime createdAt, string submittedBy)'
+Note that only mapped properties can be bound to constructor parameters. Navigations to related entities, including references to owned types, cannot be bound.
+   at Microsoft.EntityFrameworkCore.Metadata.Internal.ConstructorBindingFactory.GetBindings[T](T type, Func`5 bindToProperty, Func`5 bind, InstantiationBinding& constructorBinding, InstantiationBinding& serviceOnlyBinding)
+   at Microsoft.EntityFrameworkCore.Metadata.Internal.ConstructorBindingFactory.GetBindings(IMutableEntityType entityType, InstantiationBinding& constructorBinding, InstantiationBinding& serviceOnlyBinding)
+   at Microsoft.EntityFrameworkCore.Metadata.Conventions.ConstructorBindingConvention.ProcessModelFinalizing(IConventionModelBuilder modelBuilder, IConventionContext`1 context)
+   at Microsoft.EntityFrameworkCore.Metadata.Conventions.Internal.ConventionDispatcher.ImmediateConventionScope.OnModelFinalizing(IConventionModelBuilder modelBuilder)
+   at Microsoft.EntityFrameworkCore.Metadata.Conventions.Internal.ConventionDispatcher.OnModelFinalizing(IConventionModelBuilder modelBuilder)
+   at Microsoft.EntityFrameworkCore.Metadata.Internal.Model.FinalizeModel()
+   at Microsoft.EntityFrameworkCore.Infrastructure.ModelRuntimeInitializer.Initialize(IModel model, Boolean designTime, IDiagnosticsLogger`1 validationLogger)
+   at Microsoft.EntityFrameworkCore.Infrastructure.ModelSource.CreateModel(DbContext context, ModelCreationDependencies modelCreationDependencies, Boolean designTime)
+   at Microsoft.EntityFrameworkCore.Infrastructure.ModelSource.GetModel(DbContext context, ModelCreationDependencies modelCreationDependencies, Boolean designTime)
+   at Microsoft.EntityFrameworkCore.Internal.DbContextServices.CreateModel(Boolean designTime)
+   at Microsoft.EntityFrameworkCore.Internal.DbContextServices.get_Model()
+   at Microsoft.EntityFrameworkCore.Infrastructure.EntityFrameworkServicesBuilder.<>c.<TryAddCoreServices>b__8_4(IServiceProvider p)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitFactory(FactoryCallSite factoryCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitCache(ServiceCallSite callSite, RuntimeResolverContext context, ServiceProviderEngineScope serviceProviderEngine, RuntimeResolverLock lockType)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitScopeCache(ServiceCallSite callSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitConstructor(ConstructorCallSite constructorCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitCache(ServiceCallSite callSite, RuntimeResolverContext context, ServiceProviderEngineScope serviceProviderEngine, RuntimeResolverLock lockType)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitScopeCache(ServiceCallSite callSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitConstructor(ConstructorCallSite constructorCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitCache(ServiceCallSite callSite, RuntimeResolverContext context, ServiceProviderEngineScope serviceProviderEngine, RuntimeResolverLock lockType)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitScopeCache(ServiceCallSite callSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitConstructor(ConstructorCallSite constructorCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitCache(ServiceCallSite callSite, RuntimeResolverContext context, ServiceProviderEngineScope serviceProviderEngine, RuntimeResolverLock lockType)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitScopeCache(ServiceCallSite callSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitConstructor(ConstructorCallSite constructorCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitCache(ServiceCallSite callSite, RuntimeResolverContext context, ServiceProviderEngineScope serviceProviderEngine, RuntimeResolverLock lockType)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitScopeCache(ServiceCallSite callSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitConstructor(ConstructorCallSite constructorCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitCache(ServiceCallSite callSite, RuntimeResolverContext context, ServiceProviderEngineScope serviceProviderEngine, RuntimeResolverLock lockType)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitScopeCache(ServiceCallSite callSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.Resolve(ServiceCallSite callSite, ServiceProviderEngineScope scope)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.DynamicServiceProviderEngine.<>c__DisplayClass2_0.<RealizeService>b__0(ServiceProviderEngineScope scope)
+   at Microsoft.Extensions.DependencyInjection.ServiceProvider.GetService(ServiceIdentifier serviceIdentifier, ServiceProviderEngineScope serviceProviderEngineScope)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.ServiceProviderEngineScope.GetService(Type serviceType)
+   at Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService(IServiceProvider provider, Type serviceType)
+   at Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService[T](IServiceProvider provider)
+   at Microsoft.EntityFrameworkCore.DbContext.get_DbContextDependencies()
+   at Microsoft.EntityFrameworkCore.DbContext.get_ContextServices()
+   at Microsoft.EntityFrameworkCore.DbContext.get_Model()
+   at Microsoft.EntityFrameworkCore.Internal.InternalDbSet`1.get_EntityType()
+   at Microsoft.EntityFrameworkCore.Internal.InternalDbSet`1.CheckState()
+   at Microsoft.EntityFrameworkCore.Internal.InternalDbSet`1.get_EntityQueryable()
+   at Microsoft.EntityFrameworkCore.Internal.InternalDbSet`1.System.Linq.IQueryable.get_Provider()
+   at Microsoft.EntityFrameworkCore.EntityFrameworkQueryableExtensions.Include[TEntity,TProperty](IQueryable`1 source, Expression`1 navigationPropertyPath)
+   at SEM5_PI_WEBAPI.Infraestructure.StaffMembers.StaffMemberRepository.GetAllAsync() in /Users/franciscosantos/Desktop/LEI-SEM5-PI-2025-26-3DJ-03/SEM5-PI-WEBAPI/Infraestructure/StaffMembers/StaffMemberRepository.cs:line 19
+   at SEM5_PI_WEBAPI.Domain.StaffMembers.StaffMemberService.GetAllAsync() in /Users/franciscosantos/Desktop/LEI-SEM5-PI-2025-26-3DJ-03/SEM5-PI-WEBAPI/Domain/StaffMembers/StaffMemberService.cs:line 25
+   at SEM5_PI_WEBAPI.Controllers.StaffMembersController.GetAll() in /Users/franciscosantos/Desktop/LEI-SEM5-PI-2025-26-3DJ-03/SEM5-PI-WEBAPI/Controllers/StaffMembersController.cs:line 23
+   at lambda_method4(Closure, Object)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.AwaitableObjectResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Logged|12_1(ControllerActionInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|7_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware.InvokeAsync(HttpContext context) in /Users/franciscosantos/Desktop/LEI-SEM5-PI-2025-26-3DJ-03/SEM5-PI-WEBAPI/Domain/Shared/RequestLogsMiddleware.cs:line 23
+   at Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddlewareImpl.Invoke(HttpContext context)
+[23:35:55 INF] Microsoft.AspNetCore.Hosting.Diagnostics                               - Request finished HTTP/1.1 GET http://localhost:5008/api/StaffMembers - 500 null text/plain; charset=utf-8 75.6095ms
+[23:37:42 INF] Microsoft.Hosting.Lifetime                                             - Application is shutting down...
+[23:37:46 INF]  - Starting web host
+[23:37:46 INF] Microsoft.Hosting.Lifetime                                             - Now listening on: http://localhost:5008
+[23:37:46 INF] Microsoft.Hosting.Lifetime                                             - Application started. Press Ctrl+C to shut down.
+[23:37:46 INF] Microsoft.Hosting.Lifetime                                             - Hosting environment: Development
+[23:37:46 INF] Microsoft.Hosting.Lifetime                                             - Content root path: /Users/franciscosantos/Desktop/LEI-SEM5-PI-2025-26-3DJ-03/SEM5-PI-WEBAPI
+[23:37:53 INF] Microsoft.AspNetCore.Hosting.Diagnostics                               - Request starting HTTP/1.1 GET http://localhost:5008/api/StaffMembers - null null
+[23:37:53 WRN] Microsoft.AspNetCore.HttpsPolicy.HttpsRedirectionMiddleware            - Failed to determine the https port for redirect.
+[23:37:53 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - ┌───────────────────────────────────────────────
+[23:37:53 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - │ HTTP GET /api/StaffMembers
+[23:37:53 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - │ From IP: 127.0.0.1
+[23:37:53 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - └───────────────────────────────────────────────
+[23:37:53 INF] Microsoft.AspNetCore.Routing.EndpointMiddleware                        - Executing endpoint 'SEM5_PI_WEBAPI.Controllers.StaffMembersController.GetAll (SEM5-PI-WEBAPI)'
+[23:37:53 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Route matched with {action = "GetAll", controller = "StaffMembers"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[System.Collections.Generic.IEnumerable`1[SEM5_PI_WEBAPI.Domain.StaffMembers.StaffMemberDto]]] GetAll() on controller SEM5_PI_WEBAPI.Controllers.StaffMembersController (SEM5-PI-WEBAPI).
+[23:37:53 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Executing action method SEM5_PI_WEBAPI.Controllers.StaffMembersController.GetAll (SEM5-PI-WEBAPI) - Validation state: "Valid"
+[23:37:53 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Executed action SEM5_PI_WEBAPI.Controllers.StaffMembersController.GetAll (SEM5-PI-WEBAPI) in 549.8597ms
+[23:37:53 INF] Microsoft.AspNetCore.Routing.EndpointMiddleware                        - Executed endpoint 'SEM5_PI_WEBAPI.Controllers.StaffMembersController.GetAll (SEM5-PI-WEBAPI)'
+[23:37:53 ERR] Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddleware      - An unhandled exception has occurred while executing the request.
+System.InvalidOperationException: No suitable constructor was found for entity type 'CargoManifest'. The following constructors had parameters that could not be bound to properties of the entity type: 
+    Cannot bind 'containerEntries' in 'CargoManifest(List<CargoManifestEntry> containerEntries, string code, CargoManifestType type, DateTime createdAt, string submittedBy)'
+Note that only mapped properties can be bound to constructor parameters. Navigations to related entities, including references to owned types, cannot be bound.
+   at Microsoft.EntityFrameworkCore.Metadata.Internal.ConstructorBindingFactory.GetBindings[T](T type, Func`5 bindToProperty, Func`5 bind, InstantiationBinding& constructorBinding, InstantiationBinding& serviceOnlyBinding)
+   at Microsoft.EntityFrameworkCore.Metadata.Internal.ConstructorBindingFactory.GetBindings(IMutableEntityType entityType, InstantiationBinding& constructorBinding, InstantiationBinding& serviceOnlyBinding)
+   at Microsoft.EntityFrameworkCore.Metadata.Conventions.ConstructorBindingConvention.ProcessModelFinalizing(IConventionModelBuilder modelBuilder, IConventionContext`1 context)
+   at Microsoft.EntityFrameworkCore.Metadata.Conventions.Internal.ConventionDispatcher.ImmediateConventionScope.OnModelFinalizing(IConventionModelBuilder modelBuilder)
+   at Microsoft.EntityFrameworkCore.Metadata.Conventions.Internal.ConventionDispatcher.OnModelFinalizing(IConventionModelBuilder modelBuilder)
+   at Microsoft.EntityFrameworkCore.Metadata.Internal.Model.FinalizeModel()
+   at Microsoft.EntityFrameworkCore.Infrastructure.ModelRuntimeInitializer.Initialize(IModel model, Boolean designTime, IDiagnosticsLogger`1 validationLogger)
+   at Microsoft.EntityFrameworkCore.Infrastructure.ModelSource.CreateModel(DbContext context, ModelCreationDependencies modelCreationDependencies, Boolean designTime)
+   at Microsoft.EntityFrameworkCore.Infrastructure.ModelSource.GetModel(DbContext context, ModelCreationDependencies modelCreationDependencies, Boolean designTime)
+   at Microsoft.EntityFrameworkCore.Internal.DbContextServices.CreateModel(Boolean designTime)
+   at Microsoft.EntityFrameworkCore.Internal.DbContextServices.get_Model()
+   at Microsoft.EntityFrameworkCore.Infrastructure.EntityFrameworkServicesBuilder.<>c.<TryAddCoreServices>b__8_4(IServiceProvider p)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitCache(ServiceCallSite callSite, RuntimeResolverContext context, ServiceProviderEngineScope serviceProviderEngine, RuntimeResolverLock lockType)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitScopeCache(ServiceCallSite callSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitConstructor(ConstructorCallSite constructorCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitCache(ServiceCallSite callSite, RuntimeResolverContext context, ServiceProviderEngineScope serviceProviderEngine, RuntimeResolverLock lockType)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitScopeCache(ServiceCallSite callSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitConstructor(ConstructorCallSite constructorCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitCache(ServiceCallSite callSite, RuntimeResolverContext context, ServiceProviderEngineScope serviceProviderEngine, RuntimeResolverLock lockType)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitScopeCache(ServiceCallSite callSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitConstructor(ConstructorCallSite constructorCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitCache(ServiceCallSite callSite, RuntimeResolverContext context, ServiceProviderEngineScope serviceProviderEngine, RuntimeResolverLock lockType)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitScopeCache(ServiceCallSite callSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitConstructor(ConstructorCallSite constructorCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitCache(ServiceCallSite callSite, RuntimeResolverContext context, ServiceProviderEngineScope serviceProviderEngine, RuntimeResolverLock lockType)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitScopeCache(ServiceCallSite callSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitConstructor(ConstructorCallSite constructorCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitCache(ServiceCallSite callSite, RuntimeResolverContext context, ServiceProviderEngineScope serviceProviderEngine, RuntimeResolverLock lockType)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitScopeCache(ServiceCallSite callSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.Resolve(ServiceCallSite callSite, ServiceProviderEngineScope scope)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.DynamicServiceProviderEngine.<>c__DisplayClass2_0.<RealizeService>b__0(ServiceProviderEngineScope scope)
+   at Microsoft.Extensions.DependencyInjection.ServiceProvider.GetService(ServiceIdentifier serviceIdentifier, ServiceProviderEngineScope serviceProviderEngineScope)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.ServiceProviderEngineScope.GetService(Type serviceType)
+   at Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService(IServiceProvider provider, Type serviceType)
+   at Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService[T](IServiceProvider provider)
+   at Microsoft.EntityFrameworkCore.DbContext.get_DbContextDependencies()
+   at Microsoft.EntityFrameworkCore.DbContext.get_ContextServices()
+   at Microsoft.EntityFrameworkCore.DbContext.get_Model()
+   at Microsoft.EntityFrameworkCore.Internal.InternalDbSet`1.get_EntityType()
+   at Microsoft.EntityFrameworkCore.Internal.InternalDbSet`1.CheckState()
+   at Microsoft.EntityFrameworkCore.Internal.InternalDbSet`1.get_EntityQueryable()
+   at Microsoft.EntityFrameworkCore.Internal.InternalDbSet`1.System.Linq.IQueryable.get_Provider()
+   at Microsoft.EntityFrameworkCore.EntityFrameworkQueryableExtensions.Include[TEntity,TProperty](IQueryable`1 source, Expression`1 navigationPropertyPath)
+   at SEM5_PI_WEBAPI.Infraestructure.StaffMembers.StaffMemberRepository.GetAllAsync() in /Users/franciscosantos/Desktop/LEI-SEM5-PI-2025-26-3DJ-03/SEM5-PI-WEBAPI/Infraestructure/StaffMembers/StaffMemberRepository.cs:line 19
+   at SEM5_PI_WEBAPI.Domain.StaffMembers.StaffMemberService.GetAllAsync() in /Users/franciscosantos/Desktop/LEI-SEM5-PI-2025-26-3DJ-03/SEM5-PI-WEBAPI/Domain/StaffMembers/StaffMemberService.cs:line 25
+   at SEM5_PI_WEBAPI.Controllers.StaffMembersController.GetAll() in /Users/franciscosantos/Desktop/LEI-SEM5-PI-2025-26-3DJ-03/SEM5-PI-WEBAPI/Controllers/StaffMembersController.cs:line 23
+   at lambda_method4(Closure, Object)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.AwaitableObjectResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Logged|12_1(ControllerActionInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|7_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware.InvokeAsync(HttpContext context) in /Users/franciscosantos/Desktop/LEI-SEM5-PI-2025-26-3DJ-03/SEM5-PI-WEBAPI/Domain/Shared/RequestLogsMiddleware.cs:line 23
+   at Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddlewareImpl.Invoke(HttpContext context)
+[23:37:53 INF] Microsoft.AspNetCore.Hosting.Diagnostics                               - Request finished HTTP/1.1 GET http://localhost:5008/api/StaffMembers - 500 null text/plain; charset=utf-8 646.9049ms
+[23:42:44 INF] Microsoft.Hosting.Lifetime                                             - Application is shutting down...
+[23:42:48 INF]  - Starting web host
+[23:42:48 INF] Microsoft.Hosting.Lifetime                                             - Now listening on: http://localhost:5008
+[23:42:48 INF] Microsoft.Hosting.Lifetime                                             - Application started. Press Ctrl+C to shut down.
+[23:42:48 INF] Microsoft.Hosting.Lifetime                                             - Hosting environment: Development
+[23:42:48 INF] Microsoft.Hosting.Lifetime                                             - Content root path: /Users/franciscosantos/Desktop/LEI-SEM5-PI-2025-26-3DJ-03/SEM5-PI-WEBAPI
+[23:42:52 INF] Microsoft.AspNetCore.Hosting.Diagnostics                               - Request starting HTTP/1.1 GET http://localhost:5008/api/StaffMembers - null null
+[23:42:52 WRN] Microsoft.AspNetCore.HttpsPolicy.HttpsRedirectionMiddleware            - Failed to determine the https port for redirect.
+[23:42:52 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - ┌───────────────────────────────────────────────
+[23:42:52 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - │ HTTP GET /api/StaffMembers
+[23:42:52 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - │ From IP: 127.0.0.1
+[23:42:52 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - └───────────────────────────────────────────────
+[23:42:52 INF] Microsoft.AspNetCore.Routing.EndpointMiddleware                        - Executing endpoint 'SEM5_PI_WEBAPI.Controllers.StaffMembersController.GetAll (SEM5-PI-WEBAPI)'
+[23:42:52 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Route matched with {action = "GetAll", controller = "StaffMembers"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[System.Collections.Generic.IEnumerable`1[SEM5_PI_WEBAPI.Domain.StaffMembers.StaffMemberDto]]] GetAll() on controller SEM5_PI_WEBAPI.Controllers.StaffMembersController (SEM5-PI-WEBAPI).
+[23:42:52 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Executing action method SEM5_PI_WEBAPI.Controllers.StaffMembersController.GetAll (SEM5-PI-WEBAPI) - Validation state: "Valid"
+[23:42:53 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Executed action SEM5_PI_WEBAPI.Controllers.StaffMembersController.GetAll (SEM5-PI-WEBAPI) in 512.5225ms
+[23:42:53 INF] Microsoft.AspNetCore.Routing.EndpointMiddleware                        - Executed endpoint 'SEM5_PI_WEBAPI.Controllers.StaffMembersController.GetAll (SEM5-PI-WEBAPI)'
+[23:42:53 ERR] Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddleware      - An unhandled exception has occurred while executing the request.
+System.InvalidOperationException: No suitable constructor was found for entity type 'CargoManifestEntry'. The following constructors had parameters that could not be bound to properties of the entity type: 
+    Cannot bind 'container' in 'CargoManifestEntry(EntityContainer container, int bay, int row, int tier)'
+Note that only mapped properties can be bound to constructor parameters. Navigations to related entities, including references to owned types, cannot be bound.
+   at Microsoft.EntityFrameworkCore.Metadata.Internal.ConstructorBindingFactory.GetBindings[T](T type, Func`5 bindToProperty, Func`5 bind, InstantiationBinding& constructorBinding, InstantiationBinding& serviceOnlyBinding)
+   at Microsoft.EntityFrameworkCore.Metadata.Internal.ConstructorBindingFactory.GetBindings(IMutableEntityType entityType, InstantiationBinding& constructorBinding, InstantiationBinding& serviceOnlyBinding)
+   at Microsoft.EntityFrameworkCore.Metadata.Conventions.ConstructorBindingConvention.ProcessModelFinalizing(IConventionModelBuilder modelBuilder, IConventionContext`1 context)
+   at Microsoft.EntityFrameworkCore.Metadata.Conventions.Internal.ConventionDispatcher.ImmediateConventionScope.OnModelFinalizing(IConventionModelBuilder modelBuilder)
+   at Microsoft.EntityFrameworkCore.Metadata.Conventions.Internal.ConventionDispatcher.OnModelFinalizing(IConventionModelBuilder modelBuilder)
+   at Microsoft.EntityFrameworkCore.Metadata.Internal.Model.FinalizeModel()
+   at Microsoft.EntityFrameworkCore.Infrastructure.ModelRuntimeInitializer.Initialize(IModel model, Boolean designTime, IDiagnosticsLogger`1 validationLogger)
+   at Microsoft.EntityFrameworkCore.Infrastructure.ModelSource.CreateModel(DbContext context, ModelCreationDependencies modelCreationDependencies, Boolean designTime)
+   at Microsoft.EntityFrameworkCore.Infrastructure.ModelSource.GetModel(DbContext context, ModelCreationDependencies modelCreationDependencies, Boolean designTime)
+   at Microsoft.EntityFrameworkCore.Internal.DbContextServices.CreateModel(Boolean designTime)
+   at Microsoft.EntityFrameworkCore.Internal.DbContextServices.get_Model()
+   at Microsoft.EntityFrameworkCore.Infrastructure.EntityFrameworkServicesBuilder.<>c.<TryAddCoreServices>b__8_4(IServiceProvider p)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitCache(ServiceCallSite callSite, RuntimeResolverContext context, ServiceProviderEngineScope serviceProviderEngine, RuntimeResolverLock lockType)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitScopeCache(ServiceCallSite callSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitConstructor(ConstructorCallSite constructorCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitCache(ServiceCallSite callSite, RuntimeResolverContext context, ServiceProviderEngineScope serviceProviderEngine, RuntimeResolverLock lockType)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitScopeCache(ServiceCallSite callSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitConstructor(ConstructorCallSite constructorCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitCache(ServiceCallSite callSite, RuntimeResolverContext context, ServiceProviderEngineScope serviceProviderEngine, RuntimeResolverLock lockType)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitScopeCache(ServiceCallSite callSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitConstructor(ConstructorCallSite constructorCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitCache(ServiceCallSite callSite, RuntimeResolverContext context, ServiceProviderEngineScope serviceProviderEngine, RuntimeResolverLock lockType)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitScopeCache(ServiceCallSite callSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitConstructor(ConstructorCallSite constructorCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitCache(ServiceCallSite callSite, RuntimeResolverContext context, ServiceProviderEngineScope serviceProviderEngine, RuntimeResolverLock lockType)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitScopeCache(ServiceCallSite callSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitConstructor(ConstructorCallSite constructorCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitCache(ServiceCallSite callSite, RuntimeResolverContext context, ServiceProviderEngineScope serviceProviderEngine, RuntimeResolverLock lockType)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitScopeCache(ServiceCallSite callSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.Resolve(ServiceCallSite callSite, ServiceProviderEngineScope scope)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.DynamicServiceProviderEngine.<>c__DisplayClass2_0.<RealizeService>b__0(ServiceProviderEngineScope scope)
+   at Microsoft.Extensions.DependencyInjection.ServiceProvider.GetService(ServiceIdentifier serviceIdentifier, ServiceProviderEngineScope serviceProviderEngineScope)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.ServiceProviderEngineScope.GetService(Type serviceType)
+   at Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService(IServiceProvider provider, Type serviceType)
+   at Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService[T](IServiceProvider provider)
+   at Microsoft.EntityFrameworkCore.DbContext.get_DbContextDependencies()
+   at Microsoft.EntityFrameworkCore.DbContext.get_ContextServices()
+   at Microsoft.EntityFrameworkCore.DbContext.get_Model()
+   at Microsoft.EntityFrameworkCore.Internal.InternalDbSet`1.get_EntityType()
+   at Microsoft.EntityFrameworkCore.Internal.InternalDbSet`1.CheckState()
+   at Microsoft.EntityFrameworkCore.Internal.InternalDbSet`1.get_EntityQueryable()
+   at Microsoft.EntityFrameworkCore.Internal.InternalDbSet`1.System.Linq.IQueryable.get_Provider()
+   at Microsoft.EntityFrameworkCore.EntityFrameworkQueryableExtensions.Include[TEntity,TProperty](IQueryable`1 source, Expression`1 navigationPropertyPath)
+   at SEM5_PI_WEBAPI.Infraestructure.StaffMembers.StaffMemberRepository.GetAllAsync() in /Users/franciscosantos/Desktop/LEI-SEM5-PI-2025-26-3DJ-03/SEM5-PI-WEBAPI/Infraestructure/StaffMembers/StaffMemberRepository.cs:line 19
+   at SEM5_PI_WEBAPI.Domain.StaffMembers.StaffMemberService.GetAllAsync() in /Users/franciscosantos/Desktop/LEI-SEM5-PI-2025-26-3DJ-03/SEM5-PI-WEBAPI/Domain/StaffMembers/StaffMemberService.cs:line 25
+   at SEM5_PI_WEBAPI.Controllers.StaffMembersController.GetAll() in /Users/franciscosantos/Desktop/LEI-SEM5-PI-2025-26-3DJ-03/SEM5-PI-WEBAPI/Controllers/StaffMembersController.cs:line 23
+   at lambda_method4(Closure, Object)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.AwaitableObjectResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Logged|12_1(ControllerActionInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|7_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware.InvokeAsync(HttpContext context) in /Users/franciscosantos/Desktop/LEI-SEM5-PI-2025-26-3DJ-03/SEM5-PI-WEBAPI/Domain/Shared/RequestLogsMiddleware.cs:line 23
+   at Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddlewareImpl.Invoke(HttpContext context)
+[23:42:53 INF] Microsoft.AspNetCore.Hosting.Diagnostics                               - Request finished HTTP/1.1 GET http://localhost:5008/api/StaffMembers - 500 null text/plain; charset=utf-8 595.1524ms
+[23:44:25 INF] Microsoft.Hosting.Lifetime                                             - Application is shutting down...
+[23:44:29 INF]  - Starting web host
+[23:44:29 INF] Microsoft.Hosting.Lifetime                                             - Now listening on: http://localhost:5008
+[23:44:29 INF] Microsoft.Hosting.Lifetime                                             - Application started. Press Ctrl+C to shut down.
+[23:44:29 INF] Microsoft.Hosting.Lifetime                                             - Hosting environment: Development
+[23:44:29 INF] Microsoft.Hosting.Lifetime                                             - Content root path: /Users/franciscosantos/Desktop/LEI-SEM5-PI-2025-26-3DJ-03/SEM5-PI-WEBAPI
+[23:44:33 INF] Microsoft.AspNetCore.Hosting.Diagnostics                               - Request starting HTTP/1.1 GET http://localhost:5008/api/StaffMembers - null null
+[23:44:33 WRN] Microsoft.AspNetCore.HttpsPolicy.HttpsRedirectionMiddleware            - Failed to determine the https port for redirect.
+[23:44:33 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - ┌───────────────────────────────────────────────
+[23:44:33 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - │ HTTP GET /api/StaffMembers
+[23:44:33 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - │ From IP: 127.0.0.1
+[23:44:33 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - └───────────────────────────────────────────────
+[23:44:33 INF] Microsoft.AspNetCore.Routing.EndpointMiddleware                        - Executing endpoint 'SEM5_PI_WEBAPI.Controllers.StaffMembersController.GetAll (SEM5-PI-WEBAPI)'
+[23:44:33 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Route matched with {action = "GetAll", controller = "StaffMembers"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[System.Collections.Generic.IEnumerable`1[SEM5_PI_WEBAPI.Domain.StaffMembers.StaffMemberDto]]] GetAll() on controller SEM5_PI_WEBAPI.Controllers.StaffMembersController (SEM5-PI-WEBAPI).
+[23:44:33 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Executing action method SEM5_PI_WEBAPI.Controllers.StaffMembersController.GetAll (SEM5-PI-WEBAPI) - Validation state: "Valid"
+[23:44:34 INF] Microsoft.EntityFrameworkCore.Database.Command                         - Executed DbCommand (10ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT "s"."Id", "s"."IsActive", "s"."MecanographicNumber", "s"."ShortName", "s"."Email", "s"."Phone", "s"."Days", "s"."Shift", "s1"."QualificationsId", "s1"."StaffMemberId", "s1"."Id", "s1"."Code", "s1"."Name"
+FROM "StaffMember" AS "s"
+LEFT JOIN (
+    SELECT "s0"."QualificationsId", "s0"."StaffMemberId", "q"."Id", "q"."Code", "q"."Name"
+    FROM "StaffMemberQualifications" AS "s0"
+    INNER JOIN "Qualifications" AS "q" ON "s0"."QualificationsId" = "q"."Id"
+) AS "s1" ON "s"."Id" = "s1"."StaffMemberId"
+ORDER BY "s"."Id", "s1"."QualificationsId", "s1"."StaffMemberId"
+[23:44:34 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Executed action method SEM5_PI_WEBAPI.Controllers.StaffMembersController.GetAll (SEM5-PI-WEBAPI), returned result Microsoft.AspNetCore.Mvc.ObjectResult in 949.3972ms.
+[23:44:34 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ObjectResultExecutor           - Executing ObjectResult, writing value of type 'System.Collections.Generic.List`1[[SEM5_PI_WEBAPI.Domain.StaffMembers.StaffMemberDto, SEM5-PI-WEBAPI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+[23:44:34 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Executed action SEM5_PI_WEBAPI.Controllers.StaffMembersController.GetAll (SEM5-PI-WEBAPI) in 1106.653ms
+[23:44:34 INF] Microsoft.AspNetCore.Routing.EndpointMiddleware                        - Executed endpoint 'SEM5_PI_WEBAPI.Controllers.StaffMembersController.GetAll (SEM5-PI-WEBAPI)'
+[23:44:34 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - ──────│ ✔ COMPLETED GET /api/StaffMembers with 200 in 1123.693 ms
+[23:44:34 INF] Microsoft.AspNetCore.Hosting.Diagnostics                               - Request finished HTTP/1.1 GET http://localhost:5008/api/StaffMembers - 200 2 application/json; charset=utf-8 1175.7626ms
+[23:44:50 INF] Microsoft.AspNetCore.Hosting.Diagnostics                               - Request starting HTTP/1.1 POST http://localhost:5008/api/StaffMembers - application/json 254
+[23:44:50 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - ┌───────────────────────────────────────────────
+[23:44:50 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - │ HTTP POST /api/StaffMembers
+[23:44:50 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - │ From IP: 127.0.0.1
+[23:44:50 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - └───────────────────────────────────────────────
+[23:44:50 INF] Microsoft.AspNetCore.Routing.EndpointMiddleware                        - Executing endpoint 'SEM5_PI_WEBAPI.Controllers.StaffMembersController.Create (SEM5-PI-WEBAPI)'
+[23:44:50 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Route matched with {action = "Create", controller = "StaffMembers"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[SEM5_PI_WEBAPI.Domain.StaffMembers.StaffMemberDto]] Create(SEM5_PI_WEBAPI.Domain.StaffMembers.DTOs.CreatingStaffMemberDto) on controller SEM5_PI_WEBAPI.Controllers.StaffMembersController (SEM5-PI-WEBAPI).
+[23:44:50 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Executing action method SEM5_PI_WEBAPI.Controllers.StaffMembersController.Create (SEM5-PI-WEBAPI) - Validation state: "Valid"
+[23:44:50 INF] Microsoft.EntityFrameworkCore.Database.Command                         - Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT "s"."Id", "s"."IsActive", "s"."MecanographicNumber", "s"."ShortName", "s"."Email", "s"."Phone", "s"."Days", "s"."Shift", "s1"."QualificationsId", "s1"."StaffMemberId", "s1"."Id", "s1"."Code", "s1"."Name"
+FROM "StaffMember" AS "s"
+LEFT JOIN (
+    SELECT "s0"."QualificationsId", "s0"."StaffMemberId", "q"."Id", "q"."Code", "q"."Name"
+    FROM "StaffMemberQualifications" AS "s0"
+    INNER JOIN "Qualifications" AS "q" ON "s0"."QualificationsId" = "q"."Id"
+) AS "s1" ON "s"."Id" = "s1"."StaffMemberId"
+ORDER BY "s"."Id", "s1"."QualificationsId", "s1"."StaffMemberId"
+[23:44:50 INF] Microsoft.EntityFrameworkCore.Database.Command                         - Executed DbCommand (3ms) [Parameters=[@__id_0='?' (Size = 36)], CommandType='"Text"', CommandTimeout='30']
+SELECT "q"."Id", "q"."Code", "q"."Name"
+FROM "Qualifications" AS "q"
+WHERE @__id_0 = "q"."Id"
+LIMIT 1
+[23:44:50 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Executed action method SEM5_PI_WEBAPI.Controllers.StaffMembersController.Create (SEM5-PI-WEBAPI), returned result Microsoft.AspNetCore.Mvc.BadRequestObjectResult in 49.7691ms.
+[23:44:50 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ObjectResultExecutor           - Executing BadRequestObjectResult, writing value of type '<>f__AnonymousType1`1[[System.String, System.Private.CoreLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+[23:44:50 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Executed action SEM5_PI_WEBAPI.Controllers.StaffMembersController.Create (SEM5-PI-WEBAPI) in 98.9154ms
+[23:44:50 INF] Microsoft.AspNetCore.Routing.EndpointMiddleware                        - Executed endpoint 'SEM5_PI_WEBAPI.Controllers.StaffMembersController.Create (SEM5-PI-WEBAPI)'
+[23:44:50 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - ──────│ ✔ COMPLETED POST /api/StaffMembers with 400 in 113.913 ms
+[23:44:50 INF] Microsoft.AspNetCore.Hosting.Diagnostics                               - Request finished HTTP/1.1 POST http://localhost:5008/api/StaffMembers - 400 76 application/json; charset=utf-8 120.3822ms
+[23:45:22 INF] Microsoft.AspNetCore.Hosting.Diagnostics                               - Request starting HTTP/1.1 POST http://localhost:5008/api/StaffMembers - application/json 294
+[23:45:22 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - ┌───────────────────────────────────────────────
+[23:45:22 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - │ HTTP POST /api/StaffMembers
+[23:45:22 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - │ From IP: 127.0.0.1
+[23:45:22 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - └───────────────────────────────────────────────
+[23:45:22 INF] Microsoft.AspNetCore.Routing.EndpointMiddleware                        - Executing endpoint 'SEM5_PI_WEBAPI.Controllers.StaffMembersController.Create (SEM5-PI-WEBAPI)'
+[23:45:22 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Route matched with {action = "Create", controller = "StaffMembers"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[SEM5_PI_WEBAPI.Domain.StaffMembers.StaffMemberDto]] Create(SEM5_PI_WEBAPI.Domain.StaffMembers.DTOs.CreatingStaffMemberDto) on controller SEM5_PI_WEBAPI.Controllers.StaffMembersController (SEM5-PI-WEBAPI).
+[23:45:22 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Executing action method SEM5_PI_WEBAPI.Controllers.StaffMembersController.Create (SEM5-PI-WEBAPI) - Validation state: "Valid"
+[23:45:22 INF] Microsoft.EntityFrameworkCore.Database.Command                         - Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT "s"."Id", "s"."IsActive", "s"."MecanographicNumber", "s"."ShortName", "s"."Email", "s"."Phone", "s"."Days", "s"."Shift", "s1"."QualificationsId", "s1"."StaffMemberId", "s1"."Id", "s1"."Code", "s1"."Name"
+FROM "StaffMember" AS "s"
+LEFT JOIN (
+    SELECT "s0"."QualificationsId", "s0"."StaffMemberId", "q"."Id", "q"."Code", "q"."Name"
+    FROM "StaffMemberQualifications" AS "s0"
+    INNER JOIN "Qualifications" AS "q" ON "s0"."QualificationsId" = "q"."Id"
+) AS "s1" ON "s"."Id" = "s1"."StaffMemberId"
+ORDER BY "s"."Id", "s1"."QualificationsId", "s1"."StaffMemberId"
+[23:45:22 INF] Microsoft.EntityFrameworkCore.Database.Command                         - Executed DbCommand (0ms) [Parameters=[@__id_0='?' (Size = 36)], CommandType='"Text"', CommandTimeout='30']
+SELECT "q"."Id", "q"."Code", "q"."Name"
+FROM "Qualifications" AS "q"
+WHERE @__id_0 = "q"."Id"
+LIMIT 1
+[23:45:22 INF] Microsoft.EntityFrameworkCore.Database.Command                         - Executed DbCommand (0ms) [Parameters=[@__id_0='?' (Size = 36)], CommandType='"Text"', CommandTimeout='30']
+SELECT "q"."Id", "q"."Code", "q"."Name"
+FROM "Qualifications" AS "q"
+WHERE @__id_0 = "q"."Id"
+LIMIT 1
+[23:45:22 INF] Microsoft.EntityFrameworkCore.Database.Command                         - Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT "s"."Id", "s"."IsActive", "s"."MecanographicNumber", "s"."ShortName", "s"."Email", "s"."Phone", "s"."Days", "s"."Shift", "s1"."QualificationsId", "s1"."StaffMemberId", "s1"."Id", "s1"."Code", "s1"."Name"
+FROM "StaffMember" AS "s"
+LEFT JOIN (
+    SELECT "s0"."QualificationsId", "s0"."StaffMemberId", "q"."Id", "q"."Code", "q"."Name"
+    FROM "StaffMemberQualifications" AS "s0"
+    INNER JOIN "Qualifications" AS "q" ON "s0"."QualificationsId" = "q"."Id"
+) AS "s1" ON "s"."Id" = "s1"."StaffMemberId"
+ORDER BY "s"."Id", "s1"."QualificationsId", "s1"."StaffMemberId"
+[23:45:22 INF] Microsoft.EntityFrameworkCore.Database.Command                         - Executed DbCommand (2ms) [Parameters=[@p0='?' (Size = 36), @p1='?' (DbType = Boolean), @p2='?' (Size = 7), @p3='?' (Size = 12), @p4='?' (DbType = Int32), @p5='?' (DbType = Int32), @p6='?' (Size = 15), @p7='?' (Size = 13)], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO "StaffMember" ("Id", "IsActive", "MecanographicNumber", "ShortName", "Days", "Shift", "Email", "Phone")
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7);
+[23:45:22 INF] Microsoft.EntityFrameworkCore.Database.Command                         - Executed DbCommand (1ms) [Parameters=[@p0='?' (Size = 36), @p1='?' (Size = 36)], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO "StaffMemberQualifications" ("QualificationsId", "StaffMemberId")
+VALUES (@p0, @p1);
+[23:45:22 INF] Microsoft.EntityFrameworkCore.Database.Command                         - Executed DbCommand (0ms) [Parameters=[@p0='?' (Size = 36), @p1='?' (Size = 36)], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO "StaffMemberQualifications" ("QualificationsId", "StaffMemberId")
+VALUES (@p0, @p1);
+[23:45:22 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Executed action method SEM5_PI_WEBAPI.Controllers.StaffMembersController.Create (SEM5-PI-WEBAPI), returned result Microsoft.AspNetCore.Mvc.CreatedAtActionResult in 288.3737ms.
+[23:45:22 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ObjectResultExecutor           - Executing CreatedAtActionResult, writing value of type 'SEM5_PI_WEBAPI.Domain.StaffMembers.StaffMemberDto'.
+[23:45:23 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Executed action SEM5_PI_WEBAPI.Controllers.StaffMembersController.Create (SEM5-PI-WEBAPI) in 340.2097ms
+[23:45:23 INF] Microsoft.AspNetCore.Routing.EndpointMiddleware                        - Executed endpoint 'SEM5_PI_WEBAPI.Controllers.StaffMembersController.Create (SEM5-PI-WEBAPI)'
+[23:45:23 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - ──────│ ✔ COMPLETED POST /api/StaffMembers with 201 in 347.493 ms
+[23:45:23 INF] Microsoft.AspNetCore.Hosting.Diagnostics                               - Request finished HTTP/1.1 POST http://localhost:5008/api/StaffMembers - 201 325 application/json; charset=utf-8 351.105ms
+[23:45:27 INF] Microsoft.AspNetCore.Hosting.Diagnostics                               - Request starting HTTP/1.1 GET http://localhost:5008/api/StaffMembers - null null
+[23:45:27 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - ┌───────────────────────────────────────────────
+[23:45:27 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - │ HTTP GET /api/StaffMembers
+[23:45:27 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - │ From IP: 127.0.0.1
+[23:45:27 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - └───────────────────────────────────────────────
+[23:45:27 INF] Microsoft.AspNetCore.Routing.EndpointMiddleware                        - Executing endpoint 'SEM5_PI_WEBAPI.Controllers.StaffMembersController.GetAll (SEM5-PI-WEBAPI)'
+[23:45:27 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Route matched with {action = "GetAll", controller = "StaffMembers"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[System.Collections.Generic.IEnumerable`1[SEM5_PI_WEBAPI.Domain.StaffMembers.StaffMemberDto]]] GetAll() on controller SEM5_PI_WEBAPI.Controllers.StaffMembersController (SEM5-PI-WEBAPI).
+[23:45:27 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Executing action method SEM5_PI_WEBAPI.Controllers.StaffMembersController.GetAll (SEM5-PI-WEBAPI) - Validation state: "Valid"
+[23:45:27 INF] Microsoft.EntityFrameworkCore.Database.Command                         - Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT "s"."Id", "s"."IsActive", "s"."MecanographicNumber", "s"."ShortName", "s"."Email", "s"."Phone", "s"."Days", "s"."Shift", "s1"."QualificationsId", "s1"."StaffMemberId", "s1"."Id", "s1"."Code", "s1"."Name"
+FROM "StaffMember" AS "s"
+LEFT JOIN (
+    SELECT "s0"."QualificationsId", "s0"."StaffMemberId", "q"."Id", "q"."Code", "q"."Name"
+    FROM "StaffMemberQualifications" AS "s0"
+    INNER JOIN "Qualifications" AS "q" ON "s0"."QualificationsId" = "q"."Id"
+) AS "s1" ON "s"."Id" = "s1"."StaffMemberId"
+ORDER BY "s"."Id", "s1"."QualificationsId", "s1"."StaffMemberId"
+[23:45:28 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Executed action method SEM5_PI_WEBAPI.Controllers.StaffMembersController.GetAll (SEM5-PI-WEBAPI), returned result Microsoft.AspNetCore.Mvc.ObjectResult in 40.3588ms.
+[23:45:28 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ObjectResultExecutor           - Executing ObjectResult, writing value of type 'System.Collections.Generic.List`1[[SEM5_PI_WEBAPI.Domain.StaffMembers.StaffMemberDto, SEM5-PI-WEBAPI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+[23:45:28 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Executed action SEM5_PI_WEBAPI.Controllers.StaffMembersController.GetAll (SEM5-PI-WEBAPI) in 53.3584ms
+[23:45:28 INF] Microsoft.AspNetCore.Routing.EndpointMiddleware                        - Executed endpoint 'SEM5_PI_WEBAPI.Controllers.StaffMembersController.GetAll (SEM5-PI-WEBAPI)'
+[23:45:28 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - ──────│ ✔ COMPLETED GET /api/StaffMembers with 200 in 54.591 ms
+[23:45:28 INF] Microsoft.AspNetCore.Hosting.Diagnostics                               - Request finished HTTP/1.1 GET http://localhost:5008/api/StaffMembers - 200 327 application/json; charset=utf-8 58.0525ms
+[23:45:42 INF] Microsoft.AspNetCore.Hosting.Diagnostics                               - Request starting HTTP/1.1 GET http://localhost:5008/api/StaffMembers/0d868c4e-2c92-4d4d-9cab-70c549e839d0 - null null
+[23:45:42 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - ┌───────────────────────────────────────────────
+[23:45:42 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - │ HTTP GET /api/StaffMembers/0d868c4e-2c92-4d4d-9cab-70c549e839d0
+[23:45:42 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - │ From IP: 127.0.0.1
+[23:45:42 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - └───────────────────────────────────────────────
+[23:45:42 INF] Microsoft.AspNetCore.Routing.EndpointMiddleware                        - Executing endpoint 'SEM5_PI_WEBAPI.Controllers.StaffMembersController.GetById (SEM5-PI-WEBAPI)'
+[23:45:42 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Route matched with {action = "GetById", controller = "StaffMembers"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[SEM5_PI_WEBAPI.Domain.StaffMembers.StaffMemberDto]] GetById(System.Guid) on controller SEM5_PI_WEBAPI.Controllers.StaffMembersController (SEM5-PI-WEBAPI).
+[23:45:42 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Executing action method SEM5_PI_WEBAPI.Controllers.StaffMembersController.GetById (SEM5-PI-WEBAPI) - Validation state: "Valid"
+[23:45:42 INF] Microsoft.EntityFrameworkCore.Database.Command                         - Executed DbCommand (0ms) [Parameters=[@__id_0='?' (Size = 36)], CommandType='"Text"', CommandTimeout='30']
+SELECT "s1"."Id", "s1"."IsActive", "s1"."MecanographicNumber", "s1"."ShortName", "s1"."Email", "s1"."Phone", "s1"."Days", "s1"."Shift", "s2"."QualificationsId", "s2"."StaffMemberId", "s2"."Id", "s2"."Code", "s2"."Name"
+FROM (
+    SELECT "s"."Id", "s"."IsActive", "s"."MecanographicNumber", "s"."ShortName", "s"."Email", "s"."Phone", "s"."Days", "s"."Shift"
+    FROM "StaffMember" AS "s"
+    WHERE "s"."Id" = @__id_0
+    LIMIT 1
+) AS "s1"
+LEFT JOIN (
+    SELECT "s0"."QualificationsId", "s0"."StaffMemberId", "q"."Id", "q"."Code", "q"."Name"
+    FROM "StaffMemberQualifications" AS "s0"
+    INNER JOIN "Qualifications" AS "q" ON "s0"."QualificationsId" = "q"."Id"
+) AS "s2" ON "s1"."Id" = "s2"."StaffMemberId"
+ORDER BY "s1"."Id", "s2"."QualificationsId", "s2"."StaffMemberId"
+[23:45:42 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Executed action method SEM5_PI_WEBAPI.Controllers.StaffMembersController.GetById (SEM5-PI-WEBAPI), returned result Microsoft.AspNetCore.Mvc.NotFoundResult in 36.3524ms.
+[23:45:42 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ObjectResultExecutor           - Executing ObjectResult, writing value of type 'Microsoft.AspNetCore.Mvc.ProblemDetails'.
+[23:45:42 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Executed action SEM5_PI_WEBAPI.Controllers.StaffMembersController.GetById (SEM5-PI-WEBAPI) in 47.3575ms
+[23:45:42 INF] Microsoft.AspNetCore.Routing.EndpointMiddleware                        - Executed endpoint 'SEM5_PI_WEBAPI.Controllers.StaffMembersController.GetById (SEM5-PI-WEBAPI)'
+[23:45:42 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - ──────│ ✔ COMPLETED GET /api/StaffMembers/0d868c4e-2c92-4d4d-9cab-70c549e839d0 with 404 in 57.443 ms
+[23:45:42 INF] Microsoft.AspNetCore.Hosting.Diagnostics                               - Request finished HTTP/1.1 GET http://localhost:5008/api/StaffMembers/0d868c4e-2c92-4d4d-9cab-70c549e839d0 - 404 162 application/problem+json; charset=utf-8 61.6619ms
+[23:45:57 INF] Microsoft.AspNetCore.Hosting.Diagnostics                               - Request starting HTTP/1.1 GET http://localhost:5008/api/StaffMembers/mec/1250001 - null null
+[23:45:57 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - ┌───────────────────────────────────────────────
+[23:45:57 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - │ HTTP GET /api/StaffMembers/mec/1250001
+[23:45:57 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - │ From IP: 127.0.0.1
+[23:45:57 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - └───────────────────────────────────────────────
+[23:45:57 INF] Microsoft.AspNetCore.Routing.EndpointMiddleware                        - Executing endpoint 'SEM5_PI_WEBAPI.Controllers.StaffMembersController.GetByMecanographicNumber (SEM5-PI-WEBAPI)'
+[23:45:57 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Route matched with {action = "GetByMecanographicNumber", controller = "StaffMembers"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[SEM5_PI_WEBAPI.Domain.StaffMembers.StaffMemberDto]] GetByMecanographicNumber(System.String) on controller SEM5_PI_WEBAPI.Controllers.StaffMembersController (SEM5-PI-WEBAPI).
+[23:45:57 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Executing action method SEM5_PI_WEBAPI.Controllers.StaffMembersController.GetByMecanographicNumber (SEM5-PI-WEBAPI) - Validation state: "Valid"
+[23:45:57 INF] Microsoft.EntityFrameworkCore.Database.Command                         - Executed DbCommand (0ms) [Parameters=[@__mec_0='?' (Size = 7)], CommandType='"Text"', CommandTimeout='30']
+SELECT "s1"."Id", "s1"."IsActive", "s1"."MecanographicNumber", "s1"."ShortName", "s1"."Email", "s1"."Phone", "s1"."Days", "s1"."Shift", "s2"."QualificationsId", "s2"."StaffMemberId", "s2"."Id", "s2"."Code", "s2"."Name"
+FROM (
+    SELECT "s"."Id", "s"."IsActive", "s"."MecanographicNumber", "s"."ShortName", "s"."Email", "s"."Phone", "s"."Days", "s"."Shift"
+    FROM "StaffMember" AS "s"
+    WHERE "s"."MecanographicNumber" = @__mec_0
+    LIMIT 1
+) AS "s1"
+LEFT JOIN (
+    SELECT "s0"."QualificationsId", "s0"."StaffMemberId", "q"."Id", "q"."Code", "q"."Name"
+    FROM "StaffMemberQualifications" AS "s0"
+    INNER JOIN "Qualifications" AS "q" ON "s0"."QualificationsId" = "q"."Id"
+) AS "s2" ON "s1"."Id" = "s2"."StaffMemberId"
+ORDER BY "s1"."Id", "s2"."QualificationsId", "s2"."StaffMemberId"
+[23:45:57 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Executed action method SEM5_PI_WEBAPI.Controllers.StaffMembersController.GetByMecanographicNumber (SEM5-PI-WEBAPI), returned result Microsoft.AspNetCore.Mvc.OkObjectResult in 43.0279ms.
+[23:45:57 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ObjectResultExecutor           - Executing OkObjectResult, writing value of type 'SEM5_PI_WEBAPI.Domain.StaffMembers.StaffMemberDto'.
+[23:45:57 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Executed action SEM5_PI_WEBAPI.Controllers.StaffMembersController.GetByMecanographicNumber (SEM5-PI-WEBAPI) in 46.743ms
+[23:45:57 INF] Microsoft.AspNetCore.Routing.EndpointMiddleware                        - Executed endpoint 'SEM5_PI_WEBAPI.Controllers.StaffMembersController.GetByMecanographicNumber (SEM5-PI-WEBAPI)'
+[23:45:57 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - ──────│ ✔ COMPLETED GET /api/StaffMembers/mec/1250001 with 200 in 56.087 ms
+[23:45:57 INF] Microsoft.AspNetCore.Hosting.Diagnostics                               - Request finished HTTP/1.1 GET http://localhost:5008/api/StaffMembers/mec/1250001 - 200 325 application/json; charset=utf-8 64.5974ms
+[23:46:15 INF] Microsoft.AspNetCore.Hosting.Diagnostics                               - Request starting HTTP/1.1 GET http://localhost:5008/api/StaffMembers/6d5045ef-e932-425f-91cb-becd305312af - null null
+[23:46:15 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - ┌───────────────────────────────────────────────
+[23:46:15 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - │ HTTP GET /api/StaffMembers/6d5045ef-e932-425f-91cb-becd305312af
+[23:46:15 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - │ From IP: 127.0.0.1
+[23:46:15 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - └───────────────────────────────────────────────
+[23:46:15 INF] Microsoft.AspNetCore.Routing.EndpointMiddleware                        - Executing endpoint 'SEM5_PI_WEBAPI.Controllers.StaffMembersController.GetById (SEM5-PI-WEBAPI)'
+[23:46:15 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Route matched with {action = "GetById", controller = "StaffMembers"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[SEM5_PI_WEBAPI.Domain.StaffMembers.StaffMemberDto]] GetById(System.Guid) on controller SEM5_PI_WEBAPI.Controllers.StaffMembersController (SEM5-PI-WEBAPI).
+[23:46:15 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Executing action method SEM5_PI_WEBAPI.Controllers.StaffMembersController.GetById (SEM5-PI-WEBAPI) - Validation state: "Valid"
+[23:46:15 INF] Microsoft.EntityFrameworkCore.Database.Command                         - Executed DbCommand (0ms) [Parameters=[@__id_0='?' (Size = 36)], CommandType='"Text"', CommandTimeout='30']
+SELECT "s1"."Id", "s1"."IsActive", "s1"."MecanographicNumber", "s1"."ShortName", "s1"."Email", "s1"."Phone", "s1"."Days", "s1"."Shift", "s2"."QualificationsId", "s2"."StaffMemberId", "s2"."Id", "s2"."Code", "s2"."Name"
+FROM (
+    SELECT "s"."Id", "s"."IsActive", "s"."MecanographicNumber", "s"."ShortName", "s"."Email", "s"."Phone", "s"."Days", "s"."Shift"
+    FROM "StaffMember" AS "s"
+    WHERE "s"."Id" = @__id_0
+    LIMIT 1
+) AS "s1"
+LEFT JOIN (
+    SELECT "s0"."QualificationsId", "s0"."StaffMemberId", "q"."Id", "q"."Code", "q"."Name"
+    FROM "StaffMemberQualifications" AS "s0"
+    INNER JOIN "Qualifications" AS "q" ON "s0"."QualificationsId" = "q"."Id"
+) AS "s2" ON "s1"."Id" = "s2"."StaffMemberId"
+ORDER BY "s1"."Id", "s2"."QualificationsId", "s2"."StaffMemberId"
+[23:46:15 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Executed action method SEM5_PI_WEBAPI.Controllers.StaffMembersController.GetById (SEM5-PI-WEBAPI), returned result Microsoft.AspNetCore.Mvc.ObjectResult in 11.7172ms.
+[23:46:15 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ObjectResultExecutor           - Executing ObjectResult, writing value of type 'SEM5_PI_WEBAPI.Domain.StaffMembers.StaffMemberDto'.
+[23:46:15 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Executed action SEM5_PI_WEBAPI.Controllers.StaffMembersController.GetById (SEM5-PI-WEBAPI) in 14.348ms
+[23:46:15 INF] Microsoft.AspNetCore.Routing.EndpointMiddleware                        - Executed endpoint 'SEM5_PI_WEBAPI.Controllers.StaffMembersController.GetById (SEM5-PI-WEBAPI)'
+[23:46:15 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - ──────│ ✔ COMPLETED GET /api/StaffMembers/6d5045ef-e932-425f-91cb-becd305312af with 200 in 16.29 ms
+[23:46:15 INF] Microsoft.AspNetCore.Hosting.Diagnostics                               - Request finished HTTP/1.1 GET http://localhost:5008/api/StaffMembers/6d5045ef-e932-425f-91cb-becd305312af - 200 325 application/json; charset=utf-8 18.2337ms
+[23:46:29 INF] Microsoft.AspNetCore.Hosting.Diagnostics                               - Request starting HTTP/1.1 GET http://localhost:5008/api/StaffMembers/name/Paulo Mendes - null null
+[23:46:29 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - ┌───────────────────────────────────────────────
+[23:46:29 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - │ HTTP GET /api/StaffMembers/name/Paulo%20Mendes
+[23:46:29 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - │ From IP: 127.0.0.1
+[23:46:29 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - └───────────────────────────────────────────────
+[23:46:29 INF] Microsoft.AspNetCore.Routing.EndpointMiddleware                        - Executing endpoint 'SEM5_PI_WEBAPI.Controllers.StaffMembersController.GetByName (SEM5-PI-WEBAPI)'
+[23:46:29 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Route matched with {action = "GetByName", controller = "StaffMembers"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[SEM5_PI_WEBAPI.Domain.StaffMembers.StaffMemberDto]] GetByName(System.String) on controller SEM5_PI_WEBAPI.Controllers.StaffMembersController (SEM5-PI-WEBAPI).
+[23:46:29 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Executing action method SEM5_PI_WEBAPI.Controllers.StaffMembersController.GetByName (SEM5-PI-WEBAPI) - Validation state: "Valid"
+[23:46:29 INF] Microsoft.EntityFrameworkCore.Database.Command                         - Executed DbCommand (0ms) [Parameters=[@__name_0='?' (Size = 12)], CommandType='"Text"', CommandTimeout='30']
+SELECT "s1"."Id", "s1"."IsActive", "s1"."MecanographicNumber", "s1"."ShortName", "s1"."Email", "s1"."Phone", "s1"."Days", "s1"."Shift", "s2"."QualificationsId", "s2"."StaffMemberId", "s2"."Id", "s2"."Code", "s2"."Name"
+FROM (
+    SELECT "s"."Id", "s"."IsActive", "s"."MecanographicNumber", "s"."ShortName", "s"."Email", "s"."Phone", "s"."Days", "s"."Shift"
+    FROM "StaffMember" AS "s"
+    WHERE "s"."ShortName" = @__name_0
+    LIMIT 1
+) AS "s1"
+LEFT JOIN (
+    SELECT "s0"."QualificationsId", "s0"."StaffMemberId", "q"."Id", "q"."Code", "q"."Name"
+    FROM "StaffMemberQualifications" AS "s0"
+    INNER JOIN "Qualifications" AS "q" ON "s0"."QualificationsId" = "q"."Id"
+) AS "s2" ON "s1"."Id" = "s2"."StaffMemberId"
+ORDER BY "s1"."Id", "s2"."QualificationsId", "s2"."StaffMemberId"
+[23:46:29 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Executed action method SEM5_PI_WEBAPI.Controllers.StaffMembersController.GetByName (SEM5-PI-WEBAPI), returned result Microsoft.AspNetCore.Mvc.OkObjectResult in 31.0258ms.
+[23:46:29 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ObjectResultExecutor           - Executing OkObjectResult, writing value of type 'SEM5_PI_WEBAPI.Domain.StaffMembers.StaffMemberDto'.
+[23:46:29 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Executed action SEM5_PI_WEBAPI.Controllers.StaffMembersController.GetByName (SEM5-PI-WEBAPI) in 34.735ms
+[23:46:29 INF] Microsoft.AspNetCore.Routing.EndpointMiddleware                        - Executed endpoint 'SEM5_PI_WEBAPI.Controllers.StaffMembersController.GetByName (SEM5-PI-WEBAPI)'
+[23:46:29 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - ──────│ ✔ COMPLETED GET /api/StaffMembers/name/Paulo%20Mendes with 200 in 46.764 ms
+[23:46:29 INF] Microsoft.AspNetCore.Hosting.Diagnostics                               - Request finished HTTP/1.1 GET http://localhost:5008/api/StaffMembers/name/Paulo Mendes - 200 325 application/json; charset=utf-8 53.5023ms
+[23:46:45 INF] Microsoft.AspNetCore.Hosting.Diagnostics                               - Request starting HTTP/1.1 PATCH http://localhost:5008/api/StaffMembers/a0f285f4-b361-4ca5-a31f-1bfc0ad34f54 - application/json 55
+[23:46:45 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - ┌───────────────────────────────────────────────
+[23:46:45 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - │ HTTP PATCH /api/StaffMembers/a0f285f4-b361-4ca5-a31f-1bfc0ad34f54
+[23:46:45 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - │ From IP: 127.0.0.1
+[23:46:45 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - └───────────────────────────────────────────────
+[23:46:45 INF] Microsoft.AspNetCore.Routing.EndpointMiddleware                        - Executing endpoint 'SEM5_PI_WEBAPI.Controllers.StaffMembersController.Update (SEM5-PI-WEBAPI)'
+[23:46:45 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Route matched with {action = "Update", controller = "StaffMembers"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[SEM5_PI_WEBAPI.Domain.StaffMembers.StaffMemberDto]] Update(System.Guid, SEM5_PI_WEBAPI.Domain.StaffMembers.DTOs.UpdateStaffMemberDto) on controller SEM5_PI_WEBAPI.Controllers.StaffMembersController (SEM5-PI-WEBAPI).
+[23:46:45 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Executing action method SEM5_PI_WEBAPI.Controllers.StaffMembersController.Update (SEM5-PI-WEBAPI) - Validation state: "Valid"
+[23:46:45 INF] Microsoft.EntityFrameworkCore.Database.Command                         - Executed DbCommand (0ms) [Parameters=[@__id_0='?' (Size = 36)], CommandType='"Text"', CommandTimeout='30']
+SELECT "s1"."Id", "s1"."IsActive", "s1"."MecanographicNumber", "s1"."ShortName", "s1"."Email", "s1"."Phone", "s1"."Days", "s1"."Shift", "s2"."QualificationsId", "s2"."StaffMemberId", "s2"."Id", "s2"."Code", "s2"."Name"
+FROM (
+    SELECT "s"."Id", "s"."IsActive", "s"."MecanographicNumber", "s"."ShortName", "s"."Email", "s"."Phone", "s"."Days", "s"."Shift"
+    FROM "StaffMember" AS "s"
+    WHERE "s"."Id" = @__id_0
+    LIMIT 1
+) AS "s1"
+LEFT JOIN (
+    SELECT "s0"."QualificationsId", "s0"."StaffMemberId", "q"."Id", "q"."Code", "q"."Name"
+    FROM "StaffMemberQualifications" AS "s0"
+    INNER JOIN "Qualifications" AS "q" ON "s0"."QualificationsId" = "q"."Id"
+) AS "s2" ON "s1"."Id" = "s2"."StaffMemberId"
+ORDER BY "s1"."Id", "s2"."QualificationsId", "s2"."StaffMemberId"
+[23:46:45 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Executed action method SEM5_PI_WEBAPI.Controllers.StaffMembersController.Update (SEM5-PI-WEBAPI), returned result Microsoft.AspNetCore.Mvc.NotFoundResult in 4.3707ms.
+[23:46:45 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ObjectResultExecutor           - Executing ObjectResult, writing value of type 'Microsoft.AspNetCore.Mvc.ProblemDetails'.
+[23:46:45 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Executed action SEM5_PI_WEBAPI.Controllers.StaffMembersController.Update (SEM5-PI-WEBAPI) in 15.6414ms
+[23:46:45 INF] Microsoft.AspNetCore.Routing.EndpointMiddleware                        - Executed endpoint 'SEM5_PI_WEBAPI.Controllers.StaffMembersController.Update (SEM5-PI-WEBAPI)'
+[23:46:45 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - ──────│ ✔ COMPLETED PATCH /api/StaffMembers/a0f285f4-b361-4ca5-a31f-1bfc0ad34f54 with 404 in 23.519 ms
+[23:46:45 INF] Microsoft.AspNetCore.Hosting.Diagnostics                               - Request finished HTTP/1.1 PATCH http://localhost:5008/api/StaffMembers/a0f285f4-b361-4ca5-a31f-1bfc0ad34f54 - 404 162 application/problem+json; charset=utf-8 24.743ms
+[23:46:52 INF] Microsoft.AspNetCore.Hosting.Diagnostics                               - Request starting HTTP/1.1 PATCH http://localhost:5008/api/StaffMembers/6d5045ef-e932-425f-91cb-becd305312af - application/json 55
+[23:46:52 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - ┌───────────────────────────────────────────────
+[23:46:52 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - │ HTTP PATCH /api/StaffMembers/6d5045ef-e932-425f-91cb-becd305312af
+[23:46:52 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - │ From IP: 127.0.0.1
+[23:46:52 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - └───────────────────────────────────────────────
+[23:46:52 INF] Microsoft.AspNetCore.Routing.EndpointMiddleware                        - Executing endpoint 'SEM5_PI_WEBAPI.Controllers.StaffMembersController.Update (SEM5-PI-WEBAPI)'
+[23:46:52 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Route matched with {action = "Update", controller = "StaffMembers"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[SEM5_PI_WEBAPI.Domain.StaffMembers.StaffMemberDto]] Update(System.Guid, SEM5_PI_WEBAPI.Domain.StaffMembers.DTOs.UpdateStaffMemberDto) on controller SEM5_PI_WEBAPI.Controllers.StaffMembersController (SEM5-PI-WEBAPI).
+[23:46:52 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Executing action method SEM5_PI_WEBAPI.Controllers.StaffMembersController.Update (SEM5-PI-WEBAPI) - Validation state: "Valid"
+[23:46:52 INF] Microsoft.EntityFrameworkCore.Database.Command                         - Executed DbCommand (0ms) [Parameters=[@__id_0='?' (Size = 36)], CommandType='"Text"', CommandTimeout='30']
+SELECT "s1"."Id", "s1"."IsActive", "s1"."MecanographicNumber", "s1"."ShortName", "s1"."Email", "s1"."Phone", "s1"."Days", "s1"."Shift", "s2"."QualificationsId", "s2"."StaffMemberId", "s2"."Id", "s2"."Code", "s2"."Name"
+FROM (
+    SELECT "s"."Id", "s"."IsActive", "s"."MecanographicNumber", "s"."ShortName", "s"."Email", "s"."Phone", "s"."Days", "s"."Shift"
+    FROM "StaffMember" AS "s"
+    WHERE "s"."Id" = @__id_0
+    LIMIT 1
+) AS "s1"
+LEFT JOIN (
+    SELECT "s0"."QualificationsId", "s0"."StaffMemberId", "q"."Id", "q"."Code", "q"."Name"
+    FROM "StaffMemberQualifications" AS "s0"
+    INNER JOIN "Qualifications" AS "q" ON "s0"."QualificationsId" = "q"."Id"
+) AS "s2" ON "s1"."Id" = "s2"."StaffMemberId"
+ORDER BY "s1"."Id", "s2"."QualificationsId", "s2"."StaffMemberId"
+[23:46:52 INF] Microsoft.EntityFrameworkCore.Database.Command                         - Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT "s"."Id", "s"."IsActive", "s"."MecanographicNumber", "s"."ShortName", "s"."Email", "s"."Phone", "s"."Days", "s"."Shift", "s1"."QualificationsId", "s1"."StaffMemberId", "s1"."Id", "s1"."Code", "s1"."Name"
+FROM "StaffMember" AS "s"
+LEFT JOIN (
+    SELECT "s0"."QualificationsId", "s0"."StaffMemberId", "q"."Id", "q"."Code", "q"."Name"
+    FROM "StaffMemberQualifications" AS "s0"
+    INNER JOIN "Qualifications" AS "q" ON "s0"."QualificationsId" = "q"."Id"
+) AS "s1" ON "s"."Id" = "s1"."StaffMemberId"
+ORDER BY "s"."Id", "s1"."QualificationsId", "s1"."StaffMemberId"
+[23:46:52 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Executed action SEM5_PI_WEBAPI.Controllers.StaffMembersController.Update (SEM5-PI-WEBAPI) in 24.1951ms
+[23:46:52 INF] Microsoft.AspNetCore.Routing.EndpointMiddleware                        - Executed endpoint 'SEM5_PI_WEBAPI.Controllers.StaffMembersController.Update (SEM5-PI-WEBAPI)'
+[23:46:52 ERR] Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddleware      - An unhandled exception has occurred while executing the request.
+SEM5_PI_WEBAPI.Domain.Shared.BusinessRuleValidationException: Repeated Phone Number for StaffMember!
+   at SEM5_PI_WEBAPI.Domain.StaffMembers.StaffMemberService.EnsureNotRepeatedAsync(Email email, PhoneNumber phone) in /Users/franciscosantos/Desktop/LEI-SEM5-PI-2025-26-3DJ-03/SEM5-PI-WEBAPI/Domain/StaffMembers/StaffMemberService.cs:line 154
+   at SEM5_PI_WEBAPI.Domain.StaffMembers.StaffMemberService.UpdateAsync(StaffMemberId id, UpdateStaffMemberDto updateDto) in /Users/franciscosantos/Desktop/LEI-SEM5-PI-2025-26-3DJ-03/SEM5-PI-WEBAPI/Domain/StaffMembers/StaffMemberService.cs:line 95
+   at SEM5_PI_WEBAPI.Controllers.StaffMembersController.Update(Guid id, UpdateStaffMemberDto dto) in /Users/franciscosantos/Desktop/LEI-SEM5-PI-2025-26-3DJ-03/SEM5-PI-WEBAPI/Controllers/StaffMembersController.cs:line 94
+   at lambda_method644(Closure, Object)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.AwaitableObjectResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Logged|12_1(ControllerActionInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|7_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware.InvokeAsync(HttpContext context) in /Users/franciscosantos/Desktop/LEI-SEM5-PI-2025-26-3DJ-03/SEM5-PI-WEBAPI/Domain/Shared/RequestLogsMiddleware.cs:line 23
+   at Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddlewareImpl.Invoke(HttpContext context)
+[23:46:52 INF] Microsoft.AspNetCore.Hosting.Diagnostics                               - Request finished HTTP/1.1 PATCH http://localhost:5008/api/StaffMembers/6d5045ef-e932-425f-91cb-becd305312af - 500 null text/plain; charset=utf-8 45.7904ms
+[23:47:53 INF] Microsoft.AspNetCore.Hosting.Diagnostics                               - Request starting HTTP/1.1 PATCH http://localhost:5008/api/StaffMembers/6d5045ef-e932-425f-91cb-becd305312af/toggle - null 0
+[23:47:53 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - ┌───────────────────────────────────────────────
+[23:47:53 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - │ HTTP PATCH /api/StaffMembers/6d5045ef-e932-425f-91cb-becd305312af/toggle
+[23:47:53 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - │ From IP: 127.0.0.1
+[23:47:53 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - └───────────────────────────────────────────────
+[23:47:53 INF] Microsoft.AspNetCore.Routing.EndpointMiddleware                        - Executing endpoint 'SEM5_PI_WEBAPI.Controllers.StaffMembersController.ToggleStatus (SEM5-PI-WEBAPI)'
+[23:47:53 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Route matched with {action = "ToggleStatus", controller = "StaffMembers"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[SEM5_PI_WEBAPI.Domain.StaffMembers.StaffMemberDto]] ToggleStatus(System.Guid) on controller SEM5_PI_WEBAPI.Controllers.StaffMembersController (SEM5-PI-WEBAPI).
+[23:47:53 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Executing action method SEM5_PI_WEBAPI.Controllers.StaffMembersController.ToggleStatus (SEM5-PI-WEBAPI) - Validation state: "Valid"
+[23:47:53 INF] Microsoft.EntityFrameworkCore.Database.Command                         - Executed DbCommand (0ms) [Parameters=[@__id_0='?' (Size = 36)], CommandType='"Text"', CommandTimeout='30']
+SELECT "s1"."Id", "s1"."IsActive", "s1"."MecanographicNumber", "s1"."ShortName", "s1"."Email", "s1"."Phone", "s1"."Days", "s1"."Shift", "s2"."QualificationsId", "s2"."StaffMemberId", "s2"."Id", "s2"."Code", "s2"."Name"
+FROM (
+    SELECT "s"."Id", "s"."IsActive", "s"."MecanographicNumber", "s"."ShortName", "s"."Email", "s"."Phone", "s"."Days", "s"."Shift"
+    FROM "StaffMember" AS "s"
+    WHERE "s"."Id" = @__id_0
+    LIMIT 1
+) AS "s1"
+LEFT JOIN (
+    SELECT "s0"."QualificationsId", "s0"."StaffMemberId", "q"."Id", "q"."Code", "q"."Name"
+    FROM "StaffMemberQualifications" AS "s0"
+    INNER JOIN "Qualifications" AS "q" ON "s0"."QualificationsId" = "q"."Id"
+) AS "s2" ON "s1"."Id" = "s2"."StaffMemberId"
+ORDER BY "s1"."Id", "s2"."QualificationsId", "s2"."StaffMemberId"
+[23:47:53 INF] Microsoft.EntityFrameworkCore.Database.Command                         - Executed DbCommand (0ms) [Parameters=[@p1='?' (Size = 36), @p0='?' (DbType = Boolean)], CommandType='"Text"', CommandTimeout='30']
+UPDATE "StaffMember" SET "IsActive" = @p0
+WHERE "Id" = @p1
+RETURNING 1;
+[23:47:53 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Executed action method SEM5_PI_WEBAPI.Controllers.StaffMembersController.ToggleStatus (SEM5-PI-WEBAPI), returned result Microsoft.AspNetCore.Mvc.OkObjectResult in 24.2764ms.
+[23:47:53 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ObjectResultExecutor           - Executing OkObjectResult, writing value of type 'SEM5_PI_WEBAPI.Domain.StaffMembers.StaffMemberDto'.
+[23:47:53 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Executed action SEM5_PI_WEBAPI.Controllers.StaffMembersController.ToggleStatus (SEM5-PI-WEBAPI) in 27.9976ms
+[23:47:53 INF] Microsoft.AspNetCore.Routing.EndpointMiddleware                        - Executed endpoint 'SEM5_PI_WEBAPI.Controllers.StaffMembersController.ToggleStatus (SEM5-PI-WEBAPI)'
+[23:47:53 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - ──────│ ✔ COMPLETED PATCH /api/StaffMembers/6d5045ef-e932-425f-91cb-becd305312af/toggle with 200 in 35.554 ms
+[23:47:53 INF] Microsoft.AspNetCore.Hosting.Diagnostics                               - Request finished HTTP/1.1 PATCH http://localhost:5008/api/StaffMembers/6d5045ef-e932-425f-91cb-becd305312af/toggle - 200 326 application/json; charset=utf-8 47.3519ms
+[23:47:56 INF] Microsoft.AspNetCore.Hosting.Diagnostics                               - Request starting HTTP/1.1 PATCH http://localhost:5008/api/StaffMembers/6d5045ef-e932-425f-91cb-becd305312af/toggle - null 0
+[23:47:56 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - ┌───────────────────────────────────────────────
+[23:47:56 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - │ HTTP PATCH /api/StaffMembers/6d5045ef-e932-425f-91cb-becd305312af/toggle
+[23:47:56 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - │ From IP: 127.0.0.1
+[23:47:56 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - └───────────────────────────────────────────────
+[23:47:56 INF] Microsoft.AspNetCore.Routing.EndpointMiddleware                        - Executing endpoint 'SEM5_PI_WEBAPI.Controllers.StaffMembersController.ToggleStatus (SEM5-PI-WEBAPI)'
+[23:47:56 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Route matched with {action = "ToggleStatus", controller = "StaffMembers"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[SEM5_PI_WEBAPI.Domain.StaffMembers.StaffMemberDto]] ToggleStatus(System.Guid) on controller SEM5_PI_WEBAPI.Controllers.StaffMembersController (SEM5-PI-WEBAPI).
+[23:47:56 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Executing action method SEM5_PI_WEBAPI.Controllers.StaffMembersController.ToggleStatus (SEM5-PI-WEBAPI) - Validation state: "Valid"
+[23:47:56 INF] Microsoft.EntityFrameworkCore.Database.Command                         - Executed DbCommand (1ms) [Parameters=[@__id_0='?' (Size = 36)], CommandType='"Text"', CommandTimeout='30']
+SELECT "s1"."Id", "s1"."IsActive", "s1"."MecanographicNumber", "s1"."ShortName", "s1"."Email", "s1"."Phone", "s1"."Days", "s1"."Shift", "s2"."QualificationsId", "s2"."StaffMemberId", "s2"."Id", "s2"."Code", "s2"."Name"
+FROM (
+    SELECT "s"."Id", "s"."IsActive", "s"."MecanographicNumber", "s"."ShortName", "s"."Email", "s"."Phone", "s"."Days", "s"."Shift"
+    FROM "StaffMember" AS "s"
+    WHERE "s"."Id" = @__id_0
+    LIMIT 1
+) AS "s1"
+LEFT JOIN (
+    SELECT "s0"."QualificationsId", "s0"."StaffMemberId", "q"."Id", "q"."Code", "q"."Name"
+    FROM "StaffMemberQualifications" AS "s0"
+    INNER JOIN "Qualifications" AS "q" ON "s0"."QualificationsId" = "q"."Id"
+) AS "s2" ON "s1"."Id" = "s2"."StaffMemberId"
+ORDER BY "s1"."Id", "s2"."QualificationsId", "s2"."StaffMemberId"
+[23:47:56 INF] Microsoft.EntityFrameworkCore.Database.Command                         - Executed DbCommand (0ms) [Parameters=[@p1='?' (Size = 36), @p0='?' (DbType = Boolean)], CommandType='"Text"', CommandTimeout='30']
+UPDATE "StaffMember" SET "IsActive" = @p0
+WHERE "Id" = @p1
+RETURNING 1;
+[23:47:56 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Executed action method SEM5_PI_WEBAPI.Controllers.StaffMembersController.ToggleStatus (SEM5-PI-WEBAPI), returned result Microsoft.AspNetCore.Mvc.OkObjectResult in 20.7224ms.
+[23:47:56 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ObjectResultExecutor           - Executing OkObjectResult, writing value of type 'SEM5_PI_WEBAPI.Domain.StaffMembers.StaffMemberDto'.
+[23:47:56 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Executed action SEM5_PI_WEBAPI.Controllers.StaffMembersController.ToggleStatus (SEM5-PI-WEBAPI) in 25.1017ms
+[23:47:56 INF] Microsoft.AspNetCore.Routing.EndpointMiddleware                        - Executed endpoint 'SEM5_PI_WEBAPI.Controllers.StaffMembersController.ToggleStatus (SEM5-PI-WEBAPI)'
+[23:47:56 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - ──────│ ✔ COMPLETED PATCH /api/StaffMembers/6d5045ef-e932-425f-91cb-becd305312af/toggle with 200 in 26.314 ms
+[23:47:56 INF] Microsoft.AspNetCore.Hosting.Diagnostics                               - Request finished HTTP/1.1 PATCH http://localhost:5008/api/StaffMembers/6d5045ef-e932-425f-91cb-becd305312af/toggle - 200 325 application/json; charset=utf-8 30.4012ms
+[23:48:02 INF] Microsoft.AspNetCore.Hosting.Diagnostics                               - Request starting HTTP/1.1 PATCH http://localhost:5008/api/StaffMembers/a0f285f4-b361-4ca5-a31f-1bfc0ad34f54 - application/json 55
+[23:48:02 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - ┌───────────────────────────────────────────────
+[23:48:02 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - │ HTTP PATCH /api/StaffMembers/a0f285f4-b361-4ca5-a31f-1bfc0ad34f54
+[23:48:02 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - │ From IP: 127.0.0.1
+[23:48:02 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - └───────────────────────────────────────────────
+[23:48:02 INF] Microsoft.AspNetCore.Routing.EndpointMiddleware                        - Executing endpoint 'SEM5_PI_WEBAPI.Controllers.StaffMembersController.Update (SEM5-PI-WEBAPI)'
+[23:48:02 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Route matched with {action = "Update", controller = "StaffMembers"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[SEM5_PI_WEBAPI.Domain.StaffMembers.StaffMemberDto]] Update(System.Guid, SEM5_PI_WEBAPI.Domain.StaffMembers.DTOs.UpdateStaffMemberDto) on controller SEM5_PI_WEBAPI.Controllers.StaffMembersController (SEM5-PI-WEBAPI).
+[23:48:02 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Executing action method SEM5_PI_WEBAPI.Controllers.StaffMembersController.Update (SEM5-PI-WEBAPI) - Validation state: "Valid"
+[23:48:02 INF] Microsoft.EntityFrameworkCore.Database.Command                         - Executed DbCommand (0ms) [Parameters=[@__id_0='?' (Size = 36)], CommandType='"Text"', CommandTimeout='30']
+SELECT "s1"."Id", "s1"."IsActive", "s1"."MecanographicNumber", "s1"."ShortName", "s1"."Email", "s1"."Phone", "s1"."Days", "s1"."Shift", "s2"."QualificationsId", "s2"."StaffMemberId", "s2"."Id", "s2"."Code", "s2"."Name"
+FROM (
+    SELECT "s"."Id", "s"."IsActive", "s"."MecanographicNumber", "s"."ShortName", "s"."Email", "s"."Phone", "s"."Days", "s"."Shift"
+    FROM "StaffMember" AS "s"
+    WHERE "s"."Id" = @__id_0
+    LIMIT 1
+) AS "s1"
+LEFT JOIN (
+    SELECT "s0"."QualificationsId", "s0"."StaffMemberId", "q"."Id", "q"."Code", "q"."Name"
+    FROM "StaffMemberQualifications" AS "s0"
+    INNER JOIN "Qualifications" AS "q" ON "s0"."QualificationsId" = "q"."Id"
+) AS "s2" ON "s1"."Id" = "s2"."StaffMemberId"
+ORDER BY "s1"."Id", "s2"."QualificationsId", "s2"."StaffMemberId"
+[23:48:02 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Executed action method SEM5_PI_WEBAPI.Controllers.StaffMembersController.Update (SEM5-PI-WEBAPI), returned result Microsoft.AspNetCore.Mvc.NotFoundResult in 7.2472ms.
+[23:48:02 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ObjectResultExecutor           - Executing ObjectResult, writing value of type 'Microsoft.AspNetCore.Mvc.ProblemDetails'.
+[23:48:02 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Executed action SEM5_PI_WEBAPI.Controllers.StaffMembersController.Update (SEM5-PI-WEBAPI) in 19.6056ms
+[23:48:02 INF] Microsoft.AspNetCore.Routing.EndpointMiddleware                        - Executed endpoint 'SEM5_PI_WEBAPI.Controllers.StaffMembersController.Update (SEM5-PI-WEBAPI)'
+[23:48:02 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - ──────│ ✔ COMPLETED PATCH /api/StaffMembers/a0f285f4-b361-4ca5-a31f-1bfc0ad34f54 with 404 in 22.13 ms
+[23:48:02 INF] Microsoft.AspNetCore.Hosting.Diagnostics                               - Request finished HTTP/1.1 PATCH http://localhost:5008/api/StaffMembers/a0f285f4-b361-4ca5-a31f-1bfc0ad34f54 - 404 162 application/problem+json; charset=utf-8 25.9644ms
+[23:48:09 INF] Microsoft.AspNetCore.Hosting.Diagnostics                               - Request starting HTTP/1.1 PATCH http://localhost:5008/api/StaffMembers/6d5045ef-e932-425f-91cb-becd305312af - application/json 55
+[23:48:09 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - ┌───────────────────────────────────────────────
+[23:48:09 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - │ HTTP PATCH /api/StaffMembers/6d5045ef-e932-425f-91cb-becd305312af
+[23:48:09 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - │ From IP: 127.0.0.1
+[23:48:09 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - └───────────────────────────────────────────────
+[23:48:09 INF] Microsoft.AspNetCore.Routing.EndpointMiddleware                        - Executing endpoint 'SEM5_PI_WEBAPI.Controllers.StaffMembersController.Update (SEM5-PI-WEBAPI)'
+[23:48:09 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Route matched with {action = "Update", controller = "StaffMembers"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[SEM5_PI_WEBAPI.Domain.StaffMembers.StaffMemberDto]] Update(System.Guid, SEM5_PI_WEBAPI.Domain.StaffMembers.DTOs.UpdateStaffMemberDto) on controller SEM5_PI_WEBAPI.Controllers.StaffMembersController (SEM5-PI-WEBAPI).
+[23:48:09 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Executing action method SEM5_PI_WEBAPI.Controllers.StaffMembersController.Update (SEM5-PI-WEBAPI) - Validation state: "Valid"
+[23:48:09 INF] Microsoft.EntityFrameworkCore.Database.Command                         - Executed DbCommand (0ms) [Parameters=[@__id_0='?' (Size = 36)], CommandType='"Text"', CommandTimeout='30']
+SELECT "s1"."Id", "s1"."IsActive", "s1"."MecanographicNumber", "s1"."ShortName", "s1"."Email", "s1"."Phone", "s1"."Days", "s1"."Shift", "s2"."QualificationsId", "s2"."StaffMemberId", "s2"."Id", "s2"."Code", "s2"."Name"
+FROM (
+    SELECT "s"."Id", "s"."IsActive", "s"."MecanographicNumber", "s"."ShortName", "s"."Email", "s"."Phone", "s"."Days", "s"."Shift"
+    FROM "StaffMember" AS "s"
+    WHERE "s"."Id" = @__id_0
+    LIMIT 1
+) AS "s1"
+LEFT JOIN (
+    SELECT "s0"."QualificationsId", "s0"."StaffMemberId", "q"."Id", "q"."Code", "q"."Name"
+    FROM "StaffMemberQualifications" AS "s0"
+    INNER JOIN "Qualifications" AS "q" ON "s0"."QualificationsId" = "q"."Id"
+) AS "s2" ON "s1"."Id" = "s2"."StaffMemberId"
+ORDER BY "s1"."Id", "s2"."QualificationsId", "s2"."StaffMemberId"
+[23:48:09 INF] Microsoft.EntityFrameworkCore.Database.Command                         - Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT "s"."Id", "s"."IsActive", "s"."MecanographicNumber", "s"."ShortName", "s"."Email", "s"."Phone", "s"."Days", "s"."Shift", "s1"."QualificationsId", "s1"."StaffMemberId", "s1"."Id", "s1"."Code", "s1"."Name"
+FROM "StaffMember" AS "s"
+LEFT JOIN (
+    SELECT "s0"."QualificationsId", "s0"."StaffMemberId", "q"."Id", "q"."Code", "q"."Name"
+    FROM "StaffMemberQualifications" AS "s0"
+    INNER JOIN "Qualifications" AS "q" ON "s0"."QualificationsId" = "q"."Id"
+) AS "s1" ON "s"."Id" = "s1"."StaffMemberId"
+ORDER BY "s"."Id", "s1"."QualificationsId", "s1"."StaffMemberId"
+[23:48:09 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Executed action SEM5_PI_WEBAPI.Controllers.StaffMembersController.Update (SEM5-PI-WEBAPI) in 16.5241ms
+[23:48:09 INF] Microsoft.AspNetCore.Routing.EndpointMiddleware                        - Executed endpoint 'SEM5_PI_WEBAPI.Controllers.StaffMembersController.Update (SEM5-PI-WEBAPI)'
+[23:48:09 ERR] Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddleware      - An unhandled exception has occurred while executing the request.
+SEM5_PI_WEBAPI.Domain.Shared.BusinessRuleValidationException: Repeated Phone Number for StaffMember!
+   at SEM5_PI_WEBAPI.Domain.StaffMembers.StaffMemberService.EnsureNotRepeatedAsync(Email email, PhoneNumber phone) in /Users/franciscosantos/Desktop/LEI-SEM5-PI-2025-26-3DJ-03/SEM5-PI-WEBAPI/Domain/StaffMembers/StaffMemberService.cs:line 154
+   at SEM5_PI_WEBAPI.Domain.StaffMembers.StaffMemberService.UpdateAsync(StaffMemberId id, UpdateStaffMemberDto updateDto) in /Users/franciscosantos/Desktop/LEI-SEM5-PI-2025-26-3DJ-03/SEM5-PI-WEBAPI/Domain/StaffMembers/StaffMemberService.cs:line 95
+   at SEM5_PI_WEBAPI.Controllers.StaffMembersController.Update(Guid id, UpdateStaffMemberDto dto) in /Users/franciscosantos/Desktop/LEI-SEM5-PI-2025-26-3DJ-03/SEM5-PI-WEBAPI/Controllers/StaffMembersController.cs:line 94
+   at lambda_method644(Closure, Object)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.AwaitableObjectResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Logged|12_1(ControllerActionInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|7_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware.InvokeAsync(HttpContext context) in /Users/franciscosantos/Desktop/LEI-SEM5-PI-2025-26-3DJ-03/SEM5-PI-WEBAPI/Domain/Shared/RequestLogsMiddleware.cs:line 23
+   at Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddlewareImpl.Invoke(HttpContext context)
+[23:48:09 INF] Microsoft.AspNetCore.Hosting.Diagnostics                               - Request finished HTTP/1.1 PATCH http://localhost:5008/api/StaffMembers/6d5045ef-e932-425f-91cb-becd305312af - 500 null text/plain; charset=utf-8 23.2605ms
+[23:48:20 INF] Microsoft.AspNetCore.Hosting.Diagnostics                               - Request starting HTTP/1.1 GET http://localhost:5008/api/StaffMembers/by-qualifications?ids=d3419e74-9413-460e-916f-c420876c5dc6 - null null
+[23:48:20 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - ┌───────────────────────────────────────────────
+[23:48:20 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - │ HTTP GET /api/StaffMembers/by-qualifications
+[23:48:20 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - │ From IP: 127.0.0.1
+[23:48:20 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - └───────────────────────────────────────────────
+[23:48:20 INF] Microsoft.AspNetCore.Routing.EndpointMiddleware                        - Executing endpoint 'SEM5_PI_WEBAPI.Controllers.StaffMembersController.GetByQualifications (SEM5-PI-WEBAPI)'
+[23:48:20 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Route matched with {action = "GetByQualifications", controller = "StaffMembers"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[System.Collections.Generic.List`1[SEM5_PI_WEBAPI.Domain.StaffMembers.StaffMemberDto]]] GetByQualifications(System.Collections.Generic.List`1[System.Guid]) on controller SEM5_PI_WEBAPI.Controllers.StaffMembersController (SEM5-PI-WEBAPI).
+[23:48:20 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ObjectResultExecutor           - Executing ObjectResult, writing value of type 'Microsoft.AspNetCore.Mvc.ProblemDetails'.
+[23:48:20 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Executed action SEM5_PI_WEBAPI.Controllers.StaffMembersController.GetByQualifications (SEM5-PI-WEBAPI) in 9.0934ms
+[23:48:20 INF] Microsoft.AspNetCore.Routing.EndpointMiddleware                        - Executed endpoint 'SEM5_PI_WEBAPI.Controllers.StaffMembersController.GetByQualifications (SEM5-PI-WEBAPI)'
+[23:48:20 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - ──────│ ✔ COMPLETED GET /api/StaffMembers/by-qualifications with 415 in 23.506 ms
+[23:48:20 INF] Microsoft.AspNetCore.Hosting.Diagnostics                               - Request finished HTTP/1.1 GET http://localhost:5008/api/StaffMembers/by-qualifications?ids=d3419e74-9413-460e-916f-c420876c5dc6 - 415 176 application/problem+json; charset=utf-8 31.8544ms
+[23:48:37 INF] Microsoft.AspNetCore.Hosting.Diagnostics                               - Request starting HTTP/1.1 GET http://localhost:5008/api/StaffMembers/by-qualifications?ids=d3419e74-9413-460e-916f-c420876c5dc6 - null null
+[23:48:37 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - ┌───────────────────────────────────────────────
+[23:48:37 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - │ HTTP GET /api/StaffMembers/by-qualifications
+[23:48:37 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - │ From IP: 127.0.0.1
+[23:48:37 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - └───────────────────────────────────────────────
+[23:48:37 INF] Microsoft.AspNetCore.Routing.EndpointMiddleware                        - Executing endpoint 'SEM5_PI_WEBAPI.Controllers.StaffMembersController.GetByQualifications (SEM5-PI-WEBAPI)'
+[23:48:37 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Route matched with {action = "GetByQualifications", controller = "StaffMembers"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[System.Collections.Generic.List`1[SEM5_PI_WEBAPI.Domain.StaffMembers.StaffMemberDto]]] GetByQualifications(System.Collections.Generic.List`1[System.Guid]) on controller SEM5_PI_WEBAPI.Controllers.StaffMembersController (SEM5-PI-WEBAPI).
+[23:48:37 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ObjectResultExecutor           - Executing ObjectResult, writing value of type 'Microsoft.AspNetCore.Mvc.ProblemDetails'.
+[23:48:37 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Executed action SEM5_PI_WEBAPI.Controllers.StaffMembersController.GetByQualifications (SEM5-PI-WEBAPI) in 2.5657ms
+[23:48:37 INF] Microsoft.AspNetCore.Routing.EndpointMiddleware                        - Executed endpoint 'SEM5_PI_WEBAPI.Controllers.StaffMembersController.GetByQualifications (SEM5-PI-WEBAPI)'
+[23:48:37 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - ──────│ ✔ COMPLETED GET /api/StaffMembers/by-qualifications with 415 in 3.789 ms
+[23:48:37 INF] Microsoft.AspNetCore.Hosting.Diagnostics                               - Request finished HTTP/1.1 GET http://localhost:5008/api/StaffMembers/by-qualifications?ids=d3419e74-9413-460e-916f-c420876c5dc6 - 415 176 application/problem+json; charset=utf-8 7.9076ms
+[23:48:43 INF] Microsoft.AspNetCore.Hosting.Diagnostics                               - Request starting HTTP/1.1 PATCH http://localhost:5008/api/StaffMembers/6d5045ef-e932-425f-91cb-becd305312af - application/json 55
+[23:48:43 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - ┌───────────────────────────────────────────────
+[23:48:43 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - │ HTTP PATCH /api/StaffMembers/6d5045ef-e932-425f-91cb-becd305312af
+[23:48:43 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - │ From IP: 127.0.0.1
+[23:48:43 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - └───────────────────────────────────────────────
+[23:48:43 INF] Microsoft.AspNetCore.Routing.EndpointMiddleware                        - Executing endpoint 'SEM5_PI_WEBAPI.Controllers.StaffMembersController.Update (SEM5-PI-WEBAPI)'
+[23:48:43 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Route matched with {action = "Update", controller = "StaffMembers"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[SEM5_PI_WEBAPI.Domain.StaffMembers.StaffMemberDto]] Update(System.Guid, SEM5_PI_WEBAPI.Domain.StaffMembers.DTOs.UpdateStaffMemberDto) on controller SEM5_PI_WEBAPI.Controllers.StaffMembersController (SEM5-PI-WEBAPI).
+[23:48:43 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Executing action method SEM5_PI_WEBAPI.Controllers.StaffMembersController.Update (SEM5-PI-WEBAPI) - Validation state: "Valid"
+[23:48:43 INF] Microsoft.EntityFrameworkCore.Database.Command                         - Executed DbCommand (0ms) [Parameters=[@__id_0='?' (Size = 36)], CommandType='"Text"', CommandTimeout='30']
+SELECT "s1"."Id", "s1"."IsActive", "s1"."MecanographicNumber", "s1"."ShortName", "s1"."Email", "s1"."Phone", "s1"."Days", "s1"."Shift", "s2"."QualificationsId", "s2"."StaffMemberId", "s2"."Id", "s2"."Code", "s2"."Name"
+FROM (
+    SELECT "s"."Id", "s"."IsActive", "s"."MecanographicNumber", "s"."ShortName", "s"."Email", "s"."Phone", "s"."Days", "s"."Shift"
+    FROM "StaffMember" AS "s"
+    WHERE "s"."Id" = @__id_0
+    LIMIT 1
+) AS "s1"
+LEFT JOIN (
+    SELECT "s0"."QualificationsId", "s0"."StaffMemberId", "q"."Id", "q"."Code", "q"."Name"
+    FROM "StaffMemberQualifications" AS "s0"
+    INNER JOIN "Qualifications" AS "q" ON "s0"."QualificationsId" = "q"."Id"
+) AS "s2" ON "s1"."Id" = "s2"."StaffMemberId"
+ORDER BY "s1"."Id", "s2"."QualificationsId", "s2"."StaffMemberId"
+[23:48:43 INF] Microsoft.EntityFrameworkCore.Database.Command                         - Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT "s"."Id", "s"."IsActive", "s"."MecanographicNumber", "s"."ShortName", "s"."Email", "s"."Phone", "s"."Days", "s"."Shift", "s1"."QualificationsId", "s1"."StaffMemberId", "s1"."Id", "s1"."Code", "s1"."Name"
+FROM "StaffMember" AS "s"
+LEFT JOIN (
+    SELECT "s0"."QualificationsId", "s0"."StaffMemberId", "q"."Id", "q"."Code", "q"."Name"
+    FROM "StaffMemberQualifications" AS "s0"
+    INNER JOIN "Qualifications" AS "q" ON "s0"."QualificationsId" = "q"."Id"
+) AS "s1" ON "s"."Id" = "s1"."StaffMemberId"
+ORDER BY "s"."Id", "s1"."QualificationsId", "s1"."StaffMemberId"
+[23:48:43 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Executed action SEM5_PI_WEBAPI.Controllers.StaffMembersController.Update (SEM5-PI-WEBAPI) in 14.6697ms
+[23:48:43 INF] Microsoft.AspNetCore.Routing.EndpointMiddleware                        - Executed endpoint 'SEM5_PI_WEBAPI.Controllers.StaffMembersController.Update (SEM5-PI-WEBAPI)'
+[23:48:43 ERR] Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddleware      - An unhandled exception has occurred while executing the request.
+SEM5_PI_WEBAPI.Domain.Shared.BusinessRuleValidationException: Repeated Phone Number for StaffMember!
+   at SEM5_PI_WEBAPI.Domain.StaffMembers.StaffMemberService.EnsureNotRepeatedAsync(Email email, PhoneNumber phone) in /Users/franciscosantos/Desktop/LEI-SEM5-PI-2025-26-3DJ-03/SEM5-PI-WEBAPI/Domain/StaffMembers/StaffMemberService.cs:line 154
+   at SEM5_PI_WEBAPI.Domain.StaffMembers.StaffMemberService.UpdateAsync(StaffMemberId id, UpdateStaffMemberDto updateDto) in /Users/franciscosantos/Desktop/LEI-SEM5-PI-2025-26-3DJ-03/SEM5-PI-WEBAPI/Domain/StaffMembers/StaffMemberService.cs:line 95
+   at SEM5_PI_WEBAPI.Controllers.StaffMembersController.Update(Guid id, UpdateStaffMemberDto dto) in /Users/franciscosantos/Desktop/LEI-SEM5-PI-2025-26-3DJ-03/SEM5-PI-WEBAPI/Controllers/StaffMembersController.cs:line 94
+   at lambda_method644(Closure, Object)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.AwaitableObjectResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Logged|12_1(ControllerActionInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|7_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware.InvokeAsync(HttpContext context) in /Users/franciscosantos/Desktop/LEI-SEM5-PI-2025-26-3DJ-03/SEM5-PI-WEBAPI/Domain/Shared/RequestLogsMiddleware.cs:line 23
+   at Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddlewareImpl.Invoke(HttpContext context)
+[23:48:43 INF] Microsoft.AspNetCore.Hosting.Diagnostics                               - Request finished HTTP/1.1 PATCH http://localhost:5008/api/StaffMembers/6d5045ef-e932-425f-91cb-becd305312af - 500 null text/plain; charset=utf-8 26.6357ms
+[23:50:03 INF] Microsoft.Hosting.Lifetime                                             - Application is shutting down...
+[23:55:51 INF]  - Starting web host
+[23:55:51 INF] Microsoft.Hosting.Lifetime                                             - Now listening on: http://localhost:5008
+[23:55:51 INF] Microsoft.Hosting.Lifetime                                             - Application started. Press Ctrl+C to shut down.
+[23:55:51 INF] Microsoft.Hosting.Lifetime                                             - Hosting environment: Development
+[23:55:51 INF] Microsoft.Hosting.Lifetime                                             - Content root path: /Users/franciscosantos/Desktop/LEI-SEM5-PI-2025-26-3DJ-03/SEM5-PI-WEBAPI
+[23:55:53 INF] Microsoft.AspNetCore.Hosting.Diagnostics                               - Request starting HTTP/1.1 GET http://localhost:5008/api/StaffMembers - null null
+[23:55:53 WRN] Microsoft.AspNetCore.HttpsPolicy.HttpsRedirectionMiddleware            - Failed to determine the https port for redirect.
+[23:55:53 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - ┌───────────────────────────────────────────────
+[23:55:53 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - │ HTTP GET /api/StaffMembers
+[23:55:53 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - │ From IP: 127.0.0.1
+[23:55:53 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - └───────────────────────────────────────────────
+[23:55:53 INF] Microsoft.AspNetCore.Routing.EndpointMiddleware                        - Executing endpoint 'SEM5_PI_WEBAPI.Controllers.StaffMembersController.GetAll (SEM5-PI-WEBAPI)'
+[23:55:53 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Route matched with {action = "GetAll", controller = "StaffMembers"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[System.Collections.Generic.IEnumerable`1[SEM5_PI_WEBAPI.Domain.StaffMembers.StaffMemberDto]]] GetAll() on controller SEM5_PI_WEBAPI.Controllers.StaffMembersController (SEM5-PI-WEBAPI).
+[23:55:53 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Executing action method SEM5_PI_WEBAPI.Controllers.StaffMembersController.GetAll (SEM5-PI-WEBAPI) - Validation state: "Valid"
+[23:55:53 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Executed action SEM5_PI_WEBAPI.Controllers.StaffMembersController.GetAll (SEM5-PI-WEBAPI) in 558.1729ms
+[23:55:53 INF] Microsoft.AspNetCore.Routing.EndpointMiddleware                        - Executed endpoint 'SEM5_PI_WEBAPI.Controllers.StaffMembersController.GetAll (SEM5-PI-WEBAPI)'
+[23:55:53 ERR] Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddleware      - An unhandled exception has occurred while executing the request.
+System.InvalidOperationException: The property 'DockCode' cannot be added to the type 'StorageAreaDockDistance' because no property type was specified and there is no corresponding CLR property or field. To add a shadow state property, the property type must be specified.
+   at Microsoft.EntityFrameworkCore.Metadata.Internal.InternalTypeBaseBuilder.Property(Type propertyType, String propertyName, MemberInfo memberInfo, Nullable`1 typeConfigurationSource, Nullable`1 configurationSource, Boolean skipTypeCheck)
+   at Microsoft.EntityFrameworkCore.Metadata.Internal.InternalTypeBaseBuilder.Property(Type propertyType, String propertyName, Nullable`1 typeConfigurationSource, Nullable`1 configurationSource, Boolean skipTypeCheck)
+   at Microsoft.EntityFrameworkCore.Metadata.Internal.InternalTypeBaseBuilder.GetOrCreateProperties(IReadOnlyList`1 propertyNames, Nullable`1 configurationSource, IReadOnlyList`1 referencedProperties, Boolean required, Boolean useDefaultType)
+   at Microsoft.EntityFrameworkCore.Metadata.Internal.InternalEntityTypeBuilder.PrimaryKey(IReadOnlyList`1 propertyNames, ConfigurationSource configurationSource)
+   at Microsoft.EntityFrameworkCore.Metadata.Builders.OwnedNavigationBuilder`2.HasKey(String[] propertyNames)
+   at SEM5_PI_WEBAPI.Infraestructure.StorageAreas.StorageAreaEntityTypeConfiguration.<>c.<Configure>b__0_9(OwnedNavigationBuilder`2 d) in /Users/franciscosantos/Desktop/LEI-SEM5-PI-2025-26-3DJ-03/SEM5-PI-WEBAPI/Infraestructure/StorageAreas/StorageAreaEntityTypeConfiguration.cs:line 45
+   at Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder`1.OwnsMany[TRelatedEntity](Expression`1 navigationExpression, Action`1 buildAction)
+   at SEM5_PI_WEBAPI.Infraestructure.StorageAreas.StorageAreaEntityTypeConfiguration.Configure(EntityTypeBuilder`1 builder) in /Users/franciscosantos/Desktop/LEI-SEM5-PI-2025-26-3DJ-03/SEM5-PI-WEBAPI/Infraestructure/StorageAreas/StorageAreaEntityTypeConfiguration.cs:line 29
+   at Microsoft.EntityFrameworkCore.ModelBuilder.ApplyConfiguration[TEntity](IEntityTypeConfiguration`1 configuration)
+   at SEM5_PI_WEBAPI.Infraestructure.DddSample1DbContext.OnModelCreating(ModelBuilder modelBuilder) in /Users/franciscosantos/Desktop/LEI-SEM5-PI-2025-26-3DJ-03/SEM5-PI-WEBAPI/Infraestructure/DddSample1DbContext.cs:line 56
+   at Microsoft.EntityFrameworkCore.Infrastructure.ModelCustomizer.Customize(ModelBuilder modelBuilder, DbContext context)
+   at Microsoft.EntityFrameworkCore.Infrastructure.ModelSource.CreateModel(DbContext context, IConventionSetBuilder conventionSetBuilder, ModelDependencies modelDependencies)
+   at Microsoft.EntityFrameworkCore.Infrastructure.ModelSource.CreateModel(DbContext context, ModelCreationDependencies modelCreationDependencies, Boolean designTime)
+   at Microsoft.EntityFrameworkCore.Infrastructure.ModelSource.GetModel(DbContext context, ModelCreationDependencies modelCreationDependencies, Boolean designTime)
+   at Microsoft.EntityFrameworkCore.Internal.DbContextServices.CreateModel(Boolean designTime)
+   at Microsoft.EntityFrameworkCore.Internal.DbContextServices.get_Model()
+   at Microsoft.EntityFrameworkCore.Infrastructure.EntityFrameworkServicesBuilder.<>c.<TryAddCoreServices>b__8_4(IServiceProvider p)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitCache(ServiceCallSite callSite, RuntimeResolverContext context, ServiceProviderEngineScope serviceProviderEngine, RuntimeResolverLock lockType)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitScopeCache(ServiceCallSite callSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitConstructor(ConstructorCallSite constructorCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitCache(ServiceCallSite callSite, RuntimeResolverContext context, ServiceProviderEngineScope serviceProviderEngine, RuntimeResolverLock lockType)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitScopeCache(ServiceCallSite callSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitConstructor(ConstructorCallSite constructorCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitCache(ServiceCallSite callSite, RuntimeResolverContext context, ServiceProviderEngineScope serviceProviderEngine, RuntimeResolverLock lockType)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitScopeCache(ServiceCallSite callSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitConstructor(ConstructorCallSite constructorCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitCache(ServiceCallSite callSite, RuntimeResolverContext context, ServiceProviderEngineScope serviceProviderEngine, RuntimeResolverLock lockType)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitScopeCache(ServiceCallSite callSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitConstructor(ConstructorCallSite constructorCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitCache(ServiceCallSite callSite, RuntimeResolverContext context, ServiceProviderEngineScope serviceProviderEngine, RuntimeResolverLock lockType)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitScopeCache(ServiceCallSite callSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitConstructor(ConstructorCallSite constructorCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitCache(ServiceCallSite callSite, RuntimeResolverContext context, ServiceProviderEngineScope serviceProviderEngine, RuntimeResolverLock lockType)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitScopeCache(ServiceCallSite callSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.Resolve(ServiceCallSite callSite, ServiceProviderEngineScope scope)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.DynamicServiceProviderEngine.<>c__DisplayClass2_0.<RealizeService>b__0(ServiceProviderEngineScope scope)
+   at Microsoft.Extensions.DependencyInjection.ServiceProvider.GetService(ServiceIdentifier serviceIdentifier, ServiceProviderEngineScope serviceProviderEngineScope)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.ServiceProviderEngineScope.GetService(Type serviceType)
+   at Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService(IServiceProvider provider, Type serviceType)
+   at Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService[T](IServiceProvider provider)
+   at Microsoft.EntityFrameworkCore.DbContext.get_DbContextDependencies()
+   at Microsoft.EntityFrameworkCore.DbContext.get_ContextServices()
+   at Microsoft.EntityFrameworkCore.DbContext.get_Model()
+   at Microsoft.EntityFrameworkCore.Internal.InternalDbSet`1.get_EntityType()
+   at Microsoft.EntityFrameworkCore.Internal.InternalDbSet`1.CheckState()
+   at Microsoft.EntityFrameworkCore.Internal.InternalDbSet`1.get_EntityQueryable()
+   at Microsoft.EntityFrameworkCore.Internal.InternalDbSet`1.System.Linq.IQueryable.get_Provider()
+   at Microsoft.EntityFrameworkCore.EntityFrameworkQueryableExtensions.Include[TEntity,TProperty](IQueryable`1 source, Expression`1 navigationPropertyPath)
+   at SEM5_PI_WEBAPI.Infraestructure.StaffMembers.StaffMemberRepository.GetAllAsync() in /Users/franciscosantos/Desktop/LEI-SEM5-PI-2025-26-3DJ-03/SEM5-PI-WEBAPI/Infraestructure/StaffMembers/StaffMemberRepository.cs:line 19
+   at SEM5_PI_WEBAPI.Domain.StaffMembers.StaffMemberService.GetAllAsync() in /Users/franciscosantos/Desktop/LEI-SEM5-PI-2025-26-3DJ-03/SEM5-PI-WEBAPI/Domain/StaffMembers/StaffMemberService.cs:line 25
+   at SEM5_PI_WEBAPI.Controllers.StaffMembersController.GetAll() in /Users/franciscosantos/Desktop/LEI-SEM5-PI-2025-26-3DJ-03/SEM5-PI-WEBAPI/Controllers/StaffMembersController.cs:line 23
+   at lambda_method4(Closure, Object)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.AwaitableObjectResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Logged|12_1(ControllerActionInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|7_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware.InvokeAsync(HttpContext context) in /Users/franciscosantos/Desktop/LEI-SEM5-PI-2025-26-3DJ-03/SEM5-PI-WEBAPI/Domain/Shared/RequestLogsMiddleware.cs:line 23
+   at Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddlewareImpl.Invoke(HttpContext context)
+[23:55:53 INF] Microsoft.AspNetCore.Hosting.Diagnostics                               - Request finished HTTP/1.1 GET http://localhost:5008/api/StaffMembers - 500 null text/plain; charset=utf-8 638.3092ms
+[23:57:11 INF] Microsoft.Hosting.Lifetime                                             - Application is shutting down...

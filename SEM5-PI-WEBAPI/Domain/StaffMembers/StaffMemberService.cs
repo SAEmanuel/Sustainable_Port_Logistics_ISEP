@@ -58,7 +58,7 @@ public class StaffMemberService
 
     public async Task<StaffMemberDto> AddAsync(CreatingStaffMemberDto dto)
     {
-        await EnsureNotRepeatedAsync(dto.Email, dto.Phone);
+        await EnsureNotRepeatedAsync(dto.Email, dto.Phone, null);
 
         var qualificationIds = dto.QualificationIds ?? new List<Guid>();
         var list = qualificationIds.Select(q => new QualificationId(q)).ToList();
@@ -82,17 +82,17 @@ public class StaffMemberService
     }
 
 
-    public async Task<StaffMemberDto?> UpdateAsync(StaffMemberId id, UpdateStaffMemberDto updateDto)
+    public async Task<StaffMemberDto> UpdateAsync(StaffMemberId id, UpdateStaffMemberDto updateDto)
     {
         var staff = await _repo.GetByIdAsync(id);
         if (staff == null)
             return null;
-        
+
         if (updateDto.Email != null || updateDto.Phone != null)
         {
             var emailToCheck = updateDto.Email ?? staff.Email;
             var phoneToCheck = updateDto.Phone ?? staff.Phone;
-            await EnsureNotRepeatedAsync(emailToCheck, phoneToCheck);
+            await EnsureNotRepeatedAsync(emailToCheck, phoneToCheck, id);
         }
 
         if (updateDto.ShortName != null)
@@ -125,7 +125,7 @@ public class StaffMemberService
     }
 
 
-    public async Task<StaffMemberDto?> ToggleAsync(StaffMemberId id)
+    public async Task<StaffMemberDto> ToggleAsync(StaffMemberId id)
     {
         var staff = await _repo.GetByIdAsync(id);
         if (staff == null)
@@ -137,15 +137,17 @@ public class StaffMemberService
         return MapToDto(staff);
     }
 
-    private async Task EnsureNotRepeatedAsync(Email email, PhoneNumber phone)
+    private async Task EnsureNotRepeatedAsync(Email email, PhoneNumber phone, StaffMemberId? currentStaffId)
     {
         var allStaff = await _repo.GetAllAsync();
 
         bool repeatedEmail = allStaff.Any(s =>
-            s.Email.Address.Equals(email.Address, StringComparison.OrdinalIgnoreCase));
+            s.Email.Address.Equals(email.Address, StringComparison.OrdinalIgnoreCase)
+            && (currentStaffId == null || s.Id != currentStaffId));
 
         bool repeatedPhone = allStaff.Any(s =>
-            s.Phone.Number.Equals(phone.Number, StringComparison.OrdinalIgnoreCase));
+            s.Phone.Number.Equals(phone.Number, StringComparison.OrdinalIgnoreCase)
+            && (currentStaffId == null || s.Id != currentStaffId));
 
         if (repeatedEmail)
             throw new BusinessRuleValidationException("Repeated Email for StaffMember!");

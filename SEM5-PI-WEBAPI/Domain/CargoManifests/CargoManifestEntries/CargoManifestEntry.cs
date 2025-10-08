@@ -12,6 +12,10 @@ public class CargoManifestEntry : Entity<CargoManifestEntryId>
     public int Row { get; set; }
     public int Tier { get; set; }
 
+    protected CargoManifestEntry()
+    {
+    }
+
     public CargoManifestEntry(EntityContainer container, int bay, int row, int tier)
     {
         Id = new CargoManifestEntryId(Guid.NewGuid());

@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using SEM5_PI_WEBAPI.Domain.Qualifications;
 using SEM5_PI_WEBAPI.Domain.Shared;
 using SEM5_PI_WEBAPI.Domain.StaffMembers;
 using SEM5_PI_WEBAPI.Domain.StaffMembers.DTOs;
@@ -33,6 +34,18 @@ public class StaffMembersController : ControllerBase
         }
 
         return staff;
+    }
+    
+    [HttpGet("by-qualifications")]
+    public async Task<ActionResult<List<StaffMemberDto>>> GetByQualifications(List<Guid> ids)
+    {
+        if (ids == null || !ids.Any())
+            return BadRequest("At least one qualification id must be provided.");
+        
+        var qualificationIds = ids.Select(guid => new QualificationId(guid)).ToList();
+        var staffList = await _service.GetByQualificationsAsync(qualificationIds);
+
+        return Ok(staffList);
     }
     
     [HttpGet("mec/{mec}")]

@@ -204,7 +204,12 @@ GET {{portURL}}/api/StaffMembers
 Accept: application/json
 
 ###
-GET {{portURL}}/api/StaffMembers/a0f285f4-b361-4ca5-a31f-1bfc0ad34f54
+GET {{portURL}}/api/StaffMembers/by-qualifications?ids=d3419e74-9413-460e-916f-c420876c5dc6
+Accept: application/json
+
+
+###
+GET {{portURL}}/api/StaffMembers/6d5045ef-e932-425f-91cb-becd305312af
 Accept: application/json
 
 ###
@@ -212,7 +217,7 @@ GET {{portURL}}/api/StaffMembers/mec/1250001
 Accept: application/json
 
 ###
-GET {{portURL}}/api/StaffMembers/name/Paulo Mendes Updated
+GET {{portURL}}/api/StaffMembers/name/Paulo Mendes
 Accept: application/json
 
 ###
@@ -230,23 +235,24 @@ Accept: application/json
   "phone": { "number": "+351912345678" },
   "schedule": { "shift": "Morning", "days": 31 },
   "isActive": true,
-  "qualificationIds": ["274b013d-da0d-4e9b-8b83-73c019ce8104"]
+  "qualificationIds": ["d3419e74-9413-460e-916f-c420876c5dc6", "0d868c4e-2c92-4d4d-9cab-70c549e839d0"]
 }
 
 ###
-PATCH {{portURL}}/api/StaffMembers/a0f285f4-b361-4ca5-a31f-1bfc0ad34f54
+PATCH {{portURL}}/api/StaffMembers/6d5045ef-e932-425f-91cb-becd305312af
 Content-Type: application/json
 Accept: application/json
 
 {
-  "shortName": "Paulo Mendes Updated",
   "email": { "address": "mendy-updated@gmail.com" }
 }
 
 ###
-PATCH {{portURL}}/api/StaffMembers/a0f285f4-b361-4ca5-a31f-1bfc0ad34f54/toggle
+PATCH {{portURL}}/api/StaffMembers/6d5045ef-e932-425f-91cb-becd305312af/toggle
 Accept: application/json
 
+
+### --- DOCK ---
 ###
 GET {{portURL}}/api/Dock
 Accept: application/json
