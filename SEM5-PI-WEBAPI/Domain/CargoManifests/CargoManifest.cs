@@ -13,7 +13,6 @@ namespace SEM5_PI_WEBAPI.Domain.CargoManifests
         public string SubmittedBy { get; private set; }
 
         private readonly List<CargoManifestEntry> _containerEntries;
-
         public IReadOnlyCollection<CargoManifestEntry> ContainerEntries => _containerEntries.AsReadOnly();
         
         protected CargoManifest()

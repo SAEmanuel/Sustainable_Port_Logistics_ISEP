@@ -13,6 +13,7 @@ using SEM5_PI_WEBAPI.Domain.Vessels;
 using SEM5_PI_WEBAPI.Domain.VesselsTypes;
 using SEM5_PI_WEBAPI.Domain.ShippingAgentOrganizations;
 using SEM5_PI_WEBAPI.Domain.ShippingAgentRepresentatives;
+using SEM5_PI_WEBAPI.Infraestructure.CargoManifests;
 using SEM5_PI_WEBAPI.Infraestructure.Containers;
 using SEM5_PI_WEBAPI.Infraestructure.Docks;
 using SEM5_PI_WEBAPI.Infraestructure.Qualifications;
@@ -33,15 +34,14 @@ namespace SEM5_PI_WEBAPI.Infraestructure
         public DbSet<StaffMember> StaffMember { get; set; }
         public DbSet<ShippingAgentOrganization> ShippingAgentOrganization { get; set; }
         public DbSet<ShippingAgentRepresentative> ShippingAgentRepresentative { get; set; }
-        public DbSet<EntityContainer> Container {get; set;}
-        public DbSet<StorageArea> StorageArea {get; set;}
-        public DbSet<Dock> Dock {get; set;}
-        public DbSet<CargoManifest> CargoManifest {get; set;}
-        
+        public DbSet<EntityContainer> Container { get; set; }
+        public DbSet<StorageArea> StorageArea { get; set; }
+        public DbSet<Dock> Dock { get; set; }
+        public DbSet<CargoManifest> CargoManifest { get; set; }
+
 
         public DddSample1DbContext(DbContextOptions options) : base(options)
         {
-
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -55,6 +55,7 @@ namespace SEM5_PI_WEBAPI.Infraestructure
             modelBuilder.ApplyConfiguration(new ContainerEntityTypeConfiguration());
             modelBuilder.ApplyConfiguration(new StorageAreaEntityTypeConfiguration());
             modelBuilder.ApplyConfiguration(new DockEntityTypeConfiguration());
+            modelBuilder.ApplyConfiguration(new CargoManifestEntityTypeConfiguration());
         }
     }
 }
