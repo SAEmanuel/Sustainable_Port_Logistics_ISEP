@@ -2,21 +2,31 @@
 actor "Port Authority Officer" as Officer
 boundary "System" as System
 
-
 == Register Storage Area ==
-Officer -> System : Submit new StorageArea(type, location, maxCapacity, occupancy, docks?, distances?)
-System --> Officer : Confirmation (StorageAreaDto with Id)
+Officer -> System : POST /api/storageareas\n(CreatingStorageAreaDto: name, type, bays, rows, tiers, distances)
+System --> Officer : 201 Created\n(StorageAreaDto with Id, capacity, occupancy, docks, distances)
 
 == Update Storage Area ==
-Officer -> System : Submit update StorageArea(id, type?, location?, capacity?, occupancy?, docks?, distances?)
-System --> Officer : Confirmation (Updated StorageAreaDto)
+Officer -> System : PUT/PATCH /api/storageareas/{id}\n(UpdateStorageAreaDto: description?, type?, capacity?, distances?)
+System --> Officer : 200 OK\n(Updated StorageAreaDto)
 
-== Validation ==
-Officer -> System : Attempt register/update with occupancy > capacity
-System --> Officer : Error (BusinessRuleValidationException)
+== Query Storage Areas ==
+Officer -> System : GET /api/storageareas/{id}
+System --> Officer : 200 OK\n(StorageAreaDto)
 
-== Query ==
-Officer -> System : Request details of StorageArea(id)
-System --> Officer : StorageAreaDto
+Officer -> System : GET /api/storageareas?name={name}
+System --> Officer : 200 OK\n(StorageAreaDto)
 
+Officer -> System : GET /api/storageareas/distances?name={name}|id={id}
+System --> Officer : 200 OK\n(List<StorageAreaDockDistanceDto>)
+
+== Validation Rules ==
+Officer -> System : Register/Update with occupancy > maxCapacity
+System --> Officer : 400 Bad Request\n(BusinessRuleValidationException)
+
+Officer -> System : Register with duplicated Name
+System --> Officer : 409 Conflict\n(BusinessRuleValidationException)
+
+Officer -> System : Reference non-existing Dock
+System --> Officer : 400 Bad Request\n(BusinessRuleValidationException)
 @enduml

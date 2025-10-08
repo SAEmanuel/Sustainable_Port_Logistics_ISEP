@@ -1,0 +1,52 @@
+@startuml
+skinparam monochrome true
+skinparam packageStyle rectangle
+skinparam shadowing false
+left to right direction
+hide circles
+hide methods
+
+title Domain Model (Excerpt) - US2.2.4 Register & Update Storage Areas
+
+package "Storage Area Management Aggregate" {
+    class StorageArea <<AggregateRoot>>
+    class StorageAreaName <<ValueObject>>
+    class StorageAreaType <<ValueObject>>
+    class StorageAreaDockDistance <<ValueObject>>
+}
+
+package "Dock Registry Aggregate" {
+    class Dock <<AggregateRoot>>
+    class DockCode <<ValueObject>>
+}
+
+package "Container Management Aggregate" {
+    class Container <<AggregateRoot>>
+    class Iso6346Code <<ValueObject>>
+}
+
+package "Physical Resources Aggregate" {
+    class PhysicalResource <<AggregateRoot>>
+    class EquipmentType <<ValueObject>>
+}
+
+' ---- Composition inside StorageArea ----
+StorageArea "1" --- "1" StorageAreaName : has >
+StorageArea "1" --- "1" StorageAreaType : has >
+StorageArea "1" --- "0..*" StorageAreaDockDistance : has >
+
+' ---- Composition inside Container ----
+Container "1" --- "1" Iso6346Code : has >
+
+' ---- Composition inside PhysicalResource ----
+PhysicalResource "1" --- "1" EquipmentType : has >
+
+' ---- Cross-aggregate references ----
+StorageAreaDockDistance "*" --- "1" DockCode : refers >
+Dock "1" --- "1" DockCode : has >
+
+' ---- Relationships between Aggregates ----
+StorageArea "1" --- "0..*" Container : stores >
+StorageArea "1" --- "0..*" PhysicalResource : uses >
+
+@enduml
