@@ -37,4 +37,11 @@
     <Folder Include="Logs\Vessels\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Remove="HttpsAPIs\SEM5-PI-WEBAPI-DOCK.http" />
+    <None Remove="HttpsAPIs\SEM5-PI-WEBAPI-QUALIFICATION.http" />
+    <None Remove="HttpsAPIs\SEM5-PI-WEBAPI-STORAGEAREA.http" />
+    <None Remove="HttpsAPIs\SEM5-PI-WEBAPI-VESSEL.http" />
+  </ItemGroup>
+
 </Project>

@@ -15,8 +15,8 @@ public class ContainerRepository: BaseRepository<EntityContainer,ContainerId>, I
     }
 
 
-    public async Task<EntityContainer?> GetByIsoNumberAsync(Iso6346Code imo)
+    public async Task<EntityContainer?> GetByIsoNumberAsync(Iso6346Code iso)
     {
-        return await _context.Container.FirstOrDefaultAsync(c => c.ISOId.Value == imo.Value);
+        return await _context.Container.FirstOrDefaultAsync(c => c.ISOId.Value == iso.Value);
     }
 }

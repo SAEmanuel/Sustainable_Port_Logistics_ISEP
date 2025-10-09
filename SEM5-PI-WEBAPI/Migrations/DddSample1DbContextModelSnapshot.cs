@@ -32,6 +32,43 @@ namespace SEM5_PI_WEBAPI.Migrations
                     b.ToTable("StaffMemberQualifications", (string)null);
                 });
 
+            modelBuilder.Entity("SEM5_PI_WEBAPI.Domain.CargoManifestEntries.CargoManifestEntry", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("Bay")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("CargoManifestId")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ContainerId")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("Row")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("StorageAreaId")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("Tier")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CargoManifestId");
+
+                    b.HasIndex("ContainerId");
+
+                    b.HasIndex("StorageAreaId");
+
+                    b.ToTable("CargoManifestEntries", (string)null);
+                });
+
             modelBuilder.Entity("SEM5_PI_WEBAPI.Domain.CargoManifests.CargoManifest", b =>
                 {
                     b.Property<string>("Id")
@@ -55,37 +92,6 @@ namespace SEM5_PI_WEBAPI.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("CargoManifests", (string)null);
-                });
-
-            modelBuilder.Entity("SEM5_PI_WEBAPI.Domain.CargoManifests.CargoManifestEntries.CargoManifestEntry", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("Bay")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("CargoManifestId")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("ContainerId")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("Row")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("Tier")
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CargoManifestId");
-
-                    b.HasIndex("ContainerId");
-
-                    b.ToTable("CargoManifestEntry");
                 });
 
             modelBuilder.Entity("SEM5_PI_WEBAPI.Domain.Containers.EntityContainer", b =>
@@ -208,6 +214,9 @@ namespace SEM5_PI_WEBAPI.Migrations
                     b.Property<string>("PhoneNumber")
                         .IsRequired()
                         .HasColumnType("TEXT");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
 
@@ -346,7 +355,7 @@ namespace SEM5_PI_WEBAPI.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("SEM5_PI_WEBAPI.Domain.CargoManifests.CargoManifestEntries.CargoManifestEntry", b =>
+            modelBuilder.Entity("SEM5_PI_WEBAPI.Domain.CargoManifestEntries.CargoManifestEntry", b =>
                 {
                     b.HasOne("SEM5_PI_WEBAPI.Domain.CargoManifests.CargoManifest", null)
                         .WithMany("ContainerEntries")
@@ -357,6 +366,12 @@ namespace SEM5_PI_WEBAPI.Migrations
                     b.HasOne("SEM5_PI_WEBAPI.Domain.Containers.EntityContainer", "Container")
                         .WithMany()
                         .HasForeignKey("ContainerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("SEM5_PI_WEBAPI.Domain.StorageAreas.StorageArea", null)
+                        .WithMany()
+                        .HasForeignKey("StorageAreaId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

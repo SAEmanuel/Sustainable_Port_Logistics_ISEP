@@ -6,4 +6,7 @@ public interface ICargoManifestRepository : IRepository<CargoManifest, CargoMani
 {
     Task<int> CountAsync();
     Task<CargoManifest> GetByCodeAsync(string code);
+    Task<List<CargoManifest>> GetAllAsync();
+    Task<CargoManifest> GetByIdAsync(CargoManifestId id);
+    
 }

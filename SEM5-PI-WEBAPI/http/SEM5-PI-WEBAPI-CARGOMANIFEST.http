@@ -1,0 +1,74 @@
+@portURL = http://localhost:5008
+@baseURL = {{portURL}}/api/CargoManifest
+
+###
+GET {{baseURL}}
+Accept: application/json
+
+###
+GET {{baseURL}}/e0d04123-7b7f-43fe-a4c8-039721554371
+Accept: application/json
+
+###
+GET {{baseURL}}/code/CGM-0004
+Accept: application/json
+
+###
+POST {{baseURL}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "type": "Loading",
+  "createdBy": "admin_user",
+  "entries": [
+    {
+      "bay": 1,
+      "row": 1,
+      "tier": 1,
+      "container": {
+        "isoCode": "CSQU3054383",
+        "description": "Electronics - TVs and Laptops",
+        "type": "Electronic",
+        "weightKg": 8500
+      },
+      "storageAreaId": "27ac8087-e4a4-48c7-9bd8-017cf9c1223c"
+    },
+    {
+      "bay": 1,
+      "row": 2,
+      "tier": 1,
+      "container": {
+        "isoCode": "MSCU6639870",
+        "description": "Frozen food - Reefer container",
+        "type": "Reefer",
+        "weightKg": 9800
+      },
+      "storageAreaId": "27ac8087-e4a4-48c7-9bd8-017cf9c1223c"
+    },
+    {
+      "bay": 2,
+      "row": 1,
+      "tier": 1,
+      "container": {
+        "isoCode": "EMCU8717530",
+        "description": "Chemical liquids - Tank container",
+        "type": "Hazmat",
+        "weightKg": 12000
+      },
+      "storageAreaId": "27ac8087-e4a4-48c7-9bd8-017cf9c1223c"
+    },
+    {
+      "bay": 2,
+      "row": 2,
+      "tier": 1,
+      "container": {
+        "isoCode": "OOLU3456780",
+        "description": "Household furniture",
+        "type": "General",
+        "weightKg": 10500
+      },
+      "storageAreaId": "27ac8087-e4a4-48c7-9bd8-017cf9c1223c"
+    }
+  ]
+}

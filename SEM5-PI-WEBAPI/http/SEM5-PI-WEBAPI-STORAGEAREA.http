@@ -36,7 +36,7 @@ Accept: application/json
   "maxRows": 4,
   "maxTiers": 3,
   "distancesToDocks": [
-    { "dockCode": "DCK001", "distance": 0.5 },
-    { "dockCode": "DCK002", "distance": 1.2 }
+    { "dockCode": "DK-0001", "distance": 0.5 },
+    { "dockCode": "DK-0002", "distance": 1.2 }
   ]
 }

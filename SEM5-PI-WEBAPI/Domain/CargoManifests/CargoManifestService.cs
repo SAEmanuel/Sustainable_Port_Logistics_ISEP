@@ -2,6 +2,7 @@ using SEM5_PI_WEBAPI.Domain.CargoManifestEntries;
 using SEM5_PI_WEBAPI.Domain.CargoManifests.CargoManifestEntries;
 using SEM5_PI_WEBAPI.Domain.Containers;
 using SEM5_PI_WEBAPI.Domain.Shared;
+using SEM5_PI_WEBAPI.Domain.StorageAreas;
 using SEM5_PI_WEBAPI.Domain.ValueObjects;
 
 namespace SEM5_PI_WEBAPI.Domain.CargoManifests;
@@ -55,10 +56,11 @@ public class CargoManifestService
                             ?? new EntityContainer(entryDto.Container.IsoCode, entryDto.Container.Description,
                                 entryDto.Container.Type, entryDto.Container.WeightKg);
 
-            if (container.Id != null)
+            if (container.Id == null)
                 await _repoContainer.AddAsync(container);
 
-            var entry = new CargoManifestEntry(container, entryDto.StorageAreaId, entryDto.Bay, entryDto.Row,
+            var entry = new CargoManifestEntry(container, new StorageAreaId(entryDto.StorageAreaId), entryDto.Bay,
+                entryDto.Row,
                 entryDto.Tier);
             entries.Add(entry);
         }

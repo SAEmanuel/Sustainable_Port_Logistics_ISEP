@@ -45,7 +45,7 @@ public class CargoManifestController : ControllerBase
     
     
     [HttpPost]
-    public async Task<ActionResult<CargoManifestDto>> Create(CreatingCargoManifestDto dto)
+    public async Task<ActionResult<CargoManifestDto>> Create([FromBody]CreatingCargoManifestDto dto)
     {
         try
         {
