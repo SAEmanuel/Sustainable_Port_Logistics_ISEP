@@ -1,0 +1,51 @@
+[18:06:58 INF]  - Starting web host
+[18:06:59 INF] Microsoft.Hosting.Lifetime                                             - Now listening on: http://localhost:5008
+[18:06:59 INF] Microsoft.Hosting.Lifetime                                             - Application started. Press Ctrl+C to shut down.
+[18:06:59 INF] Microsoft.Hosting.Lifetime                                             - Hosting environment: Development
+[18:06:59 INF] Microsoft.Hosting.Lifetime                                             - Content root path: /Users/jorgerodriguez/Desktop/Universidade/3_ano/1_Semestre/LEI-SEM5-PI-2025-26-3DJ-03/SEM5-PI-WEBAPI
+[18:07:09 INF] Microsoft.AspNetCore.Hosting.Diagnostics                               - Request starting HTTP/1.1 POST http://localhost:5008/api/Container - application/json 132
+[18:07:09 WRN] Microsoft.AspNetCore.HttpsPolicy.HttpsRedirectionMiddleware            - Failed to determine the https port for redirect.
+[18:07:09 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - ┌───────────────────────────────────────────────
+[18:07:09 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - │ HTTP POST /api/Container
+[18:07:09 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - │ From IP: 127.0.0.1
+[18:07:09 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - └───────────────────────────────────────────────
+[18:07:09 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - ──────│ ✔ COMPLETED POST /api/Container with 404 in 0.648 ms
+[18:07:09 INF] Microsoft.AspNetCore.Hosting.Diagnostics                               - Request finished HTTP/1.1 POST http://localhost:5008/api/Container - 404 0 null 25.721ms
+[18:07:09 INF] Microsoft.AspNetCore.Hosting.Diagnostics                               - Request reached the end of the middleware pipeline without being handled by application code. Request path: POST http://localhost:5008/api/Container, Response status code: 404
+[18:07:25 INF] Microsoft.AspNetCore.Hosting.Diagnostics                               - Request starting HTTP/1.1 GET http://localhost:5008/api/Container - null null
+[18:07:25 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - ┌───────────────────────────────────────────────
+[18:07:25 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - │ HTTP GET /api/Container
+[18:07:25 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - │ From IP: 127.0.0.1
+[18:07:25 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - └───────────────────────────────────────────────
+[18:07:25 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - ──────│ ✔ COMPLETED GET /api/Container with 404 in 0.057 ms
+[18:07:25 INF] Microsoft.AspNetCore.Hosting.Diagnostics                               - Request finished HTTP/1.1 GET http://localhost:5008/api/Container - 404 0 null 2.0987ms
+[18:07:25 INF] Microsoft.AspNetCore.Hosting.Diagnostics                               - Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://localhost:5008/api/Container, Response status code: 404
+[18:07:46 INF] Microsoft.AspNetCore.Hosting.Diagnostics                               - Request starting HTTP/1.1 GET http://localhost:5008/api/Vessel - null null
+[18:07:46 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - ┌───────────────────────────────────────────────
+[18:07:46 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - │ HTTP GET /api/Vessel
+[18:07:46 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - │ From IP: 127.0.0.1
+[18:07:46 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - └───────────────────────────────────────────────
+[18:07:46 INF] Microsoft.AspNetCore.Routing.EndpointMiddleware                        - Executing endpoint 'SEM5_PI_WEBAPI.Controllers.VesselController.GetAllAsync (SEM5-PI-WEBAPI)'
+[18:07:46 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Route matched with {action = "GetAll", controller = "Vessel"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[System.Collections.Generic.List`1[SEM5_PI_WEBAPI.Domain.Vessels.VesselDto]]] GetAllAsync() on controller SEM5_PI_WEBAPI.Controllers.VesselController (SEM5-PI-WEBAPI).
+[18:07:46 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Executing action method SEM5_PI_WEBAPI.Controllers.VesselController.GetAllAsync (SEM5-PI-WEBAPI) - Validation state: "Valid"
+[18:07:46 INF] SEM5_PI_WEBAPI.Controllers.VesselController                            - API Request: Get All Vessels on DataBase
+[18:07:46 INF] SEM5_PI_WEBAPI.Domain.Vessels.VesselService                            - Business Domain: Request to fetch all Vessels.
+[18:07:47 INF] Microsoft.EntityFrameworkCore.Database.Command                         - Executed DbCommand (6ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT "v"."Id", "v"."Name", "v"."Owner", "v"."VesselTypeId", "v"."ImoNumber"
+FROM "Vessel" AS "v"
+[18:07:47 WRN] SEM5_PI_WEBAPI.Controllers.VesselController                            - API Response (404): No Vessels found on DataBase
+[18:07:47 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Executed action method SEM5_PI_WEBAPI.Controllers.VesselController.GetAllAsync (SEM5-PI-WEBAPI), returned result Microsoft.AspNetCore.Mvc.NotFoundObjectResult in 917.7268ms.
+[18:07:47 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ObjectResultExecutor           - Executing NotFoundObjectResult, writing value of type 'System.String'.
+[18:07:47 INF] Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker        - Executed action SEM5_PI_WEBAPI.Controllers.VesselController.GetAllAsync (SEM5-PI-WEBAPI) in 1005.6912ms
+[18:07:47 INF] Microsoft.AspNetCore.Routing.EndpointMiddleware                        - Executed endpoint 'SEM5_PI_WEBAPI.Controllers.VesselController.GetAllAsync (SEM5-PI-WEBAPI)'
+[18:07:47 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - ──────│ ✔ COMPLETED GET /api/Vessel with 404 in 1020.113 ms
+[18:07:47 INF] Microsoft.AspNetCore.Hosting.Diagnostics                               - Request finished HTTP/1.1 GET http://localhost:5008/api/Vessel - 404 32 application/json; charset=utf-8 1024.7934ms
+[18:07:57 INF] Microsoft.AspNetCore.Hosting.Diagnostics                               - Request starting HTTP/1.1 GET http://localhost:5008/api/Container - null null
+[18:07:57 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - ┌───────────────────────────────────────────────
+[18:07:57 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - │ HTTP GET /api/Container
+[18:07:57 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - │ From IP: 127.0.0.1
+[18:07:57 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - └───────────────────────────────────────────────
+[18:07:57 INF] SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware                     - ──────│ ✔ COMPLETED GET /api/Container with 404 in 0.053 ms
+[18:07:57 INF] Microsoft.AspNetCore.Hosting.Diagnostics                               - Request finished HTTP/1.1 GET http://localhost:5008/api/Container - 404 0 null 0.791ms
+[18:07:57 INF] Microsoft.AspNetCore.Hosting.Diagnostics                               - Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://localhost:5008/api/Container, Response status code: 404
+[18:18:44 INF] Microsoft.Hosting.Lifetime                                             - Application is shutting down...

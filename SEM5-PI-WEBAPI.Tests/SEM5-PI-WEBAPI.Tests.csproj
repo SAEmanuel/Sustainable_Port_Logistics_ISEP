@@ -23,4 +23,9 @@
         <ProjectReference Include="..\SEM5-PI-WEBAPI\SEM5-PI-WEBAPI.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Controllers\" />
+      <Folder Include="Infrastructure\" />
+    </ItemGroup>
+
 </Project>
