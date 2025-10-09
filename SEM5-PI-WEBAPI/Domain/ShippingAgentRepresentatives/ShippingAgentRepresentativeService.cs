@@ -18,7 +18,7 @@ public class ShippingAgentRepresentativeService
         var list = await this._repo.GetAllAsync();
 
         List<ShippingAgentRepresentativeDto> listDto = list.ConvertAll<ShippingAgentRepresentativeDto>(q =>
-            new ShippingAgentRepresentativeDto(q.Id.AsGuid(), q.Name, q.CitizenId, q.Nationality,q.Email,q.PhoneNumber));
+            new ShippingAgentRepresentativeDto(q.Id.AsGuid(), q.Name, q.CitizenId, q.Nationality,q.Email,q.PhoneNumber,q.Status));
 
         return listDto;
     }
@@ -30,7 +30,7 @@ public class ShippingAgentRepresentativeService
         if (q == null)
             return null;
 
-        return new ShippingAgentRepresentativeDto(q.Id.AsGuid(), q.Name, q.CitizenId, q.Nationality,q.Email,q.PhoneNumber);
+        return new ShippingAgentRepresentativeDto(q.Id.AsGuid(), q.Name, q.CitizenId, q.Nationality,q.Email,q.PhoneNumber,q.Status);
     }
     
     public async Task<ShippingAgentRepresentativeDto> GetByNameAsync(string Name)
@@ -40,7 +40,7 @@ public class ShippingAgentRepresentativeService
         if (q == null)
             return null;
 
-        return new ShippingAgentRepresentativeDto(q.Id.AsGuid(), q.Name, q.CitizenId, q.Nationality,q.Email,q.PhoneNumber);   
+        return new ShippingAgentRepresentativeDto(q.Id.AsGuid(), q.Name, q.CitizenId, q.Nationality,q.Email,q.PhoneNumber,q.Status);   
     }
 
     public async Task<ShippingAgentRepresentativeDto> GetByEmailAsync(string Email)
@@ -50,13 +50,23 @@ public class ShippingAgentRepresentativeService
         if (q == null)
             return null;
 
-        return new ShippingAgentRepresentativeDto(q.Id.AsGuid(), q.Name, q.CitizenId, q.Nationality,q.Email,q.PhoneNumber);   
+        return new ShippingAgentRepresentativeDto(q.Id.AsGuid(), q.Name, q.CitizenId, q.Nationality,q.Email,q.PhoneNumber,q.Status);   
+    }
+
+    public async Task<ShippingAgentRepresentativeDto> GetByStatusAsync(Status Status)
+    {
+        var q = await this._repo.GetByStatusAsync(Status);
+
+        if (q == null)
+            return null;
+
+        return new ShippingAgentRepresentativeDto(q.Id.AsGuid(), q.Name, q.CitizenId, q.Nationality,q.Email,q.PhoneNumber,q.Status);   
     }
 
     public async Task<ShippingAgentRepresentative> AddAsync(CreatingShippingAgentRepresentativeDto dto)
     {
 
-        var shippingAgentRepresentative = new ShippingAgentRepresentative(dto.Name, dto.CitizenId, dto.Nationality, dto.Email, dto.PhoneNumber);
+        var shippingAgentRepresentative = new ShippingAgentRepresentative(dto.Name, dto.CitizenId, dto.Nationality, dto.Email, dto.PhoneNumber, dto.Status);
         await _repo.AddAsync(shippingAgentRepresentative);
         await _unitOfWork.CommitAsync();
         return shippingAgentRepresentative;

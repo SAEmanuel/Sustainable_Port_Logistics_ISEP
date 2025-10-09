@@ -18,13 +18,19 @@ namespace SEM5_PI_WEBAPI.Infraestructure.ShippingAgentRepresentatives
                 .FirstOrDefaultAsync(x => x.Name.ToLower().Trim() == name.ToLower().Trim());
         }
         
-        public async Task<ShippingAgentRepresentative> GetByEmailAsync(string email)
+        public async Task<ShippingAgentRepresentative?> GetByEmailAsync(string email)
         {
             return await _context.ShippingAgentRepresentative
                 .FirstOrDefaultAsync(x => x.Email.ToLower().Trim() == email.ToLower().Trim());
         }
+        
+        public async Task<ShippingAgentRepresentative?> GetByStatusAsync(Status status)
+        {
+            return await _context.ShippingAgentRepresentative
+                .FirstOrDefaultAsync(x => x.Status == status);
+        }
 
-        public async Task<List<ShippingAgentRepresentative>> GetFilterAsync(string? name, string? citizenId, string? nationality, string? email, string? phoneNumber, string? query)
+        public async Task<List<ShippingAgentRepresentative>> GetFilterAsync(string? name, string? citizenId, string? nationality, string? email, string? phoneNumber,Status? status, string? query)
         {
             var normalizedName = name?.Trim().ToLower();
             var normalizedCitizendId = citizenId?.Trim().ToLower();
@@ -43,12 +49,15 @@ namespace SEM5_PI_WEBAPI.Infraestructure.ShippingAgentRepresentatives
 
             if (!string.IsNullOrEmpty(normalizedNationality))
                 queryable = queryable.Where(v => v.Nationality.ToLower().Contains(normalizedNationality));
-                
+
             if (!string.IsNullOrEmpty(normalizedEmail))
                 queryable = queryable.Where(v => v.Email.ToLower().Contains(normalizedEmail));
 
             if (!string.IsNullOrEmpty(normalizedPhoneNumber))
                 queryable = queryable.Where(v => v.PhoneNumber.ToLower().Contains(normalizedPhoneNumber));
+
+            if (status != null)
+                queryable = queryable.Where(v => v.Status == status);
 
             if (!string.IsNullOrEmpty(normalizedQuery))
                 queryable = queryable.Where(v =>
@@ -56,11 +65,21 @@ namespace SEM5_PI_WEBAPI.Infraestructure.ShippingAgentRepresentatives
                     v.CitizenId.ToLower().Contains(normalizedQuery) ||
                     v.Nationality.ToLower().Contains(normalizedQuery) ||
                     v.Email.ToLower().Contains(normalizedQuery) ||
-                    v.PhoneNumber.ToLower().Contains(normalizedQuery));
+                    v.PhoneNumber.ToLower().Contains(normalizedQuery) ||
+                    v.Status == status);
 
             return await queryable.ToListAsync();
         }
 
+        public Task<ShippingAgentRepresentative> GetByStatus(Status status)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<List<ShippingAgentRepresentative>> GetFilterAsync(string? name, string? citizenId, string? nationality, string? email, string? phoneNumber, Status status, string? query)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
 

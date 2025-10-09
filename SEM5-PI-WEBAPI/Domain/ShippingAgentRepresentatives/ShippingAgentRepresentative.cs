@@ -1,6 +1,12 @@
 using SEM5_PI_WEBAPI.Domain.Shared;
 namespace SEM5_PI_WEBAPI.Domain.ShippingAgentRepresentatives;
 
+public enum Status
+{
+    activated,
+    deactivated
+}
+
 public class ShippingAgentRepresentative : Entity<ShippingAgentRepresentativeId>, IAggregateRoot
 {
     public string Name { get; set; }
@@ -9,13 +15,18 @@ public class ShippingAgentRepresentative : Entity<ShippingAgentRepresentativeId>
     public string Email { get; set; }
     public string PhoneNumber { get; set; }
 
-    public ShippingAgentRepresentative(string name, string citizenId, string nationality, string email, string phoneNumber)
+    public Status Status { get; set; }
+
+
+
+    public ShippingAgentRepresentative(string name, string citizenId, string nationality, string email, string phoneNumber,Status status)
     {
         Name = name;
         CitizenId = citizenId;
         Nationality = nationality;
         Email = email;
         PhoneNumber = phoneNumber;
+        Status = status;
         Id = new ShippingAgentRepresentativeId(Guid.NewGuid());
     }
 

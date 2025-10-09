@@ -25,6 +25,9 @@ namespace SEM5_PI_WEBAPI.Infraestructure.ShippingAgentRepresentatives
             builder.Property(b => b.PhoneNumber)
                 .IsRequired();
 
+            builder.Property(b => b.Status)
+                .IsRequired();
+
             builder.HasIndex(b => b.Name).IsUnique();
         }
     }

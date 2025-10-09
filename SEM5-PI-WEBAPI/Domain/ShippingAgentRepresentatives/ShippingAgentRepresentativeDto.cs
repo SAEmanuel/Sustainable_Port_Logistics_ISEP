@@ -8,13 +8,16 @@ public class ShippingAgentRepresentativeDto
     public string Nationality { get; set; }
     public string Email { get; set; }
     public string PhoneNumber { get; set; }
-    public ShippingAgentRepresentativeDto(Guid id, string name, string citizenId, string nationality, string email, string phoneNumber)
+    public Status Status { get; set; }
+
+    public ShippingAgentRepresentativeDto(Guid id, string name, string citizenId, string nationality, string email, string phoneNumber, Status status)
     {
         Name = name;
         CitizenId = citizenId;
         Nationality = nationality;
         Email = email;
         PhoneNumber = phoneNumber;
+        Status = status;
         Id = id;
     }
 }
