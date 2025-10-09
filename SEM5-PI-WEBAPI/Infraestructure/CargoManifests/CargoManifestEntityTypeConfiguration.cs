@@ -1,7 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using SEM5_PI_WEBAPI.Domain.CargoManifests;
-using SEM5_PI_WEBAPI.Domain.CargoManifests.CargoManifestEntries;
 
 namespace SEM5_PI_WEBAPI.Infraestructure.CargoManifests
 {

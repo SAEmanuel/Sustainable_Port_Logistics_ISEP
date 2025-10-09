@@ -27,7 +27,6 @@ public class StaffMember : Entity<StaffMemberId>
         Email email,
         PhoneNumber phone,
         Schedule schedule,
-        bool isActive,
         List<Qualification> qualifications)
     {
         Id = new StaffMemberId(Guid.NewGuid());
@@ -36,7 +35,7 @@ public class StaffMember : Entity<StaffMemberId>
         Email = email ?? throw new BusinessRuleValidationException("Email is required.");
         Phone = phone ?? throw new BusinessRuleValidationException("Phone number is required.");
         Schedule = schedule ?? throw new BusinessRuleValidationException("Schedule is required.");
-        IsActive = isActive;
+        IsActive = true;
         Qualifications = qualifications ?? new List<Qualification>();
     }
 

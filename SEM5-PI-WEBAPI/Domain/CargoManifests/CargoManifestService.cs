@@ -1,6 +1,8 @@
+using SEM5_PI_WEBAPI.Domain.CargoManifestEntries;
 using SEM5_PI_WEBAPI.Domain.CargoManifests.CargoManifestEntries;
 using SEM5_PI_WEBAPI.Domain.Containers;
 using SEM5_PI_WEBAPI.Domain.Shared;
+using SEM5_PI_WEBAPI.Domain.ValueObjects;
 
 namespace SEM5_PI_WEBAPI.Domain.CargoManifests;
 
@@ -8,11 +10,16 @@ public class CargoManifestService
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly ICargoManifestRepository _repo;
+    private readonly IContainerRepository _repoContainer;
+    private readonly ICargoManifestEntryRepository _repoCargoManifestEntry;
 
-    public CargoManifestService(IUnitOfWork unitOfWork, ICargoManifestRepository repo)
+    public CargoManifestService(IUnitOfWork unitOfWork, ICargoManifestRepository repo,
+        IContainerRepository repoContainer, ICargoManifestEntryRepository repoCargoManifestEntry)
     {
         _unitOfWork = unitOfWork;
         _repo = repo;
+        _repoCargoManifestEntry = repoCargoManifestEntry;
+        _repoContainer = repoContainer;
     }
 
     public async Task<List<CargoManifestDto>> GetAllAsync()
@@ -29,32 +36,35 @@ public class CargoManifestService
         return MapToDto(manifest);
     }
 
+    public async Task<CargoManifestDto> GetByCodeAsync(string code)
+    {
+        var manifest = await _repo.GetByCodeAsync(code);
+        if (manifest == null)
+            throw new BusinessRuleValidationException("CargoManifest not found.");
+        return MapToDto(manifest);
+    }
+
     public async Task<CargoManifestDto> AddAsync(CreatingCargoManifestDto dto)
     {
-        
         var genCode = await GenerateNextCargoManifestCodeAsync();
-        
-        var entries = dto.Entries.Select(e =>
-            new CargoManifestEntry(
-                new EntityContainer(
-                    e.Container.IsoCode.ToString(),
-                    e.Container.Description,
-                    e.Container.Type,
-                    e.Container.WeightKg
-                ),
-                e.Bay,
-                e.Row,
-                e.Tier
-            )
-        ).ToList();
 
-        var cargoManifest = CargoManifestFactory.Create(
-            entries,
-            genCode,
-            dto.Type,
-            DateTime.UtcNow,
-            dto.CreatedBy
-        );
+        var entries = new List<CargoManifestEntry>();
+        foreach (var entryDto in dto.Entries)
+        {
+            var container = await _repoContainer.GetByIsoNumberAsync(new Iso6346Code(entryDto.Container.IsoCode))
+                            ?? new EntityContainer(entryDto.Container.IsoCode, entryDto.Container.Description,
+                                entryDto.Container.Type, entryDto.Container.WeightKg);
+
+            if (container.Id != null)
+                await _repoContainer.AddAsync(container);
+
+            var entry = new CargoManifestEntry(container, entryDto.StorageAreaId, entryDto.Bay, entryDto.Row,
+                entryDto.Tier);
+            entries.Add(entry);
+        }
+
+        var cargoManifest =
+            new CargoManifest(entries, genCode, dto.Type, DateTime.UtcNow, dto.CreatedBy);
 
         await _repo.AddAsync(cargoManifest);
         await _unitOfWork.CommitAsync();
@@ -76,6 +86,7 @@ public class CargoManifestService
                     entry.Bay,
                     entry.Row,
                     entry.Tier,
+                    entry.StorageAreaId.AsGuid(),
                     new ContainerDto(
                         entry.Container.Id.AsGuid(),
                         entry.Container.ISOId,

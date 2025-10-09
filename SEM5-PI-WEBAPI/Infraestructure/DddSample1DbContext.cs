@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
+using SEM5_PI_WEBAPI.Domain.CargoManifestEntries;
 using SEM5_PI_WEBAPI.Domain.CargoManifests;
-using SEM5_PI_WEBAPI.Domain.Containers;
 using SEM5_PI_WEBAPI.Domain.Containers;
 using SEM5_PI_WEBAPI.Domain.Dock;
 using SEM5_PI_WEBAPI.Domain.Qualifications;
@@ -8,11 +8,9 @@ using SEM5_PI_WEBAPI.Domain.ShippingAgentOrganizations;
 using SEM5_PI_WEBAPI.Domain.ShippingAgentRepresentatives;
 using SEM5_PI_WEBAPI.Domain.StaffMembers;
 using SEM5_PI_WEBAPI.Domain.StorageAreas;
-using SEM5_PI_WEBAPI.Domain.StorageAreas;
 using SEM5_PI_WEBAPI.Domain.Vessels;
 using SEM5_PI_WEBAPI.Domain.VesselsTypes;
-using SEM5_PI_WEBAPI.Domain.ShippingAgentOrganizations;
-using SEM5_PI_WEBAPI.Domain.ShippingAgentRepresentatives;
+using SEM5_PI_WEBAPI.Infraestructure.CargoManifestEntries;
 using SEM5_PI_WEBAPI.Infraestructure.CargoManifests;
 using SEM5_PI_WEBAPI.Infraestructure.Containers;
 using SEM5_PI_WEBAPI.Infraestructure.Docks;
@@ -38,6 +36,7 @@ namespace SEM5_PI_WEBAPI.Infraestructure
         public DbSet<StorageArea> StorageArea { get; set; }
         public DbSet<Dock> Dock { get; set; }
         public DbSet<CargoManifest> CargoManifest { get; set; }
+        public DbSet<CargoManifestEntry> CargoManifestEntry { get; set; }
 
 
         public DddSample1DbContext(DbContextOptions options) : base(options)
@@ -56,6 +55,7 @@ namespace SEM5_PI_WEBAPI.Infraestructure
             modelBuilder.ApplyConfiguration(new StorageAreaEntityTypeConfiguration());
             modelBuilder.ApplyConfiguration(new DockEntityTypeConfiguration());
             modelBuilder.ApplyConfiguration(new CargoManifestEntityTypeConfiguration());
+            modelBuilder.ApplyConfiguration(new CargoManifestEntryEntityTypeConfiguration());
         }
     }
 }

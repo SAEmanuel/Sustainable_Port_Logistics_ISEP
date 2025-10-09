@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SEM5_PI_WEBAPI.Domain.CargoManifests;
+using SEM5_PI_WEBAPI.Domain.CargoManifests.CargoManifestEntries;
 using SEM5_PI_WEBAPI.Domain.Containers;
 using SEM5_PI_WEBAPI.Domain.Dock;
 using SEM5_PI_WEBAPI.Domain.Shared;
@@ -12,6 +13,7 @@ using SEM5_PI_WEBAPI.Domain.ShippingAgentOrganizations;
 using SEM5_PI_WEBAPI.Domain.ShippingAgentRepresentatives;
 using SEM5_PI_WEBAPI.Domain.StorageAreas;
 using SEM5_PI_WEBAPI.Infraestructure;
+using SEM5_PI_WEBAPI.Infraestructure.CargoManifestEntries;
 using SEM5_PI_WEBAPI.Infraestructure.CargoManifests;
 using SEM5_PI_WEBAPI.Infraestructure.Containers;
 using SEM5_PI_WEBAPI.Infraestructure.Docks;
@@ -65,10 +67,7 @@ namespace SEM5_PI_WEBAPI
 
             app.UseAuthorization();
 
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllers();
-            });
+            app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
         }
 
         private void ConfigureMyServices(IServiceCollection services)
@@ -89,20 +88,20 @@ namespace SEM5_PI_WEBAPI
 
             services.AddTransient<IShippingAgentOrganizationRepository, ShippingAgentOrganizationRepository>();
             services.AddTransient<ShippingAgentOrganizationService>();
-            
+
             services.AddTransient<IShippingAgentRepresentativeRepository, ShippingAgentRepresentativeRepository>();
             services.AddTransient<ShippingAgentRepresentativeService>();
 
-            services.AddTransient<IContainerRepository,ContainerRepository >();
-            services.AddTransient<ContainerService>();
-            
+
             services.AddTransient<IStorageAreaRepository, StorageAreaRepository>();
             services.AddTransient<StorageAreaService>();
 
             services.AddTransient<IDockRepository, DockRepository>();
             services.AddTransient<DockService>();
-            
+
             services.AddTransient<ICargoManifestRepository, CargoManifestRepository>();
+            services.AddTransient<IContainerRepository, ContainerRepository>();
+            services.AddTransient<ICargoManifestEntryRepository, CargoManifestEntryRepository>();
             services.AddTransient<CargoManifestService>();
         }
     }

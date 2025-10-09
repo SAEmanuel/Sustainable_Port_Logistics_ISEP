@@ -17,4 +17,10 @@ public class CargoManifestRepository : BaseRepository<CargoManifest, CargoManife
     {
         return await _cargoManifests.CountAsync();
     }
+
+    public async Task<CargoManifest> GetByCodeAsync(string code)
+    {
+        return await _cargoManifests
+            .FirstOrDefaultAsync(cm => cm.Code == code);
+    }
 }

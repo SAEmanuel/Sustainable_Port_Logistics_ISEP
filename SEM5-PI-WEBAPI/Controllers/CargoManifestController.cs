@@ -32,6 +32,17 @@ public class CargoManifestController : ControllerBase
         return cargo;
     }
     
+    [HttpGet("code/{code}")]
+    public async Task<ActionResult<CargoManifestDto>> GetByCode(string code)
+    {
+        var cargo = await _service.GetByCodeAsync(code);
+
+        if (cargo == null)
+            return NotFound();
+
+        return cargo;
+    }
+    
     
     [HttpPost]
     public async Task<ActionResult<CargoManifestDto>> Create(CreatingCargoManifestDto dto)

@@ -72,7 +72,7 @@ public class StaffMemberService
 
         var mecanographicNumber = await GenerateMecanographicNumberAsync();
 
-        var staffMember = StaffMemberFactory.Create(
+        var staffMember = new StaffMember(
             dto.ShortName,
             mecanographicNumber,
             dto.Email,
