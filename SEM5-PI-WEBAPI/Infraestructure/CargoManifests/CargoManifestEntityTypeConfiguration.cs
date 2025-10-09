@@ -29,9 +29,6 @@ namespace SEM5_PI_WEBAPI.Infraestructure.CargoManifests
                 .WithOne()
                 .HasForeignKey("CargoManifestId")
                 .IsRequired();
-
-            builder.Navigation(c => c.ContainerEntries)
-                .UsePropertyAccessMode(PropertyAccessMode.Field);
         }
     }
 }
