@@ -10,9 +10,9 @@ namespace SEM5_PI_WEBAPI.Controllers;
 public class StorageAreasController : ControllerBase
 {
     private readonly ILogger<StorageAreasController> _logger;
-    private readonly StorageAreaService _service;
+    private readonly IStorageAreaService _service;
 
-    public StorageAreasController(ILogger<StorageAreasController> logger, StorageAreaService service)
+    public StorageAreasController(ILogger<StorageAreasController> logger, IStorageAreaService service)
     {
         _logger = logger;
         _service = service;

@@ -4,7 +4,7 @@ using SEM5_PI_WEBAPI.Domain.ValueObjects;
 
 namespace SEM5_PI_WEBAPI.Domain.StorageAreas;
 
-public class StorageAreaService
+public class StorageAreaService: IStorageAreaService
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly ILogger<StorageAreaService> _logger;
