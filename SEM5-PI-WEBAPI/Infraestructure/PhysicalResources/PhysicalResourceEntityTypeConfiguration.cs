@@ -30,7 +30,7 @@ namespace SEM5_PI_WEBAPI.Infraestructure.PhysicalResources
                 .IsRequired();
 
             builder.Property(r => r.Status)
-                .HasConversion<string>() 
+                .HasConversion<string>() // idem para status
                 .IsRequired();
 
             // Configuração da relação opcional com Qualification

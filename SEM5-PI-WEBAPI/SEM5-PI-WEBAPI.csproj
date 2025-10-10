@@ -30,7 +30,6 @@
 
   <ItemGroup>
     <Folder Include="Domain\PhysicalResources\DTOs\" />
-    <Folder Include="Infraestructure\PhysicalResources\" />
     <Folder Include="Logs\" />
     <Folder Include="Logs\Containers\" />
     <Folder Include="Logs\GeneralLogs\" />
@@ -48,7 +47,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Remove="Infraestructure\PhysicalResources\PhysicalResourceEntityTypeConfiguration.cs" />
     <Compile Remove="Domain\PhysicalResources\PhysicalResource.cs" />
     <Compile Remove="Migrations\20251008211528_Initial.cs" />
     <Compile Remove="Migrations\20251008211528_Initial.Designer.cs" />
