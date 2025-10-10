@@ -5,4 +5,14 @@
 # Build
 bin/
 obj/
+Migrations/
+
+# Logs
 SEM5-PI-WEBAPI/Logs
+
+# SQLite database
+identifier.sqlite
+identifier.sqlite-shm
+identifier.sqlite-wal
+
+SEM5-PI-WEBAPI.sln.DotSettings.user
