@@ -38,10 +38,10 @@ public class StaffMemberService
         return staff == null ? null : MapToDto(staff);
     }
 
-    public async Task<StaffMemberDto> GetByNameAsync(string name)
+    public async Task<List<StaffMemberDto>> GetByNameAsync(string name)
     {
         var staff = await _repo.GetByNameAsync(name);
-        return staff == null ? null : MapToDto(staff);
+        return staff.ConvertAll(MapToDto);
     }
 
     public async Task<List<StaffMemberDto>> GetByStatusAsync(bool status)

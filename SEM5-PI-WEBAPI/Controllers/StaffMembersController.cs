@@ -50,7 +50,7 @@ public class StaffMembersController : ControllerBase
 
 
     [HttpGet("by-exact-qualifications")]
-    public async Task<ActionResult<List<StaffMemberDto>>> GetByAllQualifications([FromQuery] List<Guid> ids)
+    public async Task<ActionResult<List<StaffMemberDto>>> GetByAllQualifications(List<Guid> ids)
     {
         if (ids == null || !ids.Any())
             return BadRequest("At least one qualification id must be provided.");
@@ -71,14 +71,15 @@ public class StaffMembersController : ControllerBase
     }
 
     [HttpGet("name/{name}")]
-    public async Task<ActionResult<StaffMemberDto>> GetByName(string name)
+    public async Task<ActionResult<List<StaffMemberDto>>> GetByName(string name)
     {
         var staff = await _service.GetByNameAsync(name);
-        if (staff == null)
+        if (staff == null || staff.Count == 0)
             return NotFound();
         return Ok(staff);
     }
 
+    
     [HttpGet("status/{status}")]
     public async Task<ActionResult<IEnumerable<StaffMemberDto>>> GetByStatus(bool status)
     {

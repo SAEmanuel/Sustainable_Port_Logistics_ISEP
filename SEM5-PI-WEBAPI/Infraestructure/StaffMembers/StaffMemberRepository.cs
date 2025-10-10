@@ -35,12 +35,14 @@ public class StaffMemberRepository : BaseRepository<StaffMember, StaffMemberId>,
             .FirstOrDefaultAsync(s => s.MecanographicNumber == mec);
     }
 
-    public async Task<StaffMember?> GetByNameAsync(string name)
+    public async Task<List<StaffMember>> GetByNameAsync(string name)
     {
         return await _staffMembers
             .Include(s => s.Qualifications)
-            .FirstOrDefaultAsync(s => s.ShortName == name);
+            .Where(s => s.ShortName.ToLower().Contains(name.ToLower()))
+            .ToListAsync();
     }
+
 
     public async Task<List<StaffMember>> GetByStatusAsync(bool status)
     {
