@@ -1,0 +1,195 @@
+@startuml
+skinparam monochrome true
+skinparam packageStyle rectangle
+skinparam shadowing false
+hide circles
+hide methods
+
+title Domain Model (Excerpt) – US2.2.8 Create & Submit Vessel Visit Notification
+
+left to right direction
+
+' =======================
+'   VESSEL VISIT NOTIFICATION AGGREGATE
+' =======================
+package "Vessel Visit Notification Aggregate" {
+    class VesselVisitNotification <<AggregateRoot>> {
+        +Code
+        +EstimatedTimeArrival
+        +EstimatedTimeDeparture
+        +ActualTimeArrival
+        +ActualTimeDeparture
+        +AcceptanceDate
+        +Volume
+        +Documents
+        +Status
+    }
+
+    class VvnCode <<ValueObject>>
+    class ClockTime <<ValueObject>>
+    class VvnStatus <<Enumeration>>
+
+    VesselVisitNotification "1" -- "1" VvnCode : has >
+    VesselVisitNotification "1" -- "1" VvnStatus : status >
+    VesselVisitNotification "1" -- "1" ClockTime : ETA/ETD >
+    VesselVisitNotification "1" -- "0..1" ClockTime : ATA/ATD >
+    VesselVisitNotification "1" -- "0..1" ClockTime : AcceptanceDate >
+}
+
+' =======================
+'   VESSEL AGGREGATE
+' =======================
+package "Vessel Aggregate" {
+    class Vessel <<AggregateRoot>> {
+        +Name
+        +Owner
+        +ImoNumber
+    }
+    class ImoNumber <<ValueObject>>
+    Vessel "1" -- "1" ImoNumber : identified by >
+}
+
+' =======================
+'   VESSEL TYPE AGGREGATE
+' =======================
+package "Vessel Type Aggregate" {
+    class VesselType <<AggregateRoot>> {
+        +Name
+        +Description
+        +MaxBays
+        +MaxRows
+        +MaxTiers
+        +TeuCapacity
+    }
+    Vessel "1" -- "1" VesselType : has type >
+}
+
+' =======================
+'   CREW AGGREGATE
+' =======================
+package "Crew Manifest Aggregate" {
+    class CrewManifest <<AggregateRoot>> {
+        +TotalCrew
+        +CaptainName
+    }
+
+    class CrewMember <<Entity>> {
+        +CitizenId
+        +Name
+        +Nationality
+        +Role
+    }
+
+    CrewManifest "1" -- "*" CrewMember : includes >
+}
+
+' =======================
+'   CARGO AGGREGATE
+' =======================
+package "Cargo Manifest Aggregate" {
+    class CargoManifest <<AggregateRoot>> {
+        +Code
+        +SubmittedAt
+        +SubmittedBy
+        +Type
+    }
+
+    class CargoManifestEntry <<Entity>> {
+        +Bay
+        +Row
+        +Tier
+    }
+
+    class Container <<Entity>> {
+        +IdIso
+        +Description
+        +Weight
+        +Status
+        +CargoType
+    }
+
+    class Iso6346Code <<ValueObject>>
+
+    CargoManifest "1" -- "*" CargoManifestEntry : contains >
+    CargoManifestEntry "*" -- "1" Container : refers >
+    Container "1" -- "1" Iso6346Code : identified by >
+}
+
+' =======================
+'   DOCK AGGREGATE
+' =======================
+package "Dock Aggregate" {
+    class EntityDock <<Entity>> {
+        +Code
+        +Location
+        +Depth
+        +Length
+        +MaxDraft
+    }
+
+    class DockCode <<ValueObject>>
+    EntityDock "1" -- "1" DockCode : identified by >
+}
+
+' =======================
+'   STORAGE AREA AGGREGATE
+' =======================
+package "Storage Area Aggregate" {
+    class StorageArea <<AggregateRoot>> {
+        +Id
+        +Location
+        +TeuCapacity
+        +CurrentOccupancy
+        +Type
+    }
+}
+
+' =======================
+'   SHIPPING AGENT AGGREGATE
+' =======================
+package "Shipping Agent Organization Aggregate" {
+    class ShippingAgentOrganization <<AggregateRoot>> {
+        +Id
+        +Name
+        +Address
+        +TaxNumber
+    }
+
+    class ShippingAgentRepresentative <<Entity>> {
+        +Name
+        +CitizenId
+        +Nationality
+        +Email
+        +PhoneNumber
+        +Status
+    }
+
+    ShippingAgentOrganization "1" -- "*" ShippingAgentRepresentative : employs >
+}
+
+' =======================
+'   TASK AGGREGATE
+' =======================
+package "Task Aggregate" {
+    class Task <<Entity>> {
+        +Code
+        +StartTime
+        +EndTime
+        +Description
+        +Status
+        +Type
+    }
+}
+
+' =======================
+'   CROSS-AGGREGATE RELATIONSHIPS
+' =======================
+VesselVisitNotification "1" --> "1" Vessel : refers to >
+VesselVisitNotification "1" --> "0..1" CrewManifest : includes >
+VesselVisitNotification "1" --> "0..1" CargoManifest : loading >
+VesselVisitNotification "1" --> "0..1" CargoManifest : unloading >
+VesselVisitNotification "1" --> "*" EntityDock : berths at >
+VesselVisitNotification "1" --> "*" Task : schedules >
+VesselVisitNotification "1" --> "1" ShippingAgentRepresentative : submitted by >
+
+@enduml
