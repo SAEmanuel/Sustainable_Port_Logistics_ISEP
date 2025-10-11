@@ -117,6 +117,22 @@ namespace SEM5_PI_WEBAPI
                         rollingInterval: RollingInterval.Day,
                         outputTemplate: "[{Timestamp:HH:mm:ss} {Level:u3}] {SourceContext,-55} - {Message:lj}{NewLine}{Exception}")
                 )
+                
+                .WriteTo.Logger(lc => lc
+                    .Filter.ByIncludingOnly(e=>
+                        e.Properties.ContainsKey("SourceContext") &&(
+                            e.Properties["SourceContext"].ToString().Contains("SEM5_PI_WEBAPI.Domain.VVN")
+                            ||
+                            e.Properties["SourceContext"].ToString().Contains("RequestLogsMiddleware")
+                            ||
+                            e.Properties["SourceContext"].ToString().Contains("SEM5_PI_WEBAPI.Controllers.VesselVisitNotificationController")
+                        )
+                    )
+                    .WriteTo.File("Logs/VesselVisitNotification/vvn-.log",
+                        rollingInterval: RollingInterval.Day,
+                        outputTemplate: "[{Timestamp:HH:mm:ss} {Level:u3}] {SourceContext,-55} - {Message:lj}{NewLine}{Exception}")
+                )
+                
                 .CreateLogger();
 
 

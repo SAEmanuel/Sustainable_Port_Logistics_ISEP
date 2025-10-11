@@ -68,5 +68,12 @@ namespace SEM5_PI_WEBAPI.Infraestructure.Docks
 
             return await q.ToListAsync();
         }
+
+        public async Task<List<DockCode>> GetAllDockCodesAsync()
+        {
+            return await _context.Dock
+                .Select(d => d.Code)
+                .ToListAsync();         
+        }
     }
 }

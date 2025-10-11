@@ -48,7 +48,7 @@ namespace SEM5_PI_WEBAPI.Domain.VVN
         public VesselVisitNotification(VvnCode code, ClockTime estimatedTimeArrival, ClockTime estimatedTimeDeparture,
             int volume, PdfDocumentCollection? documents, IEnumerable<EntityDock> docks,
             CrewManifest? crewManifest, CargoManifest? loadingCargoManifest,
-            CargoManifest? unloadingCargoManifest, ImoNumber vesselImo, IEnumerable<Task> tasks)
+            CargoManifest? unloadingCargoManifest, ImoNumber vesselImo)
         {
             Id = new VesselVisitNotificationId(Guid.NewGuid());
             SetCode(code);

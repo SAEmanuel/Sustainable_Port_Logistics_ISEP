@@ -6,7 +6,6 @@ namespace SEM5_PI_WEBAPI.Domain.VVN.DTOs;
 
 public class CreatingVesselVisitNotificationDto
 {
-    public string Code { get; set; }
     public string EstimatedTimeArrival { get; set; }
     public string EstimatedTimeDeparture { get; set; }
     public int Volume { get; set; }
@@ -16,12 +15,10 @@ public class CreatingVesselVisitNotificationDto
     public CreatingCargoManifestDto? LoadingCargoManifest { get; set; }
     public CreatingCargoManifestDto? UnloadingCargoManifest { get; set; }
     public string VesselImo { get; set; }
-    public List<CreatingTaskDto> Tasks { get; set; }
 
 
-    public CreatingVesselVisitNotificationDto(string code, string estimatedTimeArrival, string estimatedTimeDeparture, int volume, string? documents, List<string> listDocks, CreatingCrewManifestDto? crewManifest, CreatingCargoManifestDto? loadingCargoManifest, CreatingCargoManifestDto? unloadingCargoManifest, string vesselImo, List<CreatingTaskDto> tasks)
+    public CreatingVesselVisitNotificationDto(string estimatedTimeArrival, string estimatedTimeDeparture, int volume, string? documents, List<string> listDocks, CreatingCrewManifestDto? crewManifest, CreatingCargoManifestDto? loadingCargoManifest, CreatingCargoManifestDto? unloadingCargoManifest, string vesselImo)
     {
-        Code = code;
         EstimatedTimeArrival = estimatedTimeArrival;
         EstimatedTimeDeparture = estimatedTimeDeparture;
         Volume = volume;
@@ -31,6 +28,5 @@ public class CreatingVesselVisitNotificationDto
         LoadingCargoManifest = loadingCargoManifest;
         UnloadingCargoManifest = unloadingCargoManifest;
         VesselImo = vesselImo;
-        Tasks = tasks;
     }
 }
