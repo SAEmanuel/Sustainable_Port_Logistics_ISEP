@@ -71,7 +71,7 @@ namespace SEM5_PI_WEBAPI.Infraestructure
             modelBuilder.ApplyConfiguration(new PhysicalResourceEntityTypeConfiguration());
             modelBuilder.ApplyConfiguration(new CrewManifestEntityTypeConfiguration());
             modelBuilder.ApplyConfiguration(new CrewMemberEntityTypeConfiguration());
-            //modelBuilder.ApplyConfiguration(new TaskEntityTypeConfiguration());
+            modelBuilder.ApplyConfiguration(new TaskEntityTypeConfiguration());
         }
     }
 }

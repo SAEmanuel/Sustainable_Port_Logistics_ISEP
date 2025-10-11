@@ -8,6 +8,8 @@ public class PdfDocument : IValueObject
     public byte[] Content { get; }
     public string ContentType { get; } = "application/pdf";
 
+    protected PdfDocument(){}
+    
     public PdfDocument(string fileName, byte[] content)
     {
         if (string.IsNullOrWhiteSpace(fileName))

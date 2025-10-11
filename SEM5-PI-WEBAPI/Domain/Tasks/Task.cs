@@ -11,6 +11,9 @@ public class Task : Entity<TaskId>
     public TaskType Type { get; private set; }
     public TaskStatus Status { get; private set; }
 
+    protected Task() {
+    }
+
     public Task(TaskCode code, string? description, TaskType type)
     {
         if (description != null && description.Length > 255)

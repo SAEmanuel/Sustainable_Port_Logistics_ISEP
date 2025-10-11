@@ -11,6 +11,7 @@ using SEM5_PI_WEBAPI.Domain.StorageAreas;
 using SEM5_PI_WEBAPI.Domain.Tasks;
 using SEM5_PI_WEBAPI.Domain.ValueObjects;
 using SEM5_PI_WEBAPI.Domain.VVN.DTOs;
+using Task = SEM5_PI_WEBAPI.Domain.Tasks.Task;
 
 namespace SEM5_PI_WEBAPI.Domain.VVN;
 
@@ -53,16 +54,61 @@ public class VesselVisitNotificationService
     {
         var loadingCargoManifest = await CreateCargoManifestAsync(dto.LoadingCargoManifest);
         var unloadingCargoManifest = await CreateCargoManifestAsync(dto.UnloadingCargoManifest);
-        var crewManifest = await CreateCrewManifest(dto.CrewManifest);
+        var crewManifest = await CreateCrewManifestAsync(dto.CrewManifest);
 
-
+        if (unloadingCargoManifest != null) {var unloadingTasks = await CreateTasksAsync(unloadingCargoManifest, "", "");}
+        if (loadingCargoManifest != null) {var loadingTasks = await CreateTasksAsync(loadingCargoManifest, "", "");}
+            
+        
+        
+        
         return null;
     }
 
 
     // ------------- Private Methods -------------
 
-    private async Task<CrewManifest> CreateCrewManifest(CreatingCrewManifestDto? dto)
+    private async Task<List<Task>> CreateTasksAsync(CargoManifest cargoManifest, string dock, string storage)
+    {
+        var tasks = new List<Task>();
+        var manifestType = cargoManifest.Type;
+        var taskCount = _taskRepository.CountAsync().Result - 1;
+
+        foreach (var entry in cargoManifest.ContainerEntries)
+        {
+            taskCount++;
+            var containerHandlingDesc = manifestType == CargoManifestType.Unloading ? $"{storage} - Container Handling" : $"{dock} - Container Handling";
+            var yardTransportDesc = manifestType == CargoManifestType.Unloading ? $"{storage} - Yard Transport" : $"{dock} - Yard Transport";
+
+            var containerHandlingTask = new Task(
+                await GenerateNextTaskCodeAsync(TaskType.ContainerHandling, taskCount),
+                containerHandlingDesc,
+                TaskType.ContainerHandling);
+            tasks.Add(containerHandlingTask);
+
+            var yardTransportTask = new Task(
+                await GenerateNextTaskCodeAsync(TaskType.YardTransport, taskCount),
+                yardTransportDesc,
+                TaskType.YardTransport);
+            tasks.Add(yardTransportTask);
+
+            if (manifestType == CargoManifestType.Unloading)
+            {
+                var storagePlacementDesc = $"{storage} - Storage Placement";
+                var storagePlacementTask = new Task(
+                    await GenerateNextTaskCodeAsync(TaskType.StoragePlacement, taskCount),
+                    storagePlacementDesc,
+                    TaskType.StoragePlacement);
+                tasks.Add(storagePlacementTask);
+            }
+        }
+
+        return tasks;
+    }
+
+
+
+    private async Task<CrewManifest> CreateCrewManifestAsync(CreatingCrewManifestDto? dto)
     {
         if (dto == null)
             return null;
@@ -127,5 +173,11 @@ public class VesselVisitNotificationService
         var count = await _cargoManifestRepository.CountAsync();
         int nextNumber = count + 1;
         return $"CGM-{nextNumber.ToString("D4")}";
+    }
+
+    private async Task<TaskCode> GenerateNextTaskCodeAsync(TaskType taskType, int count)
+    {
+        int nextNumber = count + 1;
+        return new TaskCode(taskType, nextNumber);
     }
 }

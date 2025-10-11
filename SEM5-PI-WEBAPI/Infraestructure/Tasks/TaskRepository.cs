@@ -12,4 +12,9 @@ public class TaskRepository : BaseRepository<SEM5_PI_WEBAPI.Domain.Tasks.Task, T
     {
         _tasks = context.Tasks;
     }
+
+    public async Task<int> CountAsync()
+    {
+        return await _tasks.CountAsync();
+    }
 }

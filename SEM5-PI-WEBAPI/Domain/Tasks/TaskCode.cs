@@ -8,6 +8,8 @@ public class TaskCode : IValueObject
     public string Value { get; private set; }
     public TaskType Type { get; private set; }
 
+    protected TaskCode(){}
+    
     public TaskCode(TaskType type, int number)
     {
         if (number <= 0)
