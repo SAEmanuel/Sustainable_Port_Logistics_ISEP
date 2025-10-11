@@ -15,8 +15,8 @@ namespace SEM5_PI_WEBAPI.Tests.Domain
 
         private readonly List<PhysicalResourceCode> _defaultResources = new()
         {
-            new PhysicalResourceCode("YC-0001"),
-            new PhysicalResourceCode("DC-0002")
+            new PhysicalResourceCode("YYC-0001"),
+            new PhysicalResourceCode("DDC-0002")
         };
 
         // 1. CONSTRUCTION TESTS
@@ -178,35 +178,35 @@ namespace SEM5_PI_WEBAPI.Tests.Domain
             var stArea = new StorageArea("Yard L", "Desc", StorageAreaType.Yard, 1, 1, 1, _defaultDistances, new List<PhysicalResourceCode>());
             var resources = new List<PhysicalResourceCode>
             {
-                new PhysicalResourceCode("TB-0001"),
-                new PhysicalResourceCode("CS-0002")
+                new PhysicalResourceCode("TTB-0001"),
+                new PhysicalResourceCode("CCS-0002")
             };
 
             stArea.AddPhysicalResources(resources);
 
             Assert.Equal(2, stArea.PhysicalResources.Count);
-            Assert.Contains(stArea.PhysicalResources, r => r.Value == "TB-0001");
+            Assert.Contains(stArea.PhysicalResources, r => r.Value == "TTB-0001");
         }
 
         [Fact]
         public void RemovePhysicalResources_Existing_ShouldRemoveCorrectly()
         {
-            var resource1 = new PhysicalResourceCode("MC-0001");
-            var resource2 = new PhysicalResourceCode("O-0002");
+            var resource1 = new PhysicalResourceCode("MMC-0001");
+            var resource2 = new PhysicalResourceCode("OOO-0002");
 
             var stArea = new StorageArea("Yard M", "Desc", StorageAreaType.Yard, 1, 1, 1, _defaultDistances, new List<PhysicalResourceCode> { resource1, resource2 });
 
             stArea.RemovePhysicalResources(new[] { resource1 });
 
             Assert.Single(stArea.PhysicalResources);
-            Assert.DoesNotContain(stArea.PhysicalResources, r => r.Value == "MC-0001");
+            Assert.DoesNotContain(stArea.PhysicalResources, r => r.Value == "MMC-0001");
         }
 
         [Fact]
         public void RemovePhysicalResources_NotExisting_ShouldDoNothing()
         {
             var stArea = new StorageArea("Yard N", "Desc", StorageAreaType.Yard, 1, 1, 1, _defaultDistances, new List<PhysicalResourceCode>());
-            var nonExisting = new PhysicalResourceCode("T-9999");
+            var nonExisting = new PhysicalResourceCode("TTT-9999");
 
             stArea.RemovePhysicalResources(new[] { nonExisting });
 

@@ -71,5 +71,13 @@ public class VvnCode : IValueObject
         yield return Code;
     }
 
+    public override bool Equals(object? obj)
+    {
+        if (obj is not VvnCode other)
+            return false;
+        return this.SequenceNumber == other.SequenceNumber &&   this.YearNumber == other.YearNumber;
+    }
+    
+    public override int GetHashCode() => Code.GetHashCode();
     public override string ToString() => Code;
 }
