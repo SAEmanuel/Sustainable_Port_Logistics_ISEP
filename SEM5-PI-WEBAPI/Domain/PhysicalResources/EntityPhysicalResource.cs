@@ -13,8 +13,11 @@ public enum PhysicalResourceStatus
     UnderMaintenance,
 }
 
-public class EntityPhysicalResource : Entity<PhysicalResourceId>
+public class EntityPhysicalResource : Entity<PhysicalResourceId>, IAggregateRoot
 {
+    private const int MaxDescription = 80;
+    
+    
     [MaxLength(10)] public PhysicalResourceCode Code { get; set; }
 
     [MaxLength(80)] public string Description { get; set; }
@@ -35,21 +38,77 @@ public class EntityPhysicalResource : Entity<PhysicalResourceId>
     }
 
     public EntityPhysicalResource(PhysicalResourceCode code, string description, double operationalCapacity,
-        double setupTime, PhysicalResourceType type, PhysicalResourceStatus status, QualificationId? qualificationID)
+        double setupTime, PhysicalResourceType type, QualificationId? qualificationID)
     {
         Id = new PhysicalResourceId(Guid.NewGuid());
-        Code = code;
-        Description = description;
-        OperationalCapacity = operationalCapacity;
-        SetupTime = setupTime;
-        Type = type;
+        SetCode(code);
+        SetDescription(description);
+        SetOperationalCapacity(operationalCapacity);
+        SetSetupTime(setupTime);
+        SetType(type);
         Status = PhysicalResourceStatus.Available;
-        QualificationID = qualificationID;
+        SetQualification(qualificationID);
         
     }
     
-    // Fazer Validacoes
     //Fazer Updates
+
+    private void SetCode(PhysicalResourceCode code)
+    {
+        if (code == null)
+            throw new BusinessRuleValidationException("Code cannot be null");
+        Code = code;
+    }
+
+    private void SetDescription(string description)
+    {
+        if (string.IsNullOrEmpty(description))
+            throw new BusinessRuleValidationException("Description cannot be null or whitespace");
+        
+        if (description.Length > MaxDescription)
+            throw new BusinessRuleValidationException("Description cannot be longer than " + MaxDescription);
+        
+        Description = description;
+    }
+
+    private void SetOperationalCapacity(double operationalCapacity)
+    {
+        if (operationalCapacity < 0)
+            throw new BusinessRuleValidationException("Operational capacity cannot be negative");
+        
+        OperationalCapacity = operationalCapacity;
+    }
+
+    private void SetSetupTime(double setupTime)
+    {
+        if (setupTime < 0)
+            throw new BusinessRuleValidationException("Setup time cannot be negative");
+        
+        SetupTime = setupTime;
+    }
+
+    private void SetType(PhysicalResourceType type)
+    {
+        if (!Enum.IsDefined(typeof(PhysicalResourceType), type))
+            throw new BusinessRuleValidationException($"Invalid type '{type}'.");
+
+        Type = type;
+    }
+
+    private void SetStatus(PhysicalResourceStatus status)
+    {
+        if (!Enum.IsDefined(typeof(PhysicalResourceStatus), status))
+            throw new BusinessRuleValidationException($"Invalid status '{status}'.");
+        
+        Status = status;
+    }
+    
+    private void SetQualification(QualificationId? qualificationId)
+    {
+        QualificationID = qualificationId;
+    }
+
+
 
     public override bool Equals(object? obj)
     {
