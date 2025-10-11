@@ -1,0 +1,63 @@
+@startuml
+skinparam monochrome true
+skinparam packageStyle rectangle
+skinparam shadowing false
+skinparam sequenceArrowThickness 1
+skinparam sequenceParticipant underline
+autonumber
+
+title Full Sequence Diagram — US4.1.1 Register Vessel Visit Notification
+
+actor "Shipping Agent Representative" as ACTOR
+participant ":VesselVisitNotificationController" as CTRL
+participant ":VesselVisitNotificationService" as SERVICE
+participant ":VesselVisitNotificationFactory" as FACTORY
+participant ":IVesselVisitNotificationRepository" as REPO
+participant ":UnitOfWork" as UOW
+participant "entity\n:VesselVisitNotification" as ENTITY
+
+== Register Vessel Visit Notification ==
+
+activate ACTOR
+    ACTOR -> CTRL : POST /api/vesselvisitnotifications\n(dto : CreatingVesselVisitNotificationDto)
+    activate CTRL
+
+        CTRL -> SERVICE : AddAsync(dto)
+        activate SERVICE
+
+            SERVICE -> SERVICE : Validate & map DTO fields\n(ETA, ETD, Volume, Vessel IMO, Docks)
+            SERVICE -> SERVICE : CreateCrewManifestAsync()\nCreateCargoManifestAsync()
+
+            SERVICE -> FACTORY : CreateVesselVisitNotification(vvnCode, eta, etd, volume, docks, ...)
+            activate FACTORY
+                FACTORY -> ENTITY** : new VesselVisitNotification(...)
+                activate ENTITY
+                    ENTITY --> FACTORY : instance created
+                deactivate ENTITY
+                FACTORY --> SERVICE : new VesselVisitNotification aggregate
+            deactivate FACTORY
+
+            SERVICE -> ENTITY : SetTasks(tasks)
+            SERVICE -> REPO : AddAsync(vvn)
+            activate REPO
+                REPO --> SERVICE : persisted
+            deactivate REPO
+
+            SERVICE -> UOW : CommitAsync()
+            activate UOW
+                UOW --> SERVICE : transaction committed
+            deactivate UOW
+
+            SERVICE -> FACTORY : CreateVesselVisitNotificationDto(vvn)
+            activate FACTORY
+                FACTORY --> SERVICE : VesselVisitNotificationDto
+            deactivate FACTORY
+
+            SERVICE --> CTRL : VesselVisitNotificationDto
+        deactivate SERVICE
+
+        CTRL --> ACTOR : 201 Created\nBody: VesselVisitNotificationDto
+    deactivate CTRL
+deactivate ACTOR
+
+@enduml

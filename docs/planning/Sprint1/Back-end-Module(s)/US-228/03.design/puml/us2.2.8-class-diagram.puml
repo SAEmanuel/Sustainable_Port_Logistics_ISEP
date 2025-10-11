@@ -1,0 +1,116 @@
+@startuml
+skinparam packageStyle rectangle
+skinparam shadowing false
+skinparam linetype ortho
+skinparam classAttributeIconSize 0
+title Class Diagram - US4.1.1 Register Vessel Visit Notification
+
+package "Application Layer" {
+    class VesselVisitNotificationController {
+        + CreateAsync(dto : CreatingVesselVisitNotificationDto) : VesselVisitNotificationDto
+        + GetById(id : Guid) : VesselVisitNotificationDto
+    }
+
+    class VesselVisitNotificationService {
+        + AddAsync(dto : CreatingVesselVisitNotificationDto) : VesselVisitNotificationDto
+        + GetByIdAsync(id : VesselVisitNotificationId) : VesselVisitNotificationDto
+        - CreateTasksAsync()
+        - CreateCargoManifestAsync()
+        - CreateCrewManifestAsync()
+        - CheckForVesselInDb()
+    }
+}
+
+package "Domain Layer" {
+    class VesselVisitNotification {
+        - id : VesselVisitNotificationId
+        - code : VvnCode
+        - estimatedTimeArrival : ClockTime
+        - estimatedTimeDeparture : ClockTime
+        - actualTimeArrival : ClockTime
+        - actualTimeDeparture : ClockTime
+        - volume : int
+        - status : VvnStatus
+        - documents : PdfDocumentCollection
+        - listDocks : List<EntityDock>
+        - crewManifest : CrewManifest
+        - loadingCargoManifest : CargoManifest
+        - unloadingCargoManifest : CargoManifest
+        - vesselImo : ImoNumber
+        - tasks : List<EntityTask>
+        + Submit()
+        + Withdraw()
+        + Accept()
+        + Resume()
+    }
+
+    class VesselVisitNotificationFactory {
+        + CreateVesselVisitNotification(code : VvnCode, eta : string, etd : string, volume : int, ...)
+        + CreateVesselVisitNotificationDto(vvn : VesselVisitNotification) : VesselVisitNotificationDto
+    }
+
+    interface IVesselVisitNotificationRepository {
+        + AddAsync(vvn : VesselVisitNotification)
+        + GetByIdAsync(id : VesselVisitNotificationId)
+        + GetAllAsync() : List<VesselVisitNotification>
+    }
+
+    class VesselVisitNotificationId
+    class VvnCode
+    class ClockTime
+    class ImoNumber
+}
+
+package "Infrastructure Layer" {
+    class VesselVisitNotificationRepository {
+        - _context : DddSample1DbContext
+        + AddAsync(vvn : VesselVisitNotification)
+        + GetByIdAsync(id : VesselVisitNotificationId)
+    }
+
+    class UnitOfWork {
+        + CommitAsync()
+    }
+}
+
+package "DTOs" {
+    class CreatingVesselVisitNotificationDto {
+        + EstimatedTimeArrival : string
+        + EstimatedTimeDeparture : string
+        + Volume : int
+        + Documents : string
+        + ListDocks : List<string>
+        + CrewManifest : CreatingCrewManifestDto
+        + LoadingCargoManifest : CreatingCargoManifestDto
+        + UnloadingCargoManifest : CreatingCargoManifestDto
+        + VesselImo : string
+    }
+
+    class VesselVisitNotificationDto {
+        + Id : string
+        + Code : string
+        + EstimatedTimeArrival : DateTime
+        + EstimatedTimeDeparture : DateTime
+        + Volume : int
+        + Status : VvnStatus
+    }
+}
+
+' === RELATIONSHIPS ===
+VesselVisitNotificationController --> VesselVisitNotificationService : uses
+VesselVisitNotificationService --> VesselVisitNotificationFactory : uses
+VesselVisitNotificationService --> IVesselVisitNotificationRepository : uses
+VesselVisitNotificationService --> UnitOfWork : commits
+VesselVisitNotificationFactory --> VesselVisitNotification : creates
+VesselVisitNotificationRepository ..|> IVesselVisitNotificationRepository
+VesselVisitNotificationService --> CreatingVesselVisitNotificationDto
+VesselVisitNotificationFactory --> VesselVisitNotificationDto
+VesselVisitNotification *-- VvnCode
+VesselVisitNotification *-- ClockTime
+VesselVisitNotification *-- ImoNumber
+VesselVisitNotification *-- EntityTask
+VesselVisitNotification *-- CrewManifest
+VesselVisitNotification *-- CargoManifest
+VesselVisitNotification *-- EntityDock
+
+@enduml
