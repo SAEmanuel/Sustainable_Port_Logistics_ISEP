@@ -53,22 +53,38 @@ public class VesselVisitNotificationService
     {
         var loadingCargoManifest = await CreateCargoManifestAsync(dto.LoadingCargoManifest);
         var unloadingCargoManifest = await CreateCargoManifestAsync(dto.UnloadingCargoManifest);
-        
+        var crewManifest = await CreateCrewManifest(dto.CrewManifest);
 
-        return null; 
+
+        return null;
     }
 
-    
-    
-    
-    
-    
-    
-    
-    
-    
+
     // ------------- Private Methods -------------
-    
+
+    private async Task<CrewManifest> CreateCrewManifest(CreatingCrewManifestDto? dto)
+    {
+        if (dto == null)
+            return null;
+
+        var hasCrewMembers = dto.CrewMembers != null;
+        var crewMembers = new List<CrewMember>();
+        if (hasCrewMembers)
+        {
+            foreach (var crewMemberDto in dto.CrewMembers)
+            {
+                var member = new CrewMember(crewMemberDto.Name, crewMemberDto.Role, crewMemberDto.Nationality,
+                    new CitizenId(crewMemberDto.CitizenId));
+
+                crewMembers.Add(member);
+            }
+        }
+
+        var crewManifest = new CrewManifest(dto.TotalCrew, dto.CaptainName, crewMembers);
+        await _crewManifestRepository.AddAsync(crewManifest);
+        return crewManifest;
+    }
+
     private async Task<CargoManifest?> CreateCargoManifestAsync(CreatingCargoManifestDto? dto)
     {
         if (dto == null)
@@ -105,7 +121,7 @@ public class VesselVisitNotificationService
         return container;
     }
 
-    
+
     private async Task<string> GenerateNextCargoManifestCodeAsync()
     {
         var count = await _cargoManifestRepository.CountAsync();
