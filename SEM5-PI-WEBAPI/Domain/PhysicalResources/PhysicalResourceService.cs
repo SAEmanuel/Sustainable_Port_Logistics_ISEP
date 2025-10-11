@@ -50,7 +50,6 @@ public class PhysicalResourceService
             dto.OperationalCapacity,
             dto.SetupTime,
             dto.PhysicalResourceType,
-            dto.PhysicalResourceStatus,
             new QualificationId(dto.QualificationID.Value)
         );
 

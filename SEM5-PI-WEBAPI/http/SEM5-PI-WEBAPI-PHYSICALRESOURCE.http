@@ -15,7 +15,6 @@ Accept: application/json
   "operationalCapacity": 25.5,
   "setupTime": 10,
   "physicalResourceType": "Truck",
-  "status": "Available",
   "qualificationID": "9c5e3d5a-dd32-4f8b-afc0-9cad22ea21eb"
 }
 
