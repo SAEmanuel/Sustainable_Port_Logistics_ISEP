@@ -5,7 +5,7 @@ using SEM5_PI_WEBAPI.Domain.Shared;
 
 namespace SEM5_PI_WEBAPI.Domain.StaffMembers;
 
-public class StaffMember : Entity<StaffMemberId>
+public class StaffMember : Entity<StaffMemberId>, IAggregateRoot
 {
     [MaxLength(20)] public string ShortName { get; private set; }
 

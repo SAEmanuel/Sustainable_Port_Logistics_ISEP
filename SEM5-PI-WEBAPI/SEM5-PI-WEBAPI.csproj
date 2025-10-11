@@ -30,6 +30,7 @@
 
   <ItemGroup>
     <Folder Include="Domain\PhysicalResources\DTOs\" />
+    <Folder Include="Infraestructure\Tasks\" />
     <Folder Include="Logs\" />
     <Folder Include="Logs\Containers\" />
     <Folder Include="Logs\GeneralLogs\" />
