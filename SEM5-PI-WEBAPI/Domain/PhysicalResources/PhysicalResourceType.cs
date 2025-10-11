@@ -2,13 +2,13 @@
 
 public enum PhysicalResourceType
 {
-    DockCrane,
-    YardCrane,
-    MobileCrane,
+    STSCrane,    
+    YGCrane,     
+    MCrane,      
     Truck,
     Forklift,
-    ContainerStacker,
-    Carrier,
+    RStacker,    
+    SCarrier,    
     TugBoat,
     Other
 }
