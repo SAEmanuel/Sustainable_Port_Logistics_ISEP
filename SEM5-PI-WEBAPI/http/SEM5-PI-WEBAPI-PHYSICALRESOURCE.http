@@ -62,7 +62,7 @@ GET {{portURL}}/api/PhysicalResource/get/type/InvalidType
 Accept: application/json
 
 
-### 1️⃣2️⃣ GET by Qualification - valid (NAO ESTÁ FUNCIONANDO)
+### 1️⃣2️⃣ GET by Qualification - valid
 GET {{portURL}}/api/PhysicalResource/get/qualification/9c5e3d5a-dd32-4f8b-afc0-9cad22ea21eb
 Accept: application/json
 

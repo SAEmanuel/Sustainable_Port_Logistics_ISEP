@@ -52,8 +52,9 @@ namespace SEM5_PI_WEBAPI.Infraestructure.PhysicalResources
         public async Task<List<EntityPhysicalResource>> GetByQualificationAsync(QualificationId qualification)
         {
             return await _context
-                .Where(r => r.QualificationID != null && r.QualificationID.Equals(qualification.Value))
+                .Where(r => r.QualificationID != null && r.QualificationID == qualification)
                 .ToListAsync();
+
         }
 
         public async Task<bool> ExistsAsync(PhysicalResourceId id)

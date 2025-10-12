@@ -139,7 +139,7 @@ public class PhysicalResourceController : ControllerBase
         {
             var phy = await _service.GetByQualificationAsync(new QualificationId(qualification));
 
-            if (phy == null || phy.Count == 0)
+            if (phy.Count == 0)
             {
                 return NotFound(new { error = "Physical resource(s) not found." }); 
             }
