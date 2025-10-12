@@ -1,48 +1,79 @@
-# US2.2.2 – Manage Vessels (Create, Search, Update)
-
-## 3. Design – User Story Realization
-
-### 3.1. Rationale
-
-***Note that SSD – Alternative One is adopted.***
-
-| Interaction ID                                       | Question: Which class is responsible for...                   | Answer                     | Justification (with patterns)                                                                                          |
-| :--------------------------------------------------- | :------------------------------------------------------------ | :------------------------- | :--------------------------------------------------------------------------------------------------------------------- |
-| Step 1: Officer submits request (e.g. Create Vessel) | …interacting with the actor?                                  | `VesselController`         | **Controller** pattern: centralizes handling of HTTP/API requests from external actors.                                |
-|                                                      | …coordinating the US?                                         | `VesselService`            | **Application Service**: orchestrates domain logic, ensures validations, calls repositories and factories.             |
-| Step 2: request data (imoNumber, name, owner, type)  | …validating business rules (format, uniqueness, consistency)? | `Vessel` (Aggregate Root)  | **Information Expert**: only the aggregate enforces its invariants (valid IMO number, non-empty name, unique IMO).     |
-| Step 3: persist Vessel                               | …storing/retrieving Vessel aggregates?                        | `VesselRepository`         | **Repository**: abstracts database access, retrieves entities, and persists aggregates.                                |
-| Step 4: log action                                   | …recording audit/log information?                             | `AuditService` (or Logger) | **Pure Fabrication**: dedicated component for cross-cutting concerns like logging, persistence-independent monitoring. |
-| Step 5: factory methods                              | …converting DTOs into domain objects and vice-versa?          | `VesselFactory`            | **Factory**: responsible for object creation, hides construction details, ensures consistency between DTO ↔ Entity.    |
+# **US2.2.2 – Manage Vessels (Create, Search, Update)**
 
 ---
 
-**Systematization**
+## **3. Design – User Story Realization**
 
-According to this rationale, the conceptual classes promoted to software classes are:
+---
+
+### **3.1. Rationale**
+
+***Note:** SSD – Alternative One is adopted.*
+
+| **Interaction ID**                                              | **Question: Which class is responsible for...**      | **Answer**                 | **Justification (with patterns)**                                                                                     |
+| :-------------------------------------------------------------- | :--------------------------------------------------- | :------------------------- | :-------------------------------------------------------------------------------------------------------------------- |
+| **Step 1:** Officer submits request (e.g. `CreateVessel`)       | …interacting with the actor?                         | `VesselController`         | **Controller Pattern:** Centralizes API/HTTP request handling, decoupling user interface from application logic.      |
+|                                                                 | …coordinating the user story execution?              | `VesselService`            | **Application Service:** Orchestrates business logic, applies validation, and delegates persistence to repositories.  |
+| **Step 2:** Request data (`imoNumber`, `name`, `owner`, `type`) | …validating business rules and ensuring consistency? | `Vessel` (Aggregate Root)  | **Information Expert:** The aggregate enforces its own invariants — valid IMO, unique identifier, non-empty fields.   |
+| **Step 3:** Persist vessel data                                 | …storing and retrieving aggregate instances?         | `VesselRepository`         | **Repository Pattern:** Abstracts database access, offering persistence operations while preserving domain integrity. |
+| **Step 4:** Record audit information                            | …handling logging and monitoring of events?          | `ILogger` / `AuditService` | **Pure Fabrication:** Encapsulates cross-cutting concerns (audit logs, traceability) independently of domain logic.   |
+| **Step 5:** Convert between DTOs and Entities                   | …creating domain objects and DTOs consistently?      | `VesselFactory`            | **Factory Pattern:** Centralizes and standardizes creation logic, mapping between input DTOs and domain entities.     |
+
+---
+
+### **Systematization**
+
+Based on the above rationale, the following conceptual classes are promoted to software classes:
+
+**Domain Layer:**
 
 * `Vessel` (Aggregate Root)
-* `VesselType` (Aggregate Root – referenced by Vessel)
+* `VesselType` (Referenced Aggregate)
+* `ImoNumber` (Value Object)
 
-Other software classes (i.e. Pure Fabrication) identified:
+**Application and Infrastructure Layers:**
 
 * `VesselController`
 * `VesselService`
 * `VesselRepository`
 * `VesselFactory`
-* `AuditService` (logging / cross-cutting)
+* `IUnitOfWork`
+* `ILogger` / `AuditService` (Cross-cutting concern)
 
 ---
 
-## 3.2. Sequence Diagram (SD)
+## **3.2. Sequence Diagram (SD)**
 
-### Full Diagram
+![Full Sequence Diagram](./puml/us2.2.2-sequence-diagram-full.svg)
 
-![FSSD](./puml/us2.2.2-sequence-diagram-full.svg)
+**Main steps represented:**
+
+1. The `VesselController` receives the `POST /api/vessel` request with `CreatingVesselDto`.
+2. Delegates to `VesselService`, which validates:
+
+    * The **uniqueness** of the IMO number.
+    * The **existence** of the referenced `VesselType`.
+3. The `VesselService` uses the `VesselFactory` to instantiate the aggregate.
+4. The `VesselRepository` persists the new vessel.
+5. The `IUnitOfWork` ensures the transaction is committed atomically.
+6. Finally, the system returns a `VesselDto` confirming successful creation.
 
 ---
 
-## 3.3. Class Diagram (CD)
+## **3.3. Class Diagram (CD)**
 
-![CD](./puml/us2.2.2-class-diagram.svg)
+The following class diagram depicts the relationships between the main domain and application classes for vessel management.
+
+![Class Diagram](./puml/us2.2.2-class-diagram.svg)
+
+**Highlights:**
+
+* `Vessel` acts as the **Aggregate Root**, maintaining integrity of associated value objects (`ImoNumber`, `VesselTypeId`).
+* `VesselService` depends on:
+
+    * `IVesselRepository` for persistence.
+    * `VesselFactory` for object construction and mapping.
+    * `IUnitOfWork` for transactional integrity.
+* `VesselController` represents the API boundary and interacts solely with the `IVesselService` interface.
+* DTOs (`CreatingVesselDto`, `UpdatingVesselDto`, `VesselDto`) ensure separation between domain and external representations.
 

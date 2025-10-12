@@ -1,10 +1,11 @@
 using SEM5_PI_WEBAPI.Domain.Shared;
 using SEM5_PI_WEBAPI.Domain.ValueObjects;
+using SEM5_PI_WEBAPI.Domain.Vessels.DTOs;
 using SEM5_PI_WEBAPI.Domain.VesselsTypes;
 
 namespace SEM5_PI_WEBAPI.Domain.Vessels;
 
-public class VesselService
+public class VesselService : IVesselService
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IVesselRepository _vesselRepository;

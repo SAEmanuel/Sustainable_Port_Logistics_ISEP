@@ -1,0 +1,27 @@
+@startuml
+title US2.2.2 – Register and Update Vessel Records (SSD)
+
+actor "Port Authority Officer" as Officer
+boundary "Vessel Management API" as System
+
+== Register (Create Vessel) ==
+Officer -> System : POST /api/vessel\nBody: { imoNumber, name, owner, vesselTypeId }
+System --> Officer : 201 Created\nBody: VesselDto
+
+== Update (Partial Edit) ==
+Officer -> System : PATCH /api/vessel/imo/{imo}\nBody: { name?, owner? }
+System --> Officer : 200 OK\nBody: VesselDto (updated)
+
+== Search (Read Vessel Information) ==
+Officer -> System : GET /api/vessel/imo/{imo}
+System --> Officer : 200 OK\nBody: VesselDto
+
+Officer -> System : GET /api/vessel/name/{name}
+System --> Officer : 200 OK\nBody: List<VesselDto>
+
+Officer -> System : GET /api/vessel/owner/{owner}
+System --> Officer : 200 OK\nBody: List<VesselDto>
+
+Officer -> System : GET /api/vessel/filter?name=&imo=&owner=&query=
+System --> Officer : 200 OK\nBody: List<VesselDto>
+@enduml

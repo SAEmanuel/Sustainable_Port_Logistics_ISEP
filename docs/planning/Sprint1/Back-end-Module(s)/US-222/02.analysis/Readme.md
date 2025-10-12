@@ -1,70 +1,85 @@
-## 2. Analysis
+# **US2.2.2 – Register and Update Vessel Records**
 
-### 2.1. Relevant Domain Model Excerpt
+## **2. Analysis**
 
-![Domain Model](./puml/domain_model.png)
+---
+
+### **2.1. Relevant Domain Model Excerpt**
+
+![Domain Model](./puml/us2.2.2-domain-model.svg)
 
 **Concepts identified:**
 
-* **Vessel (Aggregate Root)**
+---
 
-  * Attributes:
+#### **Vessel (Aggregate Root)**
 
-    * `Id` (surrogate key – `VesselId`).
-    * `IMO` (`ImoNumber` VO – natural key).
-    * `Name`.
-    * `Owner` (operator/owner name).
-    * `VesselTypeId` (foreign key reference to `VesselType`).
-  * Behaviors (methods):
+**Attributes:**
 
-    * `UpdateName(name)` – validates min length.
-    * `UpdateOwner(owner)` – validates min length.
-    * `UpdateImoNumber` and `UpdateVesselType` exist mas são privados → não acessíveis fora do aggregate.
+* `Id` → Surrogate key (`VesselId`).
+* `ImoNumber` → Natural key (Value Object).
+* `Name` → Vessel name.
+* `Owner` → Operator or owning entity.
+* `VesselTypeId` → Foreign key referencing an existing `VesselType`.
 
-* **ImoNumber (Value Object)**
+**Behaviors (methods):**
 
-  * Ensures correct format: 7 digits, last is check digit.
-  * Validation occurs at construction.
-  * Immutable once created.
-
-* **VesselType (Entity / Aggregate Root)**
-
-  * Defined in **US2.2.1**.
-  * Referenced by Vessel through `VesselTypeId`.
-  * Must exist when a Vessel is registered.
-
-* **Owner/Operator (simple property, currently a string)**
-
-  * Business rule: minimum length 5, not null or whitespace.
-  * Candidate for future VO or Entity if operators become first-class in the domain (see dependency with US2.2.5).
+* `UpdateName(name)` → Validates minimum length and non-nullity.
+* `UpdateOwner(owner)` → Validates minimum length and non-nullity.
+* `UpdateImoNumber(imoNumber)` and `UpdateVesselType(vesselTypeId)` → Private (used internally, not accessible externally).
 
 ---
 
-**Invariants and business rules:**
+#### **ImoNumber (Value Object)**
 
-* A `Vessel` must always have:
-
-  * Valid `IMO` at creation.
-  * Non-empty `Name` (≥5 chars).
-  * Non-empty `Owner` (≥5 chars).
-  * Valid `VesselTypeId` (not empty GUID, must exist).
-* `IMO` is immutable → cannot be updated once set.
-* No duplicate IMO numbers allowed (enforced in `VesselService` before creation).
-* Updates are restricted to `Name` and `Owner`.
-* Referential integrity: Vessel always linked to an existing VesselType.
+* Represents the **International Maritime Organization number** (7 digits, final digit as check digit).
+* Validates format and check digit upon instantiation.
+* Immutable once created.
+* Ensures global uniqueness of vessels across the system.
 
 ---
 
-### 2.2. Other Remarks
+#### **VesselType (Entity / Aggregate Root)**
 
-* `ImoNumber` VO encapsulates both **validation** and **uniqueness check digit** logic.
-* Search operations (`GetByImo`, `GetByName`, `GetByOwner`, `GetFilter`) are handled at **application service** level and not modeled in the aggregate.
-* Logging: both `VesselService` and `VesselController` use structured logging (`ILogger`) for traceability of CRUD operations.
-* Exception handling:
-
-  * Invalid input or business rule violation → `BusinessRuleValidationException`.
-  * Propagated as `400 Bad Request` or `404 Not Found` in the API layer.
-* Future US may extend with additional vessel details (flag, dimensions, tonnage, status, soft-delete).
+* Defined and created in **US2.2.1 – Create and Manage Vessel Types**.
+* Each `Vessel` must reference an existing `VesselType` through `VesselTypeId`.
+* Acts as a foreign aggregate dependency for `Vessel`.
 
 ---
 
+#### **Owner / Operator (string property)**
+
+* Represents the company or entity responsible for the vessel’s operation.
+* Must not be null or blank.
+* Must have a minimum length of **5 characters**.
+* Candidate for future refactoring into a **Value Object** or **Entity** if ownership becomes relevant for authorization or contracts (see dependency with US2.2.5).
+
+---
+
+### **Invariants and Business Rules**
+
+* A `Vessel` **must always** satisfy the following conditions:
+
+  * Valid and unique `ImoNumber`.
+  * Non-empty `Name` (≥ 5 characters).
+  * Non-empty `Owner` (≥ 5 characters).
+  * Valid and existing `VesselTypeId` (not empty GUID).
+* **ImoNumber is immutable** after creation (serves as the natural key).
+* **Duplicate IMO numbers are forbidden**, enforced at the service layer before persistence.
+* **Updates** are restricted to `Name` and `Owner` attributes.
+* Referential integrity is mandatory: every `Vessel` must reference an existing `VesselType`.
+
+---
+
+### **2.2. Other Remarks**
+
+* The `ImoNumber` value object encapsulates the **validation and checksum logic**, ensuring domain consistency without external dependencies.
+* **Search operations** (`GetByImo`, `GetByName`, `GetByOwner`, `GetFilter`) are implemented at the **Application Service layer** (`VesselService`) and not modeled inside the domain aggregate.
+* **Logging and traceability** are handled via structured logging (`ILogger`) within both `VesselService` and `VesselController`, ensuring auditability of all CRUD operations.
+* **Error handling strategy:**
+
+  * Violations of domain rules throw `BusinessRuleValidationException`.
+  * Controller layer translates exceptions into appropriate HTTP responses:
+
+    * `400 Bad Request` → Invalid input or business rule violation.
+    * `404 Not Found` → Entity not found in repository.

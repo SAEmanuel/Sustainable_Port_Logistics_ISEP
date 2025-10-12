@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using SEM5_PI_WEBAPI.Domain.Shared;
 using SEM5_PI_WEBAPI.Domain.Vessels;
+using SEM5_PI_WEBAPI.Domain.Vessels.DTOs;
 using SEM5_PI_WEBAPI.Domain.VesselsTypes;
 using SEM5_PI_WEBAPI.Domain.VesselsTypes.DTOs;
 
@@ -12,10 +13,10 @@ public class VesselController : ControllerBase
 {
     
     private readonly ILogger<VesselController> _logger;
-    private readonly VesselService _service;
+    private readonly IVesselService _service;
 
 
-    public VesselController(VesselService service, ILogger<VesselController> logger)
+    public VesselController(IVesselService service, ILogger<VesselController> logger)
     {
         _service = service;
         _logger = logger;

@@ -40,5 +40,6 @@
     &lt;TestId&gt;xUnit::25307884-991E-499B-A1E8-31E90F954FB9::net9.0::SEM5_PI_WEBAPI.Tests.ValueObject.StorageAreaDockDistanceTests&lt;/TestId&gt;
     &lt;TestId&gt;xUnit::25307884-991E-499B-A1E8-31E90F954FB9::net9.0::SEM5_PI_WEBAPI.Tests.ValueObject.TaxNumberTests&lt;/TestId&gt;
     &lt;TestId&gt;xUnit::25307884-991E-499B-A1E8-31E90F954FB9::net9.0::SEM5_PI_WEBAPI.Tests.ValueObject.VvnCodeTests&lt;/TestId&gt;
+    &lt;TestId&gt;xUnit::25307884-991E-499B-A1E8-31E90F954FB9::net9.0::SEM5_PI_WEBAPI.Tests.Controllers.VesselControllerTests&lt;/TestId&gt;
   &lt;/TestAncestor&gt;
 &lt;/SessionState&gt;</s:String></wpf:ResourceDictionary>

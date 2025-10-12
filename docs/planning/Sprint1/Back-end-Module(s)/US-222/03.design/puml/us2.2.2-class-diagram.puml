@@ -1,6 +1,21 @@
 @startuml
+' ==========================================================
+' Class Diagram – US2.2.2 (Register and Update Vessel Records)
+' Author: Jorge Ubaldo Rodrigues
+' Context: Port Management – Vessel Registration and Maintenance
+' ==========================================================
 
+skinparam monochrome true
+skinparam shadowing false
+hide circle
+
+title US2.2.2 – Class Diagram (Vessel Management)
+
+' ==========================================================
+' DOMAIN LAYER
+' ==========================================================
 package "Domain" {
+
   class Vessel {
     - ImoNumber ImoNumber
     - string Name
@@ -17,7 +32,7 @@ package "Domain" {
   }
 
   class ImoNumber {
-    - int Value
+    - string Value
     + ToString() : string
   }
 
@@ -29,6 +44,9 @@ package "Domain" {
   class BusinessRuleValidationException
 }
 
+' ==========================================================
+' DATA TRANSFER OBJECTS (DTOs)
+' ==========================================================
 package "DTOs" {
   class CreatingVesselDto {
     + string ImoNumber
@@ -51,8 +69,11 @@ package "DTOs" {
   }
 }
 
+' ==========================================================
+' APPLICATION LAYER
+' ==========================================================
 package "Application" {
-  class VesselService {
+  interface IVesselService {
     + GetAllAsync() : List<VesselDto>
     + GetByIdAsync(VesselId) : VesselDto
     + GetByImoNumberAsync(string) : VesselDto
@@ -63,12 +84,18 @@ package "Application" {
     + PatchByImoAsync(string, UpdatingVesselDto) : VesselDto
   }
 
+  class VesselService implements IVesselService {
+  }
+
   class VesselFactory {
     + CreateVessel(CreatingVesselDto) : Vessel
     + CreateVesselDto(Vessel) : VesselDto
   }
 }
 
+' ==========================================================
+' INFRASTRUCTURE LAYER
+' ==========================================================
 package "Infrastructure" {
   interface IVesselRepository {
     + GetAllAsync() : List<Vessel>
@@ -91,6 +118,9 @@ package "Infrastructure" {
   }
 }
 
+' ==========================================================
+' PRESENTATION LAYER (API)
+' ==========================================================
 package "Presentation" {
   class VesselController {
     + GetAll() : List<VesselDto>
@@ -104,6 +134,9 @@ package "Presentation" {
   }
 }
 
+' ==========================================================
+' CROSS-CUTTING CONCERNS
+' ==========================================================
 package "Cross-cutting" {
   interface ILogger<T> {
     + LogInformation(string, params)
@@ -112,10 +145,12 @@ package "Cross-cutting" {
   }
 }
 
-' ---------------- Relations -----------------
+' ==========================================================
+' RELATIONSHIPS
+' ==========================================================
 Vessel "1" *-- "1" VesselId
 Vessel "1" *-- "1" ImoNumber
-Vessel "1" --> VesselTypeId
+Vessel --> VesselTypeId : references >
 
 VesselService --> IVesselRepository
 VesselService --> IUnitOfWork
@@ -124,7 +159,7 @@ VesselService --> ILogger
 VesselRepository --> Vessel
 VesselFactory --> Vessel
 VesselFactory --> VesselDto
-VesselController --> VesselService
+VesselController --> IVesselService
 VesselController --> ILogger
 
 @enduml

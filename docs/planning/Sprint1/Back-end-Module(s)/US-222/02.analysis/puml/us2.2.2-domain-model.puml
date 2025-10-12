@@ -1,0 +1,137 @@
+@startuml
+' ==========================================================
+' Domain Model Diagram – US2.2.2 (Register and Update Vessel Records)
+' Author: Jorge Ubaldo Rodrigues
+' Context: Port Management – Vessel Registration
+' ==========================================================
+
+skinparam monochrome true
+skinparam shadowing false
+hide methods
+hide circle
+
+title US2.2.2 – Domain Model (Vessel Management)
+
+package "Vessel Context" as VC {
+
+    ' ==========================
+    ' Core Domain Entities
+    ' ==========================
+    class Vessel {
+        - Id : VesselId
+        - ImoNumber : ImoNumber
+        - Name : string
+        - Owner : string
+        - VesselTypeId : VesselTypeId
+        --
+        + UpdateName(name)
+        + UpdateOwner(owner)
+    }
+
+    class VesselId {
+        - Value : Guid
+    }
+
+    class ImoNumber {
+        - Value : string
+        --
+        + ValidateFormat()
+        + ValidateCheckDigit()
+    }
+
+    class VesselTypeId {
+        - Value : Guid
+    }
+
+    ' ==========================
+    ' DTOs
+    ' ==========================
+    class VesselDto {
+        + Id : Guid
+        + ImoNumber : string
+        + Name : string
+        + Owner : string
+        + VesselTypeId : Guid
+    }
+
+    class CreatingVesselDto {
+        + ImoNumber : string
+        + Name : string
+        + Owner : string
+        + VesselTypeId : Guid
+    }
+
+    class UpdatingVesselDto {
+        + Name : string?
+        + Owner : string?
+    }
+
+    ' ==========================
+    ' Application / Infrastructure Layer
+    ' ==========================
+    interface IVesselRepository {
+        + GetAllAsync()
+        + GetByIdAsync(id)
+        + GetByImoNumberAsync(imo)
+        + GetByNameAsync(name)
+        + GetByOwnerAsync(owner)
+        + GetFilterAsync(name, imo, owner, query)
+        + AddAsync(entity)
+    }
+
+    interface IVesselService {
+        + GetAllAsync()
+        + GetByIdAsync(id)
+        + GetByImoNumberAsync(imo)
+        + GetByNameAsync(name)
+        + GetByOwnerAsync(owner)
+        + GetFilterAsync(name, imo, owner, query)
+        + CreateAsync(dto)
+        + PatchByImoAsync(imo, dto)
+    }
+
+    class VesselService {
+        + GetAllAsync()
+        + GetByIdAsync(id)
+        + CreateAsync(dto)
+        + GetByImoNumberAsync(imo)
+        + GetByNameAsync(name)
+        + GetByOwnerAsync(owner)
+        + GetFilterAsync(name, imo, owner, query)
+        + PatchByImoAsync(imo, dto)
+    }
+
+    class VesselFactory {
+        + CreateVessel(dto)
+        + CreateVesselDto(entity)
+    }
+
+    class VesselController {
+        + GetAll()
+        + GetById(id)
+        + GetByImo(imo)
+        + GetByName(name)
+        + GetByOwner(owner)
+        + GetFilter(name, imo, owner, query)
+        + Create(dto)
+        + PatchByImo(imo, dto)
+    }
+
+    class BusinessRuleValidationException
+    class IUnitOfWork
+}
+
+' ==========================
+' Relationships
+' ==========================
+VesselController --> IVesselService : uses
+VesselService --> IVesselRepository : depends on
+VesselService --> IUnitOfWork : commits
+VesselService --> VesselFactory : converts entities ↔ DTOs
+VesselFactory --> Vessel : creates instances
+Vessel --> VesselId : identity
+Vessel --> ImoNumber : has
+Vessel --> VesselTypeId : references >
+IVesselRepository --> Vessel : manages persistence
+
+@enduml

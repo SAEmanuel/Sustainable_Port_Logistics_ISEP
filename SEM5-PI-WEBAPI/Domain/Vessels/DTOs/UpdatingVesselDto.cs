@@ -1,4 +1,4 @@
-namespace SEM5_PI_WEBAPI.Domain.Vessels;
+namespace SEM5_PI_WEBAPI.Domain.Vessels.DTOs;
 
 public class UpdatingVesselDto
 {

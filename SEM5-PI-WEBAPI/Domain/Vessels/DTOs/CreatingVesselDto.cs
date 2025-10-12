@@ -1,7 +1,6 @@
-using SEM5_PI_WEBAPI.Domain.ValueObjects;
 using SEM5_PI_WEBAPI.Domain.VesselsTypes;
 
-namespace SEM5_PI_WEBAPI.Domain.Vessels;
+namespace SEM5_PI_WEBAPI.Domain.Vessels.DTOs;
 
 public class CreatingVesselDto
 {
