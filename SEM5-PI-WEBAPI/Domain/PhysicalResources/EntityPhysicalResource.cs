@@ -51,8 +51,6 @@ public class EntityPhysicalResource : Entity<PhysicalResourceId>, IAggregateRoot
         
     }
     
-    //Fazer Updates
-
     private void SetCode(PhysicalResourceCode code)
     {
         if (code == null)
@@ -108,8 +106,13 @@ public class EntityPhysicalResource : Entity<PhysicalResourceId>, IAggregateRoot
         QualificationID = qualificationId;
     }
 
+    public void UpdateDescription(string description) => SetDescription(description);
+    public void UpdateOperationalCapacity(double operationalCapacity) => SetOperationalCapacity(operationalCapacity);
+    public void UpdateSetupTime(double setupTime) => SetSetupTime(setupTime);
+    public void UpdateStatus(PhysicalResourceStatus status) => SetStatus(status);
+    public void UpdateQualification(QualificationId qualificationId) => SetQualification(qualificationId);
 
-
+    
     public override bool Equals(object? obj)
     {
         if (obj is EntityPhysicalResource other)
@@ -118,4 +121,10 @@ public class EntityPhysicalResource : Entity<PhysicalResourceId>, IAggregateRoot
     }
     
     public override int GetHashCode()  => Id.GetHashCode();
+    
+    public override string ToString()
+    {
+        return $"[{Code?.Value}] {Description} | Type: {Type} | Status: {Status} | Capacity: {OperationalCapacity} | Setup: {SetupTime}";
+    }
+
 }
