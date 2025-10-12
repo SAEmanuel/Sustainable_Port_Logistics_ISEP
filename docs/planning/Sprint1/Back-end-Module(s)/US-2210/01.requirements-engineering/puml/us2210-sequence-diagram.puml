@@ -1,0 +1,28 @@
+@startuml
+actor "Shipping Agent Representative" as Agent
+boundary "VVN Management API" as System
+
+== View All VVNs ==
+Agent -> System : GET /api/vvn
+System --> Agent : 200 OK\nBody: [VesselVisitNotificationDto, ...]
+
+== Filter by Vessel ==
+Agent -> System : GET /api/vvn?vessel=IMO1234567
+System --> Agent : 200 OK\nBody: [VVN for selected vessel]
+
+== Filter by Status ==
+Agent -> System : GET /api/vvn?status=Accepted
+System --> Agent : 200 OK\nBody: [Accepted VVNs]
+
+== Filter by Representative ==
+Agent -> System : GET /api/vvn?representative=JohnDoe
+System --> Agent : 200 OK\nBody: [VVNs by representative]
+
+== Filter by Date Range ==
+Agent -> System : GET /api/vvn?from=2025-01-01&to=2025-12-31
+System --> Agent : 200 OK\nBody: [VVNs in date range]
+
+== View Specific VVN Details ==
+Agent -> System : GET /api/vvn/{id}
+System --> Agent : 200 OK\nBody: VesselVisitNotificationDto\n(Status, Dock, RejectionReason, etc.)
+@enduml
