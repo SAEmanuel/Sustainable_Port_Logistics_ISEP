@@ -60,7 +60,7 @@ public class PhysicalResourceService
         var exist = await _qualificationRepository.ExistQualificationID(qualification);
 
         if (!exist)
-            throw new BusinessRuleValidationException($"No physical resource found with the specified qualification: {qualification.Value}.");
+            throw new BusinessRuleValidationException($"No qualification found: {qualification.Value}.");
         
         var physicalResource = await _repo.GetByQualificationAsync(qualification);
 
