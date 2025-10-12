@@ -161,6 +161,30 @@ public class VesselVisitNotificationService
         
         return VesselVisitNotificationFactory.CreateVesselVisitNotificationDto(vvnInDb);
     }
+    
+    public async Task<VesselVisitNotificationDto> MarkAsPendingInfoAsync(VvnCode code)
+    {
+        _logger.LogInformation("Business Domain: Marking VVN as Pending Information for code = {code}", code);
+
+        VesselVisitNotificationId id = await GetIdByCodeAsync(code);
+        var vvnInDb = await _repo.GetByIdAsync(id)
+                      ?? throw new BusinessRuleValidationException($"No Vessel Visit Notification found with Code = {code}");
+
+        if (vvnInDb.Status != VvnStatus.Submitted)
+        {
+            throw new BusinessRuleValidationException("Provided VVN has not been submitted yet and cannot be marked as pending information.");
+        }
+
+        vvnInDb.MarkPending();
+
+        await _unitOfWork.CommitAsync();
+
+        _logger.LogInformation("VVN with Code = {code} marked as Pending Information successfully.", code);
+
+        return VesselVisitNotificationFactory.CreateVesselVisitNotificationDto(vvnInDb);
+    }
+ 
+
 
     public async Task<VesselVisitNotificationDto> WithdrawByIdAsync(VesselVisitNotificationId id)
     {
