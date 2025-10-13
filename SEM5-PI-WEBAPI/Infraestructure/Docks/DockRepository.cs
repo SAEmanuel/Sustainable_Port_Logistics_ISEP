@@ -48,7 +48,8 @@ namespace SEM5_PI_WEBAPI.Infraestructure.Docks
             DockCode? code,
             VesselTypeId? vesselTypeId,
             string? location,
-            string? query)
+            string? query,
+            DockStatus? status)
         {
             var q = _context.Dock.AsQueryable();
 
@@ -74,6 +75,9 @@ namespace SEM5_PI_WEBAPI.Infraestructure.Docks
                 );
             }
 
+            if (status.HasValue)
+                q = q.Where(d => d.Status == status.Value);
+
             return await q.ToListAsync();
         }
 
@@ -87,9 +91,8 @@ namespace SEM5_PI_WEBAPI.Infraestructure.Docks
         public async Task<List<EntityDock>> GetAllDocksForVesselType(VesselTypeId vesselTypeId)
         {
             return await _context.Dock
-                .Where(d => d.AllowedVesselTypeIds.Contains(vesselTypeId))
+                .Where(d => d.AllowedVesselTypeIds.Any(vt => vt.Value == vesselTypeId.Value))
                 .ToListAsync();
         }
-
     }
 }

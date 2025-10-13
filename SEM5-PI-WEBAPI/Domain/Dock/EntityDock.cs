@@ -5,6 +5,13 @@ using SEM5_PI_WEBAPI.Domain.VesselsTypes;
 
 namespace SEM5_PI_WEBAPI.Domain.Dock;
 
+public enum DockStatus
+{
+    Available,
+    Unavailable,
+    Maintenance
+}
+
 public class EntityDock : Entity<DockId>, IAggregateRoot
 {
     public DockCode Code { get; private set; }
@@ -15,6 +22,7 @@ public class EntityDock : Entity<DockId>, IAggregateRoot
     public double LengthM { get; private set; }
     public double DepthM  { get; private set; }
     public double MaxDraftM { get; private set; }
+    public DockStatus Status { get; private set; } = DockStatus.Available;
 
     private readonly HashSet<VesselTypeId> _allowedVesselTypeIds = new(); 
     public IReadOnlyCollection<VesselTypeId> AllowedVesselTypeIds => _allowedVesselTypeIds;
@@ -28,7 +36,8 @@ public class EntityDock : Entity<DockId>, IAggregateRoot
         double lengthM,
         double depthM,
         double maxDraftM,
-        IEnumerable<VesselTypeId> allowedVesselTypes)
+        IEnumerable<VesselTypeId> allowedVesselTypes,
+        DockStatus status = DockStatus.Available)
     {
         SetCode(code);
         AddPhysicalResourceCodes(physicalResourceCodes, replace: true);
@@ -37,6 +46,7 @@ public class EntityDock : Entity<DockId>, IAggregateRoot
         SetDepth(depthM);
         SetMaxDraft(maxDraftM);
         AddAllowedVesselTypes(allowedVesselTypes);
+        SetStatus(status);
         Id = new DockId(Guid.NewGuid());
     }
 
@@ -124,5 +134,10 @@ public class EntityDock : Entity<DockId>, IAggregateRoot
     {
         if (_allowedVesselTypeIds.Count == 0)
             throw new BusinessRuleValidationException("At least one allowed vessel type is required for a dock.");
+    }
+    
+    public void SetStatus(DockStatus status)
+    {
+        Status = status;
     }
 }

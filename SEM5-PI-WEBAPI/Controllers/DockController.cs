@@ -107,12 +107,13 @@ public class DockController : ControllerBase
         [FromQuery] string? code,
         [FromQuery] string? vesselTypeId,
         [FromQuery] string? location,
-        [FromQuery] string? query)
+        [FromQuery] string? query,
+        [FromQuery] string? status)
     {
         _logger.LogInformation("API Request: Filtering Docks with provided filters.");
         try
         {
-            var list = await _service.GetFilterAsync(code, vesselTypeId, location, query);
+            var list = await _service.GetFilterAsync(code, vesselTypeId, location, query, status);
             _logger.LogInformation("API Response (200): Found {Count} Docks -> {@Docks}", list.Count, list);
             return Ok(list);
         }
@@ -175,5 +176,4 @@ public class DockController : ControllerBase
         var list = await _service.GetAllDockCodesAsync();
         return Ok(list);
     }
-
 }

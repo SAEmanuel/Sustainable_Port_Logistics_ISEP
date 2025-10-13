@@ -10,6 +10,8 @@
         public double? MaxDraftM { get; set; }
         public List<string>? AllowedVesselTypeIds { get; set; }
 
+        public DockStatus? Status { get; set; }
+
         public UpdateDockDto() { }
 
         public UpdateDockDto(
@@ -19,7 +21,8 @@
             double? lengthM,
             double? depthM,
             double? maxDraftM,
-            List<string>? allowedVesselTypeIds)
+            List<string>? allowedVesselTypeIds,
+            DockStatus? status = null)
         {
             Code = code;
             PhysicalResourceCodes = physicalResourceCodes;
@@ -28,6 +31,7 @@
             DepthM = depthM;
             MaxDraftM = maxDraftM;
             AllowedVesselTypeIds = allowedVesselTypeIds;
+            Status = status;
         }
     }
 }

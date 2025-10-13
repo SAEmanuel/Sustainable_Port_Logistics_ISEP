@@ -109,7 +109,8 @@ namespace SEM5_PI_WEBAPI.Domain.Dock
             string? code,
             string? vesselTypeId,
             string? location,
-            string? query)
+            string? query,
+            string? status)
         {
             DockCode? dockCode = null;
             if (!string.IsNullOrWhiteSpace(code))
@@ -123,11 +124,16 @@ namespace SEM5_PI_WEBAPI.Domain.Dock
                 vtId = new VesselTypeId(g);
             }
 
+            DockStatus? st = null;
+            if (!string.IsNullOrWhiteSpace(status) && Enum.TryParse<DockStatus>(status, true, out var parsed))
+                st = parsed;
+
             var docks = await _dockRepository.GetFilterAsync(
                 dockCode,
                 vtId,
                 location,
-                query
+                query,
+                st
             );
 
             return docks.Select(DockFactory.RegisterDockDto).ToList();
@@ -201,6 +207,9 @@ namespace SEM5_PI_WEBAPI.Domain.Dock
 
                 dock.ReplaceAllowedVesselTypes(ids);
             }
+
+            if (dto.Status.HasValue)
+                dock.SetStatus(dto.Status.Value);
 
             dock.EnsureHasAllowedVesselTypes();
             await _unitOfWork.CommitAsync();

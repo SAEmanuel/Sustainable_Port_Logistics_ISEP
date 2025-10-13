@@ -10,6 +10,8 @@
         public double MaxDraftM { get; set; }
         public List<string> AllowedVesselTypeIds { get; set; } = new();
 
+        public DockStatus Status { get; set; } = DockStatus.Available;
+
         public RegisterDockDto() { }
 
         public RegisterDockDto(
@@ -19,7 +21,8 @@
             double lengthM,
             double depthM,
             double maxDraftM,
-            IEnumerable<string> allowedVesselTypeIds)
+            IEnumerable<string> allowedVesselTypeIds,
+            DockStatus status = DockStatus.Available)
         {
             Code = code;
             PhysicalResourceCodes = physicalResourceCodes?.ToList() ?? new List<string>();
@@ -28,6 +31,7 @@
             DepthM = depthM;
             MaxDraftM = maxDraftM;
             AllowedVesselTypeIds = allowedVesselTypeIds?.ToList() ?? new List<string>();
+            Status = status;
         }
     }
 }
