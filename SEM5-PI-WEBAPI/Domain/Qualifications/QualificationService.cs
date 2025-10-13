@@ -37,6 +37,26 @@ public class QualificationService
             q.Code);
     }
 
+    public async Task<QualificationDto> GetByCodeAsync(string code)
+    {
+        var qualy = await _repo.GetQualificationByCode(code);
+        
+        if (qualy == null)
+            throw new BusinessRuleValidationException($"No qualification with code {code} was found");
+
+        return MapToDto(qualy);
+    }
+
+    public async Task<QualificationDto> GetByNameAsync(string name)
+    {
+        var qualy = await _repo.GetQualificationByName(name);
+        
+        if (qualy == null)
+            throw new BusinessRuleValidationException($"No qualification with name {name} was found");
+        
+        return MapToDto(qualy);
+    }
+
     public async Task<string> GenerateNextQualificationCodeAsync()
     {
         var allCodes = await _repo.GetAllAsync();

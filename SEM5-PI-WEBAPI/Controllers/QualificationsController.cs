@@ -34,6 +34,46 @@ public class QualificationsController : ControllerBase
         return q;
     }
 
+    [HttpGet("code/{code}")]
+    public async Task<ActionResult<QualificationDto>> GetQualificationByCode(string code)
+    {
+        try
+        {
+            var q = await _service.GetByCodeAsync(code);
+
+            if (q is null)
+            {
+                return NotFound(new { error = "Qualification not found." }); 
+            }
+
+            return Ok(q);
+        }
+        catch (BusinessRuleValidationException e)
+        {
+            return BadRequest(new { error = e.Message });
+        }
+    }
+    
+    [HttpGet("name/{name}")]
+    public async Task<ActionResult<QualificationDto>> GetQualificationByName(string name)
+    {
+        try
+        {
+            var q = await _service.GetByNameAsync(name);
+
+            if (q is null)
+            {
+                return NotFound(new { error = "Qualification not found." }); 
+            }
+
+            return Ok(q);
+        }
+        catch (BusinessRuleValidationException e)
+        {
+            return BadRequest(new { error = e.Message });
+        }
+    }
+
     [HttpPost]
     public async Task<ActionResult<QualificationDto>> Create(CreatingQualificationDto dto)
     {

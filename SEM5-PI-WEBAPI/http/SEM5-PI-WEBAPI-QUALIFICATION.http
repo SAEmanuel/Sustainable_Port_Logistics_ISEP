@@ -4,6 +4,14 @@ GET {{portURL}}/api/qualifications
 Accept: application/json
 
 ###
+GET {{portURL}}/api/qualifications/code/QLF-001
+Accept: application/json
+
+###
+GET {{portURL}}/api/qualifications/name/Xu Quer Rola
+Accept: application/json
+
+###
 POST {{portURL}}/api/qualifications
 Content-Type: application/json
 Accept: application/json
