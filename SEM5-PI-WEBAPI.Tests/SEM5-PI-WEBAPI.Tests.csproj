@@ -31,8 +31,4 @@
         <ProjectReference Include="..\SEM5-PI-WEBAPI\SEM5-PI-WEBAPI.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Integration\" />
-    </ItemGroup>
-
 </Project>

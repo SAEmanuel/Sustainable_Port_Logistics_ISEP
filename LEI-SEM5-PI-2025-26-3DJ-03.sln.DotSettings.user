@@ -28,7 +28,21 @@
     &lt;TestId&gt;xUnit::25307884-991E-499B-A1E8-31E90F954FB9::net9.0::SEM5_PI_WEBAPI.Tests.Integration.StorageAreas.StorageAreaIntegrationTest&lt;/TestId&gt;
     &lt;TestId&gt;xUnit::25307884-991E-499B-A1E8-31E90F954FB9::net9.0::SEM5_PI_WEBAPI.Tests.Domain.EntityContainerTests&lt;/TestId&gt;
     &lt;TestId&gt;xUnit::25307884-991E-499B-A1E8-31E90F954FB9::net9.0::SEM5_PI_WEBAPI.Tests.Domain.VesselVisitNotificationTests&lt;/TestId&gt;
-    &lt;TestId&gt;xUnit::25307884-991E-499B-A1E8-31E90F954FB9::net9.0::SEM5_PI_WEBAPI.Tests.Controllers.VesselVisitNotificationControllerTests&lt;/TestId&gt;
     &lt;TestId&gt;xUnit::25307884-991E-499B-A1E8-31E90F954FB9::net9.0::SEM5_PI_WEBAPI.Tests.Domain.StorageAreaTests&lt;/TestId&gt;
+    &lt;TestId&gt;xUnit::25307884-991E-499B-A1E8-31E90F954FB9::net9.0::SEM5_PI_WEBAPI.Tests.Controllers.VesselVisitNotificationControllerTests&lt;/TestId&gt;
+    &lt;TestId&gt;xUnit::25307884-991E-499B-A1E8-31E90F954FB9::net9.0::SEM5_PI_WEBAPI.Tests.Domain.VesselTypeTests&lt;/TestId&gt;
+    &lt;TestId&gt;xUnit::25307884-991E-499B-A1E8-31E90F954FB9::net9.0::SEM5_PI_WEBAPI.Tests.Controllers.VesselTypeControllerTests&lt;/TestId&gt;
+    &lt;TestId&gt;xUnit::25307884-991E-499B-A1E8-31E90F954FB9::net9.0::SEM5_PI_WEBAPI.Tests.ValueObject.ClockTimeTests&lt;/TestId&gt;
+    &lt;TestId&gt;xUnit::25307884-991E-499B-A1E8-31E90F954FB9::net9.0::SEM5_PI_WEBAPI.Tests.ValueObject.DockCodeTests&lt;/TestId&gt;
+    &lt;TestId&gt;xUnit::25307884-991E-499B-A1E8-31E90F954FB9::net9.0::SEM5_PI_WEBAPI.Tests.ValueObject.ImoNumberTests&lt;/TestId&gt;
+    &lt;TestId&gt;xUnit::25307884-991E-499B-A1E8-31E90F954FB9::net9.0::SEM5_PI_WEBAPI.Tests.ValueObject.Iso6346CodeTests&lt;/TestId&gt;
+    &lt;TestId&gt;xUnit::25307884-991E-499B-A1E8-31E90F954FB9::net9.0::SEM5_PI_WEBAPI.Tests.ValueObject.PhysicalResourceCodeTests&lt;/TestId&gt;
+    &lt;TestId&gt;xUnit::25307884-991E-499B-A1E8-31E90F954FB9::net9.0::SEM5_PI_WEBAPI.Tests.ValueObject.StorageAreaDockDistanceTests&lt;/TestId&gt;
+    &lt;TestId&gt;xUnit::25307884-991E-499B-A1E8-31E90F954FB9::net9.0::SEM5_PI_WEBAPI.Tests.ValueObject.TaxNumberTests&lt;/TestId&gt;
+    &lt;TestId&gt;xUnit::25307884-991E-499B-A1E8-31E90F954FB9::net9.0::SEM5_PI_WEBAPI.Tests.ValueObject.VvnCodeTests&lt;/TestId&gt;
+    &lt;TestId&gt;xUnit::25307884-991E-499B-A1E8-31E90F954FB9::net9.0::SEM5_PI_WEBAPI.Tests.Controllers.VesselControllerTests&lt;/TestId&gt;
+    &lt;TestId&gt;xUnit::25307884-991E-499B-A1E8-31E90F954FB9::net9.0::SEM5_PI_WEBAPI.Tests.Integration.VesselTypeServiceControllerTests&lt;/TestId&gt;
+    &lt;TestId&gt;xUnit::25307884-991E-499B-A1E8-31E90F954FB9::net9.0::SEM5_PI_WEBAPI.Tests.Integration.VesselServiceControllerTests&lt;/TestId&gt;
+    &lt;TestId&gt;xUnit::25307884-991E-499B-A1E8-31E90F954FB9::net9.0::SEM5_PI_WEBAPI.Tests.Integration.StorageAreasControllerServiceTests&lt;/TestId&gt;
   &lt;/TestAncestor&gt;
 &lt;/SessionState&gt;</s:String></wpf:ResourceDictionary>
