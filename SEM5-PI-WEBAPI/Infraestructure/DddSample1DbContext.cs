@@ -74,7 +74,7 @@ namespace SEM5_PI_WEBAPI.Infraestructure
             modelBuilder.ApplyConfiguration(new PhysicalResourceEntityTypeConfiguration());
             modelBuilder.ApplyConfiguration(new CrewManifestEntityTypeConfiguration());
             modelBuilder.ApplyConfiguration(new CrewMemberEntityTypeConfiguration());
-            modelBuilder.ApplyConfiguration(new VesselVisitNotificationTypeConfiguration());
+            modelBuilder.ApplyConfiguration(new VesselVisitNotificationEntityTypeConfiguration());
             modelBuilder.ApplyConfiguration(new TaskEntityTypeConfiguration());
         }
     }

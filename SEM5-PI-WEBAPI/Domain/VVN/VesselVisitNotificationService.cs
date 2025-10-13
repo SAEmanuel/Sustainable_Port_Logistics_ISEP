@@ -157,7 +157,7 @@ public class VesselVisitNotificationService : IVesselVisitNotificationService
         return VesselVisitNotificationFactory.CreateVesselVisitNotificationDto(vvnInDb);
     }
 
-    public async Task<VesselVisitNotificationDto> MarkAsPendingInfoAsync(VvnCode code)
+    public async Task<VesselVisitNotificationDto> MarkAsPendingAsync(VvnCode code, string reason)
     {
         _logger.LogInformation("Business Domain: Marking VVN as Pending Information for code = {code}", code);
 
@@ -172,11 +172,11 @@ public class VesselVisitNotificationService : IVesselVisitNotificationService
                 "Provided VVN has not been submitted yet and cannot be marked as pending information.");
         }
 
-        vvnInDb.MarkPending();
+        vvnInDb.MarkPending(reason);
 
         await _unitOfWork.CommitAsync();
 
-        _logger.LogInformation("VVN with Code = {code} marked as Pending Information successfully.", code);
+        _logger.LogInformation("VVN with Code = {code} marked as Pending Information with message \"{message}\" successfully.", code, reason);
 
         return VesselVisitNotificationFactory.CreateVesselVisitNotificationDto(vvnInDb);
     }

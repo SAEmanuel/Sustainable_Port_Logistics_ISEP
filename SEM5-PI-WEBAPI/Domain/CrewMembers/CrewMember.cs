@@ -25,5 +25,6 @@ public class CrewMember : Entity<CrewMemberId>
         Role = role;
         Nationality = nationality;
         CitizenId = citizenId;
+        Id = new CrewMemberId(Guid.NewGuid());
     }
 }

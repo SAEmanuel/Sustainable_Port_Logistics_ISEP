@@ -216,12 +216,12 @@ namespace SEM5_PI_WEBAPI.Domain.VVN
             Status = new Status(VvnStatus.Submitted, null);
         }
 
-        public void MarkPending()
+        public void MarkPending(string message)
         {
             if (Status.StatusValue != VvnStatus.Submitted)
                 throw new BusinessRuleValidationException(
                     $"Only Submitted VVNs can be marked Pending. Current status: {Status}");
-            Status = new Status(VvnStatus.PendingInformation, null);
+            Status = new Status(VvnStatus.PendingInformation, message);
         }
 
         public void Withdraw()

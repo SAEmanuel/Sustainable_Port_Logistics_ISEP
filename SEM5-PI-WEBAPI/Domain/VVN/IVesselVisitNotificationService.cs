@@ -12,5 +12,7 @@ public interface IVesselVisitNotificationService
         Task<VesselVisitNotificationDto> SubmitByIdAsync(VesselVisitNotificationId id);
         Task<VesselVisitNotificationDto> SubmitByCodeAsync(VvnCode code);
         Task<VesselVisitNotificationDto> UpdateAsync(VesselVisitNotificationId id, UpdateVesselVisitNotificationDto dto);
+        Task<VesselVisitNotificationDto> AcceptVvnAsync(VvnCode code);
+        Task<VesselVisitNotificationDto> MarkAsPendingAsync(VvnCode code, string reason);
 
 }

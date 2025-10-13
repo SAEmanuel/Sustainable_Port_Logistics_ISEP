@@ -160,7 +160,7 @@ namespace SEM5_PI_WEBAPI.Tests.Domain
         {
             var vvn = CreateValidVVN();
             vvn.Submit();
-            vvn.MarkPending();
+            vvn.MarkPending("Too bad...");
 
             Assert.Equal(VvnStatus.PendingInformation, vvn.Status.StatusValue);
             Assert.True(vvn.IsEditable);
@@ -170,7 +170,7 @@ namespace SEM5_PI_WEBAPI.Tests.Domain
         public void MarkPending_WhenInProgress_ShouldThrow()
         {
             var vvn = CreateValidVVN();
-            Assert.Throws<BusinessRuleValidationException>(() => vvn.MarkPending());
+            Assert.Throws<BusinessRuleValidationException>(() => vvn.MarkPending("Bad..."));
         }
 
         [Fact]
@@ -181,7 +181,7 @@ namespace SEM5_PI_WEBAPI.Tests.Domain
             vvn.Submit();
             Assert.Equal(VvnStatus.Submitted, vvn.Status.StatusValue);
 
-            vvn.MarkPending();
+            vvn.MarkPending("Xu...");
             Assert.Equal(VvnStatus.PendingInformation, vvn.Status.StatusValue);
 
             vvn.Withdraw();

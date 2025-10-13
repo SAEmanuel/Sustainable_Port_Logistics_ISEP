@@ -32,6 +32,7 @@ public class CrewManifest : Entity<CrewManifestId>
         TotalCrew = totalCrew;
         CaptainName = captainName;
         CrewMembers = crewMembers;
+        Id = new CrewManifestId(Guid.NewGuid());
     }
 
 }

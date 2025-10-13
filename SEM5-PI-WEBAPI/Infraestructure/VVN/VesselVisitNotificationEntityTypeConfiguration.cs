@@ -1,11 +1,12 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SEM5_PI_WEBAPI.Domain.VVN;
 using SEM5_PI_WEBAPI.Domain.ValueObjects;
 
 namespace SEM5_PI_WEBAPI.Infraestructure.VVN
 {
-    public class VesselVisitNotificationTypeConfiguration : IEntityTypeConfiguration<VesselVisitNotification>
+    public class VesselVisitNotificationEntityTypeConfiguration : IEntityTypeConfiguration<VesselVisitNotification>
     {
         public void Configure(EntityTypeBuilder<VesselVisitNotification> builder)
         {
@@ -18,7 +19,6 @@ namespace SEM5_PI_WEBAPI.Infraestructure.VVN
                     .IsRequired();
             });
 
-            // ClockTime (ETA, ETD, etc.)
             builder.OwnsOne(v => v.EstimatedTimeArrival, eta =>
             {
                 eta.Property(e => e.Value)
@@ -61,37 +61,35 @@ namespace SEM5_PI_WEBAPI.Infraestructure.VVN
             builder.Property(v => v.Volume)
                 .IsRequired();
 
+            var statusConverter = new ValueConverter<Status, string>(
+                v => v.ToString(),
+                v => new Status(Enum.Parse<VvnStatus>(v.Replace("Status: ", "")), null));
+            
             builder.Property(v => v.Status)
-                .HasConversion<string>() // enum as string
+                .HasConversion(statusConverter)
                 .IsRequired();
 
             // RELATIONSHIPS
 
-            // 1..* Docks
             builder.HasMany(v => v.ListDocks)
-                .WithMany() // Many-to-many (VVN ↔ Docks)
-                .UsingEntity(j =>
-                    j.ToTable("VvnDocks")); // join table name
+                .WithMany()
+                .UsingEntity(j => j.ToTable("VvnDocks"));
 
-            // 1..1 CrewManifest
             builder.HasOne(v => v.CrewManifest)
                 .WithMany()
                 .HasForeignKey("CrewManifestId")
                 .OnDelete(DeleteBehavior.Restrict);
 
-            // 1..1 LoadingCargoManifest
             builder.HasOne(v => v.LoadingCargoManifest)
                 .WithMany()
                 .HasForeignKey("LoadingCargoManifestId")
                 .OnDelete(DeleteBehavior.Restrict);
 
-            // 1..1 UnloadingCargoManifest
             builder.HasOne(v => v.UnloadingCargoManifest)
                 .WithMany()
                 .HasForeignKey("UnloadingCargoManifestId")
                 .OnDelete(DeleteBehavior.Restrict);
-            
-            
+
             builder.ToTable("VesselVisitNotifications");
         }
     }
