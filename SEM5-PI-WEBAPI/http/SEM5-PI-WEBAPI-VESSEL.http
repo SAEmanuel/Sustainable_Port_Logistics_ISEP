@@ -60,7 +60,7 @@ Accept: application/json
   "imoNumber": "IMO 9876543",
   "name": "Ever Given",
   "owner": "Evergreen Marine",
-  "vesselTypeId": "b4d5f3aa-e1a9-4b32-bd94-06f8a1742b54"
+  "vesselTypeId": "5e9bf997-966d-43f6-a6fb-c23afbe7e8cf"
 }
 
 ###

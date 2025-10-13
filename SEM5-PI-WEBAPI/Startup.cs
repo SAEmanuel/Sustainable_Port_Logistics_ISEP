@@ -99,7 +99,7 @@ namespace SEM5_PI_WEBAPI
             services.AddTransient<StaffMemberService>();
 
             services.AddTransient<IVesselRepository, VesselRepository>();
-            services.AddTransient<VesselService>();
+            services.AddScoped<IVesselService,VesselService>();
 
             services.AddTransient<IShippingAgentOrganizationRepository, ShippingAgentOrganizationRepository>();
             services.AddTransient<ShippingAgentOrganizationService>();
