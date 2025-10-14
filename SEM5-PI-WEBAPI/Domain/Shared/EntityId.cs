@@ -67,7 +67,7 @@ namespace SEM5_PI_WEBAPI.Domain.Shared
             }
             return obj1.Equals(obj2);
         }
-        public static bool operator !=(EntityId x, EntityId y) 
+        public static bool operator !=(EntityId? x, EntityId y) 
         {
             return !(x == y);
         }

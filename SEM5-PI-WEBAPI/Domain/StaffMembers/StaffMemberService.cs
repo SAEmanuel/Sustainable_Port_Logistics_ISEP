@@ -23,53 +23,65 @@ public class StaffMemberService
     public async Task<List<StaffMemberDto>> GetAllAsync()
     {
         var list = await _repo.GetAllAsync();
-        return list.ConvertAll(MapToDto);
+        var dtos = await Task.WhenAll(list.Select(MapToDto));
+        return dtos.ToList();
     }
 
-    public async Task<StaffMemberDto> GetByIdAsync(StaffMemberId id)
+    public async Task<StaffMemberDto?> GetByIdAsync(StaffMemberId id)
     {
         var staff = await _repo.GetByIdAsync(id);
-        return staff == null ? null : MapToDto(staff);
+        return staff == null ? null : await MapToDto(staff);
     }
 
-    public async Task<StaffMemberDto> GetByMecNumberAsync(string m)
+    public async Task<StaffMemberDto?> GetByMecNumberAsync(string m)
     {
         var mec = new MecanographicNumber(m);
         var staff = await _repo.GetByMecNumberAsync(mec);
-        return staff == null ? null : MapToDto(staff);
+        return staff == null ? null : await MapToDto(staff);
     }
 
     public async Task<List<StaffMemberDto>> GetByNameAsync(string name)
     {
         var staff = await _repo.GetByNameAsync(name);
-        return staff.ConvertAll(MapToDto);
+        var dtos = await Task.WhenAll(staff.Select(MapToDto));
+        return dtos.ToList();
     }
 
     public async Task<List<StaffMemberDto>> GetByStatusAsync(bool status)
     {
         var staff = await _repo.GetByStatusAsync(status);
-        return staff.ConvertAll(MapToDto);
+        var dtos = await Task.WhenAll(staff.Select(MapToDto));
+        return dtos.ToList();
     }
 
-    public async Task<List<StaffMemberDto>> GetByQualificationsAsync(List<QualificationId> ids)
+    public async Task<List<StaffMemberDto>> GetByQualificationsAsync(List<string> codes)
     {
+        var ids = await GetQualificationIdsFromCodesAsync(codes);
         var staff = await _repo.GetByQualificationsAsync(ids);
-        return staff.ConvertAll(MapToDto);
+        var dtos = await Task.WhenAll(staff.Select(MapToDto));
+        return dtos.ToList();
     }
 
-    public async Task<List<StaffMemberDto>> GetByExactQualificationsAsync(List<QualificationId> ids)
+    public async Task<List<StaffMemberDto>> GetByExactQualificationsAsync(List<string> codes)
     {
+        var ids = await GetQualificationIdsFromCodesAsync(codes);
         var staff = await _repo.GetByExactQualificationsAsync(ids);
-        return staff.ConvertAll(MapToDto);
+        var dtos = await Task.WhenAll(staff.Select(MapToDto));
+        return dtos.ToList();
     }
 
+    
     public async Task<StaffMemberDto> AddAsync(CreatingStaffMemberDto dto)
     {
-        await EnsureNotRepeatedAsync(dto.Email, dto.Phone, null);
+        await EnsureNotRepeatedAsync(dto.Email, dto.Phone);
 
-        var qualificationIds = dto.QualificationIds ?? new List<Guid>();
-        var list = qualificationIds.Select(q => new QualificationId(q)).ToList();
-        var qualifications = await LoadQualificationsAsync(list);
+        var qualificationCodes = dto.QualificationCodes;
+        List<QualificationId> qualificationIds = new();
+
+        if (qualificationCodes != null)
+        {
+            qualificationIds = await LoadQualificationsAsync(qualificationCodes);
+        }
 
         var mecanographicNumber = await GenerateMecanographicNumberAsync();
 
@@ -79,27 +91,26 @@ public class StaffMemberService
             dto.Email,
             dto.Phone,
             dto.Schedule,
-            qualifications
+            qualificationIds
         );
 
         await _repo.AddAsync(staffMember);
         await _unitOfWork.CommitAsync();
 
-        return MapToDto(staffMember);
+        return await MapToDto(staffMember);
     }
 
-
-    public async Task<StaffMemberDto> UpdateAsync(StaffMemberId id, UpdateStaffMemberDto updateDto)
+    public async Task<StaffMemberDto> UpdateAsync(UpdateStaffMemberDto updateDto)
     {
-        var staff = await _repo.GetByIdAsync(id);
+        var staff = await _repo.GetByMecNumberAsync(new MecanographicNumber(updateDto.MecNumber));
         if (staff == null)
-            return null;
+            throw new BusinessRuleValidationException($"No StaffMember with mec number: {updateDto.MecNumber}");
 
         if (updateDto.Email != null || updateDto.Phone != null)
         {
             var emailToCheck = updateDto.Email ?? staff.Email;
             var phoneToCheck = updateDto.Phone ?? staff.Phone;
-            await EnsureNotRepeatedAsync(emailToCheck, phoneToCheck, id);
+            await EnsureNotRepeatedAsync(emailToCheck, phoneToCheck);
         }
 
         if (updateDto.ShortName != null)
@@ -117,44 +128,63 @@ public class StaffMemberService
         if (updateDto.IsActive.HasValue)
             staff.IsActive = updateDto.IsActive.Value;
 
-        if (updateDto.QualificationIds != null)
+        if (updateDto.QualificationCodes != null && updateDto.AddQualifications == null)
         {
-            var qualifications = await LoadQualificationsAsync(
-                updateDto.QualificationIds.Select(q => new QualificationId(q)).ToList()
-            );
-            staff.Qualifications.Clear();
-            foreach (var q in qualifications)
-                staff.AddQualification(q);
+            throw new BusinessRuleValidationException(
+                "Please specify whether you want to add or just replace the qualifications provided.");
+        }
+
+        if (updateDto.QualificationCodes != null && updateDto.AddQualifications == true)
+        {
+            foreach (var code in updateDto.QualificationCodes)
+            {
+                var qualificationId = await _repoQualifications.GetQualificationIdByCodeAsync(code);
+                if (qualificationId != null)
+                {
+                    staff.AddQualification(qualificationId);
+                }
+            }
+        }
+        else if (updateDto.QualificationCodes != null && updateDto.AddQualifications == false)
+        {
+            var qualificationIds = new List<QualificationId>();
+            foreach (var code in updateDto.QualificationCodes)
+            {
+                var qualificationId = await _repoQualifications.GetQualificationIdByCodeAsync(code);
+                if (qualificationId != null)
+                {
+                    qualificationIds.Add(qualificationId);
+                }
+            }
+
+            staff.SetQualifications(qualificationIds);
         }
 
         await _unitOfWork.CommitAsync();
-        return MapToDto(staff);
+        return await MapToDto(staff);
     }
 
-
-    public async Task<StaffMemberDto> ToggleAsync(StaffMemberId id)
+    public async Task<StaffMemberDto?> ToggleAsync(string mec)
     {
-        var staff = await _repo.GetByIdAsync(id);
+        var staff = await _repo.GetByMecNumberAsync(new MecanographicNumber(mec));
         if (staff == null)
             return null;
 
         staff.ToggleStatus();
         await _unitOfWork.CommitAsync();
 
-        return MapToDto(staff);
+        return await MapToDto(staff);
     }
 
-    private async Task EnsureNotRepeatedAsync(Email email, PhoneNumber phone, StaffMemberId? currentStaffId)
+    private async Task EnsureNotRepeatedAsync(Email email, PhoneNumber phone)
     {
         var allStaff = await _repo.GetAllAsync();
 
         bool repeatedEmail = allStaff.Any(s =>
-            s.Email.Address.Equals(email.Address, StringComparison.OrdinalIgnoreCase)
-            && (currentStaffId == null || s.Id != currentStaffId));
+            s.Email.Address.Equals(email.Address, StringComparison.OrdinalIgnoreCase));
 
         bool repeatedPhone = allStaff.Any(s =>
-            s.Phone.Number.Equals(phone.Number, StringComparison.OrdinalIgnoreCase)
-            && (currentStaffId == null || s.Id != currentStaffId));
+            s.Phone.Number.Equals(phone.Number, StringComparison.OrdinalIgnoreCase));
 
         if (repeatedEmail)
             throw new BusinessRuleValidationException("Repeated Email for StaffMember!");
@@ -163,27 +193,26 @@ public class StaffMemberService
             throw new BusinessRuleValidationException("Repeated Phone Number for StaffMember!");
     }
 
-
-    private async Task<List<Qualification>> LoadQualificationsAsync(List<QualificationId> ids)
+    private async Task<List<QualificationId>> LoadQualificationsAsync(List<string> codes)
     {
-        var qualifications = new List<Qualification>();
-        foreach (var id in ids)
+        var qualificationIds = new List<QualificationId>();
+        foreach (var code in codes)
         {
-            var q = await _repoQualifications.GetByIdAsync(id);
+            var q = await _repoQualifications.GetQualificationIdByCodeAsync(code);
             if (q == null)
                 throw new BusinessRuleValidationException(
-                    $"Invalid Qualification Id: {id.AsGuid().ToString()}");
-            qualifications.Add(q);
+                    $"Invalid Qualification Code: {code}");
+            qualificationIds.Add(q);
         }
 
-        return qualifications;
+        return qualificationIds;
     }
 
     private async Task<string> GenerateMecanographicNumberAsync()
     {
         var allStaff = await _repo.GetAllAsync();
         var currentYear = DateTime.UtcNow.Year % 100;
-        
+
         var count = allStaff.Count(s =>
         {
             if (s.MecanographicNumber == null) return false;
@@ -193,10 +222,37 @@ public class StaffMemberService
         var nextSeq = count + 1;
         return $"1{currentYear:D2}{nextSeq:D4}";
     }
-
-
-    private static StaffMemberDto MapToDto(StaffMember staff)
+    
+    private async Task<List<QualificationId>> GetQualificationIdsFromCodesAsync(List<string> codes)
     {
+        var ids = new List<QualificationId>();
+
+        if (codes == null || !codes.Any())
+            return ids;
+
+        foreach (var code in codes)
+        {
+            var id = await _repoQualifications.GetQualificationIdByCodeAsync(code);
+            if (id != null)
+                ids.Add(id);
+        }
+
+        return ids;
+    }
+
+    private async Task<StaffMemberDto> MapToDto(StaffMember staff)
+    {
+        List<string> codes = new();
+
+        if (staff.Qualifications != null)
+        {
+            foreach (var q in staff.Qualifications)
+            {
+                var qualification = await _repoQualifications.GetByIdAsync(q);
+                codes.Add(qualification.Code);
+            }
+        }
+
         return new StaffMemberDto(
             staff.Id.AsGuid(),
             staff.ShortName,
@@ -205,8 +261,7 @@ public class StaffMemberService
             staff.Phone,
             staff.Schedule,
             staff.IsActive,
-            staff.Qualifications != null
-                ? staff.Qualifications.Select(q => q.Id.AsGuid()).ToList()
-                : new List<Guid>());
+            staff.Qualifications != null ? codes : new List<string>()
+        );
     }
 }

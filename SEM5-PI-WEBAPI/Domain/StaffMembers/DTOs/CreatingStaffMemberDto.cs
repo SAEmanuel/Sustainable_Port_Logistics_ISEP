@@ -10,15 +10,15 @@ public class CreatingStaffMemberDto
     public PhoneNumber Phone { get; set; }
     public Schedule Schedule { get; set; }
     public bool IsActive { get; set; }
-    public List<Guid>? QualificationIds { get; set; }
+    public List<string>? QualificationCodes { get; set; }
 
-    public CreatingStaffMemberDto(string shortName, Email email, PhoneNumber phone, Schedule schedule, bool isActive, List<Guid>? qualificationIds)
+    public CreatingStaffMemberDto(string shortName, Email email, PhoneNumber phone, Schedule schedule, bool isActive, List<string>? qualificationCodes)
     {
         ShortName = shortName;
         Email = email;
         Phone = phone;
         Schedule = schedule;
         IsActive = isActive;
-        QualificationIds = qualificationIds;
+        QualificationCodes = qualificationCodes;
     }
 }

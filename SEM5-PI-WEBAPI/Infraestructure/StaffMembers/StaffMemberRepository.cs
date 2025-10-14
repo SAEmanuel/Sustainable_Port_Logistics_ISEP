@@ -56,7 +56,7 @@ public class StaffMemberRepository : BaseRepository<StaffMember, StaffMemberId>,
     {
         return await _staffMembers
             .Include(s => s.Qualifications)
-            .Where(s => s.Qualifications.Any(q => ids.Contains(q.Id)))
+            .Where(s => s.Qualifications.Any(q => ids.Contains(q)))
             .ToListAsync();
     }
 
@@ -66,7 +66,7 @@ public class StaffMemberRepository : BaseRepository<StaffMember, StaffMemberId>,
             .Include(s => s.Qualifications)
             .Where(s =>
                 s.Qualifications.Count == ids.Count &&
-                ids.All(qualId => s.Qualifications.Any(q => q.Id == qualId))
+                ids.All(qualId => s.Qualifications.Any(q => q == qualId))
             )
             .ToListAsync();
     }

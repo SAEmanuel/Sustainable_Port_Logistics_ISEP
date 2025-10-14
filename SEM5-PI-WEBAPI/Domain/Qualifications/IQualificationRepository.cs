@@ -8,5 +8,6 @@ namespace SEM5_PI_WEBAPI.Domain.Qualifications
         Task<bool> ExistQualificationID(QualificationId qualificationId);
         Task<Qualification?> GetQualificationByCode(string code);
         Task<Qualification?> GetQualificationByName(string name);
+        Task<QualificationId?> GetQualificationIdByCodeAsync(string code);
     }
 }

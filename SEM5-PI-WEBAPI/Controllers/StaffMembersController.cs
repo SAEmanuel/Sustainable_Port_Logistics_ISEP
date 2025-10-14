@@ -37,26 +37,25 @@ public class StaffMembersController : ControllerBase
     }
 
     [HttpGet("by-qualifications")]
-    public async Task<ActionResult<List<StaffMemberDto>>> GetByQualifications([FromQuery] List<Guid> ids)
+    public async Task<ActionResult<List<StaffMemberDto>>> GetByQualifications([FromQuery] List<string> qualificationCodes)
     {
-        if (ids == null || !ids.Any())
-            return BadRequest("At least one qualification id must be provided.");
-
-        var qualificationIds = ids.Select(guid => new QualificationId(guid)).ToList();
-        var staffList = await _service.GetByQualificationsAsync(qualificationIds);
+        if (!qualificationCodes.Any())
+            return BadRequest("At least one qualification code must be provided.");
+        
+        var staffList = await _service.GetByQualificationsAsync(qualificationCodes);
 
         return Ok(staffList);
     }
 
 
     [HttpGet("by-exact-qualifications")]
-    public async Task<ActionResult<List<StaffMemberDto>>> GetByAllQualifications(List<Guid> ids)
+    public async Task<ActionResult<List<StaffMemberDto>>> GetByAllQualifications(List<string> qualificationCodes)
     {
-        if (ids == null || !ids.Any())
-            return BadRequest("At least one qualification id must be provided.");
+        if (!qualificationCodes.Any())
+            return BadRequest("At least one qualification code must be provided.");
 
-        var qualificationIds = ids.Select(guid => new QualificationId(guid)).ToList();
-        var staffList = await _service.GetByExactQualificationsAsync(qualificationIds);
+        
+        var staffList = await _service.GetByExactQualificationsAsync(qualificationCodes);
 
         return Ok(staffList);
     }
@@ -102,19 +101,19 @@ public class StaffMembersController : ControllerBase
         }
     }
 
-    [HttpPatch("{id}")]
-    public async Task<ActionResult<StaffMemberDto>> Update(Guid id, UpdateStaffMemberDto dto)
+    [HttpPatch("update/")]
+    public async Task<ActionResult<StaffMemberDto>> Update(UpdateStaffMemberDto dto)
     {
-        var updatedStaff = await _service.UpdateAsync(new StaffMemberId(id), dto);
+        var updatedStaff = await _service.UpdateAsync(dto);
         if (updatedStaff == null)
             return NotFound();
         return Ok(updatedStaff);
     }
 
-    [HttpPatch("{id}/toggle")]
-    public async Task<ActionResult<StaffMemberDto>> ToggleStatus(Guid id)
+    [HttpPatch("toggle/")]
+    public async Task<ActionResult<StaffMemberDto>> ToggleStatus(string mec)
     {
-        var updatedStaff = await _service.ToggleAsync(new StaffMemberId(id));
+        var updatedStaff = await _service.ToggleAsync(mec);
         if (updatedStaff == null)
             return NotFound();
         return Ok(updatedStaff);
