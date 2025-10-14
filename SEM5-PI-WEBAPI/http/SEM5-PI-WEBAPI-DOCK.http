@@ -47,7 +47,7 @@ Accept: application/json
   "depthM": 15.5,
   "maxDraftM": 14.8,
   "allowedVesselTypeIds": [
-    "5e9bf997-966d-43f6-a6fb-c23afbe7e8cf"
+    "fefeaffb-7f5c-4466-bf26-0f58a24abe25"
   ]
 }
 

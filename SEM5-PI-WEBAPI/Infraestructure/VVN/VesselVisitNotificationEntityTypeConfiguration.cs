@@ -2,7 +2,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SEM5_PI_WEBAPI.Domain.VVN;
-using SEM5_PI_WEBAPI.Domain.ValueObjects;
 
 namespace SEM5_PI_WEBAPI.Infraestructure.VVN
 {
@@ -58,6 +57,14 @@ namespace SEM5_PI_WEBAPI.Infraestructure.VVN
                     .IsRequired();
             });
 
+            
+            builder.OwnsOne(v => v.Dock, dock =>
+            {
+                dock.Property(d => d.Value)
+                    .HasColumnName("Dock")
+                    .IsRequired(false);
+            });
+
             builder.Property(v => v.Volume)
                 .IsRequired();
 
@@ -68,12 +75,6 @@ namespace SEM5_PI_WEBAPI.Infraestructure.VVN
             builder.Property(v => v.Status)
                 .HasConversion(statusConverter)
                 .IsRequired();
-
-            // RELATIONSHIPS
-
-            builder.HasMany(v => v.ListDocks)
-                .WithMany()
-                .UsingEntity(j => j.ToTable("VvnDocks"));
 
             builder.HasOne(v => v.CrewManifest)
                 .WithMany()

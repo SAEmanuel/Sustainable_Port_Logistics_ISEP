@@ -94,5 +94,16 @@ namespace SEM5_PI_WEBAPI.Infraestructure.Docks
                 .Where(d => d.AllowedVesselTypeIds.Any(vt => vt.Value == vesselTypeId.Value))
                 .ToListAsync();
         }
+
+        public bool SetUnavailable(DockCode code)
+        {
+            var dock = _context.Dock.Where(d => d.Code.Equals(code)).FirstOrDefault();
+            if (dock != null)
+            {
+                dock.MarkUnavailable();
+                return true;
+            }
+            return false;
+        }
     }
 }

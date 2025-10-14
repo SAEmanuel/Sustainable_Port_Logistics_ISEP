@@ -140,4 +140,9 @@ public class EntityDock : Entity<DockId>, IAggregateRoot
     {
         Status = status;
     }
+
+    public void MarkUnavailable()
+    {
+        SetStatus(DockStatus.Unavailable);
+    }
 }

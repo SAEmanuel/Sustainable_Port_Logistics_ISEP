@@ -11,7 +11,7 @@ public class UpdateVesselVisitNotificationDto
     public string? EstimatedTimeDeparture { get; set; }
     public int? Volume { get; set; }
     public PdfDocumentCollection? Documents { get; set; }
-    public List<string>? ListDocksCodes { get; set; }
+    public string? Dock { get; set; }
     public CreatingCrewManifestDto? CrewManifest { get; set; }
     public CreatingCargoManifestDto? LoadingCargoManifest { get; set; }
     public CreatingCargoManifestDto? UnloadingCargoManifest { get; set; }

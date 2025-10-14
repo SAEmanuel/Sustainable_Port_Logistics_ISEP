@@ -24,7 +24,7 @@ namespace SEM5_PI_WEBAPI.Domain.VVN
         public PdfDocumentCollection Documents { get; private set; }
 
         public Status Status { get; private set; }
-        public IReadOnlyCollection<EntityDock> ListDocks { get; private set; }
+        public DockCode? Dock { get; private set; }
         public CrewManifest? CrewManifest { get; private set; }
         public CargoManifest? LoadingCargoManifest { get; private set; }
         public CargoManifest? UnloadingCargoManifest { get; private set; }
@@ -42,7 +42,6 @@ namespace SEM5_PI_WEBAPI.Domain.VVN
             ClockTime estimatedTimeDeparture,
             int volume,
             PdfDocumentCollection? documents,
-            IEnumerable<EntityDock>? docks,
             CrewManifest? crewManifest,
             CargoManifest? loadingCargoManifest,
             CargoManifest? unloadingCargoManifest,
@@ -64,7 +63,6 @@ namespace SEM5_PI_WEBAPI.Domain.VVN
             SetEstimatedTimeDeparture(estimatedTimeDeparture);
             SetVolume(volume);
             SetDocuments(documents);
-            SetListDocks(docks);
             SetCrewManifest(crewManifest);
             SetLoadingCargoManifest(loadingCargoManifest);
             SetUnloadingCargoManifest(unloadingCargoManifest);
@@ -89,7 +87,7 @@ namespace SEM5_PI_WEBAPI.Domain.VVN
 
         public void UpdateVolume(int volume) => SetVolume(volume);
         public void UpdateDocuments(PdfDocumentCollection? documents) => SetDocuments(documents);
-        public void UpdateListDocks(IEnumerable<EntityDock> docks) => SetListDocks(docks);
+        public void UpdateDock(DockCode dock) => SetDock(dock);
         public void UpdateCrewManifest(CrewManifest? crewManifest) => SetCrewManifest(crewManifest);
         public void UpdateLoadingCargoManifest(CargoManifest? cargoManifest) => SetLoadingCargoManifest(cargoManifest);
 
@@ -157,12 +155,12 @@ namespace SEM5_PI_WEBAPI.Domain.VVN
                 : documents;
         }
 
-        private void SetListDocks(IEnumerable<EntityDock>? docks)
+        private void SetDock(DockCode dock)
         {
             if (!_isConstructing && !IsEditable)
-                throw new BusinessRuleValidationException("Cannot update docks when VVN is not editable.");
+                throw new BusinessRuleValidationException("Cannot update dock when VVN is not editable.");
 
-            ListDocks = docks?.ToList() ?? new List<EntityDock>();
+            Dock = dock;
         }
 
         private void SetCrewManifest(CrewManifest? crewManifest)

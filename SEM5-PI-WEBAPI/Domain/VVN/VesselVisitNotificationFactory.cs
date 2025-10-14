@@ -20,7 +20,6 @@ public static class VesselVisitNotificationFactory
         string estimatedTimeDepartureDto,
         int volume,
         PdfDocumentCollection? documents,
-        List<EntityDock> docks,
         CrewManifest? crewManifest,
         CargoManifest? loadingCargoManifest,
         CargoManifest? unloadingCargoManifest,
@@ -45,7 +44,6 @@ public static class VesselVisitNotificationFactory
             estimatedTimeDeparture,
             volume,
             safeDocuments,
-            docks,
             crewManifest,
             loadingCargoManifest,
             unloadingCargoManifest,
@@ -59,7 +57,6 @@ public static class VesselVisitNotificationFactory
         var loadingCargoManifestDto = CreateCargoManifestDto(notification.LoadingCargoManifest);
         var unloadingCargoManifestDto = CreateCargoManifestDto(notification.UnloadingCargoManifest);
         var taskListDto = CreateTaskListDto(notification.Tasks);
-        var dockListDto = notification.ListDocks?.Select(DockFactory.RegisterDockDto).ToList() ?? new List<DockDto>();
 
         return new VesselVisitNotificationDto(
             notification.Id.Value,
@@ -71,8 +68,8 @@ public static class VesselVisitNotificationFactory
             notification.AcceptenceDate?.Value,
             notification.Volume,
             notification.Documents ?? new PdfDocumentCollection(),
+            notification.Dock?.Value ?? string.Empty,
             notification.Status.ToString(true),
-            dockListDto,
             crewManifestDto,
             loadingCargoManifestDto,
             unloadingCargoManifestDto,

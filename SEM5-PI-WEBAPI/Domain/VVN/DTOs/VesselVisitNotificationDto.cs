@@ -21,7 +21,7 @@ public class VesselVisitNotificationDto
     public PdfDocumentCollection Documents { get; private set; }
 
     public string Status { get; private set; }
-    public IReadOnlyCollection<DockDto> ListDocks { get; private set; }
+    public string? Dock { get; private set; }
     public CrewManifestDto? CrewManifest { get; private set; }
     public CargoManifestDto? LoadingCargoManifest { get; private set; }
     public CargoManifestDto? UnloadingCargoManifest { get; private set; }
@@ -39,8 +39,8 @@ public class VesselVisitNotificationDto
         DateTime? acceptenceDate,
         int volume,
         PdfDocumentCollection documents,
+        string? dock,
         string status,
-        IEnumerable<DockDto> docks,
         CrewManifestDto? crewManifest,
         CargoManifestDto? loadingCargoManifest,
         CargoManifestDto? unloadingCargoManifest,
@@ -57,7 +57,7 @@ public class VesselVisitNotificationDto
         Volume = volume;
         Documents = documents;
         Status = status;
-        ListDocks = docks?.ToList() ?? new List<DockDto>();
+        Dock = dock;
         CrewManifest = crewManifest;
         LoadingCargoManifest = loadingCargoManifest;
         UnloadingCargoManifest = unloadingCargoManifest;

@@ -18,5 +18,6 @@ namespace SEM5_PI_WEBAPI.Domain.Dock
             DockStatus? status);
         Task<List<DockCode>> GetAllDockCodesAsync();
         Task<List<EntityDock>> GetAllDocksForVesselType(VesselTypeId vesselTypeId);
+        bool SetUnavailable(DockCode code);
     }
 }

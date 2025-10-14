@@ -1,3 +1,4 @@
+using Microsoft.IdentityModel.Tokens;
 using SEM5_PI_WEBAPI.Domain.CargoManifestEntries;
 using SEM5_PI_WEBAPI.Domain.CargoManifests;
 using SEM5_PI_WEBAPI.Domain.CargoManifests.CargoManifestEntries;
@@ -6,18 +7,15 @@ using SEM5_PI_WEBAPI.Domain.Containers.DTOs;
 using SEM5_PI_WEBAPI.Domain.CrewManifests;
 using SEM5_PI_WEBAPI.Domain.CrewMembers;
 using SEM5_PI_WEBAPI.Domain.Dock;
-using SEM5_PI_WEBAPI.Domain.PhysicalResources;
 using SEM5_PI_WEBAPI.Domain.Shared;
 using SEM5_PI_WEBAPI.Domain.StorageAreas;
 using SEM5_PI_WEBAPI.Domain.Tasks;
 using SEM5_PI_WEBAPI.Domain.ValueObjects;
 using SEM5_PI_WEBAPI.Domain.Vessels;
-using SEM5_PI_WEBAPI.Domain.VesselsTypes;
 using SEM5_PI_WEBAPI.Domain.VVN.DTOs;
 
 
-// FALTA ASSOCIAR AS DOCKS NO MOMENTO DE ACEITAÇÃO
-// FALTA VERIFICAR SE A CARGA DO (UN)LOADING É PERIGOSA E VER SE HÁ STAFF PARA ISSO
+
 namespace SEM5_PI_WEBAPI.Domain.VVN;
 
 public class VesselVisitNotificationService : IVesselVisitNotificationService
@@ -78,26 +76,22 @@ public class VesselVisitNotificationService : IVesselVisitNotificationService
 
         var vvnCode = await GenerateNextVvnCodeAsync();
         var vesselImo = await CheckForVesselInDb(dto.VesselImo);
-        var listDocks = await CreateListWithDocksIds(dto.ListDocks);
-
-        if (listDocks == null || !listDocks.Any())
-            throw new BusinessRuleValidationException("At least one Dock must be specified for the VVN.");
-
-
+        
+        // FALTA VERIFICAR SE A CARGA DO (UN)LOADING É PERIGOSA E VER SE HÁ STAFF PARA ISSO
+        
         var newVesselVisitNotification = VesselVisitNotificationFactory.CreateVesselVisitNotification(
             vvnCode,
             dto.EstimatedTimeArrival,
             dto.EstimatedTimeDeparture,
             dto.Volume,
             null,
-            listDocks,
             crewManifest,
             loadingCargoManifest,
             unloadingCargoManifest,
             vesselImo
         );
         
-
+        
         await _repo.AddAsync(newVesselVisitNotification);
         await _unitOfWork.CommitAsync();
 
@@ -122,38 +116,36 @@ public class VesselVisitNotificationService : IVesselVisitNotificationService
     public async Task<VesselVisitNotificationDto> AcceptVvnAsync(VvnCode code)
     {
         _logger.LogInformation("Business Domain: Accepting VVN with Code = {code}", code.ToString());
-
+        
         VesselVisitNotificationId id = await GetIdByCodeAsync(code);
         var vvnInDb = await _repo.GetCompleteByIdAsync(id);
-
+        
         if (vvnInDb == null)
             throw new BusinessRuleValidationException($"No Vessel Visit Notification found with Code = {code}");
-
+        
         vvnInDb.Accept();
-
-        var tasks = new List<EntityTask>();
-        var firstDock = vvnInDb.ListDocks.First();
-        var actualDock = await _dockRepository.GetByCodeAsync(firstDock.Code)
-                         ?? throw new BusinessRuleValidationException($"Dock with code {firstDock.Code} not found.");
-
+        
+        var tasks = new List<EntityTask>(); 
+        var dock = await BasicDockAttributionAlgorithm(vvnInDb.VesselImo);
+        
         if (vvnInDb.UnloadingCargoManifest != null)
         {
-            var unloadingTasks = await CreateTasksAsync(vvnInDb.UnloadingCargoManifest, actualDock.Code.ToString());
+            var unloadingTasks = await CreateTasksAsync(vvnInDb.UnloadingCargoManifest, dock.Value);
             tasks.AddRange(unloadingTasks);
         }
-
+        
         if (vvnInDb.LoadingCargoManifest != null)
         {
-            var loadingTasks = await CreateTasksAsync(vvnInDb.LoadingCargoManifest, actualDock.Code.ToString());
+            var loadingTasks = await CreateTasksAsync(vvnInDb.LoadingCargoManifest, dock.Value);
             tasks.AddRange(loadingTasks);
         }
-
+        
         vvnInDb.SetTasks(tasks);
-
+        
         await _unitOfWork.CommitAsync();
-
+        
         _logger.LogInformation("VVN with Code = {code} Accepted successfully.", code.ToString());
-
+        
         return VesselVisitNotificationFactory.CreateVesselVisitNotificationDto(vvnInDb);
     }
 
@@ -176,7 +168,9 @@ public class VesselVisitNotificationService : IVesselVisitNotificationService
 
         await _unitOfWork.CommitAsync();
 
-        _logger.LogInformation("VVN with Code = {code} marked as Pending Information with message \"{message}\" successfully.", code, reason);
+        _logger.LogInformation(
+            "VVN with Code = {code} marked as Pending Information with message \"{message}\" successfully.", code,
+            reason);
 
         return VesselVisitNotificationFactory.CreateVesselVisitNotificationDto(vvnInDb);
     }
@@ -279,11 +273,8 @@ public class VesselVisitNotificationService : IVesselVisitNotificationService
 
         if (dto.Documents != null) vvnInDb.UpdateDocuments(dto.Documents);
 
-        if (dto.ListDocksCodes != null && dto.ListDocksCodes.Any())
-        {
-            var docks = await CreateListWithDocksIds(dto.ListDocksCodes);
-            vvnInDb.UpdateListDocks(docks);
-        }
+        if (dto.Dock != null) vvnInDb.UpdateDock(new DockCode(dto.Dock));
+        
 
         if (dto.CrewManifest != null)
         {
@@ -349,26 +340,7 @@ public class VesselVisitNotificationService : IVesselVisitNotificationService
         return vessel.ImoNumber;
     }
 
-    private async Task<List<EntityDock>> CreateListWithDocksIds(List<string>? dtoListDocks)
-    {
-        if (dtoListDocks == null || dtoListDocks.Count == 0)
-            throw new BusinessRuleValidationException("At least one dock code must be provided.");
-
-        var listDockCodes = dtoListDocks.Select(code => new DockCode(code)).ToList();
-        var allDocksInSys = await _dockRepository.GetAllAsync();
-
-        var listEntityDock = new List<EntityDock>();
-        foreach (var dockCode in listDockCodes)
-        {
-            var existingDock = allDocksInSys.FirstOrDefault(d => d.Code.Value == dockCode.Value)
-                               ?? throw new BusinessRuleValidationException(
-                                   $"Dock with code [{dockCode}] not found in the system.");
-            listEntityDock.Add(existingDock);
-        }
-
-        return listEntityDock;
-    }
-
+    
     private async Task<List<EntityTask>> CreateTasksAsync(CargoManifest cargoManifest, string dock)
     {
         var tasks = new List<EntityTask>();
@@ -508,10 +480,19 @@ public class VesselVisitNotificationService : IVesselVisitNotificationService
         var vessel = await _vesselRepository.GetByImoNumberAsync(imo);
         if (vessel == null)
             throw new BusinessRuleValidationException("Vessel with provided imo not found");
-        
-        var possibleDocks = await _dockRepository.GetAllDocksForVesselType(vessel.VesselTypeId);
-        //var availableDocks = possibleDocks.Where(d=> d.)
 
-        return null;
+        var possibleDocks = await _dockRepository.GetAllDocksForVesselType(vessel.VesselTypeId);
+        var availableDocks = possibleDocks.Where(d => d.Status.Equals(DockStatus.Available)).ToList();
+        if (availableDocks.IsNullOrEmpty())
+            throw new BusinessRuleValidationException(
+                "Unable to find available docks suitable for the requested vessel type. Please review the docking requirements or try again later");
+        int dockCount = availableDocks.Count;
+
+        var random = new Random();
+        var attributedDock = random.Next(dockCount);
+        if (!_dockRepository.SetUnavailable(availableDocks[attributedDock].Code))
+            throw new BusinessRuleValidationException("Unable to set dock status");
+        
+        return availableDocks[attributedDock].Id;
     }
 }

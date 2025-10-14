@@ -13,7 +13,6 @@ Accept: {{accept}}
   "estimatedTimeDeparture": "2025-12-03T18:00:00",
   "volume": 2000,
   "documents": null,
-  "listDocks": ["DK-0001"],
 
   "crewManifest": {
     "totalCrew": 15,
@@ -42,7 +41,7 @@ Accept: {{accept}}
         "bay": 2,
         "row": 3,
         "tier": 4,
-        "storageAreaId": "e811c3dc-4bdb-4df0-b9eb-1749ce0cf531",
+        "storageAreaId": "ed103984-4131-4383-aba7-3741b26ee798",
         "container": {
           "isoCode": "MSCU6639870",
           "description": "Perishable frozen food cargo",
@@ -69,7 +68,6 @@ Accept: {{accept}}
   "estimatedTimeDeparture": "2025-12-03T18:00:00",
   "volume": 2000,
   "documents": null,
-  "listDocks": ["DK-0001"],
 
   "crewManifest": null,
 

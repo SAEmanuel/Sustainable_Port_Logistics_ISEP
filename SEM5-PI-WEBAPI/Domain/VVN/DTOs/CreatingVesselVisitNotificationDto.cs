@@ -10,20 +10,18 @@ public class CreatingVesselVisitNotificationDto
     public string EstimatedTimeDeparture { get; set; }
     public int Volume { get; set; }
     public string? Documents { get; set; }
-    public List<string> ListDocks { get; set; }
     public CreatingCrewManifestDto? CrewManifest { get; set; }
     public CreatingCargoManifestDto? LoadingCargoManifest { get; set; }
     public CreatingCargoManifestDto? UnloadingCargoManifest { get; set; }
     public string VesselImo { get; set; }
 
 
-    public CreatingVesselVisitNotificationDto(string estimatedTimeArrival, string estimatedTimeDeparture, int volume, string? documents, List<string> listDocks, CreatingCrewManifestDto? crewManifest, CreatingCargoManifestDto? loadingCargoManifest, CreatingCargoManifestDto? unloadingCargoManifest, string vesselImo)
+    public CreatingVesselVisitNotificationDto(string estimatedTimeArrival, string estimatedTimeDeparture, int volume, string? documents, CreatingCrewManifestDto? crewManifest, CreatingCargoManifestDto? loadingCargoManifest, CreatingCargoManifestDto? unloadingCargoManifest, string vesselImo)
     {
         EstimatedTimeArrival = estimatedTimeArrival;
         EstimatedTimeDeparture = estimatedTimeDeparture;
         Volume = volume;
         Documents = documents;
-        ListDocks = listDocks;
         CrewManifest = crewManifest;
         LoadingCargoManifest = loadingCargoManifest;
         UnloadingCargoManifest = unloadingCargoManifest;

@@ -21,7 +21,7 @@ public class VesselVisitNotificationRepository : BaseRepository<VesselVisitNotif
     public async Task<VesselVisitNotification?> GetCompleteByIdAsync(VesselVisitNotificationId id)
     {
         return await _context.VesselVisitNotification
-            .Include(v => v.ListDocks)
+            .Include(v => v.Dock)
             .Include(v => v.CrewManifest)
             .ThenInclude(cm => cm.CrewMembers)
             .Include(v => v.LoadingCargoManifest)
@@ -37,7 +37,7 @@ public class VesselVisitNotificationRepository : BaseRepository<VesselVisitNotif
     public async Task<VesselVisitNotification?> GetCompleteByCodeAsync(VvnCode code)
     {
         return await _context.VesselVisitNotification
-            .Include(v => v.ListDocks)
+            .Include(v => v.Dock)
             .Include(v => v.CrewManifest)
             .ThenInclude(cm => cm.CrewMembers)
             .Include(v => v.LoadingCargoManifest)
