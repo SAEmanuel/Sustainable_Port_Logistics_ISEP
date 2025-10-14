@@ -15,7 +15,6 @@ using SEM5_PI_WEBAPI.Domain.Vessels;
 using SEM5_PI_WEBAPI.Domain.VVN.DTOs;
 
 
-
 namespace SEM5_PI_WEBAPI.Domain.VVN;
 
 public class VesselVisitNotificationService : IVesselVisitNotificationService
@@ -76,9 +75,9 @@ public class VesselVisitNotificationService : IVesselVisitNotificationService
 
         var vvnCode = await GenerateNextVvnCodeAsync();
         var vesselImo = await CheckForVesselInDb(dto.VesselImo);
-        
+
         // FALTA VERIFICAR SE A CARGA DO (UN)LOADING É PERIGOSA E VER SE HÁ STAFF PARA ISSO
-        
+
         var newVesselVisitNotification = VesselVisitNotificationFactory.CreateVesselVisitNotification(
             vvnCode,
             dto.EstimatedTimeArrival,
@@ -90,8 +89,8 @@ public class VesselVisitNotificationService : IVesselVisitNotificationService
             unloadingCargoManifest,
             vesselImo
         );
-        
-        
+
+
         await _repo.AddAsync(newVesselVisitNotification);
         await _unitOfWork.CommitAsync();
 
@@ -116,61 +115,55 @@ public class VesselVisitNotificationService : IVesselVisitNotificationService
     public async Task<VesselVisitNotificationDto> AcceptVvnAsync(VvnCode code)
     {
         _logger.LogInformation("Business Domain: Accepting VVN with Code = {code}", code.ToString());
-        
+
         VesselVisitNotificationId id = await GetIdByCodeAsync(code);
         var vvnInDb = await _repo.GetCompleteByIdAsync(id);
-        
+
         if (vvnInDb == null)
             throw new BusinessRuleValidationException($"No Vessel Visit Notification found with Code = {code}");
-        
+
         vvnInDb.Accept();
-        
-        var tasks = new List<EntityTask>(); 
+        var tasks = new List<EntityTask>();
         var dock = await BasicDockAttributionAlgorithm(vvnInDb.VesselImo);
-        
+        vvnInDb.UpdateDock(dock);
+
         if (vvnInDb.UnloadingCargoManifest != null)
         {
-            var unloadingTasks = await CreateTasksAsync(vvnInDb.UnloadingCargoManifest, dock.Value);
+            var unloadingTasks = await CreateTasksAsync(vvnInDb.UnloadingCargoManifest, dock);
             tasks.AddRange(unloadingTasks);
         }
-        
+
         if (vvnInDb.LoadingCargoManifest != null)
         {
-            var loadingTasks = await CreateTasksAsync(vvnInDb.LoadingCargoManifest, dock.Value);
+            var loadingTasks = await CreateTasksAsync(vvnInDb.LoadingCargoManifest, dock);
             tasks.AddRange(loadingTasks);
         }
-        
+
         vvnInDb.SetTasks(tasks);
-        
+
         await _unitOfWork.CommitAsync();
-        
+
         _logger.LogInformation("VVN with Code = {code} Accepted successfully.", code.ToString());
-        
+
         return VesselVisitNotificationFactory.CreateVesselVisitNotificationDto(vvnInDb);
     }
 
-    public async Task<VesselVisitNotificationDto> MarkAsPendingAsync(VvnCode code, string reason)
+    public async Task<VesselVisitNotificationDto> MarkAsPendingAsync(RejectVesselVisitNotificationDto dto)
     {
-        _logger.LogInformation("Business Domain: Marking VVN as Pending Information for code = {code}", code);
+        _logger.LogInformation("Business Domain: Marking VVN as Pending Information for code = {code}", dto.VvnCode);
 
-        VesselVisitNotificationId id = await GetIdByCodeAsync(code);
+        VesselVisitNotificationId id = await GetIdByCodeAsync(new VvnCode(dto.VvnCode));
         var vvnInDb = await _repo.GetByIdAsync(id)
                       ?? throw new BusinessRuleValidationException(
-                          $"No Vessel Visit Notification found with Code = {code}");
-
-        if (vvnInDb.Status.StatusValue != VvnStatus.Submitted)
-        {
-            throw new BusinessRuleValidationException(
-                "Provided VVN has not been submitted yet and cannot be marked as pending information.");
-        }
-
-        vvnInDb.MarkPending(reason);
+                          $"No Vessel Visit Notification found with Code = {dto.VvnCode}");
+        
+        vvnInDb.MarkPending(dto.Reason);
 
         await _unitOfWork.CommitAsync();
 
         _logger.LogInformation(
-            "VVN with Code = {code} marked as Pending Information with message \"{message}\" successfully.", code,
-            reason);
+            "VVN with Code = {code} marked as Pending Information with message \"{message}\" successfully.", dto.VvnCode,
+            dto.Reason);
 
         return VesselVisitNotificationFactory.CreateVesselVisitNotificationDto(vvnInDb);
     }
@@ -274,7 +267,7 @@ public class VesselVisitNotificationService : IVesselVisitNotificationService
         if (dto.Documents != null) vvnInDb.UpdateDocuments(dto.Documents);
 
         if (dto.Dock != null) vvnInDb.UpdateDock(new DockCode(dto.Dock));
-        
+
 
         if (dto.CrewManifest != null)
         {
@@ -340,8 +333,8 @@ public class VesselVisitNotificationService : IVesselVisitNotificationService
         return vessel.ImoNumber;
     }
 
-    
-    private async Task<List<EntityTask>> CreateTasksAsync(CargoManifest cargoManifest, string dock)
+
+    private async Task<List<EntityTask>> CreateTasksAsync(CargoManifest cargoManifest, DockCode dockCode)
     {
         var tasks = new List<EntityTask>();
         var manifestType = cargoManifest.Type;
@@ -354,7 +347,7 @@ public class VesselVisitNotificationService : IVesselVisitNotificationService
                               $"Storage area {entry.StorageAreaId} not found.");
 
             taskCount++;
-            string location = manifestType == CargoManifestType.Unloading ? storage.Name : dock;
+            string location = manifestType == CargoManifestType.Unloading ? storage.Name : dockCode.Value;
 
             tasks.Add(new EntityTask(await GenerateNextTaskCodeAsync(TaskType.ContainerHandling, taskCount),
                 $"{location} - Container Handling", TaskType.ContainerHandling));
@@ -475,7 +468,7 @@ public class VesselVisitNotificationService : IVesselVisitNotificationService
         return new VvnCode(DateTime.Now.Year.ToString(), formattedSequence);
     }
 
-    private async Task<DockId> BasicDockAttributionAlgorithm(ImoNumber imo)
+    private async Task<DockCode> BasicDockAttributionAlgorithm(ImoNumber imo)
     {
         var vessel = await _vesselRepository.GetByImoNumberAsync(imo);
         if (vessel == null)
@@ -492,7 +485,7 @@ public class VesselVisitNotificationService : IVesselVisitNotificationService
         var attributedDock = random.Next(dockCount);
         if (!_dockRepository.SetUnavailable(availableDocks[attributedDock].Code))
             throw new BusinessRuleValidationException("Unable to set dock status");
-        
-        return availableDocks[attributedDock].Id;
+
+        return availableDocks[attributedDock].Code;
     }
 }

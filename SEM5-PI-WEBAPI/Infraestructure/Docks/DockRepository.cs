@@ -97,7 +97,7 @@ namespace SEM5_PI_WEBAPI.Infraestructure.Docks
 
         public bool SetUnavailable(DockCode code)
         {
-            var dock = _context.Dock.Where(d => d.Code.Equals(code)).FirstOrDefault();
+            var dock = _context.Dock.FirstOrDefault(d => d.Code.Value == code.Value);
             if (dock != null)
             {
                 dock.MarkUnavailable();

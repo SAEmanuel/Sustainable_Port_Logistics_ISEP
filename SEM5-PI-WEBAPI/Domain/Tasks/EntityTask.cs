@@ -23,6 +23,7 @@ public class EntityTask : Entity<TaskId>
         Description = description;
         Type = type;
         Status = TaskStatus.Pending;
+        Id = new TaskId(Guid.NewGuid());
     }
 
     public EntityTask(TaskCode code, DateTime startTime, string? description, TaskType type)

@@ -13,17 +13,19 @@ public class VesselVisitNotificationController : ControllerBase
     private readonly IVesselVisitNotificationService _service;
     private readonly ILogger<VesselVisitNotificationController> _logger;
 
-    public VesselVisitNotificationController(IVesselVisitNotificationService service,ILogger<VesselVisitNotificationController> logger)
+    public VesselVisitNotificationController(IVesselVisitNotificationService service,
+        ILogger<VesselVisitNotificationController> logger)
     {
         _service = service;
         _logger = logger;
     }
 
     [HttpPost]
-    public async Task<ActionResult<VesselVisitNotificationDto>> CreateAsync([FromBody] CreatingVesselVisitNotificationDto dto)
+    public async Task<ActionResult<VesselVisitNotificationDto>> CreateAsync(
+        [FromBody] CreatingVesselVisitNotificationDto dto)
     {
         _logger.LogInformation("API Request: Add VVN with body = {@Dto}", dto);
-            
+
         try
         {
             var vvnDto = await _service.AddAsync(dto);
@@ -36,12 +38,12 @@ public class VesselVisitNotificationController : ControllerBase
             return BadRequest(e.Message);
         }
     }
-    
+
     [HttpGet("id/{id:guid}")]
     public async Task<ActionResult<VesselVisitNotificationDto>> GetById(Guid id)
     {
         _logger.LogInformation("API Request: Fetching VVN with ID = {Id}", id);
-            
+
         try
         {
             var vvnDto = await _service.GetByIdAsync(new VesselVisitNotificationId(id));
@@ -68,7 +70,8 @@ public class VesselVisitNotificationController : ControllerBase
         }
         catch (BusinessRuleValidationException ex)
         {
-            _logger.LogWarning("API Error (400): Could not withdraw VVN with ID = {Id}. Reason: {Message}", id, ex.Message);
+            _logger.LogWarning("API Error (400): Could not withdraw VVN with ID = {Id}. Reason: {Message}", id,
+                ex.Message);
             return BadRequest(ex.Message);
         }
         catch (Exception ex)
@@ -91,7 +94,8 @@ public class VesselVisitNotificationController : ControllerBase
         }
         catch (BusinessRuleValidationException ex)
         {
-            _logger.LogWarning("API Error (400): Could not withdraw VVN with Code = {code}. Reason: {Message}", code, ex.Message);
+            _logger.LogWarning("API Error (400): Could not withdraw VVN with Code = {code}. Reason: {Message}", code,
+                ex.Message);
             return BadRequest(ex.Message);
         }
         catch (Exception ex)
@@ -100,7 +104,7 @@ public class VesselVisitNotificationController : ControllerBase
             return StatusCode(500, "An unexpected error occurred while withdrawing the VVN.");
         }
     }
-    
+
     [HttpPut("{code}/submit")]
     public async Task<ActionResult<VesselVisitNotificationDto>> SubmitByCodeAsync(string code)
     {
@@ -114,7 +118,8 @@ public class VesselVisitNotificationController : ControllerBase
         }
         catch (BusinessRuleValidationException ex)
         {
-            _logger.LogWarning("API Error (400): Could not submit VVN with Code = {code}. Reason: {Message}", code, ex.Message);
+            _logger.LogWarning("API Error (400): Could not submit VVN with Code = {code}. Reason: {Message}", code,
+                ex.Message);
             return BadRequest(ex.Message);
         }
         catch (Exception ex)
@@ -123,7 +128,7 @@ public class VesselVisitNotificationController : ControllerBase
             return StatusCode(500, "An unexpected error occurred while submitting the VVN.");
         }
     }
-    
+
     [HttpPut("{id:guid}/submit")]
     public async Task<ActionResult<VesselVisitNotificationDto>> SubmitByIdAsync(Guid id)
     {
@@ -137,7 +142,8 @@ public class VesselVisitNotificationController : ControllerBase
         }
         catch (BusinessRuleValidationException ex)
         {
-            _logger.LogWarning("API Error (400): Could not submit VVN with id = {id}. Reason: {Message}", id, ex.Message);
+            _logger.LogWarning("API Error (400): Could not submit VVN with id = {id}. Reason: {Message}", id,
+                ex.Message);
             return BadRequest(ex.Message);
         }
         catch (Exception ex)
@@ -146,10 +152,11 @@ public class VesselVisitNotificationController : ControllerBase
             return StatusCode(500, "An unexpected error occurred while submitting the VVN.");
         }
     }
-    
-    
+
+
     [HttpPut("{id:guid}/update")]
-    public async Task<ActionResult<VesselVisitNotificationDto>> UpdateAsync(Guid id, [FromBody] UpdateVesselVisitNotificationDto dto)
+    public async Task<ActionResult<VesselVisitNotificationDto>> UpdateAsync(Guid id,
+        [FromBody] UpdateVesselVisitNotificationDto dto)
     {
         _logger.LogInformation("API Request: PUT update VVN with ID = {Id}", id);
 
@@ -161,7 +168,8 @@ public class VesselVisitNotificationController : ControllerBase
         }
         catch (BusinessRuleValidationException ex)
         {
-            _logger.LogWarning("API Error (400): Could not update VVN with ID = {Id}. Reason: {Message}", id, ex.Message);
+            _logger.LogWarning("API Error (400): Could not update VVN with ID = {Id}. Reason: {Message}", id,
+                ex.Message);
             return BadRequest(ex.Message);
         }
         catch (Exception ex)
@@ -171,4 +179,52 @@ public class VesselVisitNotificationController : ControllerBase
         }
     }
 
+    [HttpPut("accept/id/{id}")]
+    public async Task<ActionResult<VesselVisitNotificationDto>> AcceptVvn(Guid id)
+    {
+        _logger.LogInformation("API Request: PUT accept VVN with id = {id}", id);
+
+        try
+        {
+            var vvn = await _service.GetByIdAsync(new VesselVisitNotificationId(id));
+            var vvnDto = await _service.AcceptVvnAsync(new VvnCode(vvn.Code));
+            _logger.LogInformation("API Response (200): VVN with id = {id} successfully accepted", id);
+            return Ok(vvnDto);
+        }
+        catch (BusinessRuleValidationException ex)
+        {
+            _logger.LogWarning("API Error (400): Could not accept VVN with id = {id}. Reason: {Message}", id,
+                ex.Message);
+            return BadRequest(ex.Message);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Unexpected error accepting VVN with id = {id}", id);
+            return StatusCode(500, "An unexpected error occurred while accepting the VVN.");
+        }
+    }
+    
+    [HttpPut("reject/")]
+    public async Task<ActionResult<VesselVisitNotificationDto>> RejectVvn(RejectVesselVisitNotificationDto dto)
+    {
+        _logger.LogInformation("API Request: PUT reject VVN with code = {code}", dto.VvnCode);
+
+        try
+        {
+            var vvnDto = await _service.MarkAsPendingAsync(dto);
+            _logger.LogInformation("API Response (200): VVN with code = {code} successfully rejected", dto.VvnCode);
+            return Ok(vvnDto);
+        }
+        catch (BusinessRuleValidationException ex)
+        {
+            _logger.LogWarning("API Error (400): Could not reject VVN with code = {code}. Reason: {Message}", dto.VvnCode,
+                ex.Message);
+            return BadRequest(ex.Message);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Unexpected error rejecting VVN with code = {id}", dto.VvnCode);
+            return StatusCode(500, "An unexpected error occurred while rejecting the VVN.");
+        }
+    }
 }
