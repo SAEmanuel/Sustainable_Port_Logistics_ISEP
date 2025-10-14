@@ -174,7 +174,7 @@ Accept: {{accept}}
 # ===================================================================
 
 ###
-PUT {{portURL}}/api/VesselVisitNotification/b66d20a8-8bbc-4f9d-8f8f-345165fd8bed/submit
+PUT {{portURL}}/api/VesselVisitNotification/d16d133f-9b81-43a9-b651-c0a8bbfef135/submit
 Content-Type: {{contentType}}
 Accept: {{accept}}
 
@@ -194,5 +194,31 @@ Accept: {{accept}}
 # ===================================================================
 
 ###
-GET {{portURL}}/api/VesselVisitNotification/id/b8bbb8ac-0739-495c-8e6d-85039f2889eb
+GET {{portURL}}/api/VesselVisitNotification/id/b6a5e2c0-0a58-42ef-8612-3cf7a47d65ec
 Accept: {{accept}}
+
+
+# ===================================================================
+# ️6️⃣ PUT Accept VVN
+# ===================================================================
+
+###
+PUT {{portURL}}/api/VesselVisitNotification/accept/id/b6a5e2c0-0a58-42ef-8612-3cf7a47d65ec
+Accept: {{accept}}
+
+# ===================================================================
+# ️7️⃣ PUT Reject/MarkAsPending VVN
+# ===================================================================
+
+###
+PUT {{portURL}}/api/VesselVisitNotification/reject
+Content-Type: {{contentType}}
+Accept: {{accept}}
+
+{
+    "vvnCode": "2025-THPA-000002",
+    "reason": "Rejecting the VVN due to inconsistencies found in the estimated time of arrival and departure, which require correction before approval."
+}
+
+
+

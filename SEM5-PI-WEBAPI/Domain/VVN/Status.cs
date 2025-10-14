@@ -39,7 +39,7 @@ public class Status : IValueObject
     {
         if (showMessage && !string.IsNullOrEmpty(Message))
         {
-            return $"Status: {StatusValue}, Mensagem: {Message}";
+            return $"Status: {StatusValue}, Message: {Message}";
         }
         else
         {
