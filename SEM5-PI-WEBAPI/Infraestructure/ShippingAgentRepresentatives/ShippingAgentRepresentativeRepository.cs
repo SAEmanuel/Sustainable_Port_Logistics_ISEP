@@ -23,17 +23,29 @@ namespace SEM5_PI_WEBAPI.Infraestructure.ShippingAgentRepresentatives
             return await _context.ShippingAgentRepresentative
                 .FirstOrDefaultAsync(x => x.Name.ToLower().Trim() == name.ToLower().Trim());
         }
+
+        public async Task<ShippingAgentRepresentative?> GetByCitizenIdAsync(string cId)
+        {
+            return await _context.ShippingAgentRepresentative
+                .FirstOrDefaultAsync(x => x.CitizenId.ToLower().Trim() == cId.ToLower().Trim());
+        }
         
         public async Task<ShippingAgentRepresentative?> GetByEmailAsync(string email)
         {
             return await _context.ShippingAgentRepresentative
                 .FirstOrDefaultAsync(x => x.Email.ToLower().Trim() == email.ToLower().Trim());
         }
-        
+
         public async Task<ShippingAgentRepresentative?> GetByStatusAsync(Status status)
         {
             return await _context.ShippingAgentRepresentative
                 .FirstOrDefaultAsync(x => x.Status == status);
+        }
+
+        public async Task<ShippingAgentRepresentative?> GetBySaoAsync(ShippingOrganizationCode sao)
+        {
+            return await _context.ShippingAgentRepresentative
+                .FirstOrDefaultAsync(x => x.SAO.Value.ToString().ToLower().Trim() == sao.Value.ToString().ToLower().Trim());
         }
 
         public async Task<List<ShippingAgentRepresentative>> GetFilterAsync(string? name, string? citizenId, string? nationality, string? email, string? phoneNumber,Status? status,ShippingOrganizationCode? sao, string? query)

@@ -13,10 +13,10 @@ namespace SEM5_PI_WEBAPI.Infraestructure.ShippingAgentOrganizations
             _context = context;
         }
 
-        public async Task<ShippingAgentOrganization?> GetByCodeAsync(string code)
+        public async Task<ShippingAgentOrganization?> GetByCodeAsync(ShippingOrganizationCode code)
         {
             return await _context.ShippingAgentOrganization
-                .FirstOrDefaultAsync(x => x.ShippingOrganizationCode.ToString().ToLower().Trim() == code.ToLower().Trim());
+                .FirstOrDefaultAsync(x => x.ShippingOrganizationCode.Value.ToString().ToLower().Trim() == code.Value.ToString().ToLower().Trim());
         }
         public async Task<ShippingAgentOrganization?> GetByLegalNameAsync(string legalName)
         {

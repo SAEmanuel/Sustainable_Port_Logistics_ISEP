@@ -764,7 +764,7 @@ public class VesselVisitNotificationService : IVesselVisitNotificationService
             throw new BusinessRuleValidationException($"SAR {idSarWhoImAm} is not associated with any organization.");
         }
 
-        var organizationInDb = await _shippingAgentOrganizationRepository.GetByCodeAsync(organizationCode.Value);
+        var organizationInDb = await _shippingAgentOrganizationRepository.GetByCodeAsync(organizationCode);
         if (organizationInDb == null)
         {
             _logger.LogError("Organization with code {Code} not found for SAR {SAR_ID}", organizationCode.Value,

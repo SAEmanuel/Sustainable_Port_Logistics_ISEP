@@ -59,6 +59,16 @@ public class ShippingAgentRepresentativeService
         if (q == null)
             return null;
 
+        return new ShippingAgentRepresentativeDto(q.Id.AsGuid(), q.Name, q.CitizenId, q.Nationality, q.Email, q.PhoneNumber, q.Status, q.SAO, q.Notifs);
+    }
+    
+     public async Task<ShippingAgentRepresentativeDto> GetByCitizenId(string cId)
+    {
+        var q = await this._repo.GetByCitizenIdAsync(cId);
+
+        if (q == null)
+            return null;
+
         return new ShippingAgentRepresentativeDto(q.Id.AsGuid(), q.Name, q.CitizenId, q.Nationality,q.Email,q.PhoneNumber,q.Status,q.SAO,q.Notifs);   
     }
 
@@ -69,20 +79,39 @@ public class ShippingAgentRepresentativeService
         if (q == null)
             return null;
 
-        return new ShippingAgentRepresentativeDto(q.Id.AsGuid(), q.Name, q.CitizenId, q.Nationality,q.Email,q.PhoneNumber,q.Status,q.SAO,q.Notifs);   
+        return new ShippingAgentRepresentativeDto(q.Id.AsGuid(), q.Name, q.CitizenId, q.Nationality, q.Email, q.PhoneNumber, q.Status, q.SAO, q.Notifs);
+    }
+
+    public async Task<ShippingAgentRepresentativeDto> GetBySaoAsync(ShippingOrganizationCode Code)
+    {
+        var q = await this._repo.GetBySaoAsync(Code);
+
+        if (q == null)
+            return null;
+
+        return new ShippingAgentRepresentativeDto(q.Id.AsGuid(), q.Name, q.CitizenId, q.Nationality, q.Email, q.PhoneNumber, q.Status, q.SAO, q.Notifs);
     }
 
     public async Task<ShippingAgentRepresentativeDto> AddAsync(CreatingShippingAgentRepresentativeDto dto)
     {
+
+        //verfica se já existe algum SAR com o Id de cidadão do SAR a ser criado
+        var idExist = await _repo.GetByCitizenIdAsync(dto.CitizenId);
+        if (idExist != null) throw new BusinessRuleValidationException($"An SAR with citizen Id '{dto.CitizenId}' already exists on DB.");
+       
+        
         if (!Enum.TryParse<Status>(dto.Status, true, out var status))
             throw new BusinessRuleValidationException($"Invalid status '{dto.Status}'. Must be 'activated' or 'deactivated'.");
 
-        var saoInDb = await _shippingAgentOrganizationRepository.GetByCodeAsync(dto.Sao);
+        var saoInDb = await _shippingAgentOrganizationRepository.GetByCodeAsync(new ShippingOrganizationCode(dto.Sao));
+        if (saoInDb == null) throw new BusinessRuleValidationException($"SAO '{dto.Sao}' not found in Db.");
         
-        if(saoInDb == null) throw new BusinessRuleValidationException($"Sao '{dto.Sao}' not found in Db.");
-            
         var saoCode = new ShippingOrganizationCode(dto.Sao);
         
+        //verfica se já existe algum SAR associado ao SAO que se pretende associar ao SAR que se está a criar
+        var saoTaken = await _repo.GetBySaoAsync(saoCode);
+        if (saoTaken != null) throw new BusinessRuleValidationException($"A representative for SAO '{dto.Sao}' already exists on DB.");
+   
         var representative = new ShippingAgentRepresentative(
             dto.Name,
             dto.CitizenId,
