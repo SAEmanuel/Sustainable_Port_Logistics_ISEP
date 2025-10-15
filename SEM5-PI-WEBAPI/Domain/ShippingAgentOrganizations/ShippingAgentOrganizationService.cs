@@ -5,11 +5,13 @@ namespace SEM5_PI_WEBAPI.Domain.ShippingAgentOrganizations;
 
 public class ShippingAgentOrganizationService
 {
+    private readonly ILogger<ShippingAgentOrganizationService> _logger;
     private readonly IUnitOfWork _unitOfWork;
     private readonly IShippingAgentOrganizationRepository _repo;
 
-    public ShippingAgentOrganizationService(IUnitOfWork unitOfWork, IShippingAgentOrganizationRepository repo)
+    public ShippingAgentOrganizationService(ILogger<ShippingAgentOrganizationService> logger,IUnitOfWork unitOfWork, IShippingAgentOrganizationRepository repo)
     {
+        _logger = logger;
         _unitOfWork = unitOfWork;
         _repo = repo;
     }
@@ -44,9 +46,9 @@ public class ShippingAgentOrganizationService
         return new ShippingAgentOrganizationDto(q.Id.AsGuid(), q.ShippingOrganizationCode, q.LegalName, q.AltName, q.Address, q.Taxnumber);
     }
     
-    public async Task<ShippingAgentOrganizationDto> GetByCodeAsync(string shippingOrganizationCode)
+    public async Task<ShippingAgentOrganizationDto> GetByCodeAsync(ShippingOrganizationCode shippingOrganizationCode)
     {
-        ShippingOrganizationCode c = ShippingOrganizationCode.FromString(shippingOrganizationCode);
+        
         var q = await this._repo.GetByCodeAsync(shippingOrganizationCode);
 
         if (q == null)
@@ -65,14 +67,36 @@ public class ShippingAgentOrganizationService
         return new ShippingAgentOrganizationDto(q.Id.AsGuid(), q.ShippingOrganizationCode, q.LegalName, q.AltName, q.Address, q.Taxnumber);
     }
 
-    public async Task<ShippingAgentOrganizationDto> AddAsync(CreatingShippingAgentOrganizationDto dto)
-    {
-        var saoInDb = await _repo.GetByTaxNumberAsync(new TaxNumber(dto.Taxnumber));
-        if (saoInDb != null) throw new BusinessRuleValidationException($"Shipping agent organization with tax number {dto.Taxnumber} already exist.");
 
-        var shippingAgentOrganization = ShippingAgentOrganizationFactory.CreateEntity(dto);
-        await _repo.AddAsync(shippingAgentOrganization);
+    public async Task<ShippingAgentOrganizationDto> CreateAsync(CreatingShippingAgentOrganizationDto creatingshippingAgentOrganizationDto)
+    {
+
+        _logger.LogInformation("Business Domain: Request to add new Shipping Agent Organization with code  = {CODE}", creatingshippingAgentOrganizationDto.ShippingOrganizationCode);
+
+        //verificação de duplicados com o mesmo código
+        var code = new ShippingOrganizationCode(creatingshippingAgentOrganizationDto.ShippingOrganizationCode);
+        var codeExist = await _repo.GetByCodeAsync(code);
+
+        if (codeExist != null) throw new BusinessRuleValidationException($"SAO with code '{creatingshippingAgentOrganizationDto.ShippingOrganizationCode}' already exists on DB.");
+
+        //verificação de duplicados com o mesmo tax number
+        var tax = new TaxNumber(creatingshippingAgentOrganizationDto.Taxnumber);
+        var taxExist = await _repo.GetByTaxNumberAsync(tax);
+
+        if (codeExist != null) throw new BusinessRuleValidationException($"SAO with tax number '{creatingshippingAgentOrganizationDto.Taxnumber}' already exists on DB.");
+
+        //verificação de duplicados com o mesmo legal name
+        var legalExist = await _repo.GetByLegalNameAsync(creatingshippingAgentOrganizationDto.LegalName);
+
+        if (codeExist != null) throw new BusinessRuleValidationException($"SAO with legal name '{creatingshippingAgentOrganizationDto.LegalName}' already exists on DB.");
+
+        ShippingAgentOrganization createdOrg = ShippingAgentOrganizationFactory.CreateEntity(creatingshippingAgentOrganizationDto);
+         
+        await _repo.AddAsync(createdOrg);
         await _unitOfWork.CommitAsync();
-        return ShippingAgentOrganizationFactory.CreateDto(shippingAgentOrganization);
+
+        _logger.LogInformation("Business Domain: SAO Created Successfully with Code Number [{CODE}] and System ID [{ID}].", createdOrg.ShippingOrganizationCode,createdOrg.Id);
+
+        return ShippingAgentOrganizationFactory.CreateDto(createdOrg);
     }
 }

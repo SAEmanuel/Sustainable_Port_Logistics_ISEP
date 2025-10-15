@@ -1,0 +1,37 @@
+@portURL = http://localhost:5008
+
+### --- SHIPPING AGENT ORGANIZATION ---
+
+###
+GET {{portURL}}/api/ShippingAgentOrganization
+Accept: application/json
+
+###
+GET {{portURL}}/api/ShippingAgentOrganization/id/
+Accept: application/json
+
+###
+GET {{portURL}}/api/ShippingAgentOrganization/code/
+Accept: application/json
+
+###
+GET {{portURL}}/api/ShippingAgentOrganization/name/
+Accept: application/json
+
+###
+GET {{portURL}}/api/ShippingAgentOrganization/taxnumber/
+Accept: application/json
+
+###
+POST {{portURL}}/api/ShippingAgentOrganization
+Content-Type: application/json
+Accept: application/json
+
+{
+  "shippingOrganizationCode": "1234567890",
+  "LegalName": "Shipping Co.",
+  "AltName": "Shipping",
+  "Address": "R. Dr. António Bernardino de Almeida 431, 4249-015 Porto",
+  "Taxnumber": "PT123456789"
+}
+
