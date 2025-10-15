@@ -3,6 +3,7 @@ using SEM5_PI_WEBAPI.Domain.CargoManifests.CargoManifestEntries;
 using SEM5_PI_WEBAPI.Domain.Containers;
 using SEM5_PI_WEBAPI.Domain.Containers.DTOs;
 using SEM5_PI_WEBAPI.Domain.Shared;
+using SEM5_PI_WEBAPI.Domain.StaffMembers;
 using SEM5_PI_WEBAPI.Domain.StorageAreas;
 using SEM5_PI_WEBAPI.Domain.ValueObjects;
 
@@ -73,7 +74,7 @@ public class CargoManifestService
             entries.Add(entry);
         }
 
-        var cargoManifest = new CargoManifest(entries, genCode, dto.Type, DateTime.UtcNow, dto.CreatedBy);
+        var cargoManifest = new CargoManifest(entries, genCode, dto.Type, DateTime.UtcNow, new Email(dto.CreatedBy));
 
         await _repo.AddAsync(cargoManifest);
         await _unitOfWork.CommitAsync();
@@ -109,7 +110,7 @@ public class CargoManifestService
             cargo.Code,
             cargo.Type,
             cargo.CreatedAt,
-            cargo.SubmittedBy,
+            cargo.SubmittedBy.ToString(),
             entryDtos
         );
     }

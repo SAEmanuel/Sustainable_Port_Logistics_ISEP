@@ -124,7 +124,7 @@ public static class VesselVisitNotificationFactory
             cargoManifest.Code,
             cargoManifest.Type,
             cargoManifest.CreatedAt,
-            cargoManifest.SubmittedBy,
+            cargoManifest.SubmittedBy.ToString(),
             cargoManifestEntrysDto
         );
     }

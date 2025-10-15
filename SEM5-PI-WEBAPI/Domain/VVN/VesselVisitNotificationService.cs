@@ -10,6 +10,7 @@ using SEM5_PI_WEBAPI.Domain.Dock;
 using SEM5_PI_WEBAPI.Domain.Shared;
 using SEM5_PI_WEBAPI.Domain.ShippingAgentOrganizations;
 using SEM5_PI_WEBAPI.Domain.ShippingAgentRepresentatives;
+using SEM5_PI_WEBAPI.Domain.StaffMembers;
 using SEM5_PI_WEBAPI.Domain.StorageAreas;
 using SEM5_PI_WEBAPI.Domain.Tasks;
 using SEM5_PI_WEBAPI.Domain.ValueObjects;
@@ -875,7 +876,7 @@ public class VesselVisitNotificationService : IVesselVisitNotificationService
         }
 
         var generatedCode = await GenerateNextCargoManifestCodeAsync();
-        var cargoManifest = new CargoManifest(entries, generatedCode, dto.Type, DateTime.UtcNow, dto.CreatedBy);
+        var cargoManifest = new CargoManifest(entries, generatedCode, dto.Type, DateTime.UtcNow, new Email(dto.CreatedBy));
 
         await _cargoManifestRepository.AddAsync(cargoManifest);
         await _unitOfWork.CommitAsync();
