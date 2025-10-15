@@ -87,5 +87,24 @@ public class TaxNumber : IValueObject
 
     public override string ToString() => Value;
 
+    public static bool TryParse(string? input, out TaxNumber? result)
+{
+    result = null;
+
+    if (string.IsNullOrWhiteSpace(input))
+        return false;
+
+    try
+    {
+        result = new TaxNumber(input);
+        return true;
+    }
+    catch
+    {
+        // Any exception means parsing failed
+        result = null;
+        return false;
+    }
+}
    
 }
