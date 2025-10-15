@@ -22,8 +22,12 @@ namespace SEM5_PI_WEBAPI.Infraestructure.CargoManifests
             builder.Property(c => c.CreatedAt)
                 .IsRequired();
 
-            builder.Property(c => c.SubmittedBy)
-                .IsRequired();
+            builder.OwnsOne(c => c.SubmittedBy, email =>
+            {
+                email.Property(e => e.Address)
+                    .HasColumnName("Email")
+                    .IsRequired();
+            });
 
             builder.HasMany(c => c.ContainerEntries)
                 .WithOne()

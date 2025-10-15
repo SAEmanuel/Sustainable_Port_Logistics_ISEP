@@ -25,7 +25,7 @@ namespace SEM5_PI_WEBAPI.Domain.VVN
 
         public Status Status { get; private set; }
         public DockCode? Dock { get; private set; }
-        public CrewManifest? CrewManifest { get; private set; }
+        public CrewManifest CrewManifest { get; private set; }
         public CargoManifest? LoadingCargoManifest { get; private set; }
         public CargoManifest? UnloadingCargoManifest { get; private set; }
         public ImoNumber VesselImo { get; private set; }

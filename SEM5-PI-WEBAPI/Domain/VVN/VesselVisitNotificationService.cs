@@ -86,7 +86,11 @@ public class VesselVisitNotificationService : IVesselVisitNotificationService
         var vvnCode = await GenerateNextVvnCodeAsync();
         var vesselImo = await CheckForVesselInDb(dto.VesselImo);
 
-        // FALTA VERIFICAR SE A CARGA DO (UN)LOADING É PERIGOSA E VER SE HÁ STAFF PARA ISSO
+        if (unloadingCargoManifest != null)
+            checkNeededPersonel(unloadingCargoManifest, crewManifest);
+
+        if (loadingCargoManifest != null)
+            checkNeededPersonel(loadingCargoManifest, crewManifest);
 
         var newVesselVisitNotification = VesselVisitNotificationFactory.CreateVesselVisitNotification(
             vvnCode,
@@ -317,8 +321,9 @@ public class VesselVisitNotificationService : IVesselVisitNotificationService
     }
 
 
-    public async Task<List<VesselVisitNotificationDto>> GetInProgressPendingInformationVvnsByShippingAgentRepresentativeIdFiltersAsync(
-         Guid idSarWhoImAm, FilterInProgressPendingVvnStatusDto dto)
+    public async Task<List<VesselVisitNotificationDto>>
+        GetInProgressPendingInformationVvnsByShippingAgentRepresentativeIdFiltersAsync(
+            Guid idSarWhoImAm, FilterInProgressPendingVvnStatusDto dto)
     {
         _logger.LogInformation("Starting VVN filtering for SAR {SAR_ID} with filters: {@Filters}", idSarWhoImAm, dto);
 
@@ -427,7 +432,7 @@ public class VesselVisitNotificationService : IVesselVisitNotificationService
         return result;
     }
 
-    
+
     public async Task<List<VesselVisitNotificationDto>> GetSubmittedVvnsByShippingAgentRepresentativeIdFiltersAsync(
         Guid idSarWhoImAm, FilterSubmittedVvnStatusDto dto)
     {
@@ -486,7 +491,7 @@ public class VesselVisitNotificationService : IVesselVisitNotificationService
         return result;
     }
 
-        public async Task<List<VesselVisitNotificationDto>> GetAcceptedVvnsByShippingAgentRepresentativeIdFiltersAsync(
+    public async Task<List<VesselVisitNotificationDto>> GetAcceptedVvnsByShippingAgentRepresentativeIdFiltersAsync(
         Guid idSarWhoImAm, FilterAcceptedVvnStatusDto dto)
     {
         _logger.LogInformation("Starting Accepted VVNs query for SAR {SAR_ID} with filters: {@Filters}", idSarWhoImAm,
@@ -537,7 +542,7 @@ public class VesselVisitNotificationService : IVesselVisitNotificationService
             listVvnFiltered = GetVvnsFilterBySubmittedDate(listVvnFiltered, dto.SubmittedDate);
             _logger.LogInformation("After submit date: {SUBM}", listVvnFiltered.Count);
         }
-        
+
         if (!string.IsNullOrWhiteSpace(dto.AcceptedDate))
         {
             _logger.LogInformation("Applying accepted date: {ACPT}", dto.AcceptedDate);
@@ -550,7 +555,7 @@ public class VesselVisitNotificationService : IVesselVisitNotificationService
 
         return result;
     }
-    
+
     //========================================
     private List<VesselVisitNotification> GetVvnsFilterByAcceptedDate(
         List<VesselVisitNotification> vvnList, string acceptedDate)
@@ -576,10 +581,11 @@ public class VesselVisitNotificationService : IVesselVisitNotificationService
                         Math.Abs((v.AcceptenceDate.Value - filterClockTime.Value).TotalHours) <= 1)
             .ToList();
 
-        _logger.LogInformation("Accepted Date filter result: {Count}/{Total} VVNs matched.", filtered.Count, vvnList.Count);
+        _logger.LogInformation("Accepted Date filter result: {Count}/{Total} VVNs matched.", filtered.Count,
+            vvnList.Count);
         return filtered;
     }
-    
+
     private List<VesselVisitNotification> GetVvnsFilterBySubmittedDate(
         List<VesselVisitNotification> vvnList, string submittedDate)
     {
@@ -604,9 +610,11 @@ public class VesselVisitNotificationService : IVesselVisitNotificationService
                         Math.Abs((v.SubmittedDate.Value - filterClockTime.Value).TotalHours) <= 1)
             .ToList();
 
-        _logger.LogInformation("Submitted Date filter result: {Count}/{Total} VVNs matched.", filtered.Count, vvnList.Count);
+        _logger.LogInformation("Submitted Date filter result: {Count}/{Total} VVNs matched.", filtered.Count,
+            vvnList.Count);
         return filtered;
     }
+
     private List<VesselVisitNotification> GetVvnsFilterByEstimatedTimeDeparture(
         List<VesselVisitNotification> vvnList, string estimatedTimeDeparture)
     {
@@ -837,11 +845,8 @@ public class VesselVisitNotificationService : IVesselVisitNotificationService
         return tasks;
     }
 
-    private async Task<CrewManifest?> CreateCrewManifestAsync(CreatingCrewManifestDto? dto)
+    private async Task<CrewManifest> CreateCrewManifestAsync(CreatingCrewManifestDto dto)
     {
-        if (dto == null)
-            return null;
-
         var crewMembers = dto.CrewMembers?
             .Select(cm => new CrewMember(cm.Name, cm.Role, cm.Nationality, new CitizenId(cm.CitizenId)))
             .ToList() ?? new List<CrewMember>();
@@ -876,7 +881,8 @@ public class VesselVisitNotificationService : IVesselVisitNotificationService
         }
 
         var generatedCode = await GenerateNextCargoManifestCodeAsync();
-        var cargoManifest = new CargoManifest(entries, generatedCode, dto.Type, DateTime.UtcNow, new Email(dto.CreatedBy));
+        var cargoManifest =
+            new CargoManifest(entries, generatedCode, dto.Type, DateTime.UtcNow, new Email(dto.CreatedBy));
 
         await _cargoManifestRepository.AddAsync(cargoManifest);
         await _unitOfWork.CommitAsync();
@@ -959,5 +965,43 @@ public class VesselVisitNotificationService : IVesselVisitNotificationService
             throw new BusinessRuleValidationException("Unable to set dock status");
 
         return availableDocks[attributedDock].Code;
+    }
+
+    private void checkNeededPersonel(CargoManifest cargoManifest, CrewManifest crewManifest)
+    {
+        bool hasHazmat = false;
+        foreach (var entry in cargoManifest.ContainerEntries)
+        {
+            if (entry.Container.Type.Equals(ContainerType.Hazmat))
+            {
+                hasHazmat = true;
+                break;
+            }
+        }
+
+        if (hasHazmat && crewManifest.CrewMembers.IsNullOrEmpty())
+        {
+            throw new BusinessRuleValidationException(
+                "Hazmat cargo! Make sure a the Crew Manifest has a Safety Officer associated!");
+        }
+
+        if (hasHazmat && !crewManifest.CrewMembers.IsNullOrEmpty())
+        {
+            bool securityFound = false;
+            foreach (var crewMember in crewManifest.CrewMembers)
+            {
+                if (crewMember.Role.Equals(CrewRole.SafetyOfficer))
+                {
+                    securityFound = true;
+                    break;
+                }
+            }
+
+            if (!securityFound)
+            {
+                throw new BusinessRuleValidationException(
+                    "Hazmat cargo! Make sure a the Crew Manifest has a Safety Officer associated!");
+            }
+        }
     }
 }

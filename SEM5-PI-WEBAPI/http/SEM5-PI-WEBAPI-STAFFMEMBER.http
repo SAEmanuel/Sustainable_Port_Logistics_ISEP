@@ -77,7 +77,7 @@ Accept: application/json
     "Shift": "Morning",
     "DaysOfWeek": "1010101"
   },
-  "qualificationCodes": ["QLF-002"],
+  "qualificationCodes": ["QLF-007"],
   "addQualifications" : "false"
 }
 

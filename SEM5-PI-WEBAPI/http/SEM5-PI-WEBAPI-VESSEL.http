@@ -60,7 +60,7 @@ Accept: application/json
   "imoNumber": "IMO 9876543",
   "name": "Ever Given",
   "owner": "Evergreen Marine",
-  "vesselTypeId": "166e15aa-9c25-44a3-8f73-5fde63a8ddf7"
+  "vesselTypeId": "1226070f-5715-4d72-8ee3-1be0185226db"
 }
 
 ###
@@ -73,7 +73,7 @@ Accept: application/json
   "imoNumber": "IMO 9399014",
   "name": "MSC Gülsün",
   "owner": "Mediterranean Shipping Company",
-  "vesselTypeId": "b928c0c9-90c8-4e41-9a6d-59ec1ffef048"
+  "vesselTypeId": "1226070f-5715-4d72-8ee3-1be0185226db"
 }
 
 ###

@@ -20,7 +20,7 @@ Accept: {{accept}}
     "crewMembers": [
       {
         "name": "Carlos Mendes",
-        "role": "ChiefOfficer",
+        "role": "SafetyOfficer",
         "nationality": "Portugal",
         "citizenId": "A12345"
       },
@@ -35,17 +35,17 @@ Accept: {{accept}}
 
   "loadingCargoManifest": {
     "type": "Loading",
-    "createdBy": "Agent01",
+    "createdBy": "Agent01@gmail.com",
     "entries": [
       {
         "bay": 2,
         "row": 3,
         "tier": 4,
-        "storageAreaId": "ed103984-4131-4383-aba7-3741b26ee798",
+        "storageAreaId": "e6ced4ab-2901-4d7f-b8c0-d2a32fe506d6",
         "container": {
           "isoCode": "MSCU6639870",
           "description": "Perishable frozen food cargo",
-          "type": "Reefer",
+          "type": "Hazmat",
           "weightKg": 10800
         }
       }

@@ -90,13 +90,13 @@ namespace SEM5_PI_WEBAPI
             services.AddTransient<IUnitOfWork, UnitOfWork>();
 
             services.AddTransient<IQualificationRepository, QualificationRepository>();
-            services.AddTransient<QualificationService>();
+            services.AddScoped<IQualificationService, QualificationService>();
 
             services.AddTransient<IVesselTypeRepository, VesselTypeRepository>();
             services.AddScoped<IVesselTypeService,VesselTypeService>();
 
             services.AddTransient<IStaffMemberRepository, StaffMemberRepository>();
-            services.AddTransient<StaffMemberService>();
+            services.AddScoped<IStaffMemberService, StaffMemberService>();
 
             services.AddTransient<IVesselRepository, VesselRepository>();
             services.AddScoped<IVesselService,VesselService>();
