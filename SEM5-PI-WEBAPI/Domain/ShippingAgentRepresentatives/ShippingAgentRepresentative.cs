@@ -1,4 +1,5 @@
 using System.Runtime.Intrinsics.X86;
+using System.Text.RegularExpressions;
 using SEM5_PI_WEBAPI.Domain.Shared;
 using SEM5_PI_WEBAPI.Domain.ShippingAgentOrganizations;
 using SEM5_PI_WEBAPI.Domain.ValueObjects;
@@ -29,6 +30,9 @@ public class ShippingAgentRepresentative : Entity<ShippingAgentRepresentativeId>
 
     public ShippingAgentRepresentative(string name, string citizenId, string nationality, string email, string phoneNumber,Status status, ShippingOrganizationCode sao)
     {
+        if (!IsValidEmail(email))
+        throw new BusinessRuleValidationException("Invalid email format.");
+
         Name = name;
         CitizenId = citizenId;
         Nationality = nationality;
@@ -63,6 +67,9 @@ public class ShippingAgentRepresentative : Entity<ShippingAgentRepresentativeId>
 
     public void UpdateEmail(string email)
     {
+        if (!IsValidEmail(email))
+            throw new BusinessRuleValidationException("Invalid email format.");
+
         Email = email;
     }
     public void UpdateStatus(string status)
@@ -83,5 +90,15 @@ public class ShippingAgentRepresentative : Entity<ShippingAgentRepresentativeId>
     public void UpdatePhoneNumber(string phoneNumber)
     {
         PhoneNumber = phoneNumber;
+    }
+
+    public static bool IsValidEmail(string email)
+    {
+        if (string.IsNullOrWhiteSpace(email))
+            return false;
+
+        // Simple and reliable regex for common email formats
+        var pattern = @"^[^@\s]+@[^@\s]+\.[^@\s]+$";
+        return Regex.IsMatch(email, pattern, RegexOptions.IgnoreCase);
     }
 }

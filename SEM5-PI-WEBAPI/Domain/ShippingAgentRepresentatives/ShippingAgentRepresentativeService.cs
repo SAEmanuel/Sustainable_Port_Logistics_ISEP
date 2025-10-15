@@ -159,7 +159,16 @@ public class ShippingAgentRepresentativeService
 
         await _unitOfWork.CommitAsync();
 
-        return new ShippingAgentRepresentativeDto(representative.Name,representative.CitizenId,representative.Nationality,representative.Email,representative.PhoneNumber,representative.Status,representative.SAO,representative.Notifs);
+        return new ShippingAgentRepresentativeDto(
+            representative.Name,
+            representative.CitizenId,
+            representative.Nationality,
+            representative.Email,
+            representative.PhoneNumber,
+            representative.Status,
+            representative.SAO,
+            representative.Notifs
+        );
     }
      
      

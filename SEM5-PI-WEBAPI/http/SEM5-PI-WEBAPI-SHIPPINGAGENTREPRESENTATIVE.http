@@ -7,19 +7,15 @@ GET {{portURL}}/api/ShippingAgentRepresentative
 Accept: application/json
 
 ###
-GET {{portURL}}/api/ShippingAgentRepresentative/id/
+GET {{portURL}}/api/ShippingAgentRepresentative/name/Alexandre
 Accept: application/json
 
 ###
-GET {{portURL}}/api/ShippingAgentRepresentative/name/
+GET {{portURL}}/api/ShippingAgentRepresentative/email/alexandre@gmail.com
 Accept: application/json
 
 ###
-GET {{portURL}}/api/ShippingAgentRepresentative/email/
-Accept: application/json
-
-###
-GET {{portURL}}/api/ShippingAgentRepresentative/status/
+GET {{portURL}}/api/ShippingAgentRepresentative/status/activated
 Accept: application/json
 
 ###
@@ -52,7 +48,7 @@ Accept: application/json
   "SAO": "1234567890"
 }
 
-###
+### Update representative status by name (1)
 PATCH {{portURL}}/api/ShippingAgentRepresentative/update/Alexandre
 Content-Type: application/json
 Accept: application/json
@@ -60,3 +56,32 @@ Accept: application/json
 {
   "Status": "deactivated"
 }
+
+### Update representative status by name (2)
+PATCH {{portURL}}/api/ShippingAgentRepresentative/update/Alexandre
+Content-Type: application/json
+Accept: application/json
+
+{
+  "Status": "activated"
+}
+
+### Update representative status by email (1)
+PATCH {{portURL}}/api/ShippingAgentRepresentative/update/Alexandre
+Content-Type: application/json
+Accept: application/json
+
+{
+  "Email": "alexandre@gmail.com"
+}
+
+### Update representative status by email (2)
+PATCH {{portURL}}/api/ShippingAgentRepresentative/update/Alexandre
+Content-Type: application/json
+Accept: application/json
+
+{
+  "Email": "alexandre.costa@gmail.com"
+}
+
+

@@ -7,19 +7,15 @@ GET {{portURL}}/api/ShippingAgentOrganization
 Accept: application/json
 
 ###
-GET {{portURL}}/api/ShippingAgentOrganization/id/
+GET {{portURL}}/api/ShippingAgentOrganization/code/1234567890
 Accept: application/json
 
 ###
-GET {{portURL}}/api/ShippingAgentOrganization/code/
+GET {{portURL}}/api/ShippingAgentOrganization/legalname/Shipping Co.
 Accept: application/json
 
 ###
-GET {{portURL}}/api/ShippingAgentOrganization/name/
-Accept: application/json
-
-###
-GET {{portURL}}/api/ShippingAgentOrganization/taxnumber/
+GET {{portURL}}/api/ShippingAgentOrganization/taxnumber/PT123456789
 Accept: application/json
 
 ###
