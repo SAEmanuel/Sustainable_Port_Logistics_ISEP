@@ -58,5 +58,6 @@ public class StorageAreaEntityTypeConfiguration : IEntityTypeConfiguration<Stora
 
         builder.Ignore(b => b.MaxCapacityTeu);
         builder.Ignore("_grid");
+        builder.HasIndex(b => b.Name).IsUnique();
     }
 }
