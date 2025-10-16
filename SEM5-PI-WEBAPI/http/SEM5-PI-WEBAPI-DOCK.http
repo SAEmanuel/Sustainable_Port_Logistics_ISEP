@@ -23,7 +23,7 @@ GET {{portURL}}/api/Dock/codes
 Accept: application/json
 
 ### Get by VesselType
-GET {{portURL}}/api/Dock/vesseltype/b928c0c9-90c8-4e41-9a6d-59ec1ffef048
+GET {{portURL}}/api/Dock/vesseltype/54a29674-de89-4a74-b47e-ce7338f43831
 Accept: application/json
 
 ### Filter
@@ -47,7 +47,7 @@ Accept: application/json
   "depthM": 15.5,
   "maxDraftM": 14.8,
   "allowedVesselTypeIds": [
-    "1226070f-5715-4d72-8ee3-1be0185226db"
+    "54a29674-de89-4a74-b47e-ce7338f43831"
   ]
 }
 
@@ -61,6 +61,6 @@ Accept: application/json
   "depthM": 16.0,
   "physicalResourceCodes": ["ABC-1234", "LMN-0001"],
   "allowedVesselTypeIds": [
-    "b928c0c9-90c8-4e41-9a6d-59ec1ffef048"
+    "54a29674-de89-4a74-b47e-ce7338f43831"
   ]
 }
