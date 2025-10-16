@@ -47,4 +47,13 @@
     <Compile Remove="Migrations\20251008211528_Initial.Designer.cs" />
   </ItemGroup>
 
+    <ItemGroup>
+        <None Update="Seed\Qualifications.json">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Update="Seed\StaffMembers.json">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+    </ItemGroup>
+
 </Project>

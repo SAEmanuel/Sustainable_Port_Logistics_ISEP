@@ -1,18 +1,24 @@
+using System.Text.Json;
+using SEM5_PI_WEBAPI.Domain.Qualifications;
 using SEM5_PI_WEBAPI.Domain.ShippingAgentOrganizations;
 using SEM5_PI_WEBAPI.Domain.ShippingAgentOrganizations.DTOs;
+using SEM5_PI_WEBAPI.Domain.StaffMembers;
+using SEM5_PI_WEBAPI.Domain.StaffMembers.DTOs;
 using SEM5_PI_WEBAPI.Domain.ValueObjects;
 using SEM5_PI_WEBAPI.Domain.Vessels;
 using SEM5_PI_WEBAPI.Domain.Vessels.DTOs;
 using SEM5_PI_WEBAPI.Domain.VesselsTypes;
 using SEM5_PI_WEBAPI.Domain.VesselsTypes.DTOs;
 
-namespace SEM5_PI_WEBAPI;
+namespace SEM5_PI_WEBAPI.Seed;
 
 public class Bootstrap
 {
     private readonly IVesselTypeService _vesselTypeService;
     private readonly IVesselService _vesselService;
     private readonly IShippingAgentOrganizationService _shippingAgentOrganizationService;
+    private readonly IQualificationService _qualificationService;
+    private readonly IStaffMemberService _staffMemberService;
     private readonly ILogger<Bootstrap> _logger;
 
     //################## VESSEL TYPES ##################
@@ -55,12 +61,16 @@ public class Bootstrap
         ILogger<Bootstrap> logger,
         IVesselTypeService vesselTypeService,
         IVesselService vesselService,
-        IShippingAgentOrganizationService shippingAgentOrganizationService)
+        IShippingAgentOrganizationService shippingAgentOrganizationService,IQualificationService qualificationService,
+        IStaffMemberService staffMemberService)
     {
         _logger = logger;
         _vesselTypeService = vesselTypeService;
         _vesselService = vesselService;
         _shippingAgentOrganizationService = shippingAgentOrganizationService;
+        _qualificationService = qualificationService;
+        _staffMemberService = staffMemberService;
+        
     }
 
     public async Task SeedAsync()
@@ -69,6 +79,9 @@ public class Bootstrap
         await AddVesselTypeAsync();
         await AddVesselsAsync();
         await AddSaoAsync();
+        await AddQualificationsFromJsonAsync("Seed/Qualifications.json");
+        await AddStaffMembersFromJsonAsync("Seed/StaffMembers.json");
+
         _logger.LogInformation("[BoostTrap] Data seeding completed successfully.");
     }
 
@@ -181,4 +194,53 @@ public class Bootstrap
             }
         }
     }
+    
+    private async Task AddQualificationsFromJsonAsync(string filePath)
+    {
+        var qualifications = await LoadJsonAsync<CreatingQualificationDto>(filePath);
+        if (qualifications == null) return;
+
+        foreach (var qual in qualifications)
+        {
+            try
+            {
+                await _qualificationService.AddAsync(qual);
+                _logger.LogInformation("[BoostTrap] Qualification '{Name}' created.", qual.Name);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning("[BoostTrap] Could not add Qualification '{Name}': {Message}", qual.Name, ex.Message);
+            }
+        }
+    }
+
+    private async Task AddStaffMembersFromJsonAsync(string filePath)
+    {
+        var staffMembers = await LoadJsonAsync<CreatingStaffMemberDto>(filePath);
+        if (staffMembers == null) return;
+
+        foreach (var staff in staffMembers)
+        {
+            try
+            {
+                await _staffMemberService.AddAsync(staff);
+                _logger.LogInformation("[BoostTrap] Staff Member '{ShortName}' created.", staff.ShortName);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning("[BoostTrap] Could not add Staff Member '{ShortName}': {Message}", staff.ShortName, ex.Message);
+            }
+        }
+    }
+
+    private async Task<List<T>?> LoadJsonAsync<T>(string path)
+    {
+        using var stream = File.OpenRead(path);
+        var options = new JsonSerializerOptions
+        {
+            PropertyNameCaseInsensitive = true
+        };
+        return await JsonSerializer.DeserializeAsync<List<T>>(stream, options);
+    }
+    
 }

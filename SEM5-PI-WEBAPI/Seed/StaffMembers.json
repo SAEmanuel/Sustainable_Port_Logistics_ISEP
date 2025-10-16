@@ -1,0 +1,122 @@
+[
+  {
+    "shortName": "Alice Johnson",
+    "email": "alice.johnson@example.com",
+    "phone": "+351912345600",
+    "schedule": { "shift": 1, "daysOfWeek": "1111111" },
+    "isActive": true,
+    "qualificationCodes": [ "NAS-001", "MAE-001" ]
+  },
+  {
+    "shortName": "Bob Smith",
+    "email": "bob.smith@example.com",
+    "phone": "+351912345601",
+    "schedule": { "shift": 2, "daysOfWeek": "1010101" },
+    "isActive": true,
+    "qualificationCodes": [ "POO-001" ]
+  },
+  {
+    "shortName": "Carol White",
+    "email": "carol.white@example.com",
+    "phone": "+351912345602",
+    "schedule": { "shift": 3, "daysOfWeek": "0101010" },
+    "isActive": true,
+    "qualificationCodes": [ "LOM-001", "MAS-001" ]
+  },
+  {
+    "shortName": "David Lee",
+    "email": "david.lee@example.com",
+    "phone": "+351912345603",
+    "schedule": { "shift": 1, "daysOfWeek": "1111100" },
+    "isActive": true,
+    "qualificationCodes": [ "SHN-001" ]
+  },
+  {
+    "shortName": "Eva Green",
+    "email": "eva.green@example.com",
+    "phone": "+351912345604",
+    "schedule": { "shift": 2, "daysOfWeek": "0011110" },
+    "isActive": true,
+    "qualificationCodes": [ "CAH-001", "ENP-001" ]
+  },
+  {
+    "shortName": "Frank Wright",
+    "email": "frank.wright@example.com",
+    "phone": "+351912345605",
+    "schedule": { "shift": 3, "daysOfWeek": "0001111" },
+    "isActive": true,
+    "qualificationCodes": [ "MAL-001" ]
+  },
+  {
+    "shortName": "Grace Hall",
+    "email": "grace.hall@example.com",
+    "phone": "+351912345606",
+    "schedule": { "shift": 1, "daysOfWeek": "1010101" },
+    "isActive": true,
+    "qualificationCodes": [ "FLM-001", "MAS-001" ]
+  },
+  {
+    "shortName": "Hank Young",
+    "email": "hank.young@example.com",
+    "phone": "+351912345607",
+    "schedule": { "shift": 2, "daysOfWeek": "1110000" },
+    "isActive": true,
+    "qualificationCodes": [ "POO-001", "LOM-001" ]
+  },
+  {
+    "shortName": "Ivy King",
+    "email": "ivy.king@example.com",
+    "phone": "+351912345608",
+    "schedule": { "shift": 3, "daysOfWeek": "0001111" },
+    "isActive": true,
+    "qualificationCodes": [ "NAS-001" ]
+  },
+  {
+    "shortName": "Jack Scott",
+    "email": "jack.scott@example.com",
+    "phone": "+351912345609",
+    "schedule": { "shift": 1, "daysOfWeek": "1111111" },
+    "isActive": true,
+    "qualificationCodes": [ "MAE-001", "FLM-001" ]
+  },
+  {
+    "shortName": "Kate Adams",
+    "email": "kate.adams@example.com",
+    "phone": "+351912345610",
+    "schedule": { "shift": 2, "daysOfWeek": "1010101" },
+    "isActive": true,
+    "qualificationCodes": [ "CAH-001" ]
+  },
+  {
+    "shortName": "Luke Evans",
+    "email": "luke.evans@example.com",
+    "phone": "+351912345611",
+    "schedule": { "shift": 3, "daysOfWeek": "0101010" },
+    "isActive": true,
+    "qualificationCodes": [ "ENP-001", "MAS-001" ]
+  },
+  {
+    "shortName": "Mia Turner",
+    "email": "mia.turner@example.com",
+    "phone": "+351912345612",
+    "schedule": { "shift": 1, "daysOfWeek": "1111100" },
+    "isActive": true,
+    "qualificationCodes": [ "MAL-001", "SHN-001" ]
+  },
+  {
+    "shortName": "Nathan Carter",
+    "email": "nathan.carter@example.com",
+    "phone": "+351912345613",
+    "schedule": { "shift": 2, "daysOfWeek": "0011110" },
+    "isActive": true,
+    "qualificationCodes": [ "POO-001" ]
+  },
+  {
+    "shortName": "Olivia Harris",
+    "email": "olivia.harris@example.com",
+    "phone": "+351912345614",
+    "schedule": { "shift": 3, "daysOfWeek": "0001111" },
+    "isActive": true,
+    "qualificationCodes": [ "LOM-001", "FLM-001" ]
+  }
+]

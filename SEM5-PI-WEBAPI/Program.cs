@@ -1,3 +1,4 @@
+using SEM5_PI_WEBAPI.Seed;
 using Serilog;
 
 namespace SEM5_PI_WEBAPI

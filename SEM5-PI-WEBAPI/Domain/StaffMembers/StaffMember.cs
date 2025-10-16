@@ -67,13 +67,7 @@ public class StaffMember : Entity<StaffMemberId>, IAggregateRoot
     {
         IsActive = !IsActive;
     }
-
     
-    public void SetQualifications(IEnumerable<QualificationId> qualificationIds)
-    {
-        _qualifications.Clear();
-        _qualifications.AddRange(qualificationIds);
-    }
 
     public void AddQualification(QualificationId qualification)
     {
@@ -87,6 +81,20 @@ public class StaffMember : Entity<StaffMemberId>, IAggregateRoot
         if (!_qualifications.Remove(qualification))
             throw new BusinessRuleValidationException("Qualification not found. Not removed!");
     }
+    
+    public void SetQualifications(IEnumerable<QualificationId> qualificationIds)
+    {
+        var toRemove = _qualifications.Where(q => !qualificationIds.Contains(q)).ToList();
+        foreach (var q in toRemove)
+            _qualifications.Remove(q);
+        
+        foreach (var q in qualificationIds)
+        {
+            if (!_qualifications.Contains(q))
+                _qualifications.Add(q);
+        }
+    }
+
 
     public override bool Equals(object? obj)
     {

@@ -36,6 +36,7 @@ using SEM5_PI_WEBAPI.Infraestructure.ShippingAgentRepresentatives;
 using SEM5_PI_WEBAPI.Infraestructure.StorageAreas;
 using SEM5_PI_WEBAPI.Infraestructure.Tasks;
 using SEM5_PI_WEBAPI.Infraestructure.VVN;
+using SEM5_PI_WEBAPI.Seed;
 
 namespace SEM5_PI_WEBAPI
 {

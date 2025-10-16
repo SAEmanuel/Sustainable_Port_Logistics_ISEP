@@ -1,0 +1,12 @@
+[
+  { "name": "Nautical Science", "code": "NAS-001" },
+  { "name": "Marine Engineering", "code": "MAE-001" },
+  { "name": "Port Operations", "code": "POO-001" },
+  { "name": "Logistics Management", "code": "LOM-001" },
+  { "name": "Maritime Safety", "code": "MAS-001" },
+  { "name": "Ship Navigation", "code": "SHN-001" },
+  { "name": "Cargo Handling", "code": "CAH-001" },
+  { "name": "Environmental Protection", "code": "ENP-001" },
+  { "name": "Maritime Law", "code": "MAL-001" },
+  { "name": "Fleet Management", "code": "FLM-001" }
+]
