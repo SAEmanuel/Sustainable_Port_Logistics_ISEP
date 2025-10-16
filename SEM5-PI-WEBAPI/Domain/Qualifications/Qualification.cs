@@ -6,9 +6,9 @@ namespace SEM5_PI_WEBAPI.Domain.Qualifications;
 public class Qualification : Entity<QualificationId>, IAggregateRoot
 {   
     [MaxLength(15)]
-    public string Code { get; private set; }
+    public string Code { get; set; }
     [MaxLength(150)]
-    public string Name { get; private set; }
+    public string Name { get; set; }
 
 
     public Qualification(string name)
