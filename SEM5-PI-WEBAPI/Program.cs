@@ -67,7 +67,7 @@ namespace SEM5_PI_WEBAPI
                             )
                     )
                     .WriteTo.File("Logs/Bootstrap/bootstrap-.log",
-                        rollingInterval: RollingInterval.Infinite,
+                        rollingInterval: RollingInterval.Minute,
                         outputTemplate: "[{Timestamp:HH:mm:ss} {Level:u3}] {SourceContext,-55} - {Message:lj}{NewLine}{Exception}")
                 )
 

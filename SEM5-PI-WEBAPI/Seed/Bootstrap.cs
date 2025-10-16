@@ -1,7 +1,12 @@
 using System.Text.Json;
+using System.Text.Json.Serialization;
+using SEM5_PI_WEBAPI.Domain.PhysicalResources;
+using SEM5_PI_WEBAPI.Domain.PhysicalResources.DTOs;
 using SEM5_PI_WEBAPI.Domain.Qualifications;
 using SEM5_PI_WEBAPI.Domain.ShippingAgentOrganizations;
 using SEM5_PI_WEBAPI.Domain.ShippingAgentOrganizations.DTOs;
+using SEM5_PI_WEBAPI.Domain.ShippingAgentRepresentatives;
+using SEM5_PI_WEBAPI.Domain.ShippingAgentRepresentatives.DTOs;
 using SEM5_PI_WEBAPI.Domain.StaffMembers;
 using SEM5_PI_WEBAPI.Domain.StaffMembers.DTOs;
 using SEM5_PI_WEBAPI.Domain.Vessels;
@@ -21,19 +26,18 @@ public class Bootstrap
     private readonly IQualificationService _qualificationService;
     private readonly IStaffMemberService _staffMemberService;
     private readonly IVesselVisitNotificationService _vesselVisitNotificationService;
+    private readonly IShippingAgentRepresentativeService _shippingAgentRepresentativeService;
     private readonly ILogger<Bootstrap> _logger;
-
-    // Cache local
-    private readonly List<VesselTypeDto> _vesselsTypes = new();
-    private readonly List<ShippingAgentOrganizationDto> _saoList = new();
-
+    
     public Bootstrap(
         ILogger<Bootstrap> logger,
         IVesselTypeService vesselTypeService,
         IVesselService vesselService,
         IShippingAgentOrganizationService shippingAgentOrganizationService,
+        IShippingAgentRepresentativeService shippingAgentRepresentativeService,
         IVesselVisitNotificationService vesselVisitNotificationService,
         IQualificationService qualificationService,
+        
         IStaffMemberService staffMemberService)
     {
         _logger = logger;
@@ -43,27 +47,30 @@ public class Bootstrap
         _qualificationService = qualificationService;
         _staffMemberService = staffMemberService;
         _vesselVisitNotificationService = vesselVisitNotificationService;
+        _shippingAgentRepresentativeService = shippingAgentRepresentativeService;
     }
 
     public async Task SeedAsync()
     {
-        _logger.LogInformation("[Bootstrap] Starting JSON-based data seeding...");
+        _logger.LogInformation("|_________   [Bootstrap] Starting JSON-based data seeding  _________|");
 
         await SeedVesselTypesAsync("Seed/VesselsTypes.json");
         await SeedVesselsAsync("Seed/Vessels.json");
-        await SeedShippingAgentOrganizationsAsync("Seed/ShippingAgents.json");
-        await SeedQualificationsAsync("Seed/Qualifications.json");
-        await SeedStaffMembersAsync("Seed/StaffMembers.json");
-        await SeedVesselVisitNotificationsAsync("Seed/VesselVisitNotifications.json");
         
-
-        _logger.LogInformation("[Bootstrap] JSON data seeding completed successfully.");
+        await SeedShippingAgentOrganizationsAsync("Seed/ShippingAgentsOrganizations.json");
+        await SeedShippingAgentRepresentativesAsync("Seed/ShippingAgentsRepresentative.json");
+        
+        await SeedQualificationsAsync("Seed/Qualifications.json");
+        //await SeedStaffMembersAsync("Seed/StaffMembers.json");
+        
+        //await SeedVesselVisitNotificationsAsync("Seed/VesselVisitNotifications.json");
+        
+        _logger.LogInformation("|_________[Bootstrap] JSON data seeding completed successfully_________|");
     }
 
 
     // ===============================================================
     // JSON SEED HELPERS
-    // ===============================================================
 
     private async Task SeedVesselTypesAsync(string filePath)
     {
@@ -77,7 +84,6 @@ public class Bootstrap
             try
             {
                 var created = await _vesselTypeService.AddAsync(dto);
-                _vesselsTypes.Add(created);
                 _logger.LogInformation("[Bootstrap] Vessel Type '{Name}' created successfully.", dto.Name);
             }
             catch (Exception ex)
@@ -111,7 +117,7 @@ public class Bootstrap
 
     private async Task SeedShippingAgentOrganizationsAsync(string filePath)
     {
-        _logger.LogInformation("[Bootstrap] Loading Shipping Agents from {Path}", filePath);
+        _logger.LogInformation("[Bootstrap] Loading Shipping Agents Organizations from {Path}", filePath);
 
         var agents = await LoadJsonAsync<CreatingShippingAgentOrganizationDto>(filePath);
         if (agents == null) return;
@@ -121,7 +127,6 @@ public class Bootstrap
             try
             {
                 var created = await _shippingAgentOrganizationService.CreateAsync(dto);
-                _saoList.Add(created);
                 _logger.LogInformation("[Bootstrap] SAO '{AltName}' ({TaxNumber}) created successfully.", dto.AltName,
                     dto.Taxnumber);
             }
@@ -131,6 +136,28 @@ public class Bootstrap
             }
         }
     }
+
+    private async Task SeedShippingAgentRepresentativesAsync(string filePath)
+    {
+        _logger.LogInformation("[Bootstrap] Loading Shipping Agents Representatives from {Path}", filePath);
+
+        var agents = await LoadJsonAsync<CreatingShippingAgentRepresentativeDto>(filePath);
+        if (agents == null) return;
+
+        foreach (var dto in agents)
+        {
+            try
+            {
+                var created = await _shippingAgentRepresentativeService.AddAsync(dto);
+                _logger.LogInformation("[Bootstrap] SAR '{AltName}' ({Email}) created successfully.", dto.Name, dto.Email);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning("[Bootstrap] Could not update SAR '{AltName}': {Message}", dto.Name, ex.Message);
+            }
+        }
+    }
+    
 
     private async Task SeedQualificationsAsync(string filePath)
     {
@@ -152,7 +179,7 @@ public class Bootstrap
             }
         }
     }
-
+    
     private async Task SeedStaffMembersAsync(string filePath)
     {
         _logger.LogInformation("[Bootstrap] Loading Staff Members from {Path}", filePath);
@@ -199,7 +226,7 @@ public class Bootstrap
 
     // ===============================================================
     // GENERIC JSON LOADER
-    // ===============================================================
+
     private async Task<List<T>?> LoadJsonAsync<T>(string path)
     {
         if (!File.Exists(path))
@@ -211,8 +238,33 @@ public class Bootstrap
         try
         {
             using var stream = File.OpenRead(path);
-            var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
-            return await JsonSerializer.DeserializeAsync<List<T>>(stream, options);
+
+            var options = new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true, 
+                AllowTrailingCommas = true,        
+                ReadCommentHandling = JsonCommentHandling.Skip,
+                Converters =
+                {
+                    new JsonStringEnumConverter(JsonNamingPolicy.CamelCase)
+                }
+            };
+
+            var result = await JsonSerializer.DeserializeAsync<List<T>>(stream, options);
+
+            if (result == null || result.Count == 0)
+            {
+                _logger.LogWarning("[Bootstrap] JSON file parsed but returned no records: {Path}", path);
+                return null;
+            }
+
+            _logger.LogInformation("[Bootstrap] Loaded {Count} records from {Path}", result.Count, path);
+            return result;
+        }
+        catch (JsonException jsonEx)
+        {
+            _logger.LogError(jsonEx, "[Bootstrap] Invalid JSON format in file: {Path}", path);
+            return null;
         }
         catch (Exception ex)
         {
@@ -220,4 +272,5 @@ public class Bootstrap
             return null;
         }
     }
+
 }
