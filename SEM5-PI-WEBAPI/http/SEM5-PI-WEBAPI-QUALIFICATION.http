@@ -17,7 +17,7 @@ Content-Type: application/json
 Accept: application/json
 
 {
-  "name": "Qualification 2"
+  "name": "Qualification 1"
 }
 
 ###

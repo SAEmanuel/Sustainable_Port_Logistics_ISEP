@@ -93,7 +93,7 @@ public class StaffMemberTests
     public void UpdatePhone_ValidPhone_ShouldUpdate()
     {
         var staff = new StaffMember("Name", _validMecNumber, _validEmail, _validPhone, _validSchedule);
-        var newPhone = new PhoneNumber("987654321");
+        var newPhone = new PhoneNumber("+351987654321");
 
         staff.UpdatePhone(newPhone);
 

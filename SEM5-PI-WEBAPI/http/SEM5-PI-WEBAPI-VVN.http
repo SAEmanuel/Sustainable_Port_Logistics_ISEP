@@ -20,7 +20,7 @@ Accept: {{accept}}
     "crewMembers": [
       {
         "name": "Carlos Mendes",
-        "role": "SafetyOfficer",
+        "role": "Captain",
         "nationality": "Portugal",
         "citizenId": "A12345"
       },
