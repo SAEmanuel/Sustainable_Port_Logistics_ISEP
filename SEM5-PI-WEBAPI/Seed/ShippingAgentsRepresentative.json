@@ -1,8 +1,8 @@
 [
   {
     "Name": "Alexandre Silva",
-    "CitizenId": "111111",
-    "Nationality": "Portuguese",
+    "CitizenId": { "PassportNumber": "111111" },
+    "Nationality": "Portugal",
     "Email": "alexandre.silva@gmail.com",
     "PhoneNumber": "912345678",
     "Status": "activated",
@@ -10,8 +10,8 @@
   },
   {
     "Name": "Beatriz Costa",
-    "CitizenId": "222222",
-    "Nationality": "Portuguese",
+    "CitizenId": { "PassportNumber": "222222" },
+    "Nationality": "Portugal",
     "Email": "beatriz.costa@gmail.com",
     "PhoneNumber": "913456789",
     "Status": "activated",
@@ -19,8 +19,8 @@
   },
   {
     "Name": "Carlos Mendes",
-    "CitizenId": "333333",
-    "Nationality": "Portuguese",
+    "CitizenId": { "PassportNumber": "333333" },
+    "Nationality": "Portugal",
     "Email": "carlos.mendes@gmail.com",
     "PhoneNumber": "914567890",
     "Status": "activated",
@@ -28,8 +28,8 @@
   },
   {
     "Name": "Diana Ferreira",
-    "CitizenId": "444444",
-    "Nationality": "Portuguese",
+    "CitizenId": { "PassportNumber": "444444" },
+    "Nationality": "Portugal",
     "Email": "diana.ferreira@gmail.com",
     "PhoneNumber": "915678901",
     "Status": "activated",
@@ -37,8 +37,8 @@
   },
   {
     "Name": "Eduardo Rocha",
-    "CitizenId": "555555",
-    "Nationality": "Portuguese",
+    "CitizenId": { "PassportNumber": "555555" },
+    "Nationality": "Portugal",
     "Email": "eduardo.rocha@gmail.com",
     "PhoneNumber": "916789012",
     "Status": "activated",

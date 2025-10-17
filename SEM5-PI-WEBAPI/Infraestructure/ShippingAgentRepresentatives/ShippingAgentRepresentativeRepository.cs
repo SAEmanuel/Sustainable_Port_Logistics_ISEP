@@ -27,7 +27,7 @@ namespace SEM5_PI_WEBAPI.Infraestructure.ShippingAgentRepresentatives
         public async Task<ShippingAgentRepresentative?> GetByCitizenIdAsync(CitizenId cId)
         {
             return await _context.ShippingAgentRepresentative
-                .FirstOrDefaultAsync(x => x.CitizenId.ToString().ToLower().Trim() == cId.ToString().ToLower().Trim());
+                .FirstOrDefaultAsync(x => x.CitizenId == cId);
         }
         
         public async Task<ShippingAgentRepresentative?> GetByEmailAsync(string email)
