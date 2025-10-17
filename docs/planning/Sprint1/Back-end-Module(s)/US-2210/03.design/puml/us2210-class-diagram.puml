@@ -1,0 +1,246 @@
+@startuml
+' ==========================================================
+' Class Diagram – US2.2.10 (View Vessel Visit Notification Status)
+' Author: Jorge Ubaldo Rodrigues
+' Context: Port Management – Vessel Visit Monitoring
+' ==========================================================
+
+skinparam monochrome true
+skinparam shadowing false
+hide circle
+
+title US2.2.10 – Class Diagram (Vessel Visit Notification Status)
+
+' ==========================================================
+' DOMAIN LAYER
+' ==========================================================
+package "Domain" {
+
+  class VesselVisitNotification {
+    - VvnCode Code
+    - ImoNumber VesselImo
+    - ClockTime? EstimatedTimeArrival
+    - ClockTime? EstimatedTimeDeparture
+    - VvnStatusWrapper Status
+    - ClockTime? SubmittedDate
+    - ClockTime? AcceptenceDate
+    - DockCode? AssignedDock
+    - string? RejectionReason
+    + ToString() : string
+  }
+
+  class VvnCode {
+    - string YearNumber
+    - string SequenceNumber
+    + string Code
+    + ToString() : string
+  }
+
+  class VvnStatusWrapper {
+    - VvnStatus StatusValue
+  }
+
+  enum VvnStatus {
+    InProgress
+    PendingInformation
+    Submitted
+    Accepted
+    Withdrawn
+    Rejected
+  }
+
+  class ClockTime {
+    - DateTime Value
+    + ToString() : string
+  }
+
+  class BusinessRuleValidationException
+
+  class ShippingAgentRepresentative {
+    - string Name
+    - CitizenId CitizenId
+    - Nationality Nationality
+    - string Email
+    - string PhoneNumber
+    - Status Status
+    - ShippingOrganizationCode SAO
+    - List<VvnCode> Notifs
+  }
+
+  enum Status {
+    activated
+    deactivated
+  }
+
+  class ShippingAgentOrganization {
+    - ShippingOrganizationCode ShippingOrganizationCode
+    - string LegalName
+    - string AltName
+    - string Address
+    - TaxNumber Taxnumber
+  }
+
+  class ShippingOrganizationCode {
+    - string Value
+    + ToString() : string
+  }
+
+  class CitizenId {
+    - string PassportNumber
+    + ToString() : string
+  }
+
+  enum Nationality
+
+  class TaxNumber {
+    - string Value
+    + ToString() : string
+  }
+
+  class DockCode {
+    - string Value
+  }
+
+  class ImoNumber {
+    - string Value
+  }
+}
+
+' ==========================================================
+' DATA TRANSFER OBJECTS (DTOs)
+' ==========================================================
+package "DTOs" {
+
+  class VesselVisitNotificationDto {
+    + string Code
+    + string VesselImo
+    + DateTime? EstimatedTimeArrival
+    + DateTime? EstimatedTimeDeparture
+    + string Status
+    + string? AssignedDock
+    + string? RejectionReason
+  }
+
+  class FilterAcceptedVvnStatusDto {
+    + Guid? SpecificRepresentative
+    + string? VesselImoNumber
+    + string? EstimatedTimeArrival
+    + string? EstimatedTimeDeparture
+    + string? SubmittedDate
+    + string? AcceptedDate
+  }
+
+  class FilterSubmittedVvnStatusDto {
+    + Guid? SpecificRepresentative
+    + string? VesselImoNumber
+    + string? EstimatedTimeArrival
+    + string? EstimatedTimeDeparture
+    + string? SubmittedDate
+  }
+
+  class FilterInProgressPendingVvnStatusDto {
+    + Guid? SpecificRepresentative
+    + string? VesselImoNumber
+    + string? EstimatedTimeArrival
+    + string? EstimatedTimeDeparture
+  }
+
+  class FilterWithdrawnVvnStatusDto {
+    + Guid? SpecificRepresentative
+    + string? VesselImoNumber
+    + string? EstimatedTimeArrival
+    + string? EstimatedTimeDeparture
+  }
+}
+
+' ==========================================================
+' APPLICATION LAYER
+' ==========================================================
+package "Application" {
+
+  interface IVesselVisitNotificationService {
+    + GetAcceptedVvnsByShippingAgentRepresentativeIdFiltersAsync(Guid, FilterAcceptedVvnStatusDto) : List<VesselVisitNotificationDto>
+    + GetSubmittedVvnsByShippingAgentRepresentativeIdFiltersAsync(Guid, FilterSubmittedVvnStatusDto) : List<VesselVisitNotificationDto>
+    + GetInProgressPendingInformationVvnsByShippingAgentRepresentativeIdFiltersAsync(Guid, FilterInProgressPendingVvnStatusDto) : List<VesselVisitNotificationDto>
+    + GetWithdrawnVvnsByShippingAgentRepresentativeIdFiltersAsync(Guid, FilterWithdrawnVvnStatusDto) : List<VesselVisitNotificationDto>
+  }
+
+  class VesselVisitNotificationService implements IVesselVisitNotificationService {
+    - IShippingAgentRepresentativeRepository _shippingAgentRepresentativeRepository
+    - IShippingAgentOrganizationRepository _shippingAgentOrganizationRepository
+    - IVesselVisitNotificationRepository _repo
+    - IVesselRepository _vesselRepository
+    - ILogger _logger
+    + HelperFilters() : List<VesselVisitNotification>
+  }
+
+  class VesselVisitNotificationFactory {
+    + CreateLitsVvnDtosFromList(List<VesselVisitNotification>) : List<VesselVisitNotificationDto>
+  }
+}
+
+' ==========================================================
+' INFRASTRUCTURE LAYER
+' ==========================================================
+package "Infrastructure" {
+
+  interface IVesselVisitNotificationRepository {
+    + GetByCodeAsync(VvnCode) : VesselVisitNotification?
+  }
+
+  interface IShippingAgentRepresentativeRepository {
+    + GetByIdAsync(ShippingAgentRepresentativeId) : ShippingAgentRepresentative?
+    + GetAllSarBySaoAsync(ShippingOrganizationCode) : List<ShippingAgentRepresentative>
+  }
+
+  interface IShippingAgentOrganizationRepository {
+    + GetByCodeAsync(ShippingOrganizationCode) : ShippingAgentOrganization?
+  }
+
+  interface IVesselRepository {
+    + GetByImoNumberAsync(ImoNumber) : Vessel?
+  }
+}
+
+' ==========================================================
+' PRESENTATION LAYER (API)
+' ==========================================================
+package "Presentation" {
+  class VesselVisitNotificationController {
+    + GetAcceptedVvns(...)
+    + GetSubmittedVvns(...)
+    + GetInProgressPendingVvns(...)
+    + GetWithdrawnVvns(...)
+  }
+}
+
+' ==========================================================
+' CROSS-CUTTING CONCERNS
+' ==========================================================
+package "Cross-cutting" {
+  interface ILogger<T> {
+    + LogInformation(string, params)
+    + LogWarning(string, params)
+    + LogError(string, params)
+  }
+}
+
+' ==========================================================
+' RELATIONSHIPS
+' ==========================================================
+VesselVisitNotification "1" *-- "1" VvnCode
+VesselVisitNotification "1" *-- "1" ImoNumber
+VesselVisitNotification "1" *-- "1" VvnStatusWrapper
+VesselVisitNotification "1" o-- "0..1" DockCode
+VesselVisitNotificationService --> IVesselVisitNotificationRepository
+VesselVisitNotificationService --> IShippingAgentRepresentativeRepository
+VesselVisitNotificationService --> IShippingAgentOrganizationRepository
+VesselVisitNotificationService --> IVesselRepository
+VesselVisitNotificationService --> VesselVisitNotificationFactory
+VesselVisitNotificationService --> ILogger
+VesselVisitNotificationController --> IVesselVisitNotificationService
+VesselVisitNotificationController --> ILogger
+VesselVisitNotificationFactory --> VesselVisitNotification
+VesselVisitNotificationFactory --> VesselVisitNotificationDto
+
+@enduml

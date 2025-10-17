@@ -1,0 +1,245 @@
+@startuml
+' ==========================================================
+' Full Sequence Diagram – US2.2.10 (View Vessel Visit Notification Status)
+' Author: Jorge Ubaldo Rodrigues
+' Context: Port Management – Vessel Visit Monitoring
+' Covers ALL service methods:
+'  - GetInProgressPendingInformationVvnsByShippingAgentRepresentativeIdFiltersAsync
+'  - GetWithdrawnVvnsByShippingAgentRepresentativeIdFiltersAsync
+'  - GetSubmittedVvnsByShippingAgentRepresentativeIdFiltersAsync
+'  - GetAcceptedVvnsByShippingAgentRepresentativeIdFiltersAsync
+' ==========================================================
+
+skinparam monochrome true
+skinparam shadowing false
+skinparam sequenceMessageAlign center
+skinparam ParticipantPadding 25
+skinparam responseMessageBelowArrow true
+
+title US2.2.10 – Full Sequence Diagram (All Status Endpoints)
+
+actor "Shipping Agent Representative" as SAR
+boundary "API Controller" as Controller
+control "VesselVisitNotificationService" as Service
+entity "ShippingAgentRepresentativeRepository" as SarRepo
+entity "ShippingAgentOrganizationRepository" as SaoRepo
+entity "VesselVisitNotificationRepository" as VvnRepo
+entity "VesselRepository" as VesselRepo
+control "VesselVisitNotificationFactory" as Factory
+control "ILogger / LogService" as Log
+database "Database" as DB
+
+' ==========================================================
+== COMMON PRELUDE (applies to all 4 endpoints) ==
+' (Obtém organização e colegas do mesmo SAO; recolhe VVNs pelos códigos dos SARs)
+' Este bloco ocorre em todos os métodos antes de filtrar por estado.
+' ==========================================================
+group [Common] Load org + colleagues + collect VVNs
+  SAR -> Controller : HTTP GET (endpoint específico) + query params (dto)
+  Controller -> Service : Call method(..., dto)
+
+  Service -> Log : log("Start query", idSar, dto)
+
+  ' Step 1 – Organização e colegas
+  Service -> SarRepo : GetByIdAsync(idSar)
+  SarRepo --> Service : ShippingAgentRepresentative
+
+  Service -> SaoRepo : GetByCodeAsync(SAR.SAO)
+  SaoRepo --> Service : ShippingAgentOrganization
+
+  Service -> SarRepo : GetAllSarBySaoAsync(SAR.SAO)
+  SarRepo --> Service : List<ShippingAgentRepresentative>
+
+  Service -> Log : log("Loaded {Count} SARs under same SAO")
+
+  ' Step 2 – Agrega VVNs pelos VvnCode dos SARs selecionados
+  Service -> Service : GetVvnForSpecificRepresentative(dto.SpecificRepresentative, SARs)
+  loop ForEach VvnCode
+    Service -> VvnRepo : GetByCodeAsync(vvnCode)
+    VvnRepo --> DB : SELECT * FROM VesselVisitNotification WHERE Code = vvnCode
+    DB --> VvnRepo : VesselVisitNotification?
+    VvnRepo --> Service : VVN or null
+  end
+  Service -> Log : log("Initial VVN pool size = {Count}")
+end
+
+' ==========================================================
+== A) InProgress + PendingInformation ==
+' ==========================================================
+group [A] GET InProgress/PendingInformation
+  note over Controller
+    GET /api/VesselVisitNotification/inprogress-pending
+  end note
+
+  ' Step 3 – Filtrar por estado
+  Service -> Service : Filter v.Status in {InProgress, PendingInformation}
+  Service -> Log : log("After status filter")
+
+  ' Step 4 – Filtros opcionais
+  alt Filter by IMO (dto.VesselImoNumber)
+    Service -> VesselRepo : GetByImoNumberAsync(dto.VesselImoNumber)
+    VesselRepo --> DB : SELECT * FROM Vessel WHERE ImoNumber = dto.VesselImoNumber
+    DB --> VesselRepo : Vessel?
+    VesselRepo --> Service : Vessel?
+    Service -> Service : Keep VVNs with VesselImo == found.ImoNumber
+    Service -> Log : log("After IMO filter")
+  end
+
+  alt Filter by ETA (dto.EstimatedTimeArrival)
+    Service -> Service : GetVvnsFilterByEstimatedTimeArrival(vvns, dto.ETA)
+    Service -> Log : log("After ETA filter")
+  end
+
+  alt Filter by ETD (dto.EstimatedTimeDeparture)
+    Service -> Service : GetVvnsFilterByEstimatedTimeDeparture(vvns, dto.ETD)
+    Service -> Log : log("After ETD filter")
+  end
+
+  ' Step 5 – DTOs
+  Service -> Factory : CreateLitsVvnDtosFromList(filteredVvns)
+  Factory --> Service : List<VesselVisitNotificationDto>
+
+  Service -> Log : log("Finished filtering. Total={Count}")
+  Service --> Controller : 200 OK (List<VesselVisitNotificationDto>)
+  Controller --> SAR : 200 OK (JSON)
+end
+
+' ==========================================================
+== B) Withdrawn ==
+' ==========================================================
+group [B] GET Withdrawn
+  note over Controller
+    GET /api/VesselVisitNotification/withdrawn
+  end note
+
+  ' Step 3 – Filtrar por estado
+  Service -> Service : Filter v.Status == Withdrawn
+  Service -> Log : log("After Withdrawn filter")
+
+  ' Step 4 – Filtros opcionais
+  alt Filter by IMO (dto.VesselImoNumber)
+    Service -> VesselRepo : GetByImoNumberAsync(dto.VesselImoNumber)
+    VesselRepo --> DB : SELECT * FROM Vessel WHERE ImoNumber = dto.VesselImoNumber
+    DB --> VesselRepo : Vessel?
+    VesselRepo --> Service : Vessel?
+    Service -> Service : Keep VVNs with VesselImo == found.ImoNumber
+    Service -> Log : log("After IMO filter")
+  end
+
+  alt Filter by ETA (dto.EstimatedTimeArrival)
+    Service -> Service : GetVvnsFilterByEstimatedTimeArrival(vvns, dto.ETA)
+    Service -> Log : log("After ETA filter")
+  end
+
+  alt Filter by ETD (dto.EstimatedTimeDeparture)
+    Service -> Service : GetVvnsFilterByEstimatedTimeDeparture(vvns, dto.ETD)
+    Service -> Log : log("After ETD filter")
+  end
+
+  ' Step 5 – DTOs
+  Service -> Factory : CreateLitsVvnDtosFromList(filteredVvns)
+  Factory --> Service : List<VesselVisitNotificationDto>
+
+  Service -> Log : log("Finished filtering. Total={Count}")
+  Service --> Controller : 200 OK (List<VesselVisitNotificationDto>)
+  Controller --> SAR : 200 OK (JSON)
+end
+
+' ==========================================================
+== C) Submitted ==
+' ==========================================================
+group [C] GET Submitted
+  note over Controller
+    GET /api/VesselVisitNotification/submitted
+  end note
+
+  ' Step 3 – Filtrar por estado
+  Service -> Service : Filter v.Status == Submitted
+  Service -> Log : log("After Submitted filter")
+
+  ' Step 4 – Filtros opcionais
+  alt Filter by IMO (dto.VesselImoNumber)
+    Service -> VesselRepo : GetByImoNumberAsync(dto.VesselImoNumber)
+    VesselRepo --> DB : SELECT * FROM Vessel WHERE ImoNumber = dto.VesselImoNumber
+    DB --> VesselRepo : Vessel?
+    VesselRepo --> Service : Vessel?
+    Service -> Service : Keep VVNs with VesselImo == found.ImoNumber
+    Service -> Log : log("After IMO filter")
+  end
+
+  alt Filter by ETA (dto.EstimatedTimeArrival)
+    Service -> Service : GetVvnsFilterByEstimatedTimeArrival(vvns, dto.ETA)
+    Service -> Log : log("After ETA filter")
+  end
+
+  alt Filter by ETD (dto.EstimatedTimeDeparture)
+    Service -> Service : GetVvnsFilterByEstimatedTimeDeparture(vvns, dto.ETD)
+    Service -> Log : log("After ETD filter")
+  end
+
+  alt Filter by SubmittedDate (dto.SubmittedDate)
+    Service -> Service : GetVvnsFilterBySubmittedDate(vvns, dto.SubmittedDate)
+    Service -> Log : log("After SubmittedDate filter")
+  end
+
+  ' Step 5 – DTOs
+  Service -> Factory : CreateLitsVvnDtosFromList(filteredVvns)
+  Factory --> Service : List<VesselVisitNotificationDto>
+
+  Service -> Log : log("Finished filtering. Total={Count}")
+  Service --> Controller : 200 OK (List<VesselVisitNotificationDto>)
+  Controller --> SAR : 200 OK (JSON)
+end
+
+' ==========================================================
+== D) Accepted ==
+' ==========================================================
+group [D] GET Accepted
+  note over Controller
+    GET /api/VesselVisitNotification/accepted
+  end note
+
+  ' Step 3 – Filtrar por estado
+  Service -> Service : Filter v.Status == Accepted
+  Service -> Log : log("After Accepted filter")
+
+  ' Step 4 – Filtros opcionais
+  alt Filter by IMO (dto.VesselImoNumber)
+    Service -> VesselRepo : GetByImoNumberAsync(dto.VesselImoNumber)
+    VesselRepo --> DB : SELECT * FROM Vessel WHERE ImoNumber = dto.VesselImoNumber
+    DB --> VesselRepo : Vessel?
+    VesselRepo --> Service : Vessel?
+    Service -> Service : Keep VVNs with VesselImo == found.ImoNumber
+    Service -> Log : log("After IMO filter")
+  end
+
+  alt Filter by ETA (dto.EstimatedTimeArrival)
+    Service -> Service : GetVvnsFilterByEstimatedTimeArrival(vvns, dto.ETA)
+    Service -> Log : log("After ETA filter")
+  end
+
+  alt Filter by ETD (dto.EstimatedTimeDeparture)
+    Service -> Service : GetVvnsFilterByEstimatedTimeDeparture(vvns, dto.ETD)
+    Service -> Log : log("After ETD filter")
+  end
+
+  alt Filter by SubmittedDate (dto.SubmittedDate)
+    Service -> Service : GetVvnsFilterBySubmittedDate(vvns, dto.SubmittedDate)
+    Service -> Log : log("After SubmittedDate filter")
+  end
+
+  alt Filter by AcceptedDate (dto.AcceptedDate)
+    Service -> Service : GetVvnsFilterByAcceptedDate(vvns, dto.AcceptedDate)
+    Service -> Log : log("After AcceptedDate filter")
+  end
+
+  ' Step 5 – DTOs
+  Service -> Factory : CreateLitsVvnDtosFromList(filteredVvns)
+  Factory --> Service : List<VesselVisitNotificationDto>
+
+  Service -> Log : log("Finished filtering. Total={Count}")
+  Service --> Controller : 200 OK (List<VesselVisitNotificationDto>)
+  Controller --> SAR : 200 OK (JSON)
+end
+
+@enduml
