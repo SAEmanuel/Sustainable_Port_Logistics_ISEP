@@ -1,3 +1,5 @@
+using Microsoft.Extensions.Logging;
+
 namespace SEM5_PI_WEBAPI.Tests.Services;
 
 using System;
@@ -12,15 +14,15 @@ using FluentAssertions;
 
 public class QualificationServiceTests
 {
-    private readonly Mock<IQualificationRepository> _repoMock;
-    private readonly Mock<IUnitOfWork> _unitOfWorkMock;
+    private readonly Mock<IQualificationRepository> _repoMock = new();
+    private readonly Mock<IUnitOfWork> _unitOfWorkMock = new();
+    private readonly Mock<ILogger<QualificationService>> _loggerMock = new();
     private readonly QualificationService _service;
 
     public QualificationServiceTests()
     {
-        _repoMock = new Mock<IQualificationRepository>();
-        _unitOfWorkMock = new Mock<IUnitOfWork>();
-        _service = new QualificationService(_unitOfWorkMock.Object, _repoMock.Object);
+        
+        _service = new QualificationService(_unitOfWorkMock.Object, _repoMock.Object, _loggerMock.Object);
     }
 
     [Fact]

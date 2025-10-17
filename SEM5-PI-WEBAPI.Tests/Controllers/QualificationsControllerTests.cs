@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Logging;
 using SEM5_PI_WEBAPI.Domain.Qualifications.DTOs;
 
 namespace SEM5_PI_WEBAPI.Tests.Controllers;
@@ -15,12 +16,14 @@ using Xunit;
 public class QualificationsControllerTests
 {
     private readonly Mock<IQualificationService> _serviceMock;
+    private readonly Mock<ILogger<QualificationsController>> _loggerMock;
     private readonly QualificationsController _controller;
 
     public QualificationsControllerTests()
     {
         _serviceMock = new Mock<IQualificationService>();
-        _controller = new QualificationsController(_serviceMock.Object);
+        _loggerMock = new Mock<ILogger<QualificationsController>>();
+        _controller = new QualificationsController(_serviceMock.Object, _loggerMock.Object);
     }
 
     private QualificationDto BuildDto()
@@ -59,8 +62,9 @@ public class QualificationsControllerTests
 
         var result = await _controller.GetGetById(Guid.NewGuid());
 
-        var ok = Assert.IsType<QualificationDto>(result.Value);
-        Assert.Equal(dto.Id, ok.Id);
+        var okResult = Assert.IsType<OkObjectResult>(result.Result);
+        var okValue = Assert.IsType<QualificationDto>(okResult.Value);
+        Assert.Equal(dto.Id, okValue.Id);
     }
 
     [Fact]
