@@ -38,7 +38,7 @@ namespace SEM5_PI_WEBAPI.Infraestructure.ShippingAgentRepresentatives
             //cria tabela intermediária para fazer tracking de que VVNs o SAR tem
             builder.OwnsMany(b => b.Notifs, notif =>
             {
-                notif.ToTable("Notifs");
+                notif.ToTable("Sar_Vvn");
 
                 notif.WithOwner().HasForeignKey("ShippingAgentRepresentativeId");
 

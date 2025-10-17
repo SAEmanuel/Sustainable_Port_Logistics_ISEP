@@ -9,7 +9,7 @@
       "captainName": "John Smith",
       "crewMembers": [
         {"name": "Carlos Mendes", "role": "Captain", "nationality": "Portugal", "citizenId": "A12345"},
-        {"name": "Anna Becker", "role": "ChiefEngineer", "nationality": "Peru", "citizenId": "B98765"}
+        {"name": "Anna Becker", "role": "SafetyOfficer", "nationality": "Peru", "citizenId": "B98765"}
       ]
     },
     "loadingCargoManifest": {
@@ -17,121 +17,74 @@
       "createdBy": "Agent01@gmail.com",
       "entries": [
         {"bay": 2, "row": 3, "tier": 4, "storageAreaName": "Warehouse B", "container": {"isoCode": "MSCU6639870", "description": "Perishable frozen food cargo", "type": "Hazmat", "weightKg": 10800}},
-        {"bay": 3, "row": 1, "tier": 2, "storageAreaName": "Warehouse B", "container": {"isoCode": "NYKU9643201", "description": "Electronics", "type": "General", "weightKg": 4500}}
+        {"bay": 3, "row": 1, "tier": 2, "storageAreaName": "Warehouse B", "container": {"isoCode": "BBCU5100617", "description": "Electronics", "type": "General", "weightKg": 4500}}
       ]
     },
     "unloadingCargoManifest": {
       "type": "Unloading",
       "createdBy": "Agent02@gmail.com",
       "entries": [
-        {"bay": 1, "row": 2, "tier": 3, "storageAreaName": "Warehouse A", "container": {"isoCode": "MSCU6639870", "description": "Automotive parts", "type": "General", "weightKg": 7000}},
-        {"bay": 4, "row": 3, "tier": 5, "storageAreaName": "Yard B", "container": {"isoCode": "SEAU2084931", "description": "Furniture", "type": "General", "weightKg": 12000}}
+        {"bay": 1, "row": 2, "tier": 3, "storageAreaName": "Warehouse A", "container": {"isoCode": "BBCU5100617", "description": "Automotive parts", "type": "General", "weightKg": 7000}},
+        {"bay": 4, "row": 3, "tier": 5, "storageAreaName": "Yard B", "container": {"isoCode": "CSQU3054383", "description": "Furniture Related", "type": "General", "weightKg": 12000}}
       ]
     },
     "vesselImo": "IMO 9823455"
+
+
   },
+
   {
-    "estimatedTimeArrival": "2025-11-15T10:00:00",
-    "estimatedTimeDeparture": "2025-11-17T15:00:00",
-    "volume": 1500,
+    "estimatedTimeArrival": "2025-11-25T14:30:00",
+    "estimatedTimeDeparture": "2025-11-27T20:00:00",
+    "volume": 1800,
     "documents": null,
     "crewManifest": {
-      "totalCrew": 10,
-      "captainName": "Mark Johnson",
+      "totalCrew": 12,
+      "captainName": "Maria Santos",
       "crewMembers": [
-        {"name": "Lucas Brown", "role": "Captain", "nationality": "USA", "citizenId": "C98765"},
-        {"name": "Sophia White", "role": "Navigator", "nationality": "Canada", "citizenId": "D12345"}
+        {"name": "João Silva", "role": "Captain", "nationality": "Brazil", "citizenId": "BR98765"},
+        {"name": "Emma Thompson", "role": "ChiefOfficer", "nationality": "China", "citizenId": "CH12345"},
+        {"name": "Lars Nielsen", "role": "ChiefEngineer", "nationality": "Denmark", "citizenId": "DK54321"}
       ]
     },
     "loadingCargoManifest": {
       "type": "Loading",
       "createdBy": "Agent03@gmail.com",
       "entries": [
-        {"bay": 5, "row": 4, "tier": 3, "storageAreaName": "Warehouse B", "container": {"isoCode": "SEAU2084931", "description": "Clothing", "type": "General", "weightKg": 3000}},
-        {"bay": 6, "row": 2, "tier": 6, "storageAreaName": "Yard B", "container": {"isoCode": "MSCU6639870", "description": "Machinery", "type": "Heavy", "weightKg": 25000}}
+        {"bay": 5, "row": 2, "tier": 3, "storageAreaName": "Yard A", "container": {"isoCode": "MSCU6639870", "description": "Industrial machinery parts", "type": "General", "weightKg": 15200}},
+        {"bay": 6, "row": 4, "tier": 1, "storageAreaName": "Yard C", "container": {"isoCode": "CSQU3054383", "description": "Textile products", "type": "General", "weightKg": 6500}},
+        {"bay": 8, "row": 3, "tier": 2, "storageAreaName": "Yard B", "container": {"isoCode": "BBCU5100617", "description": "Construction equipment", "type": "Oversized", "weightKg": 18750}}
       ]
     },
     "unloadingCargoManifest": null,
-    "vesselImo": "IMO 9345673"
+    "vesselImo": "IMO 9999993"
   },
+  
+  
   {
-    "estimatedTimeArrival": "2025-12-10T07:30:00",
-    "estimatedTimeDeparture": "2025-12-12T14:30:00",
-    "volume": 1800,
+    "estimatedTimeArrival": "2025-11-28T06:45:00",
+    "estimatedTimeDeparture": "2025-11-30T12:00:00",
+    "volume": 1500,
     "documents": null,
     "crewManifest": {
-      "totalCrew": 12,
-      "captainName": "Laura Gomez",
+      "totalCrew": 10,
+      "captainName": "Olga Petrov",
       "crewMembers": [
-        {"name": "Pedro Silva", "role": "Captain", "nationality": "Brazil", "citizenId": "E76543"},
-        {"name": "Maria Santos", "role": "Engineer", "nationality": "Argentina", "citizenId": "F67890"}
+        {"name": "Hans Schmidt", "role": "Captain", "nationality": "Germany", "citizenId": "DE55443"},
+        {"name": "Mei Chen", "role": "ThirdOfficer", "nationality": "China", "citizenId": "CN88776"},
+        {"name": "Carlos Rodrigues", "role": "Bosun", "nationality": "Brazil", "citizenId": "BR99887"}
       ]
     },
     "loadingCargoManifest": null,
-    "unloadingCargoManifest": {
-      "type": "Unloading",
-      "createdBy": "Agent04@gmail.com",
-      "entries": [
-        {"bay": 7, "row": 1, "tier": 2, "storageAreaName": "Warehouse A", "container": {"isoCode": "MSCU6639870", "description": "Textiles", "type": "General", "weightKg": 4000}},
-        {"bay": 8, "row": 3, "tier": 7, "storageAreaName": "Warehouse B", "container": {"isoCode": "GESU1234567", "description": "Construction materials", "type": "General", "weightKg": 8000}}
-      ]
-    },
-    "vesselImo": "IMO 9345673"
-  },
-  {
-    "estimatedTimeArrival": "2025-11-20T05:00:00",
-    "estimatedTimeDeparture": "2025-11-25T20:00:00",
-    "volume": 2500,
-    "documents": null,
-    "crewManifest": {
-      "totalCrew": 18,
-      "captainName": "James Miller",
-      "crewMembers": [
-        {"name": "Samuel Lee", "role": "Captain", "nationality": "UK", "citizenId": "G12345"},
-        {"name": "Helen Moore", "role": "Chief Engineer", "nationality": "Australia", "citizenId": "H67890"}
-      ]
-    },
-    "loadingCargoManifest": {
-      "type": "Loading",
-      "createdBy": "Agent05@gmail.com",
-      "entries": [
-        {"bay": 1, "row": 2, "tier": 3, "storageAreaName": "Yard A", "container": {"isoCode": "MSCU6639870", "description": "Heavy machinery", "type": "Heavy", "weightKg": 18000}},
-        {"bay": 2, "row": 4, "tier": 6, "storageAreaName": "Yard A", "container": {"isoCode": "MSCU6639870", "description": "Frozen foods", "type": "Perishable", "weightKg": 10000}},
-        {"bay": 3, "row": 1, "tier": 2, "storageAreaName": "Yard B", "container": {"isoCode": "GESU1234567", "description": "Consumer electronics", "type": "General", "weightKg": 5000}}
-      ]
-    },
     "unloadingCargoManifest": {
       "type": "Unloading",
       "createdBy": "Agent06@gmail.com",
       "entries": [
-        {"bay": 4, "row": 3, "tier": 5, "storageAreaName": "Yard B", "container": {"isoCode": "SEAU2084931", "description": "Automobile parts", "type": "General", "weightKg": 7000}},
-        {"bay": 5, "row": 2, "tier": 1, "storageAreaName": "Yard A", "container": {"isoCode": "MSCU6639870", "description": "Furniture", "type": "General", "weightKg": 12000}}
+        {"bay": 1, "row": 3, "tier": 1, "storageAreaName": "Yard A", "container": {"isoCode": "CSIU4400699", "description": "Furniture components", "type": "General", "weightKg": 8700}},
+        {"bay": 4, "row": 2, "tier": 4, "storageAreaName": "Warehouse B", "container": {"isoCode": "MSCU6639870", "description": "Packaged foods", "type": "General", "weightKg": 7300}},
+        {"bay": 5, "row": 5, "tier": 2, "storageAreaName": "Yard C", "container": {"isoCode": "BBCU5100617", "description": "Steel beams", "type": "Oversized", "weightKg": 22100}}
       ]
     },
     "vesselImo": "IMO 9456783"
-  },
-  {
-    "estimatedTimeArrival": "2025-11-10T06:00:00",
-    "estimatedTimeDeparture": "2025-11-14T22:00:00",
-    "volume": 2200,
-    "documents": null,
-    "crewManifest": {
-      "totalCrew": 14,
-      "captainName": "Emma Wilson",
-      "crewMembers": [
-        {"name": "Liam Carter", "role": "Captain", "nationality": "Ireland", "citizenId": "J23456"},
-        {"name": "Zoe Martin", "role": "Chief Officer", "nationality": "New Zealand", "citizenId": "K34567"}
-      ]
-    },
-    "loadingCargoManifest": null,
-    "unloadingCargoManifest": {
-      "type": "Unloading",
-      "createdBy": "Agent07@gmail.com",
-      "entries": [
-        {"bay": 6, "row": 1, "tier": 2, "storageAreaName": "Warehouse B", "container": {"isoCode": "NYKU9643201", "description": "Pharmaceuticals", "type": "Hazmat", "weightKg": 3000}},
-        {"bay": 7, "row": 4, "tier": 5, "storageAreaName": "Yard A", "container": {"isoCode": "MSCU6639870", "description": "Textiles", "type": "General", "weightKg": 4500}}
-      ]
-    },
-    "vesselImo": "IMO 9999993"
   }
 ]

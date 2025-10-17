@@ -8,7 +8,7 @@ public class CreatingCrewMemberDto
     public string CitizenId { get; set; }
 
 
-    public CreatingCrewMemberDto(Guid id, string name, CrewRole role, Nationality nationality, string citizenId)
+    public CreatingCrewMemberDto(string name, CrewRole role, Nationality nationality, string citizenId)
     {
         Name = name;
         Role = role;

@@ -1,6 +1,7 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using SEM5_PI_WEBAPI.Domain.Dock;
+using SEM5_PI_WEBAPI.Domain.PhysicalResources;
 using SEM5_PI_WEBAPI.Domain.Dock.DTOs;
 using SEM5_PI_WEBAPI.Domain.PhysicalResources;
 using SEM5_PI_WEBAPI.Domain.PhysicalResources.DTOs;
@@ -11,6 +12,8 @@ using SEM5_PI_WEBAPI.Domain.ShippingAgentRepresentatives;
 using SEM5_PI_WEBAPI.Domain.ShippingAgentRepresentatives.DTOs;
 using SEM5_PI_WEBAPI.Domain.StaffMembers;
 using SEM5_PI_WEBAPI.Domain.StaffMembers.DTOs;
+using SEM5_PI_WEBAPI.Domain.StorageAreas;
+using SEM5_PI_WEBAPI.Domain.StorageAreas.DTOs;
 using SEM5_PI_WEBAPI.Domain.Vessels;
 using SEM5_PI_WEBAPI.Domain.Vessels.DTOs;
 using SEM5_PI_WEBAPI.Domain.VesselsTypes;
@@ -30,6 +33,7 @@ public class Bootstrap
     private readonly IVesselVisitNotificationService _vesselVisitNotificationService;
     private readonly IShippingAgentRepresentativeService _shippingAgentRepresentativeService;
     private readonly IPhysicalResourceService _physicalResourceService;
+    private readonly IStorageAreaService _storageAreaService;
     private readonly IDockService _dockService;
     private readonly ILogger<Bootstrap> _logger;
     
@@ -43,6 +47,7 @@ public class Bootstrap
         IDockService dockService,
         IQualificationService qualificationService,
         IPhysicalResourceService physicalResourceService,
+        IStorageAreaService storageAreaService,
         IStaffMemberService staffMemberService)
     {
         _logger = logger;
@@ -53,6 +58,7 @@ public class Bootstrap
         _staffMemberService = staffMemberService;
         _vesselVisitNotificationService = vesselVisitNotificationService;
         _shippingAgentRepresentativeService = shippingAgentRepresentativeService;
+        _storageAreaService = storageAreaService;
         _physicalResourceService = physicalResourceService;
         _dockService = dockService;
     }
@@ -68,11 +74,13 @@ public class Bootstrap
         await SeedShippingAgentRepresentativesAsync("Seed/ShippingAgentsRepresentative.json");
         
         await SeedQualificationsAsync("Seed/Qualifications.json");
+        await SeedStaffMembersAsync("Seed/StaffMembers.json");
         await SeedPhysicalResourcesAsync("Seed/PhysicalResource.json");
         await SeedDockAsync("Seed/Docks.json");
+        await SeedStorageAreaNotificationsAsync("Seed/StorageAreas.json");
         //await SeedStaffMembersAsync("Seed/StaffMembers.json");
         
-        //await SeedVesselVisitNotificationsAsync("Seed/VesselVisitNotifications.json");
+        await SeedVesselVisitNotificationsAsync("Seed/VesselVisitNotifications.json");
         
         _logger.LogInformation("|_________[Bootstrap] JSON data seeding completed successfully_________|");
     }
@@ -269,6 +277,28 @@ public class Bootstrap
             catch (Exception ex)
             {
                 _logger.LogWarning("[Bootstrap] Could not add Vessel Visit Notification: {Message}",
+                    ex.Message);
+            }
+        }
+    }
+    
+    private async Task SeedStorageAreaNotificationsAsync(string filePath)
+    {
+        _logger.LogInformation("[Bootstrap] Loading Storage Areas from {Path}", filePath);
+
+        var dto = await LoadJsonAsync<CreatingStorageAreaDto>(filePath);
+        if (dto == null) return;
+
+        foreach (var sa in dto)
+        {
+            try
+            {
+                await _storageAreaService.CreateAsync(sa);
+                _logger.LogInformation("[Bootstrap] StorageArea '{name}' created successfully.", sa.Name);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning("[Bootstrap] Could not add StorageArea '{name}': {Message}", sa.Name,
                     ex.Message);
             }
         }

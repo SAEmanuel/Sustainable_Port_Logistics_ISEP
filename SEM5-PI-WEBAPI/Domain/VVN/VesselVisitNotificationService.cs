@@ -853,7 +853,7 @@ public class VesselVisitNotificationService : IVesselVisitNotificationService
 
         var crewManifest = new CrewManifest(dto.TotalCrew, dto.CaptainName, crewMembers);
         await _crewManifestRepository.AddAsync(crewManifest);
-        await _unitOfWork.CommitAsync();
+        //await _unitOfWork.CommitAsync();
 
         return crewManifest;
     }
@@ -885,7 +885,7 @@ public class VesselVisitNotificationService : IVesselVisitNotificationService
             new CargoManifest(entries, generatedCode, dto.Type, DateTime.UtcNow, new Email(dto.CreatedBy));
 
         await _cargoManifestRepository.AddAsync(cargoManifest);
-        await _unitOfWork.CommitAsync();
+        //await _unitOfWork.CommitAsync();
 
         return cargoManifest;
     }
@@ -920,7 +920,7 @@ public class VesselVisitNotificationService : IVesselVisitNotificationService
         );
 
         await _containerRepository.AddAsync(container);
-        await _unitOfWork.CommitAsync();
+        //await _unitOfWork.CommitAsync();
         return container;
     }
 
