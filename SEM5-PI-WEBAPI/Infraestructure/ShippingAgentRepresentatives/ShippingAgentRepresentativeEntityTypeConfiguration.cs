@@ -1,6 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using SEM5_PI_WEBAPI.Domain.ShippingAgentRepresentatives;
+using SEM5_PI_WEBAPI.Domain.ValueObjects;
+
 
 namespace SEM5_PI_WEBAPI.Infraestructure.ShippingAgentRepresentatives
 {
@@ -14,6 +16,10 @@ namespace SEM5_PI_WEBAPI.Infraestructure.ShippingAgentRepresentatives
                 .IsRequired();
 
             builder.Property(b => b.CitizenId)
+                .HasConversion(
+                    id => id.PassportNumber,              
+                    str => new CitizenId(str) 
+                )
                 .IsRequired();
 
             builder.Property(b => b.Nationality)

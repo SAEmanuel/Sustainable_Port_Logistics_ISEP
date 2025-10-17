@@ -9,7 +9,7 @@ public interface IShippingAgentRepresentativeService
     Task<ShippingAgentRepresentativeDto> GetByIdAsync(ShippingAgentRepresentativeId id);
     Task<ShippingAgentRepresentativeDto> GetByNameAsync(string name);
     Task<ShippingAgentRepresentativeDto> GetByEmailAsync(string email);
-    Task<ShippingAgentRepresentativeDto> GetByCitizenId(string cId);
+    Task<ShippingAgentRepresentativeDto> GetByCitizenId(CitizenId cId);
     Task<ShippingAgentRepresentativeDto> GetByStatusAsync(Status status);
     Task<ShippingAgentRepresentativeDto> GetBySaoAsync(ShippingOrganizationCode code);
     Task<ShippingAgentRepresentativeDto> AddAsync(CreatingShippingAgentRepresentativeDto dto);

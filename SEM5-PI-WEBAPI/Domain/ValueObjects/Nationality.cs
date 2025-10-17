@@ -1,4 +1,4 @@
-namespace SEM5_PI_WEBAPI.Domain.CrewMembers;
+namespace SEM5_PI_WEBAPI.Domain.ValueObjects;
 
 public enum Nationality
 {

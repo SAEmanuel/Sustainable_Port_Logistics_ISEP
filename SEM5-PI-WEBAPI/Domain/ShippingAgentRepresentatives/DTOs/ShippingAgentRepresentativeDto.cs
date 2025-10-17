@@ -6,8 +6,8 @@ public class ShippingAgentRepresentativeDto
 {
     public Guid Id { get; set; }
     public string Name { get; set; }
-    public string CitizenId { get; private set; }
-    public string Nationality { get; set; }
+    public CitizenId CitizenId { get; private set; }
+    public Nationality Nationality { get; set; }
     public string Email { get; set; }
     public string PhoneNumber { get; set; }
 
@@ -15,7 +15,7 @@ public class ShippingAgentRepresentativeDto
     public List<VvnCode> Notifs { get; set; } 
     public Status Status { get; set; }
 
-    public ShippingAgentRepresentativeDto(Guid id, string name, string citizenId, string nationality, string email, string phoneNumber, Status status, ShippingOrganizationCode sao, List<VvnCode> notifs)
+    public ShippingAgentRepresentativeDto(Guid id, string name, CitizenId citizenId, Nationality nationality, string email, string phoneNumber, Status status, ShippingOrganizationCode sao, List<VvnCode> notifs)
     {
         Name = name;
         CitizenId = citizenId;
@@ -28,7 +28,7 @@ public class ShippingAgentRepresentativeDto
         Id = id;
     }
 
-    public ShippingAgentRepresentativeDto(string name, string citizenId, string nationality, string email, string phoneNumber, Status status, ShippingOrganizationCode sao, List<VvnCode> notifs)
+    public ShippingAgentRepresentativeDto(string name, CitizenId citizenId, Nationality nationality, string email, string phoneNumber, Status status, ShippingOrganizationCode sao, List<VvnCode> notifs)
     {
         Name = name;
         CitizenId = citizenId;

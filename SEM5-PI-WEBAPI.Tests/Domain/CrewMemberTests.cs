@@ -1,5 +1,6 @@
 using SEM5_PI_WEBAPI.Domain.CrewMembers;
 using SEM5_PI_WEBAPI.Domain.Shared;
+using SEM5_PI_WEBAPI.Domain.ValueObjects;
 namespace SEM5_PI_WEBAPI.Tests.Domain;
 
 public class CrewMemberTests

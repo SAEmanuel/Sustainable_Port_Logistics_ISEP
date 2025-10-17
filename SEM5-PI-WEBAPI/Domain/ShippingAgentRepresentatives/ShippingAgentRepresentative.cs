@@ -15,8 +15,8 @@ public enum Status
 public class ShippingAgentRepresentative : Entity<ShippingAgentRepresentativeId>, IAggregateRoot
 {
     public string Name { get; set; }
-    public string CitizenId { get; private set; }
-    public string Nationality { get; set; }
+    public CitizenId CitizenId { get; private set; }
+    public Nationality Nationality { get; set; }
     public string Email { get; set; }
     public string PhoneNumber { get; set; }
 
@@ -28,7 +28,7 @@ public class ShippingAgentRepresentative : Entity<ShippingAgentRepresentativeId>
 
     protected ShippingAgentRepresentative() { }
 
-    public ShippingAgentRepresentative(string name, string citizenId, string nationality, string email, string phoneNumber,Status status, ShippingOrganizationCode sao)
+    public ShippingAgentRepresentative(string name, CitizenId citizenId, Nationality nationality, string email, string phoneNumber,Status status, ShippingOrganizationCode sao)
     {
         if (!IsValidEmail(email))
         throw new BusinessRuleValidationException("Invalid email format.");

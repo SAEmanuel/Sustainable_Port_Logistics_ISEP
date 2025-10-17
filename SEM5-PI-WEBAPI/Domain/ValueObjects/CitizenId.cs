@@ -1,7 +1,7 @@
 using System.Text.RegularExpressions;
 using SEM5_PI_WEBAPI.Domain.Shared;
 
-namespace SEM5_PI_WEBAPI.Domain.CrewMembers;
+namespace SEM5_PI_WEBAPI.Domain.ValueObjects;
 
 public class CitizenId : IValueObject
 {

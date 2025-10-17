@@ -1,5 +1,5 @@
 namespace SEM5_PI_WEBAPI.Tests.ValueObject;
-
+using SEM5_PI_WEBAPI.Domain.ValueObjects;
 using SEM5_PI_WEBAPI.Domain.CrewMembers;
 using SEM5_PI_WEBAPI.Domain.Shared;
 using Xunit;

@@ -1,3 +1,4 @@
+using SEM5_PI_WEBAPI.Domain.CrewMembers;
 using SEM5_PI_WEBAPI.Domain.Shared;
 using SEM5_PI_WEBAPI.Domain.ShippingAgentOrganizations;
 using SEM5_PI_WEBAPI.Domain.ShippingAgentRepresentatives.DTOs;
@@ -6,7 +7,7 @@ using SEM5_PI_WEBAPI.Domain.VVN;
 
 namespace SEM5_PI_WEBAPI.Domain.ShippingAgentRepresentatives;
 
-public class ShippingAgentRepresentativeService : IShippingAgentRepresentativeService
+public class ShippingAgentRepresentativeService: IShippingAgentRepresentativeService
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IShippingAgentRepresentativeRepository _repo;
@@ -62,7 +63,7 @@ public class ShippingAgentRepresentativeService : IShippingAgentRepresentativeSe
         return new ShippingAgentRepresentativeDto(q.Id.AsGuid(), q.Name, q.CitizenId, q.Nationality, q.Email, q.PhoneNumber, q.Status, q.SAO, q.Notifs);
     }
     
-     public async Task<ShippingAgentRepresentativeDto> GetByCitizenId(string cId)
+     public async Task<ShippingAgentRepresentativeDto> GetByCitizenId(CitizenId cId)
     {
         var q = await this._repo.GetByCitizenIdAsync(cId);
 

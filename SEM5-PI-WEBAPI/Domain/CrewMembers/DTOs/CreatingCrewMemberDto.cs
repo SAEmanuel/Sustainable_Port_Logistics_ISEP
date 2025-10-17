@@ -1,3 +1,4 @@
+using SEM5_PI_WEBAPI.Domain.ValueObjects;
 namespace SEM5_PI_WEBAPI.Domain.CrewMembers;
 
 public class CreatingCrewMemberDto
