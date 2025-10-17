@@ -1,4 +1,4 @@
-﻿namespace SEM5_PI_WEBAPI.Domain.Dock
+﻿namespace SEM5_PI_WEBAPI.Domain.Dock.DTOs
 {
     public class RegisterDockDto
     {

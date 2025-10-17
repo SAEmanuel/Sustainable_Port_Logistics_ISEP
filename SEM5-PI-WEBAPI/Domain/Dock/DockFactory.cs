@@ -1,4 +1,5 @@
-﻿using SEM5_PI_WEBAPI.Domain.ValueObjects;
+﻿using SEM5_PI_WEBAPI.Domain.Dock.DTOs;
+using SEM5_PI_WEBAPI.Domain.ValueObjects;
 using SEM5_PI_WEBAPI.Domain.VesselsTypes;
 
 namespace SEM5_PI_WEBAPI.Domain.Dock

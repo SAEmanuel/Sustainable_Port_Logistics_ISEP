@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SEM5_PI_WEBAPI.Domain.Dock;
+using SEM5_PI_WEBAPI.Domain.Dock.DTOs;
 using SEM5_PI_WEBAPI.Domain.Shared;
 
 namespace SEM5_PI_WEBAPI.Controllers;
@@ -9,9 +10,9 @@ namespace SEM5_PI_WEBAPI.Controllers;
 public class DockController : ControllerBase
 {
     private readonly ILogger<DockController> _logger;
-    private readonly DockService _service;
+    private readonly IDockService _service;
 
-    public DockController(DockService service, ILogger<DockController> logger)
+    public DockController(IDockService service, ILogger<DockController> logger)
     {
         _service = service;
         _logger = logger;
