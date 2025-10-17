@@ -1,10 +1,11 @@
-﻿using SEM5_PI_WEBAPI.Domain.Shared;
+﻿using SEM5_PI_WEBAPI.Domain.Dock.DTOs;
+using SEM5_PI_WEBAPI.Domain.Shared;
 using SEM5_PI_WEBAPI.Domain.ValueObjects;
 using SEM5_PI_WEBAPI.Domain.VesselsTypes;
 
-namespace SEM5_PI_WEBAPI.Domain.Dock
+namespace SEM5_PI_WEBAPI.Domain.Dock 
 {
-    public class DockService
+    public class DockService : IDockService
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IDockRepository _dockRepository;

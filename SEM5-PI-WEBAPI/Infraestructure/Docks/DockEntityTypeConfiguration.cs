@@ -26,7 +26,6 @@ namespace SEM5_PI_WEBAPI.Infraestructure.Docks
             builder.Property(d => d.DepthM).IsRequired();
             builder.Property(d => d.MaxDraftM).IsRequired();
 
-            // NOVO: mapear o enum Status como string
             builder.Property(d => d.Status)
                    .HasConversion<string>()
                    .HasMaxLength(20)

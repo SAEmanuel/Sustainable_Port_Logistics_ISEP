@@ -1,0 +1,47 @@
+[
+  {
+    "Name": "Alexandre Silva",
+    "CitizenId": "111111",
+    "Nationality": "Portuguese",
+    "Email": "alexandre.silva@gmail.com",
+    "PhoneNumber": "912345678",
+    "Status": "activated",
+    "SAO": "1112223334"
+  },
+  {
+    "Name": "Beatriz Costa",
+    "CitizenId": "222222",
+    "Nationality": "Portuguese",
+    "Email": "beatriz.costa@gmail.com",
+    "PhoneNumber": "913456789",
+    "Status": "activated",
+    "SAO": "2223334445"
+  },
+  {
+    "Name": "Carlos Mendes",
+    "CitizenId": "333333",
+    "Nationality": "Portuguese",
+    "Email": "carlos.mendes@gmail.com",
+    "PhoneNumber": "914567890",
+    "Status": "activated",
+    "SAO": "3334445556"
+  },
+  {
+    "Name": "Diana Ferreira",
+    "CitizenId": "444444",
+    "Nationality": "Portuguese",
+    "Email": "diana.ferreira@gmail.com",
+    "PhoneNumber": "915678901",
+    "Status": "activated",
+    "SAO": "4445556667"
+  },
+  {
+    "Name": "Eduardo Rocha",
+    "CitizenId": "555555",
+    "Nationality": "Portuguese",
+    "Email": "eduardo.rocha@gmail.com",
+    "PhoneNumber": "916789012",
+    "Status": "activated",
+    "SAO": "5556667778"
+  }
+]

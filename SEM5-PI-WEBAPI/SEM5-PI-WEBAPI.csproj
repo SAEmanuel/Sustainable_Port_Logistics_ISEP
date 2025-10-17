@@ -30,7 +30,6 @@
 
   <ItemGroup>
     <Folder Include="Logs\" />
-    <Folder Include="Logs\Bootstrap\" />
   </ItemGroup>
 
   <ItemGroup>
@@ -61,6 +60,15 @@
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </None>
         <None Update="Seed\VesselVisitNotifications.json">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Update="Seed\ShippingAgentsOrganizations.json">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Update="Seed\ShippingAgentsRepresentative.json">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Update="Seed\PhysicalResource.json">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </None>
     </ItemGroup>

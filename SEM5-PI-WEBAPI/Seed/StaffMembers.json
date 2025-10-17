@@ -5,7 +5,7 @@
     "phone": "+351912345600",
     "schedule": { "shift": 1, "daysOfWeek": "1111111" },
     "isActive": true,
-    "qualificationCodes": [ "NAS-001", "MAE-001" ]
+    "qualificationCodes": [ "TRK-001", "STS-001" ]
   },
   {
     "shortName": "Bob Smith",
@@ -13,7 +13,7 @@
     "phone": "+351912345601",
     "schedule": { "shift": 2, "daysOfWeek": "1010101" },
     "isActive": true,
-    "qualificationCodes": [ "POO-001" ]
+    "qualificationCodes": [ "STS-001" ]
   },
   {
     "shortName": "Carol White",
@@ -21,7 +21,7 @@
     "phone": "+351912345602",
     "schedule": { "shift": 3, "daysOfWeek": "0101010" },
     "isActive": true,
-    "qualificationCodes": [ "LOM-001", "MAS-001" ]
+    "qualificationCodes": [ "TRK-001", "FLK-001" ]
   },
   {
     "shortName": "David Lee",
@@ -29,7 +29,7 @@
     "phone": "+351912345603",
     "schedule": { "shift": 1, "daysOfWeek": "1111100" },
     "isActive": true,
-    "qualificationCodes": [ "SHN-001" ]
+    "qualificationCodes": [ "PSS-001" ]
   },
   {
     "shortName": "Eva Green",
@@ -37,7 +37,7 @@
     "phone": "+351912345604",
     "schedule": { "shift": 2, "daysOfWeek": "0011110" },
     "isActive": true,
-    "qualificationCodes": [ "CAH-001", "ENP-001" ]
+    "qualificationCodes": [ "CYS-001", "MTN-001" ]
   }
 
 ]
