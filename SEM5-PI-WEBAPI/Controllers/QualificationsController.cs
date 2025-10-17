@@ -3,9 +3,7 @@ using Microsoft.Extensions.Logging;
 using SEM5_PI_WEBAPI.Domain.Qualifications;
 using SEM5_PI_WEBAPI.Domain.Qualifications.DTOs;
 using SEM5_PI_WEBAPI.Domain.Shared;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+
 
 namespace SEM5_PI_WEBAPI.Controllers;
 

@@ -16,7 +16,7 @@ namespace SEM5_PI_WEBAPI
                 using (var scope = host.Services.CreateScope())
                 {
                     var bootstrap = scope.ServiceProvider.GetRequiredService<Bootstrap>();
-                    bootstrap.SeedAsync().Wait(); //  await se mudares o Main para async
+                    bootstrap.SeedAsync().Wait(); 
                 }
                 
                 
@@ -158,6 +158,36 @@ namespace SEM5_PI_WEBAPI
                         )
                     )
                     .WriteTo.File("Logs/VesselVisitNotification/vvn-.log",
+                        rollingInterval: RollingInterval.Day,
+                        outputTemplate: "[{Timestamp:HH:mm:ss} {Level:u3}] {SourceContext,-55} - {Message:lj}{NewLine}{Exception}")
+                )
+                
+                .WriteTo.Logger(lc => lc
+                    .Filter.ByIncludingOnly(e=>
+                        e.Properties.ContainsKey("SourceContext") &&(
+                            e.Properties["SourceContext"].ToString().Contains("SEM5_PI_WEBAPI.Domain.Qualifications")
+                            ||
+                            e.Properties["SourceContext"].ToString().Contains("RequestLogsMiddleware")
+                            ||
+                            e.Properties["SourceContext"].ToString().Contains("SEM5_PI_WEBAPI.Controllers.QualificationsController")
+                        )
+                    )
+                    .WriteTo.File("Logs/Qualification/qualification-.log",
+                        rollingInterval: RollingInterval.Day,
+                        outputTemplate: "[{Timestamp:HH:mm:ss} {Level:u3}] {SourceContext,-55} - {Message:lj}{NewLine}{Exception}")
+                )
+                
+                .WriteTo.Logger(lc => lc
+                    .Filter.ByIncludingOnly(e=>
+                        e.Properties.ContainsKey("SourceContext") &&(
+                            e.Properties["SourceContext"].ToString().Contains("SEM5_PI_WEBAPI.Domain.StaffMembers")
+                            ||
+                            e.Properties["SourceContext"].ToString().Contains("RequestLogsMiddleware")
+                            ||
+                            e.Properties["SourceContext"].ToString().Contains("SEM5_PI_WEBAPI.Controllers.StaffMemberController")
+                        )
+                    )
+                    .WriteTo.File("Logs/StaffMember/staffMember-.log",
                         rollingInterval: RollingInterval.Day,
                         outputTemplate: "[{Timestamp:HH:mm:ss} {Level:u3}] {SourceContext,-55} - {Message:lj}{NewLine}{Exception}")
                 )
