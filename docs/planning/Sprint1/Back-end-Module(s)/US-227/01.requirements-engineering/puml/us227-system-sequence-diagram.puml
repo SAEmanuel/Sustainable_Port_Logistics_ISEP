@@ -1,0 +1,13 @@
+@startuml
+actor "Port Authority Officer" as Officer
+boundary "Vessel Visit Notification Management API" as System
+
+== Approve Vessel Visit Notification ==
+Officer -> System : PUT /api/vesselvisitnotification/accept/id/{id}
+System --> Officer : 200 OK\nBody: VesselVisitNotificationDto\n(status="Accepted", assignedDockId, processedBy, processedAt, tasks)
+
+== Reject Vessel Visit Notification ==
+Officer -> System : PUT /api/vesselvisitnotification/reject/\nBody: RejectVesselVisitNotificationDto
+System --> Officer : 200 OK\nBody: VesselVisitNotificationDto\n(status="Rejected", rejectionReason, processedBy, processedAt)
+
+@enduml
