@@ -1,68 +1,82 @@
 @startuml
-actor "Logistics Operator" as Operator
-boundary "UI" as UI
-boundary "QualificationController" as Controller
-control "QualificationAppService" as Service
-entity "QualificationRepository" as Repository
-collections "Audit Log" as Audit
+actor Client
+boundary QualificationsController
+entity QualificationService
+entity QualificationRepository
+entity UnitOfWork
+entity QualificationFactory
+database "Qualifications Database" as Database
 
-Operator -> UI : Fill Qualification form (Code, Name) and submit
-UI -> Controller : RegisterQualification(QualificationDTO)
-Controller -> Controller : Validate basic fields (Code, Name)
-alt Validation fails
-    Controller --> UI : Return ValidationErrorsDTO
-    UI --> Operator : Display validation errors
-else Validation succeeds
-    Controller -> Service : CreateQualification(QualificationDTO)
-    Service -> Service : Validate business rules (code uniqueness, etc.)
-    alt Business validation fails
-        Service --> Controller : Return Business ValidationErrorsDTO
-        Controller --> UI : Return Business ValidationErrorsDTO
-        UI --> Operator : Display business validation errors
-    else Business validation succeeds
-        Service -> Repository : Save Qualification entity
-        Repository --> Service : Qualification entity with Id
-        Service -> Audit : Log creation event
-        Service --> Controller : Return QualificationSuccessDTO
-        Controller --> UI : Return QualificationSuccessDTO
-        UI --> Operator : Display success message
-    end
-end
+== Get All Qualifications ==
+Client -> QualificationsController: GET /api/qualifications
+QualificationsController -> QualificationService: GetAllAsync()
+QualificationService -> QualificationRepository: GetAllAsync()
+QualificationRepository -> Database: Query all records
+Database --> QualificationRepository: List<Qualification>
+QualificationRepository --> QualificationService: List<Qualification>
+QualificationService -> QualificationFactory: CreateQualificationDtoList()
+QualificationService --> QualificationsController: List<QualificationDto>
+QualificationsController --> Client: 200 OK List<QualificationDto>
+
+== Get Qualification By ID ==
+Client -> QualificationsController: GET /api/qualifications/{id}
+QualificationsController -> QualificationService: GetByIdAsync(QualificationId)
+QualificationService -> QualificationRepository: GetByIdAsync(id)
+QualificationRepository -> Database: Query by ID
+Database --> QualificationRepository: Qualification or null
+QualificationRepository --> QualificationService: Qualification or null
+QualificationService -> QualificationFactory: CreateQualificationDto()
+QualificationService --> QualificationsController: QualificationDto or 404
+QualificationsController --> Client: 200 OK or 404
+
+== Get Qualification By Code ==
+Client -> QualificationsController: GET /api/qualifications/code/{code}
+QualificationsController -> QualificationService: GetByCodeAsync(code)
+QualificationService -> QualificationRepository: GetQualificationByCodeAsync(code)
+QualificationRepository -> Database: Query by Code
+Database --> QualificationRepository: Qualification or null
+QualificationRepository --> QualificationService: Qualification or null
+QualificationService -> QualificationFactory: CreateQualificationDto()
+QualificationService --> QualificationsController: QualificationDto or 404
+QualificationsController --> Client: 200 OK or 404
+
+== Get Qualification By Name ==
+Client -> QualificationsController: GET /api/qualifications/name/{name}
+QualificationsController -> QualificationService: GetByNameAsync(name)
+QualificationService -> QualificationRepository: GetQualificationByName(name)
+QualificationRepository -> Database: Query by Name
+Database --> QualificationRepository: Qualification or null
+QualificationRepository --> QualificationService: Qualification or null
+QualificationService -> QualificationFactory: CreateQualificationDto()
+QualificationService --> QualificationsController: QualificationDto or 404
+QualificationsController --> Client: 200 OK or 404
+
+== Create Qualification ==
+Client -> QualificationsController: POST /api/qualifications\nBody: CreatingQualificationDto
+QualificationsController -> QualificationService: AddAsync(dto)
+QualificationService -> QualificationService: EnsureNotRepeatedAsync(dto)
+QualificationService -> QualificationService: GetCodeAsync(dto)
+QualificationService -> QualificationRepository: AddAsync(Qualification)
+QualificationRepository -> Database: Insert Record
+Database --> QualificationRepository: Success
+QualificationService -> UnitOfWork: CommitAsync()
+UnitOfWork --> QualificationService: Success
+QualificationService -> QualificationFactory: CreateQualificationDto()
+QualificationService --> QualificationsController: QualificationDto
+QualificationsController --> Client: 201 Created
 
 == Update Qualification ==
-
-Operator -> UI : Request to update Qualification (Id, new Code, new Name)
-UI -> Controller : UpdateQualification(QualificationDTO)
-Controller -> Controller : Validate fields
-alt Validation fails
-    Controller --> UI : Return ValidationErrorsDTO
-    UI --> Operator : Display validation errors
-else Validation succeeds
-    Controller -> Service : UpdateQualification(QualificationDTO)
-    Service -> Service : Validate business rules (unique code, validate relationships)
-    alt Business validation fails
-        Service --> Controller : Return Business ValidationErrorsDTO
-        Controller --> UI : Return Business ValidationErrorsDTO
-        UI --> Operator : Display business validation errors
-    else Business validation succeeds
-        Service -> Repository : Update Qualification entity
-        Repository --> Service : Updated Qualification entity
-        Service -> Audit : Log update event
-        Service --> Controller : Return QualificationSuccessDTO
-        Controller --> UI : Return QualificationSuccessDTO
-        UI --> Operator : Display success message
-    end
-end
-
-== List Qualifications ==
-
-Operator -> UI : Request list of Qualifications (filter by code/name)
-UI -> Controller : ListQualifications(filterDTO)
-Controller -> Service : ListQualifications(filterDTO)
-Service -> Repository : Query Qualifications with filters
-Repository --> Service : List<QualificationDTO>
-Service --> Controller : List<QualificationDTO>
-Controller --> UI : List<QualificationDTO>
-UI --> Operator : Display list of qualifications
+Client -> QualificationsController: PATCH /api/qualifications/{id}\nBody: CreatingQualificationDto
+QualificationsController -> QualificationService: UpdateAsync(QualificationId, dto)
+QualificationService -> QualificationRepository: GetByIdAsync(id)
+QualificationRepository -> Database: Query by ID
+Database --> QualificationRepository: Qualification or null
+QualificationRepository --> QualificationService: Qualification or null
+QualificationService -> QualificationService: UpdateName and/or UpdateCode
+QualificationService -> UnitOfWork: CommitAsync()
+UnitOfWork --> QualificationService: Success
+QualificationService -> QualificationFactory: CreateQualificationDto()
+QualificationService --> QualificationsController: QualificationDto or 404
+QualificationsController --> Client: 200 OK or 404
 
 @enduml

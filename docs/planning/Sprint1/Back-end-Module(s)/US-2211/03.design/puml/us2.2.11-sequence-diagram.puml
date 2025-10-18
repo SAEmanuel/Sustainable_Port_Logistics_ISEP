@@ -6,11 +6,16 @@ entity StaffMemberRepository
 entity QualificationRepository
 entity UnitOfWork
 entity StaffMemberFactory
+entity StaffMember
+database "Qualifications Database" as QualDB
+database "Staff Members Database" as StaffDB
 
 == Get All Staff Members ==
 Client -> StaffMembersController: GET /api/staffmembers
 StaffMembersController -> StaffMemberService: GetAllAsync()
 StaffMemberService -> StaffMemberRepository: GetAllAsync()
+StaffMemberRepository -> StaffDB: Query all StaffMembers
+StaffDB --> StaffMemberRepository: List<StaffMember>
 StaffMemberRepository --> StaffMemberService: List<StaffMember>
 StaffMemberService -> StaffMemberFactory: MapToDto()
 StaffMemberService --> StaffMembersController: List<StaffMemberDto>
@@ -20,6 +25,8 @@ StaffMembersController --> Client: 200 OK List<StaffMemberDto>
 Client -> StaffMembersController: GET /api/staffmembers/{id}
 StaffMembersController -> StaffMemberService: GetByIdAsync(StaffMemberId)
 StaffMemberService -> StaffMemberRepository: GetByIdAsync(id)
+StaffMemberRepository -> StaffDB: Query StaffMember by ID
+StaffDB --> StaffMemberRepository: StaffMember or null
 StaffMemberRepository --> StaffMemberService: StaffMember or null
 StaffMemberService -> StaffMemberFactory: MapToDto()
 StaffMemberService --> StaffMembersController: StaffMemberDto or 404
@@ -28,9 +35,13 @@ StaffMembersController --> Client: 200 OK or 404
 == Get By Qualifications ==
 Client -> StaffMembersController: GET /api/staffmembers/by-qualifications\nBody: CodesListDto
 StaffMembersController -> StaffMemberService: GetByQualificationsAsync(list<string>)
-StaffMemberService -> QualificationRepository: GetQualificationByCodeAsync(code) for each code
+StaffMemberService -> QualificationRepository: GetQualificationByCodeAsync(code) foreach
+QualificationRepository -> QualDB: Query Qualification by code
+QualDB --> QualificationRepository: QualificationId list
 QualificationRepository --> StaffMemberService: QualificationId list
 StaffMemberService -> StaffMemberRepository: GetByQualificationsAsync(QualificationId list)
+StaffMemberRepository -> StaffDB: Query StaffMembers by QualificationIds
+StaffDB --> StaffMemberRepository: List<StaffMember>
 StaffMemberRepository --> StaffMemberService: List<StaffMember>
 StaffMemberService -> StaffMemberFactory: MapToDto()
 StaffMemberService --> StaffMembersController: List<StaffMemberDto>
@@ -39,9 +50,13 @@ StaffMembersController --> Client: 200 OK
 == Get By Exact Qualifications ==
 Client -> StaffMembersController: GET /api/staffmembers/by-exact-qualifications\nBody: CodesListDto
 StaffMembersController -> StaffMemberService: GetByExactQualificationsAsync(list<string>)
-StaffMemberService -> QualificationRepository: GetQualificationByCodeAsync(code) for each code
+StaffMemberService -> QualificationRepository: GetQualificationByCodeAsync(code) foreach
+QualificationRepository -> QualDB: Query Qualification by code
+QualDB --> QualificationRepository: QualificationId list
 QualificationRepository --> StaffMemberService: QualificationId list
 StaffMemberService -> StaffMemberRepository: GetByExactQualificationsAsync(QualificationId list)
+StaffMemberRepository -> StaffDB: Query StaffMembers by exact QualificationIds match
+StaffDB --> StaffMemberRepository: List<StaffMember>
 StaffMemberRepository --> StaffMemberService: List<StaffMember>
 StaffMemberService -> StaffMemberFactory: MapToDto()
 StaffMemberService --> StaffMembersController: List<StaffMemberDto>
@@ -51,6 +66,8 @@ StaffMembersController --> Client: 200 OK
 Client -> StaffMembersController: GET /api/staffmembers/mec/{mec}
 StaffMembersController -> StaffMemberService: GetByMecNumberAsync(mec)
 StaffMemberService -> StaffMemberRepository: GetByMecNumberAsync(mec)
+StaffMemberRepository -> StaffDB: Query StaffMember by MEC number
+StaffDB --> StaffMemberRepository: StaffMember or null
 StaffMemberRepository --> StaffMemberService: StaffMember or null
 StaffMemberService -> StaffMemberFactory: MapToDto()
 StaffMemberService --> StaffMembersController: StaffMemberDto or 404
@@ -60,6 +77,8 @@ StaffMembersController --> Client: 200 OK or 404
 Client -> StaffMembersController: GET /api/staffmembers/name/{name}
 StaffMembersController -> StaffMemberService: GetByNameAsync(name)
 StaffMemberService -> StaffMemberRepository: GetByNameAsync(name)
+StaffMemberRepository -> StaffDB: Query StaffMembers by name pattern
+StaffDB --> StaffMemberRepository: List<StaffMember>
 StaffMemberRepository --> StaffMemberService: List<StaffMember>
 StaffMemberService -> StaffMemberFactory: MapToDto()
 StaffMemberService --> StaffMembersController: List<StaffMemberDto> or 404
@@ -69,6 +88,8 @@ StaffMembersController --> Client: 200 OK or 404
 Client -> StaffMembersController: GET /api/staffmembers/status/{status}
 StaffMembersController -> StaffMemberService: GetByStatusAsync(status)
 StaffMemberService -> StaffMemberRepository: GetByStatusAsync(status)
+StaffMemberRepository -> StaffDB: Query StaffMembers by status
+StaffDB --> StaffMemberRepository: List<StaffMember>
 StaffMemberRepository --> StaffMemberService: List<StaffMember>
 StaffMemberService -> StaffMemberFactory: MapToDto()
 StaffMemberService --> StaffMembersController: List<StaffMemberDto>
@@ -78,13 +99,22 @@ StaffMembersController --> Client: 200 OK
 Client -> StaffMembersController: POST /api/staffmembers\nCreatingStaffMemberDto
 StaffMembersController -> StaffMemberService: AddAsync(dto)
 StaffMemberService -> StaffMemberRepository: EmailIsInTheSystem(email)
+StaffMemberRepository -> StaffDB: Check email uniqueness
+StaffDB --> StaffMemberRepository: bool
 StaffMemberRepository --> StaffMemberService: bool
 StaffMemberService -> StaffMemberRepository: PhoneIsInTheSystem(phone)
+StaffMemberRepository -> StaffDB: Check phone uniqueness
+StaffDB --> StaffMemberRepository: bool
 StaffMemberRepository --> StaffMemberService: bool
 StaffMemberService -> QualificationRepository: GetQualificationByCodeAsync(code) foreach
+QualificationRepository -> QualDB: Query Qualification by code
+QualDB --> QualificationRepository: QualificationId list
 QualificationRepository --> StaffMemberService: QualificationId list
 StaffMemberService -> StaffMemberFactory: CreateStaffMember(dto, mecNum, qualificationIds)
+StaffMemberFactory --> StaffMember: Create Entity
 StaffMemberService -> StaffMemberRepository: AddAsync(staffMember)
+StaffMemberRepository -> StaffDB: Insert new StaffMember
+StaffDB --> StaffMemberRepository: success
 StaffMemberService -> UnitOfWork: CommitAsync()
 UnitOfWork --> StaffMemberService: success
 StaffMemberService -> StaffMemberFactory: CreateStaffMemberDto(staffMember, qualificationCodes)
@@ -95,9 +125,17 @@ StaffMembersController --> Client: 201 Created
 Client -> StaffMembersController: PUT /api/staffmembers/update/\nUpdateStaffMemberDto
 StaffMembersController -> StaffMemberService: UpdateAsync(dto)
 StaffMemberService -> StaffMemberRepository: GetByMecNumberAsync(mec)
+StaffMemberRepository -> StaffDB: Query StaffMember by MEC number
+StaffDB --> StaffMemberRepository: StaffMember or null
 StaffMemberRepository --> StaffMemberService: StaffMember or null
 StaffMemberService -> StaffMemberRepository: EmailIsInTheSystem(email) (optional)
+StaffMemberRepository -> StaffDB: Check email uniqueness
+StaffDB --> StaffMemberRepository: bool
+StaffMemberRepository --> StaffMemberService: bool
 StaffMemberService -> StaffMemberRepository: PhoneIsInTheSystem(phone) (optional)
+StaffMemberRepository -> StaffDB: Check phone uniqueness
+StaffDB --> StaffMemberRepository: bool
+StaffMemberRepository --> StaffMemberService: bool
 StaffMemberService -> StaffMember: Update properties
 StaffMemberService -> UnitOfWork: CommitAsync()
 UnitOfWork --> StaffMemberService: success
@@ -109,6 +147,8 @@ StaffMembersController --> Client: 200 OK or 404
 Client -> StaffMembersController: PUT /api/staffmembers/toggle/{mec}
 StaffMembersController -> StaffMemberService: ToggleAsync(mec)
 StaffMemberService -> StaffMemberRepository: GetByMecNumberAsync(mec)
+StaffMemberRepository -> StaffDB: Query StaffMember by MEC number
+StaffDB --> StaffMemberRepository: StaffMember or null
 StaffMemberRepository --> StaffMemberService: StaffMember or null
 StaffMemberService -> StaffMember: ToggleStatus()
 StaffMemberService -> UnitOfWork: CommitAsync()

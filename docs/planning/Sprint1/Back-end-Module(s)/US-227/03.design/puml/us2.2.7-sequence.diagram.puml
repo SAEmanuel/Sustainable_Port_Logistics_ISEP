@@ -10,31 +10,46 @@ entity "TaskRepository" as TaskRepo
 entity "UnitOfWork" as UoW
 entity "VesselVisitNotification" as VVN
 entity "VesselVisitNotificationDto" as VVNDtO
+database "Vessel Visit Notification Database" as Database
 
 == Accept ==
 
 Officer -> Controller : PUT /accept/id/{id}
 Controller -> Service : AcceptVvnAsync(VvnCode)
 Service -> VVNRepo : GetCompleteByIdAsync(id)
+VVNRepo -> Database: Query VVN by ID
+Database --> VVNRepo : VVN
 VVNRepo --> Service : VVN
 Service -> DockRepo : BasicDockAttributionAlgorithm(vesselImo)
+DockRepo -> Database: Query docks for availability
+Database --> DockRepo : Dock
 DockRepo --> Service : Dock
 Service -> VVN : Accept() / UpdateDock(dock)
 
 alt If UnloadingCargoManifest exists
     Service -> Service : CreateTasksAsync(UnloadingCargoManifest, dock)
     Service -> TaskRepo : Add + save Unloading Tasks
+    TaskRepo -> Database: Insert Unloading Tasks
+    Database --> TaskRepo: Success
+    TaskRepo --> Service: Confirmation
     Service -> VVN : SetTasks(unloadingTasks)
 end
 
 alt If LoadingCargoManifest exists
     Service -> Service : CreateTasksAsync(LoadingCargoManifest, dock)
     Service -> TaskRepo : Add + save Loading Tasks
+    TaskRepo -> Database: Insert Loading Tasks
+    Database --> TaskRepo: Success
+    TaskRepo --> Service: Confirmation
     Service -> VVN : SetTasks(loadingTasks)
 end
 
 Service -> VVNRepo : Update VVN state
+VVNRepo -> Database: Update VVN record
+Database --> VVNRepo: Success
+VVNRepo --> Service: Confirmation
 Service -> UoW : CommitAsync
+UoW --> Service : Success
 Service -> VVNDtO : CreateVesselVisitNotificationDto(VVN)
 Service --> Controller : VVNDtO
 Controller --> Officer : 200 OK, VVNDtO
@@ -44,10 +59,16 @@ Controller --> Officer : 200 OK, VVNDtO
 Officer -> Controller : PUT /reject
 Controller -> Service : MarkAsPendingAsync(RejectVesselVisitNotificationDto)
 Service -> VVNRepo : GetByIdAsync(id)
+VVNRepo -> Database: Query VVN by ID
+Database --> VVNRepo : VVN
 VVNRepo --> Service : VVN
 Service -> VVN : MarkPending(reason)
 Service -> VVNRepo : Update VVN state
+VVNRepo -> Database: Update VVN record
+Database --> VVNRepo : Success
+VVNRepo --> Service: Confirmation
 Service -> UoW : CommitAsync
+UoW --> Service : Success
 Service -> VVNDtO : CreateVesselVisitNotificationDto(VVN)
 Service --> Controller : VVNDtO
 Controller --> Officer : 200 OK, VVNDtO

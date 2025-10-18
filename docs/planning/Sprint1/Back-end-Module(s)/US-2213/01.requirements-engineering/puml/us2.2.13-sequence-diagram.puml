@@ -1,34 +1,29 @@
 @startuml
-actor "Logistic Operator" as Operator
-participant "Qualification Management System" as System
+actor Client
+boundary "Qualifications Management API" as System
 
-Operator -> System: Request to create new Qualification\n(provides Code, Name)
-activate System
+== Get All Qualifications ==
+Client -> System : GET /api/qualifications
+System --> Client : 200 OK\nList<QualificationDto>
 
-System -> System: Validate provided Code and Name
-alt Code is unique and data valid
-    System -> System: Save new Qualification to database
-    System --> Operator: Success confirmation
-else Validation fails
-    System --> Operator: Error message (duplicate code or invalid data)
-end
+== Get Qualification By ID ==
+Client -> System : GET /api/qualifications/{id}
+System --> Client : 200 OK\nQualificationDto\nOR 404 Not Found
 
-Operator -> System: Request to update existing Qualification\n(provides Code, Name)
-activate System
+== Get Qualification By Code ==
+Client -> System : GET /api/qualifications/code/{code}
+System --> Client : 200 OK\nQualificationDto\nOR 404 Not Found
 
-System -> System: Validate updated data and existence
-alt Data valid and Qualification exists
-    System -> System: Update Qualification in database
-    System --> Operator: Success confirmation
-else Validation fails or not exists
-    System --> Operator: Error message (not found or invalid input)
-end
+== Get Qualification By Name ==
+Client -> System : GET /api/qualifications/name/{name}
+System --> Client : 200 OK\nQualificationDto\nOR 404 Not Found
 
-Operator -> System: Request list of Qualifications (with filters)
-activate System
+== Create Qualification ==
+Client -> System : POST /api/qualifications\nBody: CreatingQualificationDto
+System --> Client : 201 Created\nQualificationDto
 
-System -> System: Query database with filters
-System --> Operator: List of Qualifications (filtered by Code/Name)
+== Update Qualification ==
+Client -> System : PATCH /api/qualifications/{id}\nBody: CreatingQualificationDto
+System --> Client : 200 OK\nQualificationDto\nOR 404 Not Found
 
-deactivate System
 @enduml
