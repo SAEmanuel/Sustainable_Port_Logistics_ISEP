@@ -48,11 +48,10 @@ namespace SEM5_PI_WEBAPI.Infraestructure.ShippingAgentRepresentatives
                 .FirstOrDefaultAsync(x => x.SAO.Value.ToString().ToLower().Trim() == sao.Value.ToString().ToLower().Trim());
         }
 
-        public async Task<List<ShippingAgentRepresentative>> GetFilterAsync(string? name, CitizenId? citizenId, Nationality? nationality, string? email, string? phoneNumber,Status? status,ShippingOrganizationCode? sao, string? query)
+        public async Task<List<ShippingAgentRepresentative>> GetFilterAsync(string? name, CitizenId? citizenId, Nationality? nationality, string? email, PhoneNumber? phoneNumber,Status? status,ShippingOrganizationCode? sao, string? query)
         {
             var normalizedName = name?.Trim().ToLower();
             var normalizedEmail = email?.Trim().ToLower();
-            var normalizedPhoneNumber = phoneNumber?.Trim().ToLower();
             var normalizedQuery = query?.Trim().ToLower();
 
             var queryable = _context.ShippingAgentRepresentative.AsQueryable();
@@ -69,8 +68,8 @@ namespace SEM5_PI_WEBAPI.Infraestructure.ShippingAgentRepresentatives
             if (!string.IsNullOrEmpty(normalizedEmail))
                 queryable = queryable.Where(v => v.Email.ToLower().Contains(normalizedEmail));
 
-            if (!string.IsNullOrEmpty(normalizedPhoneNumber))
-                queryable = queryable.Where(v => v.PhoneNumber.ToLower().Contains(normalizedPhoneNumber));
+            if (phoneNumber != null)
+                queryable = queryable.Where(v => v.PhoneNumber == phoneNumber);
 
             if (status != null)
                 queryable = queryable.Where(v => v.Status == status);
@@ -84,7 +83,7 @@ namespace SEM5_PI_WEBAPI.Infraestructure.ShippingAgentRepresentatives
                     v.CitizenId == citizenId ||
                     v.Nationality == nationality||
                     v.Email.ToLower().Contains(normalizedQuery) ||
-                    v.PhoneNumber.ToLower().Contains(normalizedQuery) ||
+                    v.PhoneNumber == phoneNumber ||
                     v.Status == status ||
                     v.SAO == sao);
 

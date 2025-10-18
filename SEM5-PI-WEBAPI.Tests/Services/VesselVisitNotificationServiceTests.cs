@@ -66,14 +66,14 @@ namespace SEM5_PI_WEBAPI.Tests.Services
         public async Task AddAsync_ShouldCreate_WhenValid()
         {
             var vessel = new Vessel("IMO 1234567", "Ever Given", "Evergreen", new VesselTypeId(Guid.NewGuid()));
-
+            var phone = new PhoneNumber("+351912345678");
             _sarRepo.Setup(r => r.GetByEmailAsync(It.IsAny<string>()))
                 .ReturnsAsync(new ShippingAgentRepresentative(
                     "João Silva",
                     new CitizenId("A123456"),
                     Nationality.Portugal,
                     "agent@example.com",
-                    "+351912345678",
+                    phone,
                     Status.activated,
                     new ShippingOrganizationCode("1234567890")
                 ));
@@ -224,9 +224,9 @@ namespace SEM5_PI_WEBAPI.Tests.Services
         public async Task GetInProgressPendingInformationVvnsByShippingAgentRepresentativeIdFiltersAsync_ShouldReturnEmpty_WhenNone()
         {
             var saoCode = new ShippingOrganizationCode("1234567890");
-
+            var phone = new PhoneNumber("+351912345678");
             var sar = new ShippingAgentRepresentative(
-                "John", new CitizenId("AB123456"), Nationality.Portugal, "john@example.com", "999", Status.activated, saoCode);
+                "John", new CitizenId("AB123456"), Nationality.Portugal, "john@example.com", phone, Status.activated, saoCode);
 
             _sarRepo.Setup(r => r.GetByIdAsync(It.IsAny<ShippingAgentRepresentativeId>()))
                 .ReturnsAsync(sar);

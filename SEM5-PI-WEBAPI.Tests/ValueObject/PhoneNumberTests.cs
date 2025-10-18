@@ -1,6 +1,6 @@
 namespace SEM5_PI_WEBAPI.Tests.ValueObject;
 
-using SEM5_PI_WEBAPI.Domain.StaffMembers;
+using SEM5_PI_WEBAPI.Domain.ValueObjects;
 using Xunit;
 
 public class PhoneNumberTests

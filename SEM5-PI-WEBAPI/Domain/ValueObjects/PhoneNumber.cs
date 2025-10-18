@@ -1,6 +1,6 @@
 using SEM5_PI_WEBAPI.Domain.Shared;
 
-namespace SEM5_PI_WEBAPI.Domain.StaffMembers;
+namespace SEM5_PI_WEBAPI.Domain.ValueObjects;
 
 using System;
 using System.Text.RegularExpressions;

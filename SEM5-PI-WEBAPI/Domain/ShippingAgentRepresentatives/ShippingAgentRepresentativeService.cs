@@ -4,6 +4,7 @@ using SEM5_PI_WEBAPI.Domain.ShippingAgentOrganizations;
 using SEM5_PI_WEBAPI.Domain.ShippingAgentRepresentatives.DTOs;
 using SEM5_PI_WEBAPI.Domain.ValueObjects;
 using SEM5_PI_WEBAPI.Domain.VVN;
+using SEM5_PI_WEBAPI.Domain.StaffMembers;
 
 namespace SEM5_PI_WEBAPI.Domain.ShippingAgentRepresentatives;
 
@@ -155,7 +156,7 @@ public class ShippingAgentRepresentativeService: IShippingAgentRepresentativeSer
         if (dto.Status != null)
             representative.UpdateStatus(dto.Status.ToString());
     
-        if (!string.IsNullOrWhiteSpace(dto.PhoneNumber))
+        if (dto.PhoneNumber != null)
             representative.UpdatePhoneNumber(dto.PhoneNumber);
 
         await _unitOfWork.CommitAsync();

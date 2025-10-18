@@ -18,7 +18,7 @@ public class ShippingAgentRepresentative : Entity<ShippingAgentRepresentativeId>
     public CitizenId CitizenId { get; private set; }
     public Nationality Nationality { get; set; }
     public string Email { get; set; }
-    public string PhoneNumber { get; set; }
+    public PhoneNumber PhoneNumber { get; set; }
 
     public Status Status { get; set; }
 
@@ -28,7 +28,7 @@ public class ShippingAgentRepresentative : Entity<ShippingAgentRepresentativeId>
 
     protected ShippingAgentRepresentative() { }
 
-    public ShippingAgentRepresentative(string name, CitizenId citizenId, Nationality nationality, string email, string phoneNumber,Status status, ShippingOrganizationCode sao)
+    public ShippingAgentRepresentative(string name, CitizenId citizenId, Nationality nationality, string email, PhoneNumber phoneNumber,Status status, ShippingOrganizationCode sao)
     {
         if (!IsValidEmail(email))
             throw new BusinessRuleValidationException("Invalid email format.");
@@ -87,7 +87,7 @@ public class ShippingAgentRepresentative : Entity<ShippingAgentRepresentativeId>
             throw new ArgumentException($"Invalid status value: {status}. Valid values are: {string.Join(", ", Enum.GetNames(typeof(Status)))}");
         }
     }
-    public void UpdatePhoneNumber(string phoneNumber)
+    public void UpdatePhoneNumber(PhoneNumber phoneNumber)
     {
         PhoneNumber = phoneNumber;
     }

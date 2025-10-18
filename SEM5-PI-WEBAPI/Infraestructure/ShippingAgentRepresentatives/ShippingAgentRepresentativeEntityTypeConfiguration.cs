@@ -29,8 +29,12 @@ namespace SEM5_PI_WEBAPI.Infraestructure.ShippingAgentRepresentatives
                 .IsRequired();
 
             builder.Property(b => b.PhoneNumber)
+                .HasConversion(
+                    nr => nr.Number,
+                    str => new PhoneNumber(str)
+                )
                 .IsRequired();
-
+                
             builder.Property(b => b.Status)
                 .IsRequired();
 
