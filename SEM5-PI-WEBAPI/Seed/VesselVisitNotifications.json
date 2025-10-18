@@ -28,9 +28,8 @@
         {"bay": 4, "row": 3, "tier": 5, "storageAreaName": "Yard B", "container": {"isoCode": "CSQU3054383", "description": "Furniture Related", "type": "General", "weightKg": 12000}}
       ]
     },
-    "vesselImo": "IMO 9823455"
-
-
+    "vesselImo": "IMO 9823455",
+    "emailSar": "alexandre.silva@gmail.com"
   },
 
   {
@@ -57,7 +56,8 @@
       ]
     },
     "unloadingCargoManifest": null,
-    "vesselImo": "IMO 9999993"
+    "vesselImo": "IMO 9999993",
+    "emailSar": "alexandre.silva@gmail.com"
   },
   
   
@@ -85,6 +85,7 @@
         {"bay": 5, "row": 5, "tier": 2, "storageAreaName": "Yard C", "container": {"isoCode": "BBCU5100617", "description": "Steel beams", "type": "Oversized", "weightKg": 22100}}
       ]
     },
-    "vesselImo": "IMO 9456783"
+    "vesselImo": "IMO 9456783",
+    "emailSar": "beatriz.costa@gmail.com"
   }
 ]

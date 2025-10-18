@@ -24,7 +24,7 @@ namespace SEM5_PI_WEBAPI.Tests.Controllers
             _loggerMock = new Mock<ILogger<VesselVisitNotificationController>>();
             _controller = new VesselVisitNotificationController(_serviceMock.Object, _loggerMock.Object);
         }
-        
+
         [Fact]
         public async Task CreateAsync_ShouldReturnCreated_WhenValid()
         {
@@ -36,7 +36,8 @@ namespace SEM5_PI_WEBAPI.Tests.Controllers
                 null,
                 null,
                 null,
-                "IMO1234567"
+                "IMO1234567",
+                "agent@example.com"
             );
 
             var createdDto = BuildDto(Guid.NewGuid().ToString(), "2025-THPA-000001", VvnStatus.InProgress.ToString(), 1200);
@@ -63,7 +64,8 @@ namespace SEM5_PI_WEBAPI.Tests.Controllers
                 null,
                 null,
                 null,
-                "IMO1234567"
+                "IMO1234567",
+                "agent@example.com"
             );
 
             _serviceMock.Setup(s => s.AddAsync(dto))
@@ -73,7 +75,7 @@ namespace SEM5_PI_WEBAPI.Tests.Controllers
             var bad = Assert.IsType<BadRequestObjectResult>(result.Result);
             Assert.Equal("Invalid ETA/ETD", bad.Value);
         }
-        
+
         [Fact]
         public async Task GetById_ShouldReturnOk_WhenExists()
         {
@@ -95,7 +97,6 @@ namespace SEM5_PI_WEBAPI.Tests.Controllers
             var result = await _controller.GetById(Guid.NewGuid());
             Assert.IsType<NotFoundObjectResult>(result.Result);
         }
-
 
         [Fact]
         public async Task WithdrawById_ShouldReturnOk_WhenSuccess()
@@ -137,7 +138,6 @@ namespace SEM5_PI_WEBAPI.Tests.Controllers
             Assert.IsType<BadRequestObjectResult>(result.Result);
         }
 
-
         [Fact]
         public async Task SubmitByCode_ShouldReturnOk_WhenSuccess()
         {
@@ -157,7 +157,6 @@ namespace SEM5_PI_WEBAPI.Tests.Controllers
             var result = await _controller.SubmitByIdAsync(Guid.NewGuid());
             Assert.IsType<BadRequestObjectResult>(result.Result);
         }
-
 
         [Fact]
         public async Task UpdateAsync_ShouldReturnOk_WhenValid()
@@ -183,7 +182,7 @@ namespace SEM5_PI_WEBAPI.Tests.Controllers
             var result = await _controller.UpdateAsync(Guid.NewGuid(), dto);
             Assert.IsType<BadRequestObjectResult>(result.Result);
         }
-        
+
         [Fact]
         public async Task AcceptVvn_ShouldReturnOk_WhenSuccess()
         {
@@ -204,7 +203,6 @@ namespace SEM5_PI_WEBAPI.Tests.Controllers
             var result = await _controller.AcceptVvn(Guid.NewGuid());
             Assert.IsType<BadRequestObjectResult>(result.Result);
         }
-
 
         [Fact]
         public async Task RejectVvn_ShouldReturnOk_WhenSuccess()
@@ -227,7 +225,6 @@ namespace SEM5_PI_WEBAPI.Tests.Controllers
             var result = await _controller.RejectVvn(dto);
             Assert.IsType<BadRequestObjectResult>(result.Result);
         }
-
 
         [Fact]
         public async Task GetInProgressOrPending_ShouldReturnOk_WhenSuccess()
@@ -280,7 +277,6 @@ namespace SEM5_PI_WEBAPI.Tests.Controllers
             var result = await _controller.GetAcceptedVvnsByFiltersAsync(Guid.NewGuid(), null, null, null, null, null, null);
             Assert.IsType<OkObjectResult>(result.Result);
         }
-
 
         private static VesselVisitNotificationDto BuildDto(string id, string code, string status, int volume = 1000)
         {

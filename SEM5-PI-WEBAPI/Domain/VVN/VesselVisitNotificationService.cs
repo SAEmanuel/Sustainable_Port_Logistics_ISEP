@@ -91,6 +91,11 @@ public class VesselVisitNotificationService : IVesselVisitNotificationService
         if (loadingCargoManifest != null)
             CheckNeededPeople(loadingCargoManifest, crewManifest);
 
+        var emailSar = new EmailAddress(dto.EmailSar);
+        var shippingAgentRepresentative = await _shippingAgentRepresentativeRepository.GetByEmailAsync(emailSar.ToString());
+
+        if (shippingAgentRepresentative == null) throw new BusinessRuleValidationException("Invalid request: Shipping Agent Representative associated to VVN does not exist on DB.");
+        
         var newVesselVisitNotification = VesselVisitNotificationFactory.CreateVesselVisitNotification(
             vvnCode,
             dto.EstimatedTimeArrival,
@@ -102,13 +107,14 @@ public class VesselVisitNotificationService : IVesselVisitNotificationService
             unloadingCargoManifest,
             vesselImo
         );
-
+        
+        shippingAgentRepresentative.AddNotification(newVesselVisitNotification.Code);
 
         await _repo.AddAsync(newVesselVisitNotification);
         await _unitOfWork.CommitAsync();
+        
 
-        _logger.LogInformation("Business Domain: VVN successfully created with ID = {Id}",
-            newVesselVisitNotification.Id.Value);
+        _logger.LogInformation("Business Domain: VVN successfully created with ID = {Id}", newVesselVisitNotification.Id.Value);
 
         return VesselVisitNotificationFactory.CreateVesselVisitNotificationDto(newVesselVisitNotification);
     }

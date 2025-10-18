@@ -17,8 +17,10 @@ using SEM5_PI_WEBAPI.Domain.StorageAreas;
 using SEM5_PI_WEBAPI.Domain.Containers;
 using SEM5_PI_WEBAPI.Domain.ShippingAgentOrganizations;
 using SEM5_PI_WEBAPI.Domain.ShippingAgentRepresentatives;
+using SEM5_PI_WEBAPI.Domain.StaffMembers;
 using SEM5_PI_WEBAPI.Domain.Vessels;
 using SEM5_PI_WEBAPI.Domain.VesselsTypes;
+using Status = SEM5_PI_WEBAPI.Domain.ShippingAgentRepresentatives.Status;
 
 namespace SEM5_PI_WEBAPI.Tests.Integration
 {
@@ -73,11 +75,28 @@ namespace SEM5_PI_WEBAPI.Tests.Integration
             var vesselTypeId = new VesselTypeId(Guid.NewGuid());
             var vessel = new Vessel("IMO 1234567", "Ever Given", "Evergreen Marine", vesselTypeId);
 
+            _sarRepoMock.Setup(r => r.GetByEmailAsync(It.Is<string>(e =>
+                    e.Equals("agent@example.com", StringComparison.OrdinalIgnoreCase))))
+                .ReturnsAsync(new ShippingAgentRepresentative(
+                    "João Silva",
+                    new CitizenId("A123456"),
+                    Nationality.Portugal,
+                    "agent@example.com",
+                    "+351912345678",
+                    Status.activated,
+                    new ShippingOrganizationCode("1234567890")
+                ));
+
+            _crewManifestRepoMock.Setup(r => r.AddAsync(It.IsAny<CrewManifest>()))
+                .ReturnsAsync((CrewManifest cm) => cm);
+
             _vesselRepoMock.Setup(r => r.GetByImoNumberAsync(It.IsAny<ImoNumber>()))
                 .ReturnsAsync(vessel);
+
             _vvnRepoMock.Setup(r => r.GetAllAsync()).ReturnsAsync(new List<VesselVisitNotification>());
             _vvnRepoMock.Setup(r => r.AddAsync(It.IsAny<VesselVisitNotification>()))
                 .ReturnsAsync((VesselVisitNotification v) => v);
+
             _uowMock.Setup(u => u.CommitAsync()).ReturnsAsync(1);
 
             var dto = new CreatingVesselVisitNotificationDto(
@@ -91,16 +110,19 @@ namespace SEM5_PI_WEBAPI.Tests.Integration
                 }),
                 null,
                 null,
-                "IMO 1234567"
+                "IMO 1234567",
+                "agent@example.com"
             );
 
             var result = await _controller.CreateAsync(dto);
 
             var created = Assert.IsType<CreatedAtActionResult>(result.Result);
             var value = Assert.IsType<VesselVisitNotificationDto>(created.Value);
-            Assert.Equal("1234567", value.VesselImo);
+            Assert.Equal("1234567", value.VesselImo); 
             Assert.Equal(1500, value.Volume);
         }
+
+
 
         [Fact]
         public async Task Create_ShouldReturnBadRequest_WhenInvalidImo()
@@ -119,7 +141,8 @@ namespace SEM5_PI_WEBAPI.Tests.Integration
                 }),
                 null,
                 null,
-                "IMO 0000000"
+                "IMO 0000000",
+                "agent@example.com"
             );
 
             var result = await _controller.CreateAsync(dto);

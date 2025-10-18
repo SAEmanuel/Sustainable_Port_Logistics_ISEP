@@ -66,9 +66,26 @@ namespace SEM5_PI_WEBAPI.Tests.Services
         public async Task AddAsync_ShouldCreate_WhenValid()
         {
             var vessel = new Vessel("IMO 1234567", "Ever Given", "Evergreen", new VesselTypeId(Guid.NewGuid()));
-            _vesselRepo.Setup(r => r.GetByImoNumberAsync(It.IsAny<ImoNumber>())).ReturnsAsync(vessel);
-            _vvnRepo.Setup(r => r.AddAsync(It.IsAny<VesselVisitNotification>())).ReturnsAsync((VesselVisitNotification v) => v);
+
+            _sarRepo.Setup(r => r.GetByEmailAsync(It.IsAny<string>()))
+                .ReturnsAsync(new ShippingAgentRepresentative(
+                    "João Silva",
+                    new CitizenId("A123456"),
+                    Nationality.Portugal,
+                    "agent@example.com",
+                    "+351912345678",
+                    Status.activated,
+                    new ShippingOrganizationCode("1234567890")
+                ));
+
+            _vesselRepo.Setup(r => r.GetByImoNumberAsync(It.IsAny<ImoNumber>()))
+                .ReturnsAsync(vessel);
+
+            _vvnRepo.Setup(r => r.AddAsync(It.IsAny<VesselVisitNotification>()))
+                .ReturnsAsync((VesselVisitNotification v) => v);
+
             _vvnRepo.Setup(r => r.GetAllAsync()).ReturnsAsync(new List<VesselVisitNotification>());
+
             _uow.Setup(u => u.CommitAsync()).ReturnsAsync(1);
 
             var crew = new CreatingCrewManifestDto(3, "Captain John", new List<CreatingCrewMemberDto>
@@ -84,7 +101,8 @@ namespace SEM5_PI_WEBAPI.Tests.Services
                 crew,
                 null,
                 null,
-                "IMO 1234567"
+                "IMO 1234567",
+                "agent@example.com"
             );
 
             var result = await _service.AddAsync(dto);
@@ -92,6 +110,7 @@ namespace SEM5_PI_WEBAPI.Tests.Services
             Assert.NotNull(result);
             Assert.Equal("1234567", result.VesselImo);
         }
+
 
         [Fact]
         public async Task AddAsync_ShouldThrow_WhenVesselNotFound()
@@ -106,7 +125,8 @@ namespace SEM5_PI_WEBAPI.Tests.Services
                 new CreatingCrewManifestDto(1, "Cap", new List<CreatingCrewMemberDto>()),
                 null,
                 null,
-                "INVALID"
+                "INVALID",
+                "agent@example.com"
             );
 
             await Assert.ThrowsAsync<BusinessRuleValidationException>(() => _service.AddAsync(dto));
