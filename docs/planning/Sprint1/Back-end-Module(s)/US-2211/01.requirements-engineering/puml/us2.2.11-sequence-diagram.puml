@@ -1,35 +1,45 @@
 @startuml
-actor "Logistics Operator" as Operator
-participant "Port Logistics System" as System
+actor "Client" as Client
+boundary "Staff Members Management API" as System
 
-activate Operator
-Operator -> System: Authenticate
-activate System
-System --> Operator: Authentication result
-deactivate System
+== Get All Staff Members ==
+Client -> System : GET /api/staffmembers
+System --> Client : 200 OK\nList<StaffMemberDto>
 
-Operator -> System: Create staff member
-activate System
-System --> Operator: Confirmation of creation
-deactivate System
+== Get Staff Member By ID ==
+Client -> System : GET /api/staffmembers/{id}
+System --> Client : 200 OK\nStaffMemberDto\nOR 404 Not Found
 
-Operator -> System: Filter staff members (to update)
-activate System
-System --> Operator: List of filtered members
-deactivate System
+== Get Staff Members By Qualification Codes ==
+Client -> System : GET /api/staffmembers/by-qualifications\nBody: CodesListDto
+System --> Client : 200 OK\nList<StaffMemberDto>
 
-Operator -> System: Update staff member data
-activate System
-System --> Operator: Confirmation of update
-deactivate System
+== Get Staff Members By Exact Qualification Codes ==
+Client -> System : GET /api/staffmembers/by-exact-qualifications\nBody: CodesListDto
+System --> Client : 200 OK\nList<StaffMemberDto>
 
-Operator -> System: Filter staff members (to deactivate)
-activate System
-System --> Operator: List of filtered members
-deactivate System
+== Get Staff Member By Mecanographic Number ==
+Client -> System : GET /api/staffmembers/mec/{mec}
+System --> Client : 200 OK\nStaffMemberDto\nOR 404 Not Found
 
-Operator -> System: Deactivate staff member
-activate System
-System --> Operator: Confirmation of deactivation
-deactivate System
+== Get Staff Members By Name ==
+Client -> System : GET /api/staffmembers/name/{name}
+System --> Client : 200 OK\nList<StaffMemberDto>\nOR 404 Not Found
+
+== Get Staff Members By Status ==
+Client -> System : GET /api/staffmembers/status/{status}
+System --> Client : 200 OK\nList<StaffMemberDto>
+
+== Create Staff Member ==
+Client -> System : POST /api/staffmembers\nBody: CreatingStaffMemberDto
+System --> Client : 201 Created\nStaffMemberDto
+
+== Update Staff Member ==
+Client -> System : PUT /api/staffmembers/update/\nBody: UpdateStaffMemberDto
+System --> Client : 200 OK\nStaffMemberDto\nOR 404 Not Found
+
+== Toggle Staff Member Status ==
+Client -> System : PUT /api/staffmembers/toggle/{mec}
+System --> Client : 200 OK\nStaffMemberDto\nOR 404 Not Found
+
 @enduml
