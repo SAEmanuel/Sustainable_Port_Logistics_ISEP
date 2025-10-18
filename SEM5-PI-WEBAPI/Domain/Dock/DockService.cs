@@ -62,7 +62,6 @@ namespace SEM5_PI_WEBAPI.Domain.Dock
                 var vt = await _vesselTypeRepository.GetByNameAsync(raw);
                 if (vt == null)
                     throw new BusinessRuleValidationException($"VesselType '{raw}' does not exist in DB.");
-                //vesselsTypes.Add(vt.Id);
                 vesselsTypes.Add(new VesselTypeId(vt.Id.Value));
             }
 
