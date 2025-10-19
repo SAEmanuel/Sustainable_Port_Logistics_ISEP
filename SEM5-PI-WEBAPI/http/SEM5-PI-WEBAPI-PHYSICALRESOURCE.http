@@ -13,7 +13,7 @@ Accept: application/json
 
 
 ### 2️⃣ GET by Id - valid
-GET {{portURL}}/api/PhysicalResource/get/c2929239-4fd3-4e58-9784-ae444ce87c5d
+GET {{portURL}}/api/PhysicalResource/get/9b26d94a-3db4-40b8-bd1c-5562210861ab
 Accept: application/json
 
 
@@ -33,7 +33,7 @@ Accept: application/json
 
 
 ### 6️⃣ GET by Description - valid
-GET {{portURL}}/api/PhysicalResource/get/description/Dock Crane A
+GET {{portURL}}/api/PhysicalResource/get/description/Volvo FH16 Truck
 Accept: application/json
 
 
@@ -63,7 +63,7 @@ Accept: application/json
 
 
 ### 1️⃣2️⃣ GET by Qualification - valid
-GET {{portURL}}/api/PhysicalResource/get/qualification/9c5e3d5a-dd32-4f8b-afc0-9cad22ea21eb
+GET {{portURL}}/api/PhysicalResource/get/qualification/a8236cf0-1c4a-4989-8055-63cbdc32ded4
 Accept: application/json
 
 
@@ -85,7 +85,7 @@ Accept: application/json
   "operationalCapacity": 25.5,
   "setupTime": 10,
   "physicalResourceType": "Truck",
-  "qualificationID": "TRK-001"
+  "qualificationCode": "TRK-001"
 }
 
 
@@ -98,12 +98,11 @@ Accept: application/json
   "description": "Dock Crane B",
   "operationalCapacity": 30.0,
   "setupTime": 8,
-  "physicalResourceType": "Forklift",
-  "qualificationID": "feffbd90-727c-4c7a-93ff-e89f0c2d3946"
+  "physicalResourceType": "Forklift"
 }
 
 
-### 1️⃣6️⃣ POST Create - invalid type (enum not found) (MELHORAR MENSAGEM DE ERRO)
+### 1️⃣6️⃣ POST Create - invalid type (enum not found)
 POST {{portURL}}/api/PhysicalResource
 Content-Type: application/json
 Accept: application/json
@@ -121,25 +120,24 @@ Accept: application/json
 ### --- PATCH (Update) ---
 
 ### 1️⃣7️⃣ PATCH Update - valid (change description)
-PATCH {{portURL}}/api/PhysicalResource/update/6ad4cf47-a9f2-44da-90cc-e4852a4b07c1
+PATCH {{portURL}}/api/PhysicalResource/update/7b755299-7660-4bd6-9ff1-ffb80db4700e
 Content-Type: application/json
 Accept: application/json
 
 {
-  "description": "Updated Dock Crane B"
+  "description": "Updated Kalmar Reach Stacker RS450"
 }
 
 
 ### 1️⃣8️⃣ PATCH Update - valid (change multiple fields)
-PATCH {{portURL}}/api/PhysicalResource/update/6ad4cf47-a9f2-44da-90cc-e4852a4b07c1
+PATCH {{portURL}}/api/PhysicalResource/update/7b755299-7660-4bd6-9ff1-ffb80db4700e
 Content-Type: application/json
 Accept: application/json
 
 {
-  "description": "Updated Truck",
   "operationalCapacity": 10.0,
   "setupTime": 40,
-  "qualificationId": "9c5e3d5a-dd32-4f8b-afc0-9cad22ea21eb"
+  "qualificationId": "bbdd37c7-9256-4a8e-8713-6199e5eb13e4"
 }
 
 
@@ -167,13 +165,13 @@ Accept: application/json
 ### --- PATCH (Deactivate / Reactivate) ---
 
 ### 2️⃣1️⃣ PATCH Deactivate - valid
-PATCH {{portURL}}/api/PhysicalResource/deactivate/6ad4cf47-a9f2-44da-90cc-e4852a4b07c1
+PATCH {{portURL}}/api/PhysicalResource/deactivate/7b755299-7660-4bd6-9ff1-ffb80db4700e
 Accept: application/json
 Content-Type: application/json
 
 
 ### 2️⃣2️⃣ PATCH Reactivate - valid
-PATCH {{portURL}}/api/PhysicalResource/reactivate/6ad4cf47-a9f2-44da-90cc-e4852a4b07c1
+PATCH {{portURL}}/api/PhysicalResource/reactivate/7b755299-7660-4bd6-9ff1-ffb80db4700e
 Accept: application/json
 Content-Type: application/json
 
