@@ -1,73 +1,127 @@
 @startuml
 skinparam monochrome true
-skinparam packageStyle rectangle
 skinparam shadowing false
+skinparam sequenceMessageAlign center
+skinparam ParticipantPadding 25
+skinparam responseMessageBelowArrow true
 
-autonumber
+title US2.2.12 – Full Sequence Diagram (Physical Resource Management)
 
-actor "User" as ACTOR
-participant ":UI" as UI
-participant ":Controller" as CTRL
-participant ":RepositoryFactory" as FACTORY
-participant "factory\n:RepositoryFactory" as FACTORY_INSTANCE
-participant "repository\n:Repository" as REPO
-participant "entity\n:Entity" as ENTITY
+actor "Logistics Operator" as Operator
+boundary "PhysicalResourceController" as Controller
+control "PhysicalResourceService" as Service
+entity "PhysicalResourceRepository" as Repo
+entity "QualificationRepository" as QualRepo
+control "ILogger / AuditService" as Audit
+entity "UnitOfWork" as UoW
+database "PhysicalResources Database" as DB
 
-activate ACTOR
+' ==========================================================
+== Create Physical Resource ==
+' ==========================================================
+Operator -> Controller : POST /api/PhysicalResource {CreatingPhysicalResourceDto}
+Controller -> Audit : log(REQUEST, "POST /PhysicalResource", dto)
+Controller -> Service : AddAsync(dto)
 
-    ACTOR -> UI : requests to register a new entity
+Service -> Audit : log(INFO, "Start AddAsync(dto)")
+Service -> QualRepo : GetQualificationByCodeAsync(dto.QualificationCode)
+QualRepo --> Service : Qualification or null
 
-    activate UI
-        UI -> CTRL** : create
+Service -> Repo : CountByTypeAsync(dto.PhysicalResourceType)
+Repo --> DB : COUNT resources by type
+DB --> Repo : count
+Repo --> Service : count
 
-        UI --> ACTOR : request data (attribute)
-    deactivate UI
+Service -> Repo : AddAsync(EntityPhysicalResource)
+Repo --> DB : INSERT EntityPhysicalResource
+DB --> Repo : OK
 
-    ACTOR -> UI : provides data (attribute)
-    activate UI
-        UI --> ACTOR : show data for confirmation
-    deactivate UI
+Service -> UoW : CommitAsync()
+UoW --> Service : Success
 
-    ACTOR -> UI : confirms data
-    activate UI
-        UI -> CTRL : registerEntity(attribute)
-        activate CTRL
-            CTRL -> CTRL : getRepository()
-            activate CTRL
-                CTRL -> FACTORY : getInstance()
-                activate FACTORY
-                    FACTORY --> CTRL : factory
-                deactivate FACTORY
+Service -> Audit : log(SUCCESS, "Created Resource", code)
+Service --> Controller : PhysicalResourceDTO
+Controller -> Audit : log(RESPONSE, 201, "Created Resource")
+Controller --> Operator : 201 Created (PhysicalResourceDTO)
 
-                CTRL -> FACTORY_INSTANCE : getRepository()
-                activate FACTORY_INSTANCE
-                    FACTORY_INSTANCE --> CTRL : repository
-                deactivate FACTORY_INSTANCE
+' ==========================================================
+== Get Physical Resource By ID ==
+' ==========================================================
+Operator -> Controller : GET /api/PhysicalResource/get/{id}
+Controller -> Audit : log(REQUEST, "GET /PhysicalResource/{id}")
+Controller -> Service : GetByIdAsync(PhysicalResourceId)
 
-                CTRL --> CTRL : repository
-            deactivate CTRL
+Service -> Audit : log(INFO, "Fetch Resource by ID")
+Service -> Repo : GetByIdAsync(id)
+Repo --> DB : SELECT * FROM PhysicalResources WHERE Id = {id}
+DB --> Repo : EntityPhysicalResource or null
+Repo --> Service : EntityPhysicalResource or null
 
-            CTRL -> REPO : registerEntity(attribute)
-            activate REPO
-                REPO -> ENTITY** : create
+Service -> Audit : log(SUCCESS, "Fetched Resource {id}")
+Service --> Controller : PhysicalResourceDTO or 404
+Controller -> Audit : log(RESPONSE, 200/404)
+Controller --> Operator : 200 OK or 404 Not Found
 
-                REPO -> REPO : addEntity(entity)
-                activate REPO
-                    REPO -> REPO : validateEntity(entity)
-                    activate REPO
-                        REPO --> REPO
-                    deactivate REPO
-                deactivate REPO
+' ==========================================================
+== Update Physical Resource ==
+' ==========================================================
+Operator -> Controller : PATCH /api/PhysicalResource/update/{id} {UpdatingPhysicalResource}
+Controller -> Audit : log(REQUEST, "PATCH /PhysicalResource/update/{id}", dto)
+Controller -> Service : UpdateAsync(PhysicalResourceId, dto)
 
-                REPO --> CTRL : entity
-            deactivate REPO
+Service -> Repo : GetByIdAsync(id)
+Repo --> DB : SELECT * FROM PhysicalResources WHERE Id = {id}
+DB --> Repo : EntityPhysicalResource or null
+Repo --> Service : EntityPhysicalResource or null
 
-            CTRL --> UI : entity
-        deactivate CTRL
+Service -> QualRepo : ExistQualificationID(dto.QualificationId?)
+QualRepo --> DB : Check qualification
+DB --> QualRepo : true or false
+QualRepo --> Service : true or false
 
-        UI --> ACTOR : shows success message
-    deactivate UI
+Service -> UoW : CommitAsync()
+UoW --> Service : Success
+Service -> Audit : log(SUCCESS, "Resource Updated", id)
+Service --> Controller : PhysicalResourceDTO
+Controller -> Audit : log(RESPONSE, 200, "Update successful")
+Controller --> Operator : 200 OK (PhysicalResourceDTO)
 
-deactivate ACTOR
+' ==========================================================
+== Deactivate Physical Resource ==
+' ==========================================================
+Operator -> Controller : PATCH /api/PhysicalResource/deactivate/{id}
+Controller -> Audit : log(REQUEST, "PATCH /deactivate/{id}")
+Controller -> Service : DeactivationAsync(PhysicalResourceId)
+
+Service -> Repo : GetByIdAsync(id)
+Repo --> DB : SELECT * FROM PhysicalResources WHERE Id = {id}
+DB --> Repo : EntityPhysicalResource or null
+Repo --> Service : EntityPhysicalResource or null
+
+Service -> UoW : CommitAsync()
+UoW --> Service : Success
+Service -> Audit : log(SUCCESS, "Deactivated Resource", id)
+Service --> Controller : PhysicalResourceDTO
+Controller -> Audit : log(RESPONSE, 200, "Deactivation successful")
+Controller --> Operator : 200 OK (PhysicalResourceDTO)
+
+' ==========================================================
+== Reactivate Physical Resource ==
+' ==========================================================
+Operator -> Controller : PATCH /api/PhysicalResource/reactivate/{id}
+Controller -> Audit : log(REQUEST, "PATCH /reactivate/{id}")
+Controller -> Service : ReactivationAsync(PhysicalResourceId)
+
+Service -> Repo : GetByIdAsync(id)
+Repo --> DB : SELECT * FROM PhysicalResources WHERE Id = {id}
+DB --> Repo : EntityPhysicalResource or null
+Repo --> Service : EntityPhysicalResource or null
+
+Service -> UoW : CommitAsync()
+UoW --> Service : Success
+Service -> Audit : log(SUCCESS, "Reactivated Resource", id)
+Service --> Controller : PhysicalResourceDTO
+Controller -> Audit : log(RESPONSE, 200, "Reactivation successful")
+Controller --> Operator : 200 OK (PhysicalResourceDTO)
 
 @enduml
