@@ -77,19 +77,19 @@ public class ShippingAgentOrganizationService: IShippingAgentOrganizationService
         //verificação de duplicados com o mesmo código
         var code = new ShippingOrganizationCode(creatingshippingAgentOrganizationDto.ShippingOrganizationCode);
         var codeExist = await _repo.GetByCodeAsync(code);
-
-        if (codeExist != null) throw new BusinessRuleValidationException($"SAO with code '{creatingshippingAgentOrganizationDto.ShippingOrganizationCode}' already exists on DB.");
+        if (codeExist != null)
+            throw new BusinessRuleValidationException($"SAO with code '{creatingshippingAgentOrganizationDto.ShippingOrganizationCode}' already exists on DB.");
 
         //verificação de duplicados com o mesmo tax number
         var tax = new TaxNumber(creatingshippingAgentOrganizationDto.Taxnumber);
         var taxExist = await _repo.GetByTaxNumberAsync(tax);
-
-        if (codeExist != null) throw new BusinessRuleValidationException($"SAO with tax number '{creatingshippingAgentOrganizationDto.Taxnumber}' already exists on DB.");
+        if (taxExist != null)
+            throw new BusinessRuleValidationException($"SAO with tax number '{creatingshippingAgentOrganizationDto.Taxnumber}' already exists on DB.");
 
         //verificação de duplicados com o mesmo legal name
         var legalExist = await _repo.GetByLegalNameAsync(creatingshippingAgentOrganizationDto.LegalName);
-
-        if (codeExist != null) throw new BusinessRuleValidationException($"SAO with legal name '{creatingshippingAgentOrganizationDto.LegalName}' already exists on DB.");
+        if (legalExist != null)
+            throw new BusinessRuleValidationException($"SAO with legal name '{creatingshippingAgentOrganizationDto.LegalName}' already exists on DB.");
 
         ShippingAgentOrganization createdOrg = ShippingAgentOrganizationFactory.CreateEntity(creatingshippingAgentOrganizationDto);
          
