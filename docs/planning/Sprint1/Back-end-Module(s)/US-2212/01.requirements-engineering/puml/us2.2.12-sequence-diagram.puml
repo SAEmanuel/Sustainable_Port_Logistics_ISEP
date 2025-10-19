@@ -1,48 +1,57 @@
 @startuml
-actor "Logistics Operator" as Operator
-boundary "UI / API" as UI
-control "PhysicalResourceAppService" as App
-entity "PhysicalResourceRepository" as Repo
-collections "Audit Log" as Audit
+title Physical Resources Management API – System Sequence Diagram
+
+actor Client
+boundary "Physical Resources API" as System
+
+== Get All ==
+Client -> System : GET /api/PhysicalResource
+System --> Client : 200 OK\nList<PhysicalResourceDTO>
+
+== Get By ID ==
+Client -> System : GET /api/PhysicalResource/get/{id}
+System --> Client : 200 OK\nPhysicalResourceDTO\n-- OR --\n404 Not Found
+
+== Get By Code ==
+Client -> System : GET /api/PhysicalResource/get/code/{code}
+System --> Client : 200 OK\nPhysicalResourceDTO\n-- OR --\n404 Not Found
+
+== Get By Description ==
+Client -> System : GET /api/PhysicalResource/get/description/{description}
+System --> Client : 200 OK\nList<PhysicalResourceDTO>\n-- OR --\n404 Not Found
+
+== Get By Status ==
+Client -> System : GET /api/PhysicalResource/get/status/{status}
+note right
+status ∈ { Available, Unavailable, UnderMaintenance }
+end note
+System --> Client : 200 OK\nList<PhysicalResourceDTO>\n-- OR --\n404 Not Found
+
+== Get By Type ==
+Client -> System : GET /api/PhysicalResource/get/type/{type}
+note right
+type ∈ { STSCrane, YGCrane, MCrane, Truck, Forklift, RStacker, SCarrier, TugBoat, Other }
+end note
+System --> Client : 200 OK\nList<PhysicalResourceDTO>\n-- OR --\n404 Not Found
+
+== Get By Qualification ==
+Client -> System : GET /api/PhysicalResource/get/qualification/{qualificationId}
+System --> Client : 200 OK\nList<PhysicalResourceDTO>\n-- OR --\n404 Not Found
 
 == Create ==
-Operator -> UI : Submit CreatePhysicalResource(alphaCode, description, type, operationalCapacity, setupTime, status, schedule, qualifications)
-UI -> App : CreatePhysicalResource(cmd)
-App -> Repo : isAlphaCodeAvailable(alphaCode)?
-Repo --> App : true/false
-App -> App : validate alphaCode unique, operationalCapacity > 0, setupTime >= 0, status in {ACTIVE, INACTIVE, UNDER_MAINTENANCE}
-App -> Repo : save(PhysicalResource(id, alphaCode, description, type, operationalCapacity, setupTime, status, schedule, qualifications))
-Repo --> App : PhysicalResource(id, ...)
-App -> Audit : log(CREATE, operatorId, id, timestamp, outcome=SUCCESS)
-App --> UI : success(PhysicalResourceDTO)
+Client -> System : POST /api/PhysicalResource\nBody: CreatingPhysicalResourceDto
+System --> Client : 201 Created\nPhysicalResourceDTO\n-- OR --\n400 Bad Request
 
-== Update ==
-Operator -> UI : Submit UpdatePhysicalResource(id, fields...)
-UI -> App : UpdatePhysicalResource(cmd)
-App -> Repo : findById(id)
-Repo --> App : PhysicalResource
-App -> App : validate; enforce unique alphaCode if changed, operationalCapacity > 0, valid status
-App -> Repo : save(updatedPhysicalResource)
-Repo --> App : PhysicalResource
-App -> Audit : log(UPDATE, operatorId, id, timestamp, outcome=SUCCESS)
-App --> UI : success(PhysicalResourceDTO)
+== Update (PATCH) ==
+Client -> System : PATCH /api/PhysicalResource/update/{id}\nBody: { description?, operationalCapacity?, setupTime?, qualificationId? }
+System --> Client : 200 OK\nPhysicalResourceDTO\n-- OR --\n404 Not Found\n-- OR --\n400 Bad Request\n{ error: "The following field(s) cannot be updated", fields: [...] }
 
 == Deactivate ==
-Operator -> UI : Submit DeactivatePhysicalResource(id)
-UI -> App : DeactivatePhysicalResource(cmd)
-App -> Repo : findById(id)
-Repo --> App : PhysicalResource
-App -> App : set status=INACTIVE, validate deactivation
-App -> Repo : save(updatedPhysicalResource)
-Repo --> App : PhysicalResource
-App -> Audit : log(DEACTIVATE, operatorId, id, timestamp, outcome=SUCCESS)
-App --> UI : success(PhysicalResourceDTO)
+Client -> System : PATCH /api/PhysicalResource/deactivate/{id}
+System --> Client : 200 OK\nPhysicalResourceDTO\n-- OR --\n404 Not Found\n-- OR --\n400 Bad Request\n{ error: "The physical resource is already deactivated." }
 
-== Search ==
-Operator -> UI : searchBy(alphaCode?, description?, type?, status?)
-UI -> App : search(query)
-App -> Repo : searchByAlphaCodeDescriptionTypeOrStatus(query)
-Repo --> App : List<PhysicalResource>
-App --> UI : PagedResult
+== Reactivate ==
+Client -> System : PATCH /api/PhysicalResource/reactivate/{id}
+System --> Client : 200 OK\nPhysicalResourceDTO\n-- OR --\n404 Not Found\n-- OR --\n400 Bad Request\n{ error: "The physical resource is already active." }
 
 @enduml
