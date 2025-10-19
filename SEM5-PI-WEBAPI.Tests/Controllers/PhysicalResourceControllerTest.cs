@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Moq;
 using Newtonsoft.Json.Linq;
 using SEM5_PI_WEBAPI.Controllers;
@@ -14,11 +15,12 @@ namespace SEM5_PI_WEBAPI.Tests.Controllers
     {
         private readonly Mock<IPhysicalResourceService> _serviceMock;
         private readonly PhysicalResourceController _controller;
+        private readonly Mock<ILogger<PhysicalResourceController>> _loggerMock;
 
         public PhysicalResourceControllerTests()
         {
             _serviceMock = new Mock<IPhysicalResourceService>();
-            _controller = new PhysicalResourceController(_serviceMock.Object);
+            _controller = new PhysicalResourceController(_serviceMock.Object,  _loggerMock.Object);
         }
 
         private PhysicalResourceDTO CreateDTO()
