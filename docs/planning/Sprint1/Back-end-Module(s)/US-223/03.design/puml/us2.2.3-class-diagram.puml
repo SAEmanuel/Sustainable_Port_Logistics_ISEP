@@ -1,118 +1,214 @@
 @startuml
+skinparam monochrome true
+skinparam packageStyle rectangle
+skinparam shadowing false
+left to right direction
+hide methods
+skinparam classAttributeIconSize 0
 
 package "Domain" {
-  class Dock {
+  class EntityDock {
     - string Location
-    - float TeuCapacity
-    - int CurrentOccupancy
-    - string Type
-    + ChangeLocation(string)
-    + ChangeCapacity(float)
-    + ChangeOccupancy(int)
-    + ChangeType(string)
+    - double LengthM
+    - double DepthM
+    - double MaxDraftM
+    - DockStatus Status
+    + DockId Id
+    + DockCode Code
+    + IReadOnlyCollection~PhysicalResourceCode~ PhysicalResourceCodes
+    + IReadOnlyCollection~VesselTypeId~ AllowedVesselTypeIds
+    + SetCode(DockCode)
+    + SetLocation(string)
+    + SetLength(double)
+    + SetDepth(double)
+    + SetMaxDraft(double)
+    + ReplacePhysicalResourceCodes(IEnumerable~PhysicalResourceCode~)
+    + ReplaceAllowedVesselTypes(IEnumerable~VesselTypeId~)
+    + EnsureHasAllowedVesselTypes()
+    + SetStatus(DockStatus)
+    + MarkUnavailable()
   }
 
   class DockId {
     - Guid Value
     + AsGuid() : Guid
+    + AsString() : string
   }
 
-  ' from your model (for association only)
+  class DockCode {
+    + string Value
+  }
+
+  class PhysicalResourceCode {
+    + string Value
+  }
+
+  class VesselTypeId {
+    + Guid Value
+  }
+
+  enum DockStatus {
+    Available
+    Unavailable
+    Maintenance
+  }
+
   class VesselType {
     - string Name
   }
-
 }
 
 package "DTOs" {
   class RegisterDockDto {
+    + string Code
+    + List~string~ PhysicalResourceCodes
+    + List~PhysicalResourceCode~ PhysicalResourceCodesList
     + string Location
-    + float TeuCapacity
-    + int CurrentOccupancy
-    + string Type
-    + List<Guid> AllowedVesselTypeIds
+    + double LengthM
+    + double DepthM
+    + double MaxDraftM
+    + List~string~ AllowedVesselTypeNames
+    + List~VesselTypeId~ VesselsTypesObjs
+    + DockStatus Status
+  }
+
+  class UpdateDockDto {
+    + string Code
+    + List~string~ PhysicalResourceCodes
+    + string Location
+    + double LengthM
+    + double DepthM
+    + double MaxDraftM
+    + List~string~ AllowedVesselTypeIds
+    + DockStatus Status
   }
 
   class DockDto {
     + Guid Id
+    + DockCode Code
+    + IReadOnlyCollection~PhysicalResourceCode~ PhysicalResourceCodes
     + string Location
-    + float TeuCapacity
-    + int CurrentOccupancy
-    + string Type
-    + List<Guid> AllowedVesselTypeIds
+    + double LengthM
+    + double DepthM
+    + double MaxDraftM
+    + DockStatus Status
+    + IReadOnlyCollection~VesselTypeId~ AllowedVesselTypeIds
+  }
+
+  class DockFactory {
+    + EntityDock RegisterDock(RegisterDockDto)
+    + DockDto RegisterDockDto(EntityDock)
   }
 }
 
 package "Application" {
-  class DockService {
-    + GetAllAsync() : List<DockDto>
-    + GetByIdAsync(DockId) : DockDto
-    + FilterAsync(string? location, Guid? vesselTypeId, string? type) : List<DockDto>
-    + AddAsync(RegisterDockDto) : DockDto
-    + UpdateAsync(Guid, RegisterDockDto) : DockDto
+  interface IDockService {
+    + GetAllAsync()
+    + CreateAsync(RegisterDockDto)
+    + GetByIdAsync(DockId)
+    + GetByCodeAsync(string)
+    + GetByPhysicalResourceCodeAsync(string)
+    + GetByVesselTypeAsync(string)
+    + GetFilterAsync(string, string, string, string, string)
+    + GetByLocationAsync(string)
+    + GetAllDockCodesAsync()
+    + PatchByCodeAsync(string, UpdateDockDto)
   }
 
-  class DockFactory {
-    + CreateBasicDock(RegisterDockDto) : Dock
-    + CreateDtoDock(Dock) : DockDto
+  class DockService {
+    + GetAllAsync()
+    + CreateAsync(RegisterDockDto)
+    + GetByIdAsync(DockId)
+    + GetByCodeAsync(string)
+    + GetByPhysicalResourceCodeAsync(string)
+    + GetByVesselTypeAsync(string)
+    + GetFilterAsync(string, string, string, string, string)
+    + GetByLocationAsync(string)
+    + GetAllDockCodesAsync()
+    + PatchByCodeAsync(string, UpdateDockDto)
   }
 }
 
 package "Infrastructure" {
   interface IDockRepository {
-    + GetAllAsync() : List<Dock>
-    + GetByIdAsync(DockId) : Dock
-    + FilterAsync(string? location, Guid? vesselTypeId, string? type) : List<Dock>
-    + AddAsync(Dock)
+    + GetByCodeAsync(DockCode)
+    + GetByPhysicalResourceCodeAsync(PhysicalResourceCode)
+    + GetByVesselTypeAsync(VesselTypeId)
+    + GetByLocationAsync(string)
+    + GetFilterAsync(DockCode, VesselTypeId, string, string, DockStatus)
+    + GetAllDockCodesAsync()
+    + GetAllDocksForVesselType(VesselTypeId)
+    + AddAsync(EntityDock)
+    + GetAllAsync()
+    + GetByIdAsync(DockId)
+    + SetUnavailable(DockCode): bool
   }
 
-  class DockRepository implements IDockRepository {
+  class DockRepository {
+  }
+
+  interface IVesselTypeRepository {
+    + GetByNameAsync(string)
+    + GetByIdAsync(VesselTypeId)
+  }
+
+  interface IPhysicalResourceRepository {
+    + GetByCodeAsync(PhysicalResourceCode)
   }
 
   interface IUnitOfWork {
     + CommitAsync()
   }
-
-  class UnitOfWork implements IUnitOfWork {
-  }
 }
 
 package "Presentation" {
   class DockController {
-    + GetAll() : List<DockDto>
-    + GetById(Guid) : DockDto
-    + Filter(string? location, Guid? vesselTypeId, string? type) : List<DockDto>
-    + Create(RegisterDockDto) : DockDto
-    + Update(Guid, RegisterDockDto) : DockDto
+    + GetAllAsync()
+    + GetById(Guid)
+    + CreateAsync(RegisterDockDto)
+    + GetByCodeAsync(string)
+    + GetByVesselTypeAsync(string)
+    + GetByFilterAsync(string, string, string, string, string)
+    + GetByLocationAsync(string)
+    + PatchByCodeAsync(string, UpdateDockDto)
+    + GetByPhysicalResourceCode(string)
+    + GetAllCodes()
   }
 }
 
 package "Cross-cutting" {
-  interface ILogger<T> {
-    + LogInformation(string, params)
-    + LogWarning(string, params)
-    + LogError(string, params)
+  interface ILoggerT {
+    + LogInformation(string, ...)
+    + LogWarning(string, ...)
+    + LogError(string, ...)
   }
 }
 
 ' ---------------- Relations -----------------
-Dock "1" *-- "1" DockId
-Dock "1" o-- "*" VesselType : allowed vessel types
+EntityDock "1" *-- "1" DockId
+EntityDock "1" *-- "1" DockCode
+EntityDock "1" o-- "*" PhysicalResourceCode : physicalResourceCodes
+EntityDock "1" o-- "*" VesselTypeId : allowedVesselTypes
+VesselTypeId ..> VesselType : refers
+EntityDock ..> DockStatus
 
+DockService ..|> IDockService
 DockService --> IDockRepository
 DockService --> IUnitOfWork
 DockService --> DockFactory
-DockService --> ILogger
+DockService --> ILoggerT
+DockService --> IVesselTypeRepository
+DockService --> IPhysicalResourceRepository
 DockService --> RegisterDockDto
 
-DockRepository --> Dock
+DockRepository --> EntityDock
 
-DockFactory --> Dock
+DockFactory --> EntityDock
 DockFactory --> DockDto
 DockFactory --> RegisterDockDto
 
 DockController --> DockService
-DockController --> ILogger
+DockController --> ILoggerT
 DockController --> RegisterDockDto
 
 @enduml

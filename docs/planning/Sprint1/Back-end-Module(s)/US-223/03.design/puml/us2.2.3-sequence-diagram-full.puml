@@ -1,84 +1,132 @@
 @startuml
-actor "Port Authority Officer" as Officer
-boundary "API (DockController)" as Controller
-control "DockService" as Service
-entity "DockRepository" as Repo
-entity "UnitOfWork" as UoW
-control "DockFactory" as Factory
-collections "Audit/Logs (ILogger/Serilog)" as Log
+skinparam monochrome true
+skinparam shadowing false
+hide footbox
+' mostra activations automaticamente ao receber chamadas
+' (vamos usar activate/deactivate para controlo explícito)
 
-== Register ==
-Officer -> Controller : POST /api/Dock (RegisterDockDto)
-activate Controller
-Controller -> Service : AddAsync(dto)
-activate Service
-Service -> Service : validate constraints (location/type/capacity/occupancy)
-Service -> Factory : CreateBasicDock(dto)
-activate Factory
-Factory --> Service : Dock(entity)
-deactivate Factory
-Service -> Repo : AddAsync(entity)
-activate Repo
-Repo --> Service : entity persisted
-deactivate Repo
-Service -> UoW : CommitAsync()
+actor Officer
+participant "DockController" as C
+participant "DockService" as S
+participant "IDockRepository\n(DockRepository)" as R
+participant "IVesselTypeRepository" as VTR
+participant "IPhysicalResourceRepository" as PRR
+participant "DockFactory" as F
+participant "IUnitOfWork" as UoW
+
+== Create Dock ==
+Officer -> C : CreateAsync(RegisterDockDto)
+activate C
+C -> S : CreateAsync(dto)
+activate S
+
+S -> R : Ensure DockCode is unique
+activate R
+R --> S : ok / not found
+deactivate R
+
+S -> PRR : Validate PhysicalResourceCodes (existence)
+activate PRR
+PRR --> S : all exist / error
+deactivate PRR
+
+S -> R : Ensure PRCs not used by other docks
+activate R
+R --> S : ok / conflict
+deactivate R
+
+S -> VTR : Validate AllowedVesselTypes (by name)
+activate VTR
+VTR --> S : all valid / error
+deactivate VTR
+
+S -> F : RegisterDock(dto)
+activate F
+F --> S : EntityDock
+deactivate F
+
+S -> R : AddAsync(EntityDock)
+activate R
+R --> S : added
+deactivate R
+
+S -> UoW : CommitAsync()
 activate UoW
-UoW --> Service : transaction committed
+UoW --> S : committed
 deactivate UoW
-Service -> Factory : CreateDtoDock(entity)
-activate Factory
-Factory --> Service : DockDto
-deactivate Factory
-Service -> Log : log(CREATE, officerId, dockId, outcome=SUCCESS)
-Service --> Controller : DockDto
-deactivate Service
-Controller --> Officer : 201 Created (DockDto)
-deactivate Controller
 
-== Update ==
-Officer -> Controller : PUT /api/Dock/{id} (fields…)
-activate Controller
-Controller -> Service : UpdateAsync(id, dto)
-activate Service
-Service -> Repo : GetByIdAsync(id)
-activate Repo
-Repo --> Service : Dock
-deactivate Repo
-Service -> Service : validate changes (location/type/capacity/occupancy)
-Service -> Repo : Save(updated entity)
-activate Repo
-Repo --> Service : entity updated
-deactivate Repo
-Service -> UoW : CommitAsync()
+S -> F : RegisterDockDto(EntityDock)
+activate F
+F --> S : DockDto
+deactivate F
+
+S --> C : DockDto
+deactivate S
+C --> Officer : 201 Created + DockDto
+deactivate C
+
+== Update Dock ==
+Officer -> C : PatchByCodeAsync(code, UpdateDockDto)
+activate C
+C -> S : PatchByCodeAsync(code, dto)
+activate S
+
+S -> R : GetByCodeAsync(code)
+activate R
+R --> S : EntityDock / not found
+deactivate R
+
+S -> R : If changing DockCode, ensure uniqueness
+activate R
+R --> S : ok / duplicate
+deactivate R
+
+S -> R : If changing PRCs, ensure not used by other docks
+activate R
+R --> S : ok / conflict
+deactivate R
+
+S -> VTR : If changing AllowedVesselTypes, validate IDs
+activate VTR
+VTR --> S : all valid / error
+deactivate VTR
+
+S -> S : Apply updates (location, length, depth, maxDraft, status)
+S -> S : EnsureHasAllowedVesselTypes()
+
+S -> UoW : CommitAsync()
 activate UoW
-UoW --> Service : transaction committed
+UoW --> S : committed
 deactivate UoW
-Service -> Factory : CreateDtoDock(updated)
-activate Factory
-Factory --> Service : DockDto
-deactivate Factory
-Service -> Log : log(UPDATE, officerId, dockId, outcome=SUCCESS)
-Service --> Controller : DockDto
-deactivate Service
-Controller --> Officer : 200 OK (DockDto)
-deactivate Controller
 
-== Filter/Search ==
-Officer -> Controller : GET /api/Dock/filter?location=...&vesselTypeId=...&type=...
-activate Controller
-Controller -> Service : FilterAsync(location, vesselTypeId, type)
-activate Service
-Service -> Repo : FilterAsync(location, vesselTypeId, type)
-activate Repo
-Repo --> Service : List<Dock>
-deactivate Repo
-Service -> Factory : CreateDtoDock(list)
-activate Factory
-Factory --> Service : List<DockDto>
-deactivate Factory
-Service -> Log : log(SEARCH, officerId, criteria, outcome=SUCCESS)
-Service --> Controller : List<DockDto>
-deactivate Service
-Controller --> Officer : 200 OK (list)
-deactivate Controller
+S -> F : RegisterDockDto(dock)
+activate F
+F --> S : DockDto
+deactivate F
+
+S --> C : DockDto
+deactivate S
+C --> Officer : 200 OK + DockDto
+deactivate C
+
+== Search / Filter Docks ==
+Officer -> C : GetByFilterAsync(code?, vesselTypeId?, location?, query?, status?)
+activate C
+C -> S : GetFilterAsync(...)
+activate S
+
+S -> R : GetFilterAsync(...)
+activate R
+R --> S : List<EntityDock>
+deactivate R
+
+S -> F : Map to DockDto (list)
+activate F
+F --> S : List<DockDto>
+deactivate F
+
+S --> C : List<DockDto>
+deactivate S
+C --> Officer : 200 OK + List<DockDto>
+deactivate C
 @enduml
