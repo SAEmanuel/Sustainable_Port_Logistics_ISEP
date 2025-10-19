@@ -4,7 +4,7 @@
 
 ### 2.1. Relevant Domain Model Excerpt 
 
-![Domain Model](png/domain-model.png)
+![Domain Model](png/us2.2.12-domain-model.png)
 
 ### 2.2. Other Remarks
 
