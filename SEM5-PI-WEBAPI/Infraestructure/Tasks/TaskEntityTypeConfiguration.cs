@@ -19,11 +19,11 @@ public class TaskEntityTypeConfiguration : IEntityTypeConfiguration<EntityTask>
         });
 
         builder.Property(t => t.StartTime)
-            .HasColumnType("datetime2")
+            .HasColumnType("timestamp")
             .IsRequired(false);
 
         builder.Property(t => t.EndTime)
-            .HasColumnType("datetime2")
+            .HasColumnType("timestamp")
             .IsRequired(false);
 
         builder.Property(t => t.Description)

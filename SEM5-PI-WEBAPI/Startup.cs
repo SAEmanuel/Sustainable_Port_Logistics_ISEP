@@ -52,7 +52,7 @@ namespace SEM5_PI_WEBAPI
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<DddSample1DbContext>(opt =>
-                opt.UseSqlite(Configuration.GetConnectionString("DefaultConnection"))
+                opt.UseNpgsql(Configuration.GetConnectionString("DefaultConnection"))
                     .ReplaceService<IValueConverterSelector, StronglyEntityIdValueConverterSelector>());
 
             ConfigureMyServices(services);
