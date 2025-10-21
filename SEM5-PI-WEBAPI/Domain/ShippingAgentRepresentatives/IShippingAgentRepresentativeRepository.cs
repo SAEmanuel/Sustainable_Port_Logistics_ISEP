@@ -8,11 +8,11 @@ namespace SEM5_PI_WEBAPI.Domain.ShippingAgentRepresentatives
     {
         public Task<List<ShippingAgentRepresentative>> GetAllSarBySaoAsync(ShippingOrganizationCode organizationCode);
         public Task<ShippingAgentRepresentative?> GetByNameAsync(string name);
-        public Task<ShippingAgentRepresentative?> GetByEmailAsync(string email);
+        public Task<ShippingAgentRepresentative?> GetByEmailAsync(EmailAddress email);
         public Task<ShippingAgentRepresentative?> GetByCitizenIdAsync(CitizenId cId);
         public Task<ShippingAgentRepresentative?> GetByStatusAsync(Status status);
         public Task<ShippingAgentRepresentative?> GetBySaoAsync(ShippingOrganizationCode code);
 
-        public Task<List<ShippingAgentRepresentative>> GetFilterAsync(string? name, CitizenId? citizenId, Nationality? nationality, string? email, PhoneNumber? phoneNumber,Status? status,ShippingOrganizationCode? sao, string? query);
+        public Task<List<ShippingAgentRepresentative>> GetFilterAsync(string? name, CitizenId? citizenId, Nationality? nationality, EmailAddress? email, PhoneNumber? phoneNumber,Status? status,ShippingOrganizationCode? sao, string? query);
     }
 }

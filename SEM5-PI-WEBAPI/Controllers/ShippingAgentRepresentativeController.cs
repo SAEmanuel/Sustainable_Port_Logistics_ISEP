@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using SEM5_PI_WEBAPI.Domain.ShippingAgentRepresentatives;
 using SEM5_PI_WEBAPI.Domain.Shared;
 using SEM5_PI_WEBAPI.Domain.ShippingAgentRepresentatives.DTOs;
-
+using SEM5_PI_WEBAPI.Domain.ValueObjects;
 namespace SEM5_PI_WEBAPI.Controllers;
 
 [Route("api/[controller]")]
@@ -59,7 +59,7 @@ public class ShippingAgentRepresentativeController : ControllerBase
     }
 
     [HttpGet("email/{email}")]
-    public async Task<ActionResult<List<ShippingAgentRepresentativeDto>>> GetByEmailAsync(string email)
+    public async Task<ActionResult<List<ShippingAgentRepresentativeDto>>> GetByEmailAsync(EmailAddress email)
     {
         try
         {

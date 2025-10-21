@@ -75,13 +75,13 @@ namespace SEM5_PI_WEBAPI.Tests.Integration
             var vesselTypeId = new VesselTypeId(Guid.NewGuid());
             var vessel = new Vessel("IMO 1234567", "Ever Given", "Evergreen Marine", vesselTypeId);
             var phone = new PhoneNumber("+351912345678");
-            _sarRepoMock.Setup(r => r.GetByEmailAsync(It.Is<string>(e =>
-                    e.Equals("agent@example.com", StringComparison.OrdinalIgnoreCase))))
+            _sarRepoMock.Setup(r => r.GetByEmailAsync(It.Is<EmailAddress>(e =>
+                    e.Equals(new EmailAddress("agent@example.com")))))
                 .ReturnsAsync(new ShippingAgentRepresentative(
                     "João Silva",
                     new CitizenId("A123456"),
                     Nationality.Portugal,
-                    "agent@example.com",
+                    new EmailAddress("agent@example.com"),
                     phone,
                     Status.activated,
                     new ShippingOrganizationCode("1234567890")

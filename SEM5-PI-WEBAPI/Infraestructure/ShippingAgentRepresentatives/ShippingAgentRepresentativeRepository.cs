@@ -30,10 +30,10 @@ namespace SEM5_PI_WEBAPI.Infraestructure.ShippingAgentRepresentatives
                 .FirstOrDefaultAsync(x => x.CitizenId == cId);
         }
         
-        public async Task<ShippingAgentRepresentative?> GetByEmailAsync(string email)
+        public async Task<ShippingAgentRepresentative?> GetByEmailAsync(EmailAddress email)
         {
             return await _context.ShippingAgentRepresentative
-                .FirstOrDefaultAsync(x => x.Email.ToLower().Trim() == email.ToLower().Trim());
+                .FirstOrDefaultAsync(x => x.Email == email);
         }
 
         public async Task<ShippingAgentRepresentative?> GetByStatusAsync(Status status)
@@ -48,10 +48,9 @@ namespace SEM5_PI_WEBAPI.Infraestructure.ShippingAgentRepresentatives
                 .FirstOrDefaultAsync(x => x.SAO.Value.ToString().ToLower().Trim() == sao.Value.ToString().ToLower().Trim());
         }
 
-        public async Task<List<ShippingAgentRepresentative>> GetFilterAsync(string? name, CitizenId? citizenId, Nationality? nationality, string? email, PhoneNumber? phoneNumber,Status? status,ShippingOrganizationCode? sao, string? query)
+        public async Task<List<ShippingAgentRepresentative>> GetFilterAsync(string? name, CitizenId? citizenId, Nationality? nationality, EmailAddress? email, PhoneNumber? phoneNumber,Status? status,ShippingOrganizationCode? sao, string? query)
         {
             var normalizedName = name?.Trim().ToLower();
-            var normalizedEmail = email?.Trim().ToLower();
             var normalizedQuery = query?.Trim().ToLower();
 
             var queryable = _context.ShippingAgentRepresentative.AsQueryable();
@@ -65,8 +64,8 @@ namespace SEM5_PI_WEBAPI.Infraestructure.ShippingAgentRepresentatives
             if (nationality != null)
                 queryable = queryable.Where(v => v.Nationality == nationality);
 
-            if (!string.IsNullOrEmpty(normalizedEmail))
-                queryable = queryable.Where(v => v.Email.ToLower().Contains(normalizedEmail));
+            if (email != null)
+                queryable = queryable.Where(v => v.Email == email);
 
             if (phoneNumber != null)
                 queryable = queryable.Where(v => v.PhoneNumber == phoneNumber);
@@ -82,7 +81,7 @@ namespace SEM5_PI_WEBAPI.Infraestructure.ShippingAgentRepresentatives
                     v.Name.ToLower().Contains(normalizedQuery) ||
                     v.CitizenId == citizenId ||
                     v.Nationality == nationality||
-                    v.Email.ToLower().Contains(normalizedQuery) ||
+                    v.Email == email ||
                     v.PhoneNumber == phoneNumber ||
                     v.Status == status ||
                     v.SAO == sao);

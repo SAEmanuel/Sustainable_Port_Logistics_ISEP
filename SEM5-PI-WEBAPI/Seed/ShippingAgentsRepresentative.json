@@ -2,9 +2,9 @@
   {
     "Name": "Alexandre Silva",
     "CitizenId": { "PassportNumber": "111111" },
-    "Nationality": "Portugal",
-    "Email": "alexandre.silva@gmail.com",
-    "PhoneNumber": "912345678",
+    "Nationality":  "Portugal",
+    "Email": {"Address": "alexandre.silva@gmail.com"},
+    "PhoneNumber": {"Number": "+351912345678"},
     "Status": "activated",
     "SAO": "1112223334"
   },
@@ -12,8 +12,8 @@
     "Name": "Beatriz Costa",
     "CitizenId": { "PassportNumber": "222222" },
     "Nationality": "Portugal",
-    "Email": "beatriz.costa@gmail.com",
-    "PhoneNumber": "913456789",
+    "Email": {"Address":"beatriz.costa@gmail.com"},
+    "PhoneNumber": {"Number": "+351913456789"},
     "Status": "activated",
     "SAO": "2223334445"
   },
@@ -21,8 +21,8 @@
     "Name": "Carlos Mendes",
     "CitizenId": { "PassportNumber": "333333" },
     "Nationality": "Portugal",
-    "Email": "carlos.mendes@gmail.com",
-    "PhoneNumber": "914567890",
+    "Email": {"Address":"carlos.mendes@gmail.com"},
+    "PhoneNumber": {"Number": "+351914567890"},
     "Status": "activated",
     "SAO": "3334445556"
   },
@@ -30,8 +30,8 @@
     "Name": "Diana Ferreira",
     "CitizenId": { "PassportNumber": "444444" },
     "Nationality": "Portugal",
-    "Email": "diana.ferreira@gmail.com",
-    "PhoneNumber": "915678901",
+    "Email": {"Address":"diana.ferreira@gmail.com"},
+    "PhoneNumber": {"Number": "+351915678901"},
     "Status": "activated",
     "SAO": "4445556667"
   },
@@ -39,8 +39,8 @@
     "Name": "Eduardo Rocha",
     "CitizenId": { "PassportNumber": "555555" },
     "Nationality": "Portugal",
-    "Email": "eduardo.rocha@gmail.com",
-    "PhoneNumber": "916789012",
+    "Email": {"Address":"eduardo.rocha@gmail.com"},
+    "PhoneNumber": {"Number": "+351916789012"},
     "Status": "activated",
     "SAO": "5556667778"
   }

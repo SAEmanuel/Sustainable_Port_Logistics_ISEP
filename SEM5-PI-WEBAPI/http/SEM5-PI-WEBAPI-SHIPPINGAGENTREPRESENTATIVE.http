@@ -24,13 +24,13 @@ Content-Type: application/json
 Accept: application/json
 
 {
-  "Name": "Alexandre",
+ "Name": "Alexandre Silva",
   "CitizenId": { "PassportNumber": "111111" },
-  "Nationality": "Portuguese",
-  "Email": "alexandre@gmail.com",
-  "PhoneNumber": "987654321",
+  "Nationality":  "Portugal",
+  "Email": {"Address": "alexandre.silva@gmail.com"},
+  "PhoneNumber": {"Number": "+351912345678"},
   "Status": "activated",
-  "SAO": "1234567890"
+  "SAO": "1112223334"
 }
 
 ###
@@ -39,17 +39,17 @@ Content-Type: application/json
 Accept: application/json
 
 {
-  "Name": "Alexandre2",
-  "CitizenId": "111111",
-  "Nationality": "Portuguese",
-  "Email": "alexandre@gmail.com",
-  "PhoneNumber": "987654321",
+  "Name": "Beatriz Costa",
+  "CitizenId": { "PassportNumber": "222222" },
+  "Nationality": "Portugal",
+  "Email": {"Address":"beatriz.costa@gmail.com"},
+  "PhoneNumber": {"Number": "+351913456789"},
   "Status": "activated",
-  "SAO": "1234567890"
+  "SAO": "2223334445"
 }
 
 ### Update representative status by name (1)
-PATCH {{portURL}}/api/ShippingAgentRepresentative/update/Alexandre
+PATCH {{portURL}}/api/ShippingAgentRepresentative/update/Alexandre Silva
 Content-Type: application/json
 Accept: application/json
 
@@ -58,7 +58,7 @@ Accept: application/json
 }
 
 ### Update representative status by name (2)
-PATCH {{portURL}}/api/ShippingAgentRepresentative/update/Alexandre
+PATCH {{portURL}}/api/ShippingAgentRepresentative/update/Alexandre Silva
 Content-Type: application/json
 Accept: application/json
 
@@ -67,21 +67,21 @@ Accept: application/json
 }
 
 ### Update representative status by email (1)
-PATCH {{portURL}}/api/ShippingAgentRepresentative/update/Alexandre
+PATCH {{portURL}}/api/ShippingAgentRepresentative/update/Alexandre Silva
 Content-Type: application/json
 Accept: application/json
 
 {
-  "Email": "alexandre@gmail.com"
+  "Email": "alexandre.silva@gmail.com"
 }
 
 ### Update representative status by email (2)
-PATCH {{portURL}}/api/ShippingAgentRepresentative/update/Alexandre
+PATCH {{portURL}}/api/ShippingAgentRepresentative/update/Beatriz Costa
 Content-Type: application/json
 Accept: application/json
 
 {
-  "Email": "alexandre.costa@gmail.com"
+  "Email": "beatriz.costa@gmail.com"
 }
 
 

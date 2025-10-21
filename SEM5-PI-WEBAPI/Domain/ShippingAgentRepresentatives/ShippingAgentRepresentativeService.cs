@@ -54,7 +54,7 @@ public class ShippingAgentRepresentativeService: IShippingAgentRepresentativeSer
         return new ShippingAgentRepresentativeDto(q.Id.AsGuid(), q.Name, q.CitizenId, q.Nationality,q.Email,q.PhoneNumber,q.Status,q.SAO,q.Notifs);   
     }
 
-    public async Task<ShippingAgentRepresentativeDto> GetByEmailAsync(string Email)
+    public async Task<ShippingAgentRepresentativeDto> GetByEmailAsync(EmailAddress Email)
     {
         var q = await this._repo.GetByEmailAsync(Email);
 

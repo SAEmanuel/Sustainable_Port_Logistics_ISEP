@@ -92,7 +92,7 @@ public class VesselVisitNotificationService : IVesselVisitNotificationService
             CheckNeededPeople(loadingCargoManifest, crewManifest);
 
         var emailSar = new EmailAddress(dto.EmailSar);
-        var shippingAgentRepresentative = await _shippingAgentRepresentativeRepository.GetByEmailAsync(emailSar.ToString());
+        var shippingAgentRepresentative = await _shippingAgentRepresentativeRepository.GetByEmailAsync(emailSar);
 
         if (shippingAgentRepresentative == null) throw new BusinessRuleValidationException("Invalid request: Shipping Agent Representative associated to VVN does not exist on DB.");
         

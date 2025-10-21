@@ -17,7 +17,7 @@ public class ShippingAgentRepresentative : Entity<ShippingAgentRepresentativeId>
     public string Name { get; set; }
     public CitizenId CitizenId { get; private set; }
     public Nationality Nationality { get; set; }
-    public string Email { get; set; }
+    public EmailAddress Email { get; set; }
     public PhoneNumber PhoneNumber { get; set; }
 
     public Status Status { get; set; }
@@ -28,11 +28,8 @@ public class ShippingAgentRepresentative : Entity<ShippingAgentRepresentativeId>
 
     protected ShippingAgentRepresentative() { }
 
-    public ShippingAgentRepresentative(string name, CitizenId citizenId, Nationality nationality, string email, PhoneNumber phoneNumber,Status status, ShippingOrganizationCode sao)
+    public ShippingAgentRepresentative(string name, CitizenId citizenId, Nationality nationality, EmailAddress email, PhoneNumber phoneNumber,Status status, ShippingOrganizationCode sao)
     {
-        if (!IsValidEmail(email))
-            throw new BusinessRuleValidationException("Invalid email format.");
-
         Name = name;
         CitizenId = citizenId;
         Nationality = nationality;
@@ -65,11 +62,8 @@ public class ShippingAgentRepresentative : Entity<ShippingAgentRepresentativeId>
 
     public override string ToString() => $"{Name}: {CitizenId}: {Nationality}: {Email}: {PhoneNumber}";
 
-    public void UpdateEmail(string email)
+    public void UpdateEmail(EmailAddress email)
     {
-        if (!IsValidEmail(email))
-            throw new BusinessRuleValidationException("Invalid email format.");
-
         Email = email;
     }
     public void UpdateStatus(string status)
@@ -90,15 +84,5 @@ public class ShippingAgentRepresentative : Entity<ShippingAgentRepresentativeId>
     public void UpdatePhoneNumber(PhoneNumber phoneNumber)
     {
         PhoneNumber = phoneNumber;
-    }
-
-    public static bool IsValidEmail(string email)
-    {
-        if (string.IsNullOrWhiteSpace(email))
-            return false;
-
-        // Simple and reliable regex for common email formats
-        var pattern = @"^[^@\s]+@[^@\s]+\.[^@\s]+$";
-        return Regex.IsMatch(email, pattern, RegexOptions.IgnoreCase);
     }
 }

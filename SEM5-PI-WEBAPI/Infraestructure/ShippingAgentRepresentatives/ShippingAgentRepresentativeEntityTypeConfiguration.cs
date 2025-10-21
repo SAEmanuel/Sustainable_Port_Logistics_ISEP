@@ -26,6 +26,10 @@ namespace SEM5_PI_WEBAPI.Infraestructure.ShippingAgentRepresentatives
                 .IsRequired();
 
             builder.Property(b => b.Email)
+                .HasConversion(
+                    e => e.Address,
+                    str=> new EmailAddress(str)
+                )
                 .IsRequired();
 
             builder.Property(b => b.PhoneNumber)
