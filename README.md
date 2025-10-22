@@ -17,7 +17,13 @@ Developed as part of the **5th semester of the Degree in Informatics Engineering
 
 ---
 
-## 2. Planning and Technical Documentation
+## 2. How to run application
+
+[Run Application readme](./RUNREADME.md)
+
+---
+
+## 3. Planning and Technical Documentation
 
 [Planning and Technical Documentation](docs/planning/planning.md)
 
@@ -101,16 +107,6 @@ The system will support the following user profiles:
 - Acts as a **gateway to the Balkans** and an important **transshipment hub**.
 - Combines **container, bulk, and passenger operations**, offering a diverse logistics environment.
 - Provides a **realistic and challenging case study** for port management innovation.
-
----
-
-## To Do
-
-- [ ] Set up project infrastructure (GitHub repository, issue tracking, CI/CD pipeline).
-- [ ] Define/Complete and document the **domain model**.
-- [ ] Develop Sprint A functionalities (core registration and management features).
-- [ ] Conduct organizational analysis of Thessaloniki Port Authority.
-- [ ] Iteratively build and refine the prototype across three sprints.
 
 ---
 
