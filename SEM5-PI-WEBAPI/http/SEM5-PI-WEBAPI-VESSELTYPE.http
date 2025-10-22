@@ -1,4 +1,5 @@
-@portURL = http://localhost:5008
+@portURL = http://10.9.21.87:5008
+
 
 # --- VESSEL TYPE ---
 
@@ -67,7 +68,7 @@ Content-Type: application/json
 Accept: application/json
 
 {
-  "name": "Panamax",
+  "name": "Panamaxxxxxx",
   "description": "Medium size vessel",
   "maxBays": 20,
   "maxRows": 15,
