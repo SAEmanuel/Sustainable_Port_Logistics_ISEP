@@ -1,0 +1,42 @@
+@startuml
+' ==========================================================
+' Sequence Diagram – US2.2.5 (Create and Manage Vessel Types)
+' Author: Jorge Ubaldo Rodrigues
+' Context: Port Management – Vessel Type Module
+' ==========================================================
+
+actor "Port Authority Officer" as Officer
+boundary "API (ShippingAgentOrganizationController)" as Controller
+control "ShippingAgentOrganizationService" as Service
+entity "ShippingAgentOrganizationRepository" as Repo
+entity "UnitOfWork" as UoW
+control "ShippingAgentOrganizationFactory" as Factory
+collections "Audit/Logs (ILogger/Serilog)" as Log
+
+== Create ==
+Officer -> Controller : POST /api/ShippingAgentOrganization\nBody: CreatingShippingAgentOrganizationDto
+Controller -> Service : CreateAsync(dto)
+Service -> Repo : GetByNameAsync(dto.Name)
+Repo --> Service : null
+
+Controller -> Service : CreateAsync(dto)
+Service -> Repo : GetByTaxNumberAsync(dto.Taxnumber)
+Repo --> Service : null
+
+Controller -> Service : CreateAsync(dto)
+Service -> Repo : GetByLegalNameAsync(dto.LegalName)
+Repo --> Service : null
+
+Service -> Factory : CreateEntity(dto)
+Factory --> Service : ShippingAgentOrganization (entity)
+Service -> Repo : AddAsync(entity)
+Repo --> Service : Entity persisted
+Service -> UoW : CommitAsync()
+UoW --> Service : Transaction committed
+Service -> Factory : CreateDtoShippingAgentOrganization(entity)
+Factory --> Service : ShippingAgentOrganizationDto
+Service --> Controller : ShippingAgentOrganizationDto
+Controller --> Officer : 201 Created (ShippingAgentOrganizationDto)
+
+
+@enduml

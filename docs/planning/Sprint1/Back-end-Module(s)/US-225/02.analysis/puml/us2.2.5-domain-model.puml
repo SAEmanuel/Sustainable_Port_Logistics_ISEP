@@ -1,0 +1,99 @@
+@startuml
+' ==========================================================
+' Domain Model Diagram – US2.2.5 (Create and Manage Shipping Agent Organization)
+' Author: Alexandre Costa
+' Context: Port Management – Shipping Agent Organization Definition
+' ==========================================================
+
+skinparam monochrome true
+skinparam shadowing false
+hide methods
+hide circle
+
+title US2.2.5 – Domain Model (Shipping Agent Organization Management)
+
+package "Shipping Agent Organization Context" as SAOC {
+
+    class ShippingAgentOrganization {
+        - Code : ShipppingOrganizationCode
+        - LegalName : string
+        - AltName : string
+        - Address : string
+        - Taxnumber : TaxNumber
+        --
+        + ChangeName(name)
+        + ChangeDescription(description)
+        + ChangeDimensions(maxBays, maxRows, maxTiers)
+    }
+
+    class ShippingAgentOrganizationId {
+        - Value : Guid
+    }
+
+    class ShippingAgentOrganizationDto {
+        + Id : Guid
+        + Code : ShipppingOrganizationCode
+        + LegalName : string
+        + AltName : string
+        + Address : string
+        + Taxnumber : TaxNumber
+    }
+
+    class CreatingShippingAgentOrganizationDto {
+        + Code : ShipppingOrganizationCode
+        + LegalName : string
+        + AltName : string
+        + Address : string
+        + Taxnumber : TaxNumber
+    }
+
+    class ShippingAgentOrganizationFactory {
+        + CreateDto(entity)
+        + CreateEntity(dto)
+    }
+
+    interface IShippingAgentOrganizationRepository {
+        + GetAllAsync()
+        + GetByCodeAsync(code)
+        + GetByLegalNameAsync(name)
+        + GetByTaxNumberAsync(taxnumber)
+        + GetFilterAsync(code,legalname,altName,address,taxnumber, query)
+        + AddAsync(entity)
+    }
+
+    class ShippingAgentOrganizationService {
+        + GetAllAsync()
+        + GetByIdAsync(id)
+        + CreateAsync(dto)
+        + GetByCodeAsync(code)
+        + GetByLegalNameAsync(name)
+        + GetByTaxNumberAsync(taxnumber)
+        + GetFilterAsync(code,legalname,altName,address,taxnumber, query)
+    }
+
+    class ShippingAgentOrganizationController {
+        + GetAll()
+        + GetById(id)
+        + GetByCodeAsync(code)
+        + GetByLegalNameAsync(name)
+        + GetByTaxNumberAsync(taxnumber)
+        + GetFilterAsync(code,legalname,altName,address,taxnumber, query)
+    }
+
+    class BusinessRuleValidationException
+    class IUnitOfWork
+}
+
+' ==========================
+' Relationships
+' ==========================
+
+ShippingAgentOrganizationController --> ShippingAgentOrganizationService : uses
+ShippingAgentOrganizationService --> IShippingAgentOrganizationRepository : depends on
+ShippingAgentOrganizationService --> IUnitOfWork : commits
+ShippingAgentOrganizationService --> ShippingAgentOrganizationFactory : converts entities ↔ DTOs
+ShippingAgentOrganizationFactory --> ShippingAgentOrganization : creates instances
+ShippingAgentOrganization --> ShippingAgentOrganizationId : identity
+IShippingAgentOrganizationRepository --> ShippingAgentOrganization : manages persistence
+
+@enduml

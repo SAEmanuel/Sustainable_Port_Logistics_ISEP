@@ -1,0 +1,16 @@
+@startuml
+skinparam monochrome true
+skinparam shadowing false
+title System Sequence Diagram – Create Shipping Agent Organization
+
+actor "Port Authority Officer" as Officer
+boundary "Shipping Agent Organization Management API" as System
+
+== Create Shipping Agent Organization ==
+Officer -> System : POST /api/ShippingAgentOrganization\nBody: CreatingShippingAgentOrganizationDto(code, legaName, altName, address, taxnumber)
+System --> Officer : 201 Created\nBody: ShippingAgentOrganizationDto
+
+== Search Shipping Agent Organizations ==
+Officer -> System : GET /api/ShippingAgentOrganization/filter?name={name}&description={description}
+System --> Officer : 200 OK\nBody: List<ShippingAgentOrganizationDto>\nOR 404 NotFound
+@enduml

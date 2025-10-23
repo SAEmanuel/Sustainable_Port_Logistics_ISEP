@@ -1,0 +1,139 @@
+@startuml
+title US2.2.5 – Class Diagram (Complete)
+
+skinparam packageStyle rectangle
+skinparam shadowing false
+hide circle
+hide empty members
+
+' ==================== DOMAIN ====================
+package "Domain" {
+  class ShippingAgentOrganization {
+    - ShippingAgentCode ShippingOrganizationCode
+    - string LegalName
+    - string AltName
+    - string Address
+    - TaxNumber Taxnumber
+  }
+
+  class ShippingAgentOrganizationId {
+    - Guid Value
+    + AsGuid() : Guid
+  }
+
+  class ShippingAgentCode{
+    - string Value
+    + FromString(string)
+  }
+
+  class TaxNumber{
+    - string Value
+    - string CountryCode
+    + Validate() 
+    + FromString(string)
+  }
+
+  class BusinessRuleValidationException
+}
+
+' ==================== DTOs ====================
+package "DTOs" {
+  class CreatingShippingAgentOrganizationDto {
+    + string ShippingOrganizationCode
+    + string LegalName
+    + string AltName
+    + string Address
+    + string Taxnumber
+  }
+
+  class ShippingAgentOrganizationDto {
+    + Guid Id
+    + ShippingAgentCode ShippingOrganizationCode
+    + string LegalName
+    + string AltName
+    + string Address
+    + TaxNumber Taxnumber
+  }
+}
+
+' ==================== APPLICATION ====================
+package "Application" {
+  interface IShippingAgentOrganizationService {
+    + GetAllAsync() : List<VesselTypeDto>
+    + GetByIdAsync(ShippingAgentOrganizationId id) : ShippingAgentOrganizationDto
+    + GetByLegalNameAsync(string legalname) : ShippingAgentOrganizationDto
+    + GetByCodeAsync(ShippingOrganizationCode shippingOrganizationCode) : ShippingAgentOrganizationDto
+    + GetByTaxNumberAsync(TaxNumber taxnumber) : ShippingAgentOrganizationDto
+    + CreateAsync(CreatingShippingAgentOrganizationDto creatingshippingAgentOrganizationDto) : ShippingAgentOrganizationDto
+  }
+
+  class GetByLegalNameAsync implements IShippingAgentOrganizationService {
+    - IShippingAgentOrganizationRepository _repo
+    - IUnitOfWork _unitOfWork
+    - ILogger<ShippingAgentOrganizationService> _logger
+    + All public methods defined in IVesselTypeService
+  }
+
+  class ShippingAgentOrganizationFactory {
+    + CreateEntity(CreatingShippingAgentOrganizationDto) : ShippingAgentOrganization
+    + CreateDto(ShippingAgentOrganization) : ShippingAgentOrganizationDto
+  }
+}
+
+' ==================== INFRASTRUCTURE ====================
+package "Infrastructure" {
+  interface IShippingAgentOrganizationRepository {
+    + GetAllAsync() : List<VesselType>
+    + GetByCodeAsync(ShippingOrganizationCode) : ShippingAgentOrganization?
+    + GetByTaxNumberAsync(TaxNumber) : ShippingAgentOrganization
+    + GetByLegalNameAsync(string) : ShippingAgentOrganization
+    + GetFilterAsync(string?,string?,string?,string?, TaxNumber?,string?) : List<ShippingAgentOrganization>
+  }
+
+  class ShippingAgentOrganizationRepository implements IShippingAgentOrganizationRepository {
+  }
+
+  interface IUnitOfWork {
+    + CommitAsync()
+  }
+
+  class UnitOfWork implements IUnitOfWork {
+  }
+}
+
+' ==================== PRESENTATION ====================
+package "Presentation" {
+  class ShippingAgentOrganizationController {
+    + GetAll() : List<VesselTypeDto>
+    + GetGetById(Guid) : ShippingAgentOrganizationDto
+    + GetByCodeAsync(string) : ShippingAgentOrganizationDto
+    + GetByLegalNameAsync(string) :ShippingAgentOrganizationDto
+    + GetByTaxNumberAsync(string) :ShippingAgentOrganizationDto
+    + Create(CreatingShippingAgentOrganizationDto) : ShippingAgentOrganizationDto
+  }
+}
+
+' ==================== CROSS-CUTTING ====================
+package "Cross-cutting" {
+  interface ILogger<T> {
+    + LogInformation(string, params)
+    + LogWarning(string, params)
+    + LogError(string, params)
+  }
+}
+
+' ==================== RELATIONSHIPS ====================
+ShippingAgentOrganization "1" *-- "1" ShippingAgentOrganizationId
+ShippingAgentOrganization "1" *-- "1" ShippingAgentCode : has one
+ShippingAgentOrganization "1" *-- "1" TaxNumber : has one
+ShippingAgentOrganizationService --> IShippingAgentOrganizationRepository : uses
+ShippingAgentOrganizationService --> IUnitOfWork : commits
+ShippingAgentOrganizationService --> ShippingAgentOrganizationFactory : converts
+ShippingAgentOrganizationService --> ILogger : logs
+ShippingAgentOrganizationRepository --> ShippingAgentOrganization : persists
+ShippingAgentOrganizationFactory --> ShippingAgentOrganization : builds
+ShippingAgentOrganizationFactory --> ShippingAgentOrganizationDto : maps
+ShippingAgentOrganizationController --> IShippingAgentOrganizationService : depends on
+ShippingAgentOrganizationController --> ILogger : logs
+
+@enduml
