@@ -33,6 +33,7 @@
   <ItemGroup>
     <Folder Include="Logs\" />
     <Folder Include="Logs\Bootstrap\" />
+    <Folder Include="Logs\VesselVisitNotification\" />
   </ItemGroup>
 
   <ItemGroup>

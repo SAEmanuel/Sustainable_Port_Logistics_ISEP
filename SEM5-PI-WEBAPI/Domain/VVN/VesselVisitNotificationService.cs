@@ -140,8 +140,6 @@ public class VesselVisitNotificationService : IVesselVisitNotificationService
 
         if (vvnInDb == null)
             throw new BusinessRuleValidationException($"No Vessel Visit Notification found with Code = {code}");
-
-        vvnInDb.Accept();
         var tasks = new List<EntityTask>();
         var dock = await BasicDockAttributionAlgorithm(vvnInDb.VesselImo);
         vvnInDb.UpdateDock(dock);
@@ -159,6 +157,7 @@ public class VesselVisitNotificationService : IVesselVisitNotificationService
         }
 
         vvnInDb.SetTasks(tasks);
+        vvnInDb.Accept();
 
         await _unitOfWork.CommitAsync();
 
@@ -943,8 +942,8 @@ private List<VesselVisitNotification> GetVvnsFilterBySubmittedDate(
         var vessel = await _vesselRepository.GetByImoNumberAsync(imo);
         if (vessel == null)
             throw new BusinessRuleValidationException("Vessel with provided imo not found");
-
         var possibleDocks = await _dockRepository.GetAllDocksForVesselType(vessel.VesselTypeId);
+        
         var availableDocks = possibleDocks.Where(d => d.Status.Equals(DockStatus.Available)).ToList();
         if (availableDocks.IsNullOrEmpty())
             throw new BusinessRuleValidationException(

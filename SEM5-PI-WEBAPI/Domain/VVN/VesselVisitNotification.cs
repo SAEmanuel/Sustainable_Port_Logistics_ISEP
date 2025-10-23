@@ -158,7 +158,7 @@ namespace SEM5_PI_WEBAPI.Domain.VVN
 
         private void SetDock(DockCode dock)
         {
-            if (!_isConstructing && !IsEditable)
+            if (!_isConstructing && !IsEditableWhenAccepting)
                 throw new BusinessRuleValidationException("Cannot update dock when VVN is not editable.");
 
             Dock = dock;
@@ -252,6 +252,7 @@ namespace SEM5_PI_WEBAPI.Domain.VVN
         }
 
         public bool IsEditable => Status.StatusValue == VvnStatus.InProgress || Status.StatusValue == VvnStatus.PendingInformation;
+        public bool IsEditableWhenAccepting => Status.StatusValue == VvnStatus.Submitted;
 
         // ============================
         // Overrides

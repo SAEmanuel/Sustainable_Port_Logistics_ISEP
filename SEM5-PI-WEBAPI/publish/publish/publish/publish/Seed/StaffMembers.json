@@ -1,0 +1,43 @@
+[
+  {
+    "shortName": "Alice Johnson",
+    "email": "alice.johnson@example.com",
+    "phone": "+351912345600",
+    "schedule": { "shift": 1, "daysOfWeek": "1111111" },
+    "isActive": true,
+    "qualificationCodes": []
+  },
+  {
+    "shortName": "Bob Smith",
+    "email": "bob.smith@example.com",
+    "phone": "+351912345601",
+    "schedule": { "shift": 2, "daysOfWeek": "1010101" },
+    "isActive": true,
+    "qualificationCodes": [ "STS-001" ]
+  },
+  {
+    "shortName": "Carol White",
+    "email": "carol.white@example.com",
+    "phone": "+351912345602",
+    "schedule": { "shift": 3, "daysOfWeek": "0101010" },
+    "isActive": true,
+    "qualificationCodes": [ "TRK-001", "FLK-001" ]
+  },
+  {
+    "shortName": "David Lee",
+    "email": "david.lee@example.com",
+    "phone": "+351912345603",
+    "schedule": { "shift": 1, "daysOfWeek": "1111100" },
+    "isActive": true,
+    "qualificationCodes": [ "PSS-001" ]
+  },
+  {
+    "shortName": "Eva Green",
+    "email": "eva.green@example.com",
+    "phone": "+351912345604",
+    "schedule": { "shift": 2, "daysOfWeek": "0011110" },
+    "isActive": true,
+    "qualificationCodes": [ "CYS-001", "MTN-001" ]
+  }
+
+]

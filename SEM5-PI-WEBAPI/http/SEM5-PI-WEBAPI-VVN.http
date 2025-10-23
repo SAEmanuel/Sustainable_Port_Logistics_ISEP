@@ -1,4 +1,5 @@
 @portURL = http://10.9.21.87:5008
+#@portURL = http://localhost:5008
 @contentType = application/json
 @accept = application/json
 
@@ -172,7 +173,7 @@ Accept: {{accept}}
 # 3 - SUBMIT Vessel Visit Notification for approval
 
 ###
-PUT {{portURL}}/api/VesselVisitNotification/d16d133f-9b81-43a9-b651-c0a8bbfef135/submit
+PUT {{portURL}}/api/VesselVisitNotification/2025-THPA-000003/submit
 Content-Type: {{contentType}}
 Accept: {{accept}}
 
@@ -195,7 +196,7 @@ Accept: {{accept}}
 # ️6 - PUT Accept VVN
 
 ###
-PUT {{portURL}}/api/VesselVisitNotification/accept/id/b6a5e2c0-0a58-42ef-8612-3cf7a47d65ec
+PUT {{portURL}}/api/VesselVisitNotification/accept/id/49de6f49-0649-4abe-9667-8d25acfb3248
 Accept: {{accept}}
 
 # ️7 - PUT Reject/MarkAsPending VVN
@@ -233,9 +234,7 @@ Accept: application/json
 # ️10 - Get Submitted
 
 ### 
-GET {{portURL}}/api/VesselVisitNotification/shippingAgentRepresentative/submitted/72f1d6b2-3475-46b8-bb2c-2cf2b379a913
-    ?submittedDate=2025-10-10T08:00
-    &vesselImoNumber=IMO9000123
+GET {{portURL}}/api/VesselVisitNotification/shippingAgentRepresentative/submitted/e0dc9e28-e9cf-4570-a168-89318863b921
 Accept: application/json
 
 # ️11 - Get Accepted

@@ -29,16 +29,16 @@ namespace SEM5_PI_WEBAPI.Infraestructure.Docks
 
         public async Task<List<EntityDock>> GetByVesselTypeAsync(VesselTypeId vesselTypeId)
         {
-            var dockIds = await _context.Database
-                .SqlQuery<Guid>($"SELECT DockId FROM Dock_VesselType WHERE VesselTypeId = {vesselTypeId.Value}")
+            var vesselTypeIdValue = vesselTypeId.Value; 
+    
+            var dockIds = await _context.Dock
+                .Where(d => d.AllowedVesselTypeIds.Any(vtId => vtId.Value == vesselTypeIdValue))
                 .ToListAsync();
 
             if (!dockIds.Any())
                 return new List<EntityDock>();
 
-            return await _context.Dock
-                .Where(d => dockIds.Contains(d.Id.AsGuid()))
-                .ToListAsync();
+            return dockIds;
         }
 
         public async Task<List<EntityDock>> GetByLocationAsync(string location)
@@ -77,7 +77,7 @@ namespace SEM5_PI_WEBAPI.Infraestructure.Docks
             if (vesselTypeId is not null)
             {
                 var dockIdsWithVesselType = await _context.Database
-                    .SqlQuery<Guid>($"SELECT DockId FROM Dock_VesselType WHERE VesselTypeId = {vesselTypeId.Value}")
+                    .SqlQuery<Guid>($"SELECT DockId FROM DockAllowedVesselTypes WHERE VesselTypeId = {vesselTypeId.Value}")
                     .ToListAsync();
 
                 q = q.Where(d => dockIdsWithVesselType.Contains(d.Id.AsGuid()));

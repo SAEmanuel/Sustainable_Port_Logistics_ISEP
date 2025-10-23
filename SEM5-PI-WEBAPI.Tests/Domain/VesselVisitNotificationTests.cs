@@ -196,13 +196,11 @@ namespace SEM5_PI_WEBAPI.Tests.Domain
             vvn.UpdateEstimatedTimeArrival(newETA);
             vvn.UpdateEstimatedTimeDeparture(newETD);
             vvn.UpdateVolume(777);
-            vvn.UpdateDock(newDock);
             vvn.UpdateImoNumber(newImo);
 
             Assert.Equal(newETA, vvn.EstimatedTimeArrival);
             Assert.Equal(newETD, vvn.EstimatedTimeDeparture);
             Assert.Equal(777, vvn.Volume);
-            Assert.Equal(newDock, vvn.Dock);
             Assert.Equal(newImo, vvn.VesselImo);
         }
 
