@@ -29,7 +29,7 @@ public class ShippingAgentRepresentativeService: IShippingAgentRepresentativeSer
         var list = await this._repo.GetAllAsync();
 
         List<ShippingAgentRepresentativeDto> listDto = list.ConvertAll<ShippingAgentRepresentativeDto>(q =>
-            new ShippingAgentRepresentativeDto(q.Id.AsGuid(), q.Name, q.CitizenId, q.Nationality,q.Email,q.PhoneNumber,q.Status,q.SAO,q.Notifs));
+            ShippingAgentRepresentativeFactory.CreateDto(q));
 
         return listDto;
     }
@@ -41,7 +41,7 @@ public class ShippingAgentRepresentativeService: IShippingAgentRepresentativeSer
         if (q == null)
             return null;
 
-        return new ShippingAgentRepresentativeDto(q.Id.AsGuid(), q.Name, q.CitizenId, q.Nationality,q.Email,q.PhoneNumber,q.Status,q.SAO,q.Notifs);
+        return ShippingAgentRepresentativeFactory.CreateDto(q);
     }
     
     public async Task<ShippingAgentRepresentativeDto> GetByNameAsync(string Name)
@@ -51,7 +51,7 @@ public class ShippingAgentRepresentativeService: IShippingAgentRepresentativeSer
         if (q == null)
             return null;
 
-        return new ShippingAgentRepresentativeDto(q.Id.AsGuid(), q.Name, q.CitizenId, q.Nationality,q.Email,q.PhoneNumber,q.Status,q.SAO,q.Notifs);   
+        return ShippingAgentRepresentativeFactory.CreateDto(q);    
     }
 
     public async Task<ShippingAgentRepresentativeDto> GetByEmailAsync(EmailAddress Email)
@@ -61,8 +61,8 @@ public class ShippingAgentRepresentativeService: IShippingAgentRepresentativeSer
         if (q == null)
             return null;
 
-        return new ShippingAgentRepresentativeDto(q.Id.AsGuid(), q.Name, q.CitizenId, q.Nationality, q.Email, q.PhoneNumber, q.Status, q.SAO, q.Notifs);
-    }
+        return ShippingAgentRepresentativeFactory.CreateDto(q);
+        }
     
      public async Task<ShippingAgentRepresentativeDto> GetByCitizenId(CitizenId cId)
     {
@@ -71,7 +71,7 @@ public class ShippingAgentRepresentativeService: IShippingAgentRepresentativeSer
         if (q == null)
             return null;
 
-        return new ShippingAgentRepresentativeDto(q.Id.AsGuid(), q.Name, q.CitizenId, q.Nationality,q.Email,q.PhoneNumber,q.Status,q.SAO,q.Notifs);   
+        return ShippingAgentRepresentativeFactory.CreateDto(q);   
     }
 
     public async Task<ShippingAgentRepresentativeDto> GetByStatusAsync(Status Status)
@@ -81,7 +81,7 @@ public class ShippingAgentRepresentativeService: IShippingAgentRepresentativeSer
         if (q == null)
             return null;
 
-        return new ShippingAgentRepresentativeDto(q.Id.AsGuid(), q.Name, q.CitizenId, q.Nationality, q.Email, q.PhoneNumber, q.Status, q.SAO, q.Notifs);
+        return ShippingAgentRepresentativeFactory.CreateDto(q);
     }
 
     public async Task<ShippingAgentRepresentativeDto> GetBySaoAsync(ShippingOrganizationCode Code)
@@ -91,7 +91,7 @@ public class ShippingAgentRepresentativeService: IShippingAgentRepresentativeSer
         if (q == null)
             return null;
 
-        return new ShippingAgentRepresentativeDto(q.Id.AsGuid(), q.Name, q.CitizenId, q.Nationality, q.Email, q.PhoneNumber, q.Status, q.SAO, q.Notifs);
+        return ShippingAgentRepresentativeFactory.CreateDto(q);    
     }
 
     public async Task<ShippingAgentRepresentativeDto> AddAsync(CreatingShippingAgentRepresentativeDto dto)
@@ -116,7 +116,9 @@ public class ShippingAgentRepresentativeService: IShippingAgentRepresentativeSer
         //verfica se já existe algum SAR associado ao SAO que se pretende associar ao SAR que se está a criar
         var saoTaken = await _repo.GetBySaoAsync(saoCode);
         if (saoTaken != null) throw new BusinessRuleValidationException($"A representative for SAO '{dto.Sao}' already exists on DB.");
-   
+
+        ShippingAgentRepresentativeFactory.CreateEntity(dto);
+
         var representative = new ShippingAgentRepresentative(
             dto.Name,
             dto.CitizenId,
@@ -129,18 +131,8 @@ public class ShippingAgentRepresentativeService: IShippingAgentRepresentativeSer
 
         await _repo.AddAsync(representative);
         await _unitOfWork.CommitAsync();
-
-        return new ShippingAgentRepresentativeDto(
-            representative.Id.AsGuid(),
-            representative.Name,
-            representative.CitizenId,
-            representative.Nationality,
-            representative.Email,
-            representative.PhoneNumber,
-            representative.Status,
-            representative.SAO,
-            representative.Notifs
-        );
+    
+        return ShippingAgentRepresentativeFactory.CreateDto(representative);
     }
 
 
@@ -175,16 +167,7 @@ public class ShippingAgentRepresentativeService: IShippingAgentRepresentativeSer
 
         await _unitOfWork.CommitAsync();
 
-        return new ShippingAgentRepresentativeDto(
-            representative.Name,
-            representative.CitizenId,
-            representative.Nationality,
-            representative.Email,
-            representative.PhoneNumber,
-            representative.Status,
-            representative.SAO,
-            representative.Notifs
-        );
+        return ShippingAgentRepresentativeFactory.CreateDto(representative);
     }
      
      

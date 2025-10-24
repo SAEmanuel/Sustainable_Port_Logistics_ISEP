@@ -59,7 +59,7 @@ public class ShippingAgentRepresentativeController : ControllerBase
     }
 
     [HttpGet("email/{email}")]
-    public async Task<ActionResult<List<ShippingAgentRepresentativeDto>>> GetByEmailAsync(EmailAddress email)
+    public async Task<ActionResult<ShippingAgentRepresentativeDto>> GetByEmailAsync(EmailAddress email)
     {
         try
         {
@@ -106,7 +106,7 @@ public class ShippingAgentRepresentativeController : ControllerBase
         try
         {
             var q = await _service.AddAsync(dto);
-
+            _logger.LogInformation("API Response (200): Representative with  email = {EMAIL} created successfully", dto.Email);
             return CreatedAtAction(nameof(GetGetById), new { id = q.Id }, q);
         }
         catch (BusinessRuleValidationException ex)
