@@ -1,0 +1,26 @@
+@startuml
+skinparam monochrome true
+skinparam shadowing false
+title System Sequence Diagram – Create & Update Shipping Agent Repreesntative
+
+actor "Port Authority Officer" as Officer
+boundary "Shipping Agent Repreesntative Management API" as System
+
+== Create Shipping Agent Repreesntative ==
+Officer -> System : POST /api/ShippingAgentRepresentative\nBody: CreatingShippingAgentRepresentativeDto(name, description, maxBays, maxRows, maxTiers)
+System --> Officer : 201 Created\nBody: VesselTypeDto
+
+== Update Shipping Agent Repreesntative ==
+Officer -> System : PUT /api/ShippingAgentRepresentative/{id}\nBody: UpdateShippingAgentRepresentativeDto(name, citizenId, nationality, email, phoneNumber, status, sao)
+System --> Officer : 200 OK\nBody: VesselTypeDto (updated)\nOR 400 BadRequest
+
+== Search Shipping Agent Repreesntative ==
+Officer -> System : GET /api/ShippingAgentRepresentative/name={name}
+System --> Officer : 200 OK\nBody: ShippingAgentRepresentativeDto\nOR 404 NotFound
+
+Officer -> System : GET /api/ShippingAgentRepresentative/email={email}
+System --> Officer : 200 OK\nBody: ShippingAgentRepresentativeDto\nOR 404 NotFound
+
+Officer -> System : GET /api/ShippingAgentRepresentative/status={status}
+System --> Officer : 200 OK\nBody: List<ShippingAgentRepresentativeDto>\nOR 404 NotFound
+@enduml

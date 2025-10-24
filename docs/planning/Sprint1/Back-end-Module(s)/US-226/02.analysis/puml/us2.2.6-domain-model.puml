@@ -1,0 +1,112 @@
+@startuml
+' ==========================================================
+' Domain Model Diagram – US2.2.6 (Create and Manage Shipping Agent Representatives)
+' Author: Alexandre Costa
+' Context: Port Management –Shipping Agent Representative creation and management
+' ==========================================================
+
+skinparam monochrome true
+skinparam shadowing false
+hide methods
+hide circle
+
+title US2.2.6 – Domain Model (Shipping Agent Representative Management)
+
+package "Vessel Type Context" as VTC {
+
+    class ShippingAgentRepresentative {
+        - Name
+        - CitizenId
+        - Nationality
+        - EmailAddress
+        - PhoneNumber
+        - Status
+        - SAO
+    }
+
+    class ShippingAgentRepresentativeId {
+        - Value : Guid
+    }
+
+    class ShippingAgentRepresentativeDto {
+        - Guid
+        - Name
+        - CitizenId
+        - Nationality
+        - EmailAddress
+        - PhoneNumber
+        - Status
+        - SAO
+    }
+
+    class CreatingShippingAgentRepresentativeDto {
+        - Name
+        - CitizenId
+        - Nationality
+        - EmailAddress
+        - PhoneNumber
+        - Status
+        - SAO
+    }
+
+    interface IShippingAgentRepresentativeRepository {
+       + GetAllSarBySaoAsync(organizationCode);
+       + GetByNameAsync(name);
+       + GetByEmailAsync(email);
+       + GetByCitizenIdAsync(cId);
+       + GetByStatusAsync(status);
+       + GetBySaoAsync(code);
+       + GetFilterAsync(name, citizenId, nationality, email, phoneNumber,nstatus, sao, query);
+    }
+
+    class ShippingAgentRepresentativeService {
+       + GetAllAsync();
+       + GetByIdAsync(id);
+       + GetByNameAsync(name);
+       + GetByEmailAsync(email);
+       + GetByCitizenId(cId);
+       + GetByStatusAsync(status);
+       + GetBySaoAsync(code);
+       + AddAsync(dto);
+       + PatchByNameAsync(name, dto);
+       + AddNotificationAsync(representativeName, vvnCode);
+    }
+
+    class ShippingAgentRepresentativeController {
+        + GetAll()
+        + GetByNameAsync(name)
+        + GetByEmailAsync(email)
+        + GetByStatusAsync(status)
+        + Create(dto)
+        + UpdateAsync(name, dto)
+        + AddNotificationAsync(name, vvnCode)
+    }
+
+    class BusinessRuleValidationException
+    class IUnitOfWork
+}
+
+' ==========================
+' Relationships
+' ==========================
+
+ShippingAgentRepresentativeController --> ShippingAgentRepresentativeService : uses
+ShippingAgentRepresentativeService --> IShippingAgentRepresentativeRepository : depends on
+ShippingAgentRepresentativeService --> IUnitOfWork : commits
+ShippingAgentRepresentative --> ShippingAgentRepresentativeId : identity
+IShippingAgentRepresentativeRepository --> ShippingAgentRepresentative : manages persistence
+
+class ShippingAgentOrganization {
+    - Code : ShipppingOrganizationCode
+    - LegalName : string
+    - AltName : string
+    - Address : string
+    - Taxnumber : TaxNumber
+    --
+    + ChangeName(name)
+    + ChangeDescription(description)
+    + ChangeDimensions(maxBays, maxRows, maxTiers)
+}
+ShippingAgentRepresentative --> ShippingAgentOrganization : references >
+
+@enduml

@@ -1,0 +1,229 @@
+@startuml
+title US2.2.1 – Class Diagram (Complete)
+
+skinparam packageStyle rectangle
+skinparam shadowing false
+hide circle
+hide empty members
+
+' ==================== DOMAIN ====================
+package "Domain" {
+  class ShippingAgentRepresentative {
+    - string Name
+    - CitizenId CitizenId
+    - Nationality Nationality
+    - EmailAddress EmailAddress
+    - PhoneNumber PhoneNumber
+    - Status Status
+    - ShippingOrganizationCode SAO
+    + UpdateStatus(string)
+    + UpdatePhoneNumber(phoneNumber)
+    + UpdateEmail(email)
+    + ChangeDimensions(int, int, int)
+  }
+
+  class CitizenId {
+    - PassportPattern : Regex
+    - PassportNumber : string
+    --
+    + CitizenId(passportNumber : string)
+    + ToString() : string
+    + Equals(obj : object?) : bool
+    + GetHashCode() : int
+  }
+
+  class PhoneNumber {
+    - PhoneRegex : Regex
+    - Number : string
+    --
+    + PhoneNumber(number : string)
+    + ToString() : string
+    + Equals(obj : object?) : bool
+    + GetHashCode() : int
+  }
+
+  class EmailAddress {
+    - EmailPattern : Regex
+    + Address : string
+    --
+    + EmailAddress(address : string)
+    + ToString() : string
+    + Equals(obj : object?) : bool
+    + GetHashCode() : int
+    + implicit operator string(email : EmailAddress) : string
+    + explicit operator EmailAddress(value : string) : EmailAddress
+  } 
+
+  class ShippingOrganizationCode {
+    + Value : string
+    --
+    + ShippingOrganizationCode(value : string)
+    + FromString(value : string) : ShippingOrganizationCode
+    + ToString() : string
+    + Equals(obj : object?) : bool
+    + GetHashCode() : int
+  }
+
+  class ShippingAgentRepresentativeId {
+    - Guid Value
+    + AsGuid() : Guid
+  }
+
+  enum Nationality {
+    Usa
+    Afghanistan
+    Albania
+    Algeria
+    Andorra
+    ...
+    Zimbabwe
+  }
+
+  enum Status{
+    activated
+    deactivated
+  }
+
+  class BusinessRuleValidationException
+}
+
+' ==================== DTOs ====================
+package "DTOs" {
+  class CreatingShippingAgentRepresentativeDto {
+    + string Name
+    + CitizenId CitizenId
+    + Nationality Nationality
+    + EmailAddress Email
+    + PhoneNumber PhoneNumber
+    + string Status
+    + string Sao
+    + CreatingShippingAgentRepresentativeDto()
+    + CreatingShippingAgentRepresentativeDto(string name, CitizenId citizenId, Nationality nationality, EmailAddress email, PhoneNumber phoneNumber, string status, string sao)
+  }
+
+  class ShippingAgentRepresentativeDto {
+    + Guid Id
+    + string Name
+    + CitizenId CitizenId
+    + Nationality Nationality
+    + EmailAddress Email
+    + PhoneNumber PhoneNumber
+    + ShippingOrganizationCode SAO
+    + List<VvnCode> Notifs
+    + Status Status
+    + ShippingAgentRepresentativeDto(Guid id, string name, CitizenId citizenId, Nationality nationality, EmailAddress email, PhoneNumber phoneNumber, Status status, ShippingOrganizationCode sao, List<VvnCode> notifs)
+    + ShippingAgentRepresentativeDto(string name, CitizenId citizenId, Nationality nationality, EmailAddress email, PhoneNumber phoneNumber, Status status, ShippingOrganizationCode sao, List<VvnCode> notifs)
+  }
+
+  class UpdatingShippingAgentRepresentativeDto {
+    + EmailAddress? Email
+    + PhoneNumber? PhoneNumber
+    + Status? Status
+    + UpdatingShippingAgentRepresentativeDto()
+    + UpdatingShippingAgentRepresentativeDto(EmailAddress email, PhoneNumber phoneNumber, Status status)
+  }
+  
+}
+
+' ==================== APPLICATION ====================
+package "Application" {
+  interface IShippingAgentRepresentativeService {
+    + GetAllAsync() : Task<List<ShippingAgentRepresentativeDto>>
+    + GetByIdAsync(id : ShippingAgentRepresentativeId) : Task<ShippingAgentRepresentativeDto>
+    + GetByNameAsync(name : string) : Task<ShippingAgentRepresentativeDto>
+    + GetByEmailAsync(email : EmailAddress) : Task<ShippingAgentRepresentativeDto>
+    + GetByCitizenId(cId : CitizenId) : Task<ShippingAgentRepresentativeDto>
+    + GetByStatusAsync(status : Status) : Task<ShippingAgentRepresentativeDto>
+    + GetBySaoAsync(code : ShippingOrganizationCode) : Task<ShippingAgentRepresentativeDto>
+    + AddAsync(dto : CreatingShippingAgentRepresentativeDto) : Task<ShippingAgentRepresentativeDto>
+    + PatchByEmailAsync(email : EmailAddress, dto : UpdatingShippingAgentRepresentativeDto) : Task<ShippingAgentRepresentativeDto>
+    + AddNotificationAsync(representativeName : string, vvnCode : string) : Task<ShippingAgentRepresentativeDto>
+  }
+
+  class ShippingAgentRepresentativeService {
+    + GetAllAsync() : Task<List<ShippingAgentRepresentativeDto>>
+    + GetByIdAsync(id : ShippingAgentRepresentativeId) : Task<ShippingAgentRepresentativeDto>
+    + GetByNameAsync(name : string) : Task<ShippingAgentRepresentativeDto>
+    + GetByEmailAsync(email : EmailAddress) : Task<ShippingAgentRepresentativeDto>
+    + GetByCitizenId(cId : CitizenId) : Task<ShippingAgentRepresentativeDto>
+    + GetByStatusAsync(status : Status) : Task<ShippingAgentRepresentativeDto>
+    + GetBySaoAsync(code : ShippingOrganizationCode) : Task<ShippingAgentRepresentativeDto>
+    + AddAsync(dto : CreatingShippingAgentRepresentativeDto) : Task<ShippingAgentRepresentativeDto>
+    + PatchByEmailAsync(email : EmailAddress, dto : UpdatingShippingAgentRepresentativeDto) : Task<ShippingAgentRepresentativeDto>
+    + AddNotificationAsync(representativeName : string, vvnCode : string) : Task<ShippingAgentRepresentativeDto>
+  }
+
+
+  class ShippingAgentRepresentativeFactory {
+    + CreateEntity(CreatingShippingAgentRepresentativeDto) : ShippingAgentRepresentative
+    + CreateDto(ShippingAgentRepresentative) : ShippingAgentRepresentativeDto
+  }
+}
+
+' ==================== INFRASTRUCTURE ====================
+package "Infrastructure" {
+  interface ShippingAgentRepresentativeRepository {
+    + GetAllSarBySaoAsync(ShippingOrganizationCode) : List<ShippingAgentRepresentative>
+    + GetByNameAsync(string) : ShippingAgentRepresentative?
+    + GetByEmailAsync(EmailAddress) : ShippingAgentRepresentative?
+    + GetByCitizenIdAsync(CitizenId) : ShippingAgentRepresentative?
+    + GetByStatusAsync(Status) : ShippingAgentRepresentative?
+    + GetBySaoAsync(ShippingOrganizationCode) : ShippingAgentRepresentative?
+    + GetFilterAsync(string?, CitizenId?, Nationality?, EmailAddress?, PhoneNumber?, Status?, ShippingOrganizationCode?, string?) : List<ShippingAgentRepresentative>
+}
+
+  class ShippingAgentRepresentativeRepository implements ShippingAgentRepresentativeRepository {
+  }
+
+  interface IUnitOfWork {
+    + CommitAsync()
+  }
+
+  class UnitOfWork implements IUnitOfWork {
+  }
+}
+
+' ==================== PRESENTATION ====================
+package "Presentation" {
+  class ShippingAgentRepresentativeController {
+    + ShippingAgentRepresentativeController(service : IShippingAgentRepresentativeService, logger : ILogger<ShippingAgentRepresentativeController>)
+    + GetAll() : Task<ActionResult<IEnumerable<ShippingAgentRepresentativeDto>>>
+    + GetGetById(id : Guid) : Task<ActionResult<ShippingAgentRepresentativeDto>>
+    + GetByNameAsync(name : string) : Task<ActionResult<List<ShippingAgentRepresentativeDto>>>
+    + GetByEmailAsync(email : EmailAddress) : Task<ActionResult<List<ShippingAgentRepresentativeDto>>>
+    + GetByStatusAsync(status : Status) : Task<ActionResult<List<ShippingAgentRepresentativeDto>>>
+    + Create(dto : CreatingShippingAgentRepresentativeDto) : Task<ActionResult<ShippingAgentRepresentativeDto>>
+    + UpdateAsync(email : string, dto : UpdatingShippingAgentRepresentativeDto?) : Task<ActionResult<ShippingAgentRepresentativeDto>>
+    + AddNotificationAsync(name : string, vvnCode : string) : Task<ActionResult<ShippingAgentRepresentativeDto>>
+  }
+}
+
+' ==================== CROSS-CUTTING ====================
+package "Cross-cutting" {
+  interface ILogger<T> {
+    + LogInformation(string, params)
+    + LogWarning(string, params)
+    + LogError(string, params)
+  }
+}
+
+' ==================== RELATIONSHIPS ====================
+ShippingAgentRepresentative "1" *-- "1" ShippingAgentRepresentativeId
+ShippingAgentRepresentativeService --> IShippingAgentRepresentativeRepository : uses
+ShippingAgentRepresentativeService --> IUnitOfWork : commits
+ShippingAgentRepresentativeService --> ShippingAgentRepresentativeFactory : converts
+ShippingAgentRepresentativeService --> ILogger : logs
+ShippingAgentRepresentativeRepository --> ShippingAgentRepresentative : persists
+ShippingAgentRepresentativeFactory --> ShippingAgentRepresentative : builds
+ShippingAgentRepresentativeFactory --> ShippingAgentRepresentativeDto : maps
+ShippingAgentRepresentativeController --> IShippingAgentRepresentativeService : depends on
+ShippingAgentRepresentativeController --> ILogger : logs
+
+ShippingAgentRepresentative "1" --> "1" CitizenId :uses
+ShippingAgentRepresentative "1" --> "1" EmailAddress :uses
+ShippingAgentRepresentative "1" --> "1" ShippingOrganizationCode :uses
+ShippingAgentRepresentative "1" --> "1" Nationality :uses
+ShippingAgentRepresentative "1" --> "1" Status :uses
+ShippingAgentRepresentative "1" --> "1" PhoneNumber :uses
+
+@enduml

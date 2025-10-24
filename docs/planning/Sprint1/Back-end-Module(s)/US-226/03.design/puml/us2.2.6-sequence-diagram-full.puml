@@ -1,0 +1,63 @@
+@startuml
+' ==========================================================
+' Sequence Diagram – US2.2.6 (Create and Manage Shipping Agent Representatives)
+' Author: Alexandre Costa
+' Context: Port Management – Vessel Type Module
+' ==========================================================
+
+actor "Port Authority Officer" as Officer
+boundary "API (ShippingAgentRepresentativeController)" as Controller
+control "ShippingAgentRepresentativeService" as Service
+entity "ShippingAgentRepresentativeRepository" as Repo
+entity "UnitOfWork" as UoW
+control "ShippingAgentRepresentativeFactory" as Factory
+collections "Audit/Logs (ILogger/Serilog)" as Log
+
+== Create ==
+Officer -> Controller : POST /api/ShippingAgentRepresentative\nBody: CreatingShippingAgentRepresentativeDto
+Controller -> Service : AddAsync(dto)
+Service -> Repo : GetByCitizenIdAsync(dto.CitizenId)
+Repo --> Service : null / ShippingAgentRepresentative
+Service -> Repo : GetByEmailAsync(dto.Email)
+Repo --> Service : null / ShippingAgentRepresentative
+Service -> Repo : GetByCodeAsync(dto.Sao)
+Repo --> Service : null / ShippingAgentRepresentative
+Service -> Factory : CreateEntity(dto)
+Factory --> Service : ShippingAgentRepresentative (entity)
+Service -> Repo : AddAsync(entity)
+Repo --> Service : Entity persisted
+Service -> UoW : CommitAsync()
+UoW --> Service : Transaction committed
+Service -> Factory : CreateDto(entity)
+Factory --> Service : ShippingAgentRepresentativeDto
+Service -> Log : Log(CREATE, officerId, email, SUCCESS)
+Service --> Controller : ShippingAgentRepresentativeDto
+Controller --> Officer : 201 Created (ShippingAgentRepresentativeDto)
+
+== Update ==
+Officer -> Controller : PUT /api/ShippingAgentRepresentative/update/{email}\nBody: ShippingAgentRepresentativeDto
+Controller -> Service : UpdateAsync(email, dto)
+Service -> Repo : GetByEmailAsync(email)
+Repo --> Service : ShippingAgentRepresentative (existing)
+Service -> Repo : Save(updated entity)
+Repo --> Service : Entity updated
+Service -> UoW : CommitAsync()
+UoW --> Service : Transaction committed
+Service -> Factory : CreateDto(updated)
+Factory --> Service : ShippingAgentRepresentativeDto
+Service -> Log : Log(UPDATE, officerId, email, SUCCESS)
+Service --> Controller : ShippingAgentRepresentativeDto
+Controller --> Officer : 200 OK (ShippingAgentRepresentativeDto)
+
+== Search ==
+Officer -> Controller : GET /api/ShippingAgentRepresentative/email/{email}
+Controller -> Service : GetByEmailAsync(email)
+Service -> Repo : GetByEmailAsync(email)
+Repo --> Service : ShippingAgentRepresentative
+Service -> Factory : CreateDto(ShippingAgentRepresentative)
+Factory --> Service : ShippingAgentRepresentativeDto
+Service --> Controller : ShippingAgentRepresentativeDto
+Controller -> Log : Log(SEARCH, officerId, query, SUCCESS)
+Controller --> Officer : 200 OK (ShippingAgentRepresentativeDto)
+
+@enduml
