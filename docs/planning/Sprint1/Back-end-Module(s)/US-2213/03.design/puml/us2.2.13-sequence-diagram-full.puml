@@ -4,79 +4,173 @@ boundary QualificationsController
 entity QualificationService
 entity QualificationRepository
 entity UnitOfWork
+entity QualificationMapper
 entity QualificationFactory
+entity ILogger
 database "Qualifications Database" as Database
 
 == Get All Qualifications ==
 Client -> QualificationsController: GET /api/qualifications
+QualificationsController -> ILogger: LogInformation("API Request: Get all Qualifications")
 QualificationsController -> QualificationService: GetAllAsync()
+QualificationService -> ILogger: LogInformation("Fetching all qualifications")
 QualificationService -> QualificationRepository: GetAllAsync()
 QualificationRepository -> Database: Query all records
 Database --> QualificationRepository: List<Qualification>
 QualificationRepository --> QualificationService: List<Qualification>
-QualificationService -> QualificationFactory: CreateQualificationDtoList()
+QualificationService -> QualificationMapper: ToDtoList(List<Qualification>)
+QualificationMapper --> QualificationService: List<QualificationDto>
+QualificationService -> ILogger: LogInformation("Returning {Count} qualifications")
 QualificationService --> QualificationsController: List<QualificationDto>
+QualificationsController -> ILogger: LogInformation("API Response (200): Returning {Count} Qualifications")
 QualificationsController --> Client: 200 OK List<QualificationDto>
 
 == Get Qualification By ID ==
 Client -> QualificationsController: GET /api/qualifications/{id}
+QualificationsController -> ILogger: LogInformation("API Request: Get Qualification by ID = {Id}")
 QualificationsController -> QualificationService: GetByIdAsync(QualificationId)
+QualificationService -> ILogger: LogInformation("Fetching qualification with ID: {Id}")
 QualificationService -> QualificationRepository: GetByIdAsync(id)
 QualificationRepository -> Database: Query by ID
 Database --> QualificationRepository: Qualification or null
 QualificationRepository --> QualificationService: Qualification or null
-QualificationService -> QualificationFactory: CreateQualificationDto()
-QualificationService --> QualificationsController: QualificationDto or 404
-QualificationsController --> Client: 200 OK or 404
+alt Qualification found
+    QualificationService -> QualificationMapper: ToDto(Qualification)
+    QualificationMapper --> QualificationService: QualificationDto
+    QualificationService -> ILogger: LogInformation("Qualification with ID: {Id} found")
+    QualificationService --> QualificationsController: QualificationDto
+    QualificationsController -> ILogger: LogInformation("API Response (200): Qualification with ID = {Id} found")
+    QualificationsController --> Client: 200 OK QualificationDto
+else Qualification not found
+    QualificationService -> ILogger: LogWarning("Qualification with ID: {Id} not found")
+    QualificationService --> QualificationsController: null
+    QualificationsController -> ILogger: LogWarning("API Response (404): Qualification with ID = {Id} not found")
+    QualificationsController --> Client: 404 Not Found
+end
 
 == Get Qualification By Code ==
 Client -> QualificationsController: GET /api/qualifications/code/{code}
+QualificationsController -> ILogger: LogInformation("API Request: Get Qualification by Code = {Code}")
 QualificationsController -> QualificationService: GetByCodeAsync(code)
+QualificationService -> ILogger: LogInformation("Fetching qualification with code: {Code}")
 QualificationService -> QualificationRepository: GetQualificationByCodeAsync(code)
 QualificationRepository -> Database: Query by Code
 Database --> QualificationRepository: Qualification or null
 QualificationRepository --> QualificationService: Qualification or null
-QualificationService -> QualificationFactory: CreateQualificationDto()
-QualificationService --> QualificationsController: QualificationDto or 404
-QualificationsController --> Client: 200 OK or 404
+alt Qualification found
+    QualificationService -> QualificationMapper: ToDto(Qualification)
+    QualificationMapper --> QualificationService: QualificationDto
+    QualificationService -> ILogger: LogInformation("Qualification found for code: {Code}")
+    QualificationService --> QualificationsController: QualificationDto
+    QualificationsController -> ILogger: LogInformation("API Response (200): Qualification with Code = {Code} found")
+    QualificationsController --> Client: 200 OK QualificationDto
+else Qualification not found
+    QualificationService -> ILogger: LogWarning("No qualification found with code: {Code}")
+    QualificationService --> QualificationsController: throws BusinessRuleValidationException
+    QualificationsController -> ILogger: LogWarning("API Error (400): Failed to get Qualification with Code = {Code}")
+    QualificationsController --> Client: 400 Bad Request
+end
 
 == Get Qualification By Name ==
 Client -> QualificationsController: GET /api/qualifications/name/{name}
+QualificationsController -> ILogger: LogInformation("API Request: Get Qualification by Name = {Name}")
 QualificationsController -> QualificationService: GetByNameAsync(name)
+QualificationService -> ILogger: LogInformation("Fetching qualification with name: {Name}")
 QualificationService -> QualificationRepository: GetQualificationByName(name)
 QualificationRepository -> Database: Query by Name
 Database --> QualificationRepository: Qualification or null
 QualificationRepository --> QualificationService: Qualification or null
-QualificationService -> QualificationFactory: CreateQualificationDto()
-QualificationService --> QualificationsController: QualificationDto or 404
-QualificationsController --> Client: 200 OK or 404
+alt Qualification found
+    QualificationService -> QualificationMapper: ToDto(Qualification)
+    QualificationMapper --> QualificationService: QualificationDto
+    QualificationService -> ILogger: LogInformation("Qualification found for name: {Name}")
+    QualificationService --> QualificationsController: QualificationDto
+    QualificationsController -> ILogger: LogInformation("API Response (200): Qualification with Name = {Name} found")
+    QualificationsController --> Client: 200 OK QualificationDto
+else Qualification not found
+    QualificationService -> ILogger: LogWarning("No qualification found with name: {Name}")
+    QualificationService --> QualificationsController: throws BusinessRuleValidationException
+    QualificationsController -> ILogger: LogWarning("API Error (400): Failed to get Qualification with Name = {Name}")
+    QualificationsController --> Client: 400 Bad Request
+end
 
 == Create Qualification ==
 Client -> QualificationsController: POST /api/qualifications\nBody: CreatingQualificationDto
+QualificationsController -> ILogger: LogInformation("API Request: Create new Qualification with data {@Dto}")
 QualificationsController -> QualificationService: AddAsync(dto)
+QualificationService -> ILogger: LogInformation("Adding new qualification with name: {Name}")
 QualificationService -> QualificationService: EnsureNotRepeatedAsync(dto)
-QualificationService -> QualificationService: GetCodeAsync(dto)
-QualificationService -> QualificationRepository: AddAsync(Qualification)
-QualificationRepository -> Database: Insert Record
-Database --> QualificationRepository: Success
-QualificationService -> UnitOfWork: CommitAsync()
-UnitOfWork --> QualificationService: Success
-QualificationService -> QualificationFactory: CreateQualificationDto()
-QualificationService --> QualificationsController: QualificationDto
-QualificationsController --> Client: 201 Created
+QualificationService -> ILogger: LogInformation("Checking for repeated qualification name or code")
+QualificationService -> QualificationRepository: GetAllAsync()
+QualificationRepository -> Database: Query all records
+Database --> QualificationRepository: List<Qualification>
+QualificationRepository --> QualificationService: List<Qualification>
+alt Name or Code repeated
+    QualificationService -> ILogger: LogWarning("Repeated qualification name or code detected")
+    QualificationService --> QualificationsController: throws BusinessRuleValidationException
+    QualificationsController -> ILogger: LogWarning("API Error (400): Failed to create Qualification")
+    QualificationsController --> Client: 400 Bad Request
+else Valid data
+    QualificationService -> QualificationService: GetCodeAsync(dto)
+    QualificationService -> ILogger: LogInformation("Generating qualification code if needed")
+    QualificationService -> QualificationFactory: CreateQualification(dtoWithCode)
+    QualificationFactory --> QualificationService: Qualification
+    QualificationService -> QualificationRepository: AddAsync(Qualification)
+    QualificationRepository -> Database: Insert Record
+    Database --> QualificationRepository: Success
+    QualificationService -> UnitOfWork: CommitAsync()
+    UnitOfWork --> QualificationService: Success
+    QualificationService -> QualificationMapper: ToDto(Qualification)
+    QualificationMapper --> QualificationService: QualificationDto
+    QualificationService -> ILogger: LogInformation("Qualification created with ID: {Id}")
+    QualificationService --> QualificationsController: QualificationDto
+    QualificationsController -> ILogger: LogInformation("API Response (201): Qualification created with ID = {Id}")
+    QualificationsController --> Client: 201 Created
+end
 
 == Update Qualification ==
 Client -> QualificationsController: PATCH /api/qualifications/{id}\nBody: CreatingQualificationDto
+QualificationsController -> ILogger: LogInformation("API Request: Update Qualification with ID = {Id}")
 QualificationsController -> QualificationService: UpdateAsync(QualificationId, dto)
-QualificationService -> QualificationRepository: GetByIdAsync(id)
-QualificationRepository -> Database: Query by ID
-Database --> QualificationRepository: Qualification or null
-QualificationRepository --> QualificationService: Qualification or null
-QualificationService -> QualificationService: UpdateName and/or UpdateCode
-QualificationService -> UnitOfWork: CommitAsync()
-UnitOfWork --> QualificationService: Success
-QualificationService -> QualificationFactory: CreateQualificationDto()
-QualificationService --> QualificationsController: QualificationDto or 404
-QualificationsController --> Client: 200 OK or 404
+QualificationService -> ILogger: LogInformation("Updating qualification with ID: {Id}")
+QualificationService -> QualificationService: EnsureNotRepeatedNameAsync(dto)
+QualificationService -> ILogger: LogInformation("Checking for repeated qualification name")
+QualificationService -> QualificationRepository: GetAllAsync()
+QualificationRepository -> Database: Query all records
+Database --> QualificationRepository: List<Qualification>
+QualificationRepository --> QualificationService: List<Qualification>
+alt Name repeated
+    QualificationService -> ILogger: LogWarning("Repeated qualification name detected: {Name}")
+    QualificationService --> QualificationsController: throws BusinessRuleValidationException
+    QualificationsController -> ILogger: LogWarning("API Error (400): Failed to update Qualification with ID = {Id}")
+    QualificationsController --> Client: 400 Bad Request
+else Valid name
+    QualificationService -> QualificationRepository: GetByIdAsync(id)
+    QualificationRepository -> Database: Query by ID
+    Database --> QualificationRepository: Qualification or null
+    QualificationRepository --> QualificationService: Qualification or null
+    alt Qualification found
+        alt Code provided
+            QualificationService -> QualificationService: FormatCode(dto.Code)
+            QualificationService -> QualificationService: qualification.UpdateCode(formattedCode)
+        end
+        alt Name provided
+            QualificationService -> QualificationService: qualification.UpdateName(dto.Name)
+        end
+        QualificationService -> UnitOfWork: CommitAsync()
+        UnitOfWork --> QualificationService: Success
+        QualificationService -> QualificationMapper: ToDto(Qualification)
+        QualificationMapper --> QualificationService: QualificationDto
+        QualificationService -> ILogger: LogInformation("Qualification with ID: {Id} updated successfully")
+        QualificationService --> QualificationsController: QualificationDto
+        QualificationsController -> ILogger: LogInformation("API Response (200): Qualification with ID = {Id} updated successfully")
+        QualificationsController --> Client: 200 OK QualificationDto
+    else Qualification not found
+        QualificationService -> ILogger: LogWarning("Qualification with ID: {Id} not found for update")
+        QualificationService --> QualificationsController: null
+        QualificationsController -> ILogger: LogWarning("API Response (404): Qualification to update not found with ID = {Id}")
+        QualificationsController --> Client: 404 Not Found
+    end
+end
 
 @enduml

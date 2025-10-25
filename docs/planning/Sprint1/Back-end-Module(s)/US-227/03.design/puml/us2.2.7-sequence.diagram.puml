@@ -8,69 +8,116 @@ entity "VesselVisitNotificationRepository" as VVNRepo
 entity "DockRepository" as DockRepo
 entity "TaskRepository" as TaskRepo
 entity "UnitOfWork" as UoW
+entity "VesselVisitNotificationMapper" as Mapper
 entity "VesselVisitNotification" as VVN
-entity "VesselVisitNotificationDto" as VVNDtO
+entity "ILogger" as Logger
 database "Vessel Visit Notification Database" as Database
+database "Docks Database" as DockDB
+database "Tasks Database" as TaskDB
 
-== Accept ==
+== Accept VVN ==
 
-Officer -> Controller : PUT /accept/id/{id}
+Officer -> Controller : PUT /api/vesselvisitnotifications/accept/id/{id}
+Controller -> Logger : LogInformation("API Request: Accept VVN with ID = {Id}")
 Controller -> Service : AcceptVvnAsync(VvnCode)
-Service -> VVNRepo : GetCompleteByIdAsync(id)
-VVNRepo -> Database: Query VVN by ID
-Database --> VVNRepo : VVN
-VVNRepo --> Service : VVN
-Service -> DockRepo : BasicDockAttributionAlgorithm(vesselImo)
-DockRepo -> Database: Query docks for availability
-Database --> DockRepo : Dock
-DockRepo --> Service : Dock
-Service -> VVN : Accept() / UpdateDock(dock)
+Service -> Logger : LogInformation("Business Domain: Request to accept VVN with code")
+Service -> VVNRepo : GetCompleteByIdAsync(VesselVisitNotificationId)
+VVNRepo -> Database: Query VVN by ID with includes\n(Dock, CrewManifest, CargoManifests, Tasks)
+Database --> VVNRepo : VesselVisitNotification or null
+VVNRepo --> Service : VesselVisitNotification or null
 
-alt If UnloadingCargoManifest exists
-    Service -> Service : CreateTasksAsync(UnloadingCargoManifest, dock)
-    Service -> TaskRepo : Add + save Unloading Tasks
-    TaskRepo -> Database: Insert Unloading Tasks
-    Database --> TaskRepo: Success
-    TaskRepo --> Service: Confirmation
+alt VVN not found
+    Service -> Logger : LogWarning("Business Domain: VVN not found")
+    Service --> Controller : throws BusinessRuleValidationException
+    Controller -> Logger : LogWarning("API Error (400): VVN not found")
+    Controller --> Officer : 400 Bad Request
+end
+
+Service -> DockRepo : BasicDockAttributionAlgorithm(vesselImo)
+DockRepo -> DockDB: Query docks for availability\n(matching vessel type, available time slots)
+DockDB --> DockRepo : DockCode or null
+DockRepo --> Service : DockCode or null
+
+alt No dock available
+    Service -> Logger : LogWarning("Business Domain: No suitable dock found")
+    Service --> Controller : throws BusinessRuleValidationException
+    Controller -> Logger : LogWarning("API Error (400): No dock available")
+    Controller --> Officer : 400 Bad Request
+end
+
+Service -> VVN : Accept()
+note right: Changes status to Accepted\nSets AcceptanceDate
+Service -> VVN : UpdateDock(dockCode)
+
+opt UnloadingCargoManifest exists
+    Service -> Service : CreateTasksAsync(UnloadingCargoManifest, dock, TaskType.Unloading)
+    loop for each container in UnloadingCargoManifest
+        Service -> Service : Create EntityTask for unloading
+        Service -> TaskRepo : AddAsync(EntityTask)
+        TaskRepo -> TaskDB: Insert Unloading Task
+        TaskDB --> TaskRepo: Success
+        TaskRepo --> Service: EntityTask
+    end
     Service -> VVN : SetTasks(unloadingTasks)
 end
 
-alt If LoadingCargoManifest exists
-    Service -> Service : CreateTasksAsync(LoadingCargoManifest, dock)
-    Service -> TaskRepo : Add + save Loading Tasks
-    TaskRepo -> Database: Insert Loading Tasks
-    Database --> TaskRepo: Success
-    TaskRepo --> Service: Confirmation
+opt LoadingCargoManifest exists
+    Service -> Service : CreateTasksAsync(LoadingCargoManifest, dock, TaskType.Loading)
+    loop for each container in LoadingCargoManifest
+        Service -> Service : Create EntityTask for loading
+        Service -> TaskRepo : AddAsync(EntityTask)
+        TaskRepo -> TaskDB: Insert Loading Task
+        TaskDB --> TaskRepo: Success
+        TaskRepo --> Service: EntityTask
+    end
     Service -> VVN : SetTasks(loadingTasks)
 end
 
-Service -> VVNRepo : Update VVN state
-VVNRepo -> Database: Update VVN record
-Database --> VVNRepo: Success
-VVNRepo --> Service: Confirmation
-Service -> UoW : CommitAsync
+Service -> VVNRepo : UpdateAsync(VesselVisitNotification)
+note right: Repository tracks changes automatically\nvia EF Core change tracking
+Service -> UoW : CommitAsync()
+UoW -> Database: Persist all changes\n(VVN status, dock, tasks)
+Database --> UoW : Success
 UoW --> Service : Success
-Service -> VVNDtO : CreateVesselVisitNotificationDto(VVN)
-Service --> Controller : VVNDtO
-Controller --> Officer : 200 OK, VVNDtO
 
-== Reject ==
+Service -> Mapper : ToDto(VesselVisitNotification)
+Mapper --> Service : VesselVisitNotificationDto
+Service -> Logger : LogInformation("Business Domain: VVN accepted successfully")
+Service --> Controller : VesselVisitNotificationDto
+Controller -> Logger : LogInformation("API Response (200): VVN accepted")
+Controller --> Officer : 200 OK VesselVisitNotificationDto
 
-Officer -> Controller : PUT /reject
+== Reject VVN ==
+
+Officer -> Controller : PUT /api/vesselvisitnotifications/reject\nBody: RejectVesselVisitNotificationDto
+Controller -> Logger : LogInformation("API Request: Reject VVN with data {@Dto}")
 Controller -> Service : MarkAsPendingAsync(RejectVesselVisitNotificationDto)
-Service -> VVNRepo : GetByIdAsync(id)
+Service -> Logger : LogInformation("Business Domain: Request to mark VVN as pending")
+Service -> VVNRepo : GetByIdAsync(VesselVisitNotificationId)
 VVNRepo -> Database: Query VVN by ID
-Database --> VVNRepo : VVN
-VVNRepo --> Service : VVN
+Database --> VVNRepo : VesselVisitNotification or null
+VVNRepo --> Service : VesselVisitNotification or null
+
+alt VVN not found
+    Service -> Logger : LogWarning("Business Domain: VVN not found")
+    Service --> Controller : throws BusinessRuleValidationException
+    Controller -> Logger : LogWarning("API Error (400): VVN not found")
+    Controller --> Officer : 400 Bad Request
+end
+
 Service -> VVN : MarkPending(reason)
-Service -> VVNRepo : Update VVN state
-VVNRepo -> Database: Update VVN record
-Database --> VVNRepo : Success
-VVNRepo --> Service: Confirmation
-Service -> UoW : CommitAsync
+note right: Changes status to PendingInformation\nClears SubmittedDate\nSets rejection reason
+
+Service -> UoW : CommitAsync()
+UoW -> Database: Update VVN record\n(status, submittedDate, reason)
+Database --> UoW : Success
 UoW --> Service : Success
-Service -> VVNDtO : CreateVesselVisitNotificationDto(VVN)
-Service --> Controller : VVNDtO
-Controller --> Officer : 200 OK, VVNDtO
+
+Service -> Mapper : ToDto(VesselVisitNotification)
+Mapper --> Service : VesselVisitNotificationDto
+Service -> Logger : LogInformation("Business Domain: VVN marked as pending successfully")
+Service --> Controller : VesselVisitNotificationDto
+Controller -> Logger : LogInformation("API Response (200): VVN rejected/marked pending")
+Controller --> Officer : 200 OK VesselVisitNotificationDto
 
 @enduml

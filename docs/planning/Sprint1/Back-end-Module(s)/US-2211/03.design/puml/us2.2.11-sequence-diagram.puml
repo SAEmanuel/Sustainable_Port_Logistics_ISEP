@@ -5,156 +5,342 @@ entity StaffMemberService
 entity StaffMemberRepository
 entity QualificationRepository
 entity UnitOfWork
+entity StaffMemberMapper
 entity StaffMemberFactory
-entity StaffMember
+entity ILogger
 database "Qualifications Database" as QualDB
 database "Staff Members Database" as StaffDB
 
 == Get All Staff Members ==
 Client -> StaffMembersController: GET /api/staffmembers
+StaffMembersController -> ILogger: LogInformation("API Request: Get all Staff Members")
 StaffMembersController -> StaffMemberService: GetAllAsync()
+StaffMemberService -> ILogger: LogInformation("Business Domain: Request to fetch all Staff Members")
 StaffMemberService -> StaffMemberRepository: GetAllAsync()
 StaffMemberRepository -> StaffDB: Query all StaffMembers
 StaffDB --> StaffMemberRepository: List<StaffMember>
 StaffMemberRepository --> StaffMemberService: List<StaffMember>
-StaffMemberService -> StaffMemberFactory: MapToDto()
+loop for each StaffMember
+    StaffMemberService -> QualificationRepository: GetByIdAsync(qualificationId)
+    QualificationRepository -> QualDB: Query Qualification by ID
+    QualDB --> QualificationRepository: Qualification
+    QualificationRepository --> StaffMemberService: Qualification.Code
+    StaffMemberService -> StaffMemberMapper: ToDto(staffMember, qualificationCodes)
+    StaffMemberMapper --> StaffMemberService: StaffMemberDto
+end
+StaffMemberService -> ILogger: LogInformation("Business Domain: Returning [{Count}] Staff Members DTOs")
 StaffMemberService --> StaffMembersController: List<StaffMemberDto>
+StaffMembersController -> ILogger: LogInformation("API Response (200): Returning {Count} Staff Members")
 StaffMembersController --> Client: 200 OK List<StaffMemberDto>
 
 == Get By ID ==
 Client -> StaffMembersController: GET /api/staffmembers/{id}
+StaffMembersController -> ILogger: LogInformation("API Request: Get Staff Member by ID")
 StaffMembersController -> StaffMemberService: GetByIdAsync(StaffMemberId)
+StaffMemberService -> ILogger: LogInformation("Business Domain: Request to fetch Staff Member with ID")
 StaffMemberService -> StaffMemberRepository: GetByIdAsync(id)
 StaffMemberRepository -> StaffDB: Query StaffMember by ID
 StaffDB --> StaffMemberRepository: StaffMember or null
 StaffMemberRepository --> StaffMemberService: StaffMember or null
-StaffMemberService -> StaffMemberFactory: MapToDto()
-StaffMemberService --> StaffMembersController: StaffMemberDto or 404
-StaffMembersController --> Client: 200 OK or 404
+alt StaffMember found
+    StaffMemberService -> QualificationRepository: GetByIdAsync(qualificationId) foreach
+    QualificationRepository -> QualDB: Query Qualification by ID
+    QualDB --> QualificationRepository: Qualification
+    QualificationRepository --> StaffMemberService: Qualification.Code list
+    StaffMemberService -> StaffMemberMapper: ToDto(staffMember, qualificationCodes)
+    StaffMemberMapper --> StaffMemberService: StaffMemberDto
+    StaffMemberService -> ILogger: LogInformation("Business Domain: Staff Member found and mapped successfully")
+    StaffMemberService --> StaffMembersController: StaffMemberDto
+    StaffMembersController -> ILogger: LogInformation("API Response (200): Staff Member found")
+    StaffMembersController --> Client: 200 OK StaffMemberDto
+else StaffMember not found
+    StaffMemberService -> ILogger: LogWarning("Business Domain: No Staff Member found with ID")
+    StaffMemberService --> StaffMembersController: null
+    StaffMembersController -> ILogger: LogWarning("API Response (404): Staff Member not found")
+    StaffMembersController --> Client: 404 Not Found
+end
 
 == Get By Qualifications ==
 Client -> StaffMembersController: GET /api/staffmembers/by-qualifications\nBody: CodesListDto
+StaffMembersController -> ILogger: LogInformation("API Request: Get Staff Members by Qualification Codes")
 StaffMembersController -> StaffMemberService: GetByQualificationsAsync(list<string>)
-StaffMemberService -> QualificationRepository: GetQualificationByCodeAsync(code) foreach
-QualificationRepository -> QualDB: Query Qualification by code
-QualDB --> QualificationRepository: QualificationId list
-QualificationRepository --> StaffMemberService: QualificationId list
+StaffMemberService -> ILogger: LogInformation("Business Domain: Request to fetch Staff Members with Qualifications Codes")
+loop for each qualification code
+    StaffMemberService -> QualificationRepository: GetQualificationByCodeAsync(code)
+    QualificationRepository -> QualDB: Query Qualification by code
+    QualDB --> QualificationRepository: Qualification
+    QualificationRepository --> StaffMemberService: QualificationId
+end
 StaffMemberService -> StaffMemberRepository: GetByQualificationsAsync(QualificationId list)
-StaffMemberRepository -> StaffDB: Query StaffMembers by QualificationIds
+StaffMemberRepository -> StaffDB: Query StaffMembers by QualificationIds (ANY match)
 StaffDB --> StaffMemberRepository: List<StaffMember>
 StaffMemberRepository --> StaffMemberService: List<StaffMember>
-StaffMemberService -> StaffMemberFactory: MapToDto()
+loop for each StaffMember
+    StaffMemberService -> QualificationRepository: GetByIdAsync(qualificationId)
+    QualificationRepository -> QualDB: Query Qualification by ID
+    QualDB --> QualificationRepository: Qualification.Code
+    StaffMemberService -> StaffMemberMapper: ToDto(staffMember, qualificationCodes)
+    StaffMemberMapper --> StaffMemberService: StaffMemberDto
+end
+StaffMemberService -> ILogger: LogInformation("Business Domain: Returning [{Count}] Staff Members with Qualifications Codes")
 StaffMemberService --> StaffMembersController: List<StaffMemberDto>
-StaffMembersController --> Client: 200 OK
+StaffMembersController -> ILogger: LogInformation("API Response (200): Returning {Count} Staff Members")
+StaffMembersController --> Client: 200 OK List<StaffMemberDto>
 
 == Get By Exact Qualifications ==
 Client -> StaffMembersController: GET /api/staffmembers/by-exact-qualifications\nBody: CodesListDto
+StaffMembersController -> ILogger: LogInformation("API Request: Get Staff Members by Exact Qualification Codes")
 StaffMembersController -> StaffMemberService: GetByExactQualificationsAsync(list<string>)
-StaffMemberService -> QualificationRepository: GetQualificationByCodeAsync(code) foreach
-QualificationRepository -> QualDB: Query Qualification by code
-QualDB --> QualificationRepository: QualificationId list
-QualificationRepository --> StaffMemberService: QualificationId list
+StaffMemberService -> ILogger: LogInformation("Business Domain: Request to fetch Staff Members with Exact Qualifications Codes")
+loop for each qualification code
+    StaffMemberService -> QualificationRepository: GetQualificationByCodeAsync(code)
+    QualificationRepository -> QualDB: Query Qualification by code
+    QualDB --> QualificationRepository: Qualification
+    QualificationRepository --> StaffMemberService: QualificationId
+end
 StaffMemberService -> StaffMemberRepository: GetByExactQualificationsAsync(QualificationId list)
 StaffMemberRepository -> StaffDB: Query StaffMembers by exact QualificationIds match
 StaffDB --> StaffMemberRepository: List<StaffMember>
 StaffMemberRepository --> StaffMemberService: List<StaffMember>
-StaffMemberService -> StaffMemberFactory: MapToDto()
+loop for each StaffMember
+    StaffMemberService -> QualificationRepository: GetByIdAsync(qualificationId)
+    QualificationRepository -> QualDB: Query Qualification by ID
+    QualDB --> QualificationRepository: Qualification.Code
+    StaffMemberService -> StaffMemberMapper: ToDto(staffMember, qualificationCodes)
+    StaffMemberMapper --> StaffMemberService: StaffMemberDto
+end
+StaffMemberService -> ILogger: LogInformation("Business Domain: Returning [{Count}] Staff Members with Exact Qualifications Codes")
 StaffMemberService --> StaffMembersController: List<StaffMemberDto>
-StaffMembersController --> Client: 200 OK
+StaffMembersController -> ILogger: LogInformation("API Response (200): Returning {Count} Staff Members")
+StaffMembersController --> Client: 200 OK List<StaffMemberDto>
 
 == Get By Mecanographic Number ==
 Client -> StaffMembersController: GET /api/staffmembers/mec/{mec}
+StaffMembersController -> ILogger: LogInformation("API Request: Get Staff Member by Mecanographic Number")
 StaffMembersController -> StaffMemberService: GetByMecNumberAsync(mec)
-StaffMemberService -> StaffMemberRepository: GetByMecNumberAsync(mec)
+StaffMemberService -> ILogger: LogInformation("Business Domain: Request to fetch Staff Member with Mecanographic Number")
+StaffMemberService -> StaffMemberRepository: GetByMecNumberAsync(MecanographicNumber)
 StaffMemberRepository -> StaffDB: Query StaffMember by MEC number
 StaffDB --> StaffMemberRepository: StaffMember or null
 StaffMemberRepository --> StaffMemberService: StaffMember or null
-StaffMemberService -> StaffMemberFactory: MapToDto()
-StaffMemberService --> StaffMembersController: StaffMemberDto or 404
-StaffMembersController --> Client: 200 OK or 404
+alt StaffMember found
+    StaffMemberService -> QualificationRepository: GetByIdAsync(qualificationId) foreach
+    QualificationRepository -> QualDB: Query Qualification by ID
+    QualDB --> QualificationRepository: Qualification.Code
+    StaffMemberService -> StaffMemberMapper: ToDto(staffMember, qualificationCodes)
+    StaffMemberMapper --> StaffMemberService: StaffMemberDto
+    StaffMemberService -> ILogger: LogInformation("Business Domain: Staff Member found and mapped successfully")
+    StaffMemberService --> StaffMembersController: StaffMemberDto
+    StaffMembersController -> ILogger: LogInformation("API Response (200): Staff Member found")
+    StaffMembersController --> Client: 200 OK StaffMemberDto
+else StaffMember not found
+    StaffMemberService -> ILogger: LogWarning("Business Domain: No Staff Member found with Mecanographic Number")
+    StaffMemberService --> StaffMembersController: null
+    StaffMembersController -> ILogger: LogWarning("API Response (404): Staff Member not found")
+    StaffMembersController --> Client: 404 Not Found
+end
 
 == Get By Name ==
 Client -> StaffMembersController: GET /api/staffmembers/name/{name}
+StaffMembersController -> ILogger: LogInformation("API Request: Get Staff Members by Name")
 StaffMembersController -> StaffMemberService: GetByNameAsync(name)
+StaffMemberService -> ILogger: LogInformation("Business Domain: Request to fetch Staff Members with Name")
 StaffMemberService -> StaffMemberRepository: GetByNameAsync(name)
 StaffMemberRepository -> StaffDB: Query StaffMembers by name pattern
 StaffDB --> StaffMemberRepository: List<StaffMember>
 StaffMemberRepository --> StaffMemberService: List<StaffMember>
-StaffMemberService -> StaffMemberFactory: MapToDto()
-StaffMemberService --> StaffMembersController: List<StaffMemberDto> or 404
-StaffMembersController --> Client: 200 OK or 404
+alt StaffMembers found
+    loop for each StaffMember
+        StaffMemberService -> QualificationRepository: GetByIdAsync(qualificationId)
+        QualificationRepository -> QualDB: Query Qualification by ID
+        QualDB --> QualificationRepository: Qualification.Code
+        StaffMemberService -> StaffMemberMapper: ToDto(staffMember, qualificationCodes)
+        StaffMemberMapper --> StaffMemberService: StaffMemberDto
+    end
+    StaffMemberService -> ILogger: LogInformation("Business Domain: Returning [{Count}] Staff Members with Name")
+    StaffMemberService --> StaffMembersController: List<StaffMemberDto>
+    StaffMembersController -> ILogger: LogInformation("API Response (200): Returning {Count} Staff Members")
+    StaffMembersController --> Client: 200 OK List<StaffMemberDto>
+else No StaffMembers found
+    StaffMemberService --> StaffMembersController: empty list
+    StaffMembersController -> ILogger: LogWarning("API Response (404): No Staff Members found")
+    StaffMembersController --> Client: 404 Not Found
+end
 
 == Get By Status ==
 Client -> StaffMembersController: GET /api/staffmembers/status/{status}
+StaffMembersController -> ILogger: LogInformation("API Request: Get Staff Members by Status")
 StaffMembersController -> StaffMemberService: GetByStatusAsync(status)
+StaffMemberService -> ILogger: LogInformation("Business Domain: Request to fetch Staff Members with Status")
 StaffMemberService -> StaffMemberRepository: GetByStatusAsync(status)
 StaffMemberRepository -> StaffDB: Query StaffMembers by status
 StaffDB --> StaffMemberRepository: List<StaffMember>
 StaffMemberRepository --> StaffMemberService: List<StaffMember>
-StaffMemberService -> StaffMemberFactory: MapToDto()
+loop for each StaffMember
+    StaffMemberService -> QualificationRepository: GetByIdAsync(qualificationId)
+    QualificationRepository -> QualDB: Query Qualification by ID
+    QualDB --> QualificationRepository: Qualification.Code
+    StaffMemberService -> StaffMemberMapper: ToDto(staffMember, qualificationCodes)
+    StaffMemberMapper --> StaffMemberService: StaffMemberDto
+end
+StaffMemberService -> ILogger: LogInformation("Business Domain: Returning [{Count}] Staff Members with Status")
 StaffMemberService --> StaffMembersController: List<StaffMemberDto>
-StaffMembersController --> Client: 200 OK
+StaffMembersController -> ILogger: LogInformation("API Response (200): Returning {Count} Staff Members")
+StaffMembersController --> Client: 200 OK List<StaffMemberDto>
 
 == Create Staff Member ==
 Client -> StaffMembersController: POST /api/staffmembers\nCreatingStaffMemberDto
+StaffMembersController -> ILogger: LogInformation("API Request: Create new Staff Member")
 StaffMembersController -> StaffMemberService: AddAsync(dto)
-StaffMemberService -> StaffMemberRepository: EmailIsInTheSystem(email)
+StaffMemberService -> ILogger: LogInformation("Business Domain: Request to add new Staff Member")
+StaffMemberService -> StaffMemberRepository: EmailIsInTheSystem(Email)
 StaffMemberRepository -> StaffDB: Check email uniqueness
 StaffDB --> StaffMemberRepository: bool
 StaffMemberRepository --> StaffMemberService: bool
-StaffMemberService -> StaffMemberRepository: PhoneIsInTheSystem(phone)
+alt Email already exists
+    StaffMemberService -> ILogger: LogWarning("Business Domain: Repeated Email detected")
+    StaffMemberService --> StaffMembersController: throws BusinessRuleValidationException
+    StaffMembersController -> ILogger: LogWarning("API Error (400): Failed to create Staff Member")
+    StaffMembersController --> Client: 400 Bad Request
+end
+StaffMemberService -> StaffMemberRepository: PhoneIsInTheSystem(PhoneNumber)
 StaffMemberRepository -> StaffDB: Check phone uniqueness
 StaffDB --> StaffMemberRepository: bool
 StaffMemberRepository --> StaffMemberService: bool
-StaffMemberService -> QualificationRepository: GetQualificationByCodeAsync(code) foreach
-QualificationRepository -> QualDB: Query Qualification by code
-QualDB --> QualificationRepository: QualificationId list
-QualificationRepository --> StaffMemberService: QualificationId list
+alt Phone already exists
+    StaffMemberService -> ILogger: LogWarning("Business Domain: Repeated Phone Number detected")
+    StaffMemberService --> StaffMembersController: throws BusinessRuleValidationException
+    StaffMembersController -> ILogger: LogWarning("API Error (400): Failed to create Staff Member")
+    StaffMembersController --> Client: 400 Bad Request
+end
+loop for each qualification code
+    StaffMemberService -> QualificationRepository: GetQualificationByCodeAsync(code)
+    QualificationRepository -> QualDB: Query Qualification by code
+    QualDB --> QualificationRepository: Qualification or null
+    QualificationRepository --> StaffMemberService: QualificationId
+end
+StaffMemberService -> StaffMemberService: GenerateMecanographicNumberAsync()
 StaffMemberService -> StaffMemberFactory: CreateStaffMember(dto, mecNum, qualificationIds)
-StaffMemberFactory --> StaffMember: Create Entity
+StaffMemberFactory --> StaffMemberService: StaffMember entity
 StaffMemberService -> StaffMemberRepository: AddAsync(staffMember)
 StaffMemberRepository -> StaffDB: Insert new StaffMember
 StaffDB --> StaffMemberRepository: success
 StaffMemberService -> UnitOfWork: CommitAsync()
 UnitOfWork --> StaffMemberService: success
-StaffMemberService -> StaffMemberFactory: CreateStaffMemberDto(staffMember, qualificationCodes)
+loop for each qualificationId
+    StaffMemberService -> QualificationRepository: GetByIdAsync(qualificationId)
+    QualificationRepository -> QualDB: Query Qualification by ID
+    QualDB --> QualificationRepository: Qualification.Code
+end
+StaffMemberService -> StaffMemberMapper: ToDto(staffMember, qualificationCodes)
+StaffMemberMapper --> StaffMemberService: StaffMemberDto
+StaffMemberService -> ILogger: LogInformation("Business Domain: Staff Member created successfully")
 StaffMemberService --> StaffMembersController: StaffMemberDto
+StaffMembersController -> ILogger: LogInformation("API Response (201): Staff Member created")
 StaffMembersController --> Client: 201 Created
 
 == Update Staff Member ==
 Client -> StaffMembersController: PUT /api/staffmembers/update/\nUpdateStaffMemberDto
+StaffMembersController -> ILogger: LogInformation("API Request: Update Staff Member")
 StaffMembersController -> StaffMemberService: UpdateAsync(dto)
-StaffMemberService -> StaffMemberRepository: GetByMecNumberAsync(mec)
+StaffMemberService -> ILogger: LogInformation("Business Domain: Request to update Staff Member")
+StaffMemberService -> StaffMemberRepository: GetByMecNumberAsync(MecanographicNumber)
 StaffMemberRepository -> StaffDB: Query StaffMember by MEC number
 StaffDB --> StaffMemberRepository: StaffMember or null
 StaffMemberRepository --> StaffMemberService: StaffMember or null
-StaffMemberService -> StaffMemberRepository: EmailIsInTheSystem(email) (optional)
-StaffMemberRepository -> StaffDB: Check email uniqueness
-StaffDB --> StaffMemberRepository: bool
-StaffMemberRepository --> StaffMemberService: bool
-StaffMemberService -> StaffMemberRepository: PhoneIsInTheSystem(phone) (optional)
-StaffMemberRepository -> StaffDB: Check phone uniqueness
-StaffDB --> StaffMemberRepository: bool
-StaffMemberRepository --> StaffMemberService: bool
-StaffMemberService -> StaffMember: Update properties
+alt StaffMember not found
+    StaffMemberService -> ILogger: LogWarning("Business Domain: No Staff Member found with Mecanographic Number")
+    StaffMemberService --> StaffMembersController: throws BusinessRuleValidationException
+    StaffMembersController -> ILogger: LogWarning("API Error (400): Failed to update Staff Member")
+    StaffMembersController --> Client: 400 Bad Request
+end
+opt Email provided
+    StaffMemberService -> StaffMemberRepository: EmailIsInTheSystem(Email)
+    StaffMemberRepository -> StaffDB: Check email uniqueness
+    StaffDB --> StaffMemberRepository: bool
+    StaffMemberRepository --> StaffMemberService: bool
+end
+opt Phone provided
+    StaffMemberService -> StaffMemberRepository: PhoneIsInTheSystem(PhoneNumber)
+    StaffMemberRepository -> StaffDB: Check phone uniqueness
+    StaffDB --> StaffMemberRepository: bool
+    StaffMemberRepository --> StaffMemberService: bool
+end
+opt ShortName provided
+    StaffMemberService -> StaffMemberService: staffMember.UpdateShortName(newShortName)
+end
+opt Email provided
+    StaffMemberService -> StaffMemberService: staffMember.UpdateEmail(newEmail)
+end
+opt Phone provided
+    StaffMemberService -> StaffMemberService: staffMember.UpdatePhone(newPhone)
+end
+opt Schedule provided
+    StaffMemberService -> StaffMemberService: staffMember.UpdateSchedule(newSchedule)
+end
+opt IsActive provided
+    StaffMemberService -> StaffMemberService: staffMember.IsActive = newValue
+end
+opt QualificationCodes provided
+    alt AddQualifications = true
+        loop for each qualification code
+            StaffMemberService -> QualificationRepository: GetQualificationByCodeAsync(code)
+            QualificationRepository -> QualDB: Query Qualification by code
+            QualDB --> QualificationRepository: Qualification
+            StaffMemberService -> StaffMemberService: staffMember.AddQualification(qualificationId)
+        end
+    else AddQualifications = false
+        loop for each qualification code
+            StaffMemberService -> QualificationRepository: GetQualificationByCodeAsync(code)
+            QualificationRepository -> QualDB: Query Qualification by code
+            QualDB --> QualificationRepository: Qualification
+        end
+        StaffMemberService -> StaffMemberService: staffMember.SetQualifications(qualificationIds)
+    end
+end
 StaffMemberService -> UnitOfWork: CommitAsync()
 UnitOfWork --> StaffMemberService: success
-StaffMemberService -> StaffMemberFactory: CreateStaffMemberDto(staffMember, qualificationCodes)
-StaffMemberService --> StaffMembersController: StaffMemberDto or 404
-StaffMembersController --> Client: 200 OK or 404
+loop for each qualificationId
+    StaffMemberService -> QualificationRepository: GetByIdAsync(qualificationId)
+    QualificationRepository -> QualDB: Query Qualification by ID
+    QualDB --> QualificationRepository: Qualification.Code
+end
+StaffMemberService -> StaffMemberMapper: ToDto(staffMember, qualificationCodes)
+StaffMemberMapper --> StaffMemberService: StaffMemberDto
+StaffMemberService -> ILogger: LogInformation("Business Domain: Staff Member updated successfully")
+StaffMemberService --> StaffMembersController: StaffMemberDto
+StaffMembersController -> ILogger: LogInformation("API Response (200): Staff Member updated")
+StaffMembersController --> Client: 200 OK StaffMemberDto
 
 == Toggle Staff Member Status ==
 Client -> StaffMembersController: PUT /api/staffmembers/toggle/{mec}
+StaffMembersController -> ILogger: LogInformation("API Request: Toggle status of Staff Member")
 StaffMembersController -> StaffMemberService: ToggleAsync(mec)
-StaffMemberService -> StaffMemberRepository: GetByMecNumberAsync(mec)
+StaffMemberService -> ILogger: LogInformation("Business Domain: Request to toggle status of Staff Member")
+StaffMemberService -> StaffMemberRepository: GetByMecNumberAsync(MecanographicNumber)
 StaffMemberRepository -> StaffDB: Query StaffMember by MEC number
 StaffDB --> StaffMemberRepository: StaffMember or null
 StaffMemberRepository --> StaffMemberService: StaffMember or null
-StaffMemberService -> StaffMember: ToggleStatus()
-StaffMemberService -> UnitOfWork: CommitAsync()
-UnitOfWork --> StaffMemberService: success
-StaffMemberService -> StaffMemberFactory: CreateStaffMemberDto(staffMember, qualificationCodes)
-StaffMemberService --> StaffMembersController: StaffMemberDto or 404
-StaffMembersController --> Client: 200 OK or 404
+alt StaffMember found
+    StaffMemberService -> StaffMemberService: staffMember.ToggleStatus()
+    StaffMemberService -> UnitOfWork: CommitAsync()
+    UnitOfWork --> StaffMemberService: success
+    loop for each qualificationId
+        StaffMemberService -> QualificationRepository: GetByIdAsync(qualificationId)
+        QualificationRepository -> QualDB: Query Qualification by ID
+        QualDB --> QualificationRepository: Qualification.Code
+    end
+    StaffMemberService -> StaffMemberMapper: ToDto(staffMember, qualificationCodes)
+    StaffMemberMapper --> StaffMemberService: StaffMemberDto
+    StaffMemberService -> ILogger: LogInformation("Business Domain: Status toggled for Staff Member")
+    StaffMemberService --> StaffMembersController: StaffMemberDto
+    StaffMembersController -> ILogger: LogInformation("API Response (200): Status toggled")
+    StaffMembersController --> Client: 200 OK StaffMemberDto
+else StaffMember not found
+    StaffMemberService -> ILogger: LogWarning("Business Domain: No Staff Member found with Mecanographic Number")
+    StaffMemberService --> StaffMembersController: null
+    StaffMembersController -> ILogger: LogWarning("API Response (404): Staff Member not found")
+    StaffMembersController --> Client: 404 Not Found
+end
 
 @enduml
