@@ -95,6 +95,7 @@ public class QualificationService : IQualificationService
     public async Task<QualificationDto?> UpdateAsync(QualificationId id, CreatingQualificationDto dto)
     {
         _logger.LogInformation("Updating qualification with ID: {Id}", id.Value);
+        await EnsureNotRepeatedNameAsync(dto);
         var qualification = await _repo.GetByIdAsync(id);
         if (qualification == null)
         {
@@ -139,6 +140,22 @@ public class QualificationService : IQualificationService
             _logger.LogWarning("Repeated qualification code detected: {Code}", dto.Code);
             throw new BusinessRuleValidationException("Repeated Qualification code!");
         }
+    }
+    
+    private async Task EnsureNotRepeatedNameAsync(CreatingQualificationDto dto)
+    {
+        _logger.LogInformation("Checking for repeated qualification name.");
+        var allQualifications = await _repo.GetAllAsync();
+        
+        bool repeatedName = allQualifications.Any(q =>
+            q.Name.Trim().Equals(dto.Name.Trim(), StringComparison.OrdinalIgnoreCase));
+
+        if (repeatedName)
+        {
+            _logger.LogWarning("Repeated qualification name detected: {Name}", dto.Name);
+            throw new BusinessRuleValidationException("Repeated Qualification name!");
+        }
+        
     }
 
     private async Task<string> GetCodeAsync(CreatingQualificationDto dto)

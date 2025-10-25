@@ -129,15 +129,25 @@ public class QualificationServiceTests
     [Fact]
     public async Task UpdateAsync_ShouldUpdateFields_WhenValid()
     {
+        // Arrange
         var id = new QualificationId(Guid.NewGuid());
-        var qualification = new Qualification("CraneOperator") { Code = "QLF-007" };
-        _repoMock.Setup(r => r.GetByIdAsync(id)).ReturnsAsync(qualification);
-        _unitOfWorkMock.Setup(u => u.CommitAsync()).ReturnsAsync(1);
+        var qualification = new Qualification("CraneOperator") { Code = "QLF-007" }; 
+    
+        _repoMock.Setup(r => r.GetByIdAsync(id))
+            .ReturnsAsync(qualification);
+        _repoMock.Setup(r => r.GetQualificationByName("Sts Crane Operator"))
+            .ReturnsAsync((Qualification)null); 
+        _repoMock.Setup(r => r.GetAllAsync()) 
+            .ReturnsAsync(new List<Qualification> { qualification });
+        _unitOfWorkMock.Setup(u => u.CommitAsync())
+            .ReturnsAsync(1);
 
         var dto = new CreatingQualificationDto("Sts Crane Operator", "QLF-008");
 
+        // Act
         var result = await _service.UpdateAsync(id, dto);
 
+        // Assert
         result!.Name.Should().Be("Sts Crane Operator");
         result.Code.Should().Be("QLF-008");
         _unitOfWorkMock.Verify(u => u.CommitAsync(), Times.Once);
@@ -146,12 +156,20 @@ public class QualificationServiceTests
     [Fact]
     public async Task UpdateAsync_ShouldReturnNull_WhenQualificationDoesNotExist()
     {
+        // Arrange
         var id = new QualificationId(Guid.NewGuid());
-        _repoMock.Setup(r => r.GetByIdAsync(id)).ReturnsAsync((Qualification?)null);
+    
+        _repoMock.Setup(r => r.GetByIdAsync(id))
+            .ReturnsAsync((Qualification?)null);
+        _repoMock.Setup(r => r.GetAllAsync()) 
+            .ReturnsAsync(new List<Qualification>());
+    
         var dto = new CreatingQualificationDto("Engineer", "QLF-009");
 
+        // Act
         var result = await _service.UpdateAsync(id, dto);
 
+        // Assert
         result.Should().BeNull();
     }
 }

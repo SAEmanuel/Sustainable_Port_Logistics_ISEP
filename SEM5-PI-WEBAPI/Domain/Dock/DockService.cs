@@ -33,7 +33,7 @@ namespace SEM5_PI_WEBAPI.Domain.Dock
         {
             _logger.LogInformation("Fetch all docks");
             var docks = await _dockRepository.GetAllAsync();
-            return docks.Select(DockFactory.RegisterDockDto).ToList();
+            return docks.Select(DockMapper.RegisterDockDto).ToList();
         }
 
         public async Task<DockDto> CreateAsync(RegisterDockDto dto)
@@ -71,7 +71,7 @@ namespace SEM5_PI_WEBAPI.Domain.Dock
             await _dockRepository.AddAsync(dock);
             await _unitOfWork.CommitAsync();
 
-            return DockFactory.RegisterDockDto(dock);
+            return DockMapper.RegisterDockDto(dock);
         }
 
         public async Task<DockDto> GetByIdAsync(DockId id)
@@ -79,7 +79,7 @@ namespace SEM5_PI_WEBAPI.Domain.Dock
             _logger.LogInformation("Get dock by Id {Id}", id.Value);
             var dock = await _dockRepository.GetByIdAsync(id)
                        ?? throw new BusinessRuleValidationException($"No dock found with Id {id.Value}");
-            return DockFactory.RegisterDockDto(dock);
+            return DockMapper.RegisterDockDto(dock);
         }
 
         public async Task<DockDto> GetByCodeAsync(string codeString)
@@ -88,7 +88,7 @@ namespace SEM5_PI_WEBAPI.Domain.Dock
             _logger.LogInformation("Get dock by Code {Code}", code.Value);
             var dock = await _dockRepository.GetByCodeAsync(code)
                        ?? throw new BusinessRuleValidationException($"No dock found with Code {code.Value}");
-            return DockFactory.RegisterDockDto(dock);
+            return DockMapper.RegisterDockDto(dock);
         }
 
         public async Task<DockDto> GetByPhysicalResourceCodeAsync(string codeString)
@@ -97,7 +97,7 @@ namespace SEM5_PI_WEBAPI.Domain.Dock
             _logger.LogInformation("Get dock by PhysicalResourceCode {Code}", prc.Value);
             var dock = await _dockRepository.GetByPhysicalResourceCodeAsync(prc)
                        ?? throw new BusinessRuleValidationException($"No dock found with PhysicalResourceCode {prc.Value}");
-            return DockFactory.RegisterDockDto(dock);
+            return DockMapper.RegisterDockDto(dock);
         }
 
         public async Task<List<DockDto>> GetByVesselTypeAsync(string vesselTypeId)
@@ -106,7 +106,7 @@ namespace SEM5_PI_WEBAPI.Domain.Dock
                 throw new BusinessRuleValidationException("Invalid VesselTypeId.");
 
             var docks = await _dockRepository.GetByVesselTypeAsync(new VesselTypeId(g));
-            return docks.Select(DockFactory.RegisterDockDto).ToList();
+            return docks.Select(DockMapper.RegisterDockDto).ToList();
         }
 
         public async Task<List<DockDto>> GetFilterAsync(
@@ -140,7 +140,7 @@ namespace SEM5_PI_WEBAPI.Domain.Dock
                 st
             );
 
-            return docks.Select(DockFactory.RegisterDockDto).ToList();
+            return docks.Select(DockMapper.RegisterDockDto).ToList();
         }
 
         public async Task<List<DockDto>> GetByLocationAsync(string location)
@@ -151,7 +151,7 @@ namespace SEM5_PI_WEBAPI.Domain.Dock
             _logger.LogInformation("Get docks by location: {Loc}", location);
 
             var docks = await _dockRepository.GetByLocationAsync(location);
-            return docks.Select(DockFactory.RegisterDockDto).ToList();
+            return docks.Select(DockMapper.RegisterDockDto).ToList();
         }
 
         public async Task<DockDto> PatchByCodeAsync(string codeString, UpdateDockDto dto)
@@ -217,7 +217,7 @@ namespace SEM5_PI_WEBAPI.Domain.Dock
 
             dock.EnsureHasAllowedVesselTypes();
             await _unitOfWork.CommitAsync();
-            return DockFactory.RegisterDockDto(dock);
+            return DockMapper.RegisterDockDto(dock);
         }
 
         public async Task<List<string>> GetAllDockCodesAsync()

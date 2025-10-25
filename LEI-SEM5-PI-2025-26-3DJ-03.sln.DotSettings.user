@@ -50,6 +50,13 @@
     &lt;TestId&gt;xUnit::25307884-991E-499B-A1E8-31E90F954FB9::net9.0::SEM5_PI_WEBAPI.Tests.Controllers.PhysicalResourceControllerTests&lt;/TestId&gt;&#xD;
   &lt;/TestAncestor&gt;&#xD;
 &lt;/SessionState&gt;</s:String>
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=c8bc73db_002D5782_002D48e3_002D9e75_002D5cf572640590/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="StaffMemberAggregateTests" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;
+  &lt;TestAncestor&gt;
+    &lt;TestId&gt;xUnit::25307884-991E-499B-A1E8-31E90F954FB9::net9.0::SEM5_PI_WEBAPI.Tests.Integration.StaffMemberIntegrationTests&lt;/TestId&gt;
+    &lt;TestId&gt;xUnit::25307884-991E-499B-A1E8-31E90F954FB9::net9.0::SEM5_PI_WEBAPI.Tests.Integration.QualificationIntegrationTests&lt;/TestId&gt;
+    &lt;TestId&gt;xUnit::25307884-991E-499B-A1E8-31E90F954FB9::net9.0::SEM5_PI_WEBAPI.Tests.Services.QualificationServiceTests&lt;/TestId&gt;
+  &lt;/TestAncestor&gt;
+&lt;/SessionState&gt;</s:String>
 	
 	
 	</s:String></wpf:ResourceDictionary>
