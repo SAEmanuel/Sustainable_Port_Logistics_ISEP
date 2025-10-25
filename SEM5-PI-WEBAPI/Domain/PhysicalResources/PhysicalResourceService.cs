@@ -32,7 +32,7 @@ public class PhysicalResourceService : IPhysicalResourceService
         _logger.LogInformation("Business Domain: Request to fetch all Physical Resources.");
 
         var list = await _repo.GetAllAsync();
-        var dtos = list.ConvertAll(MapToDto);
+        var dtos = PhysicalResourceMapper.ToDtoList(list);
 
         _logger.LogInformation("Business Domain: Returning [{Count}] Physical Resources.", dtos.Count);
         return dtos;
@@ -49,7 +49,7 @@ public class PhysicalResourceService : IPhysicalResourceService
             throw new BusinessRuleValidationException($"No physical resource found with ID: {id.Value}.");
         }
 
-        return MapToDto(physicalResource);
+        return PhysicalResourceMapper.ToDto(physicalResource);
     }
 
     public async Task<PhysicalResourceDTO> GetByCodeAsync(PhysicalResourceCode code)
@@ -63,7 +63,7 @@ public class PhysicalResourceService : IPhysicalResourceService
             throw new BusinessRuleValidationException($"No physical resource found with code: {code.Value}.");
         }
 
-        return MapToDto(physicalResource);
+        return PhysicalResourceMapper.ToDto(physicalResource);
     }
 
     public async Task<List<PhysicalResourceDTO>> GetByDescriptionAsync(string description)
@@ -74,7 +74,7 @@ public class PhysicalResourceService : IPhysicalResourceService
         if (physicalResources == null || !physicalResources.Any())
             throw new BusinessRuleValidationException($"No physical resource found with description: {description}.");
 
-        return physicalResources.ConvertAll(MapToDto);
+        return PhysicalResourceMapper.ToDtoList(physicalResources);
     }
 
     public async Task<List<PhysicalResourceDTO>> GetByQualificationAsync(QualificationId qualification)
@@ -89,7 +89,7 @@ public class PhysicalResourceService : IPhysicalResourceService
         if (physicalResources == null || !physicalResources.Any())
             throw new BusinessRuleValidationException($"No physical resources found with qualification {qualification.Value}.");
 
-        return physicalResources.ConvertAll(MapToDto);
+        return PhysicalResourceMapper.ToDtoList(physicalResources);
     }
 
     public async Task<List<PhysicalResourceDTO>> GetByTypeAsync(PhysicalResourceType type)
@@ -100,7 +100,7 @@ public class PhysicalResourceService : IPhysicalResourceService
         if (resources == null || !resources.Any())
             throw new BusinessRuleValidationException($"No physical resources found with type: {type}.");
 
-        return resources.ConvertAll(MapToDto);
+        return PhysicalResourceMapper.ToDtoList(resources);
     }
 
     public async Task<List<PhysicalResourceDTO>> GetByStatusAsync(PhysicalResourceStatus status)
@@ -111,7 +111,7 @@ public class PhysicalResourceService : IPhysicalResourceService
         if (resources == null || !resources.Any())
             throw new BusinessRuleValidationException($"No physical resources found with status: {status}.");
 
-        return resources.ConvertAll(MapToDto);
+        return PhysicalResourceMapper.ToDtoList(resources);
     }
 
     // =========================================================
@@ -150,7 +150,7 @@ public class PhysicalResourceService : IPhysicalResourceService
         await _unitOfWork.CommitAsync();
 
         _logger.LogInformation("Business Domain: Physical Resource created successfully with Code = {Code}", code.Value);
-        return MapToDto(resource);
+        return PhysicalResourceMapper.ToDto(resource);
     }
 
     // =========================================================
@@ -188,7 +188,7 @@ public class PhysicalResourceService : IPhysicalResourceService
 
         await _unitOfWork.CommitAsync();
         _logger.LogInformation("Business Domain: Physical Resource with ID = {Id} updated successfully.", id.Value);
-        return MapToDto(resource);
+        return PhysicalResourceMapper.ToDto(resource);
     }
 
     // =========================================================
@@ -206,7 +206,7 @@ public class PhysicalResourceService : IPhysicalResourceService
         resource.UpdateStatus(PhysicalResourceStatus.Unavailable);
         await _unitOfWork.CommitAsync();
 
-        return MapToDto(resource);
+        return PhysicalResourceMapper.ToDto(resource);
     }
 
     public async Task<PhysicalResourceDTO> ReactivationAsync(PhysicalResourceId id)
@@ -221,7 +221,7 @@ public class PhysicalResourceService : IPhysicalResourceService
         resource.UpdateStatus(PhysicalResourceStatus.Available);
         await _unitOfWork.CommitAsync();
 
-        return MapToDto(resource);
+        return PhysicalResourceMapper.ToDto(resource);
     }
 
     // =========================================================
@@ -235,19 +235,6 @@ public class PhysicalResourceService : IPhysicalResourceService
             throw new BusinessRuleValidationException($"Qualification Code {qfCode} does not exist in DB.");
 
         return exist.Id;
-    }
-
-    private static PhysicalResourceDTO MapToDto(EntityPhysicalResource entity)
-    {
-        return new PhysicalResourceDTO(
-            entity.Id.AsGuid(),
-            entity.Code,
-            entity.Description,
-            entity.OperationalCapacity,
-            entity.SetupTime,
-            entity.Type,
-            entity.Status,
-            entity.QualificationID?.AsGuid());
     }
 
     private async Task<PhysicalResourceCode> GenerateCodeAsync(PhysicalResourceType type)
