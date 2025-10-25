@@ -10,7 +10,7 @@ Accept: application/json
 
 ###
 # 2. GET by Id - válido (GUID existente)
-GET {{portURL}}/api/VesselType/id/b928c0c9-90c8-4e41-9a6d-59ec1ffef048
+GET {{portURL}}/api/VesselType/id/3c7d14d5-e828-4b57-a84b-d5560c315b6d
 Accept: application/json
 
 ###
@@ -30,7 +30,7 @@ Accept: application/json
 
 ###
 # 6. GET by Description - válido
-GET {{portURL}}/api/VesselType/description/size vessel
+GET {{portURL}}/api/VesselType/description/Medium-sized vessel capable of passing through the original Panama Canal locks
 Accept: application/json
 
 ###
@@ -50,7 +50,7 @@ Accept: application/json
 
 ###
 # 10. GET filter by query (general search)
-GET {{portURL}}/api/vesseltype/filter?query=feed
+GET {{portURL}}/api/vesseltype/filter?query=p
 Accept: application/json
 
 ###
@@ -110,7 +110,11 @@ Content-Type: application/json
 Accept: application/json
 
 {
-  "description": "Invalid - missing name"
+  "name": "",
+  "description": "Duplicate attempt",
+  "maxBays": 15,
+  "maxRows": 10,
+  "maxTiers": 8
 }
 
 ###
@@ -143,7 +147,7 @@ Accept: application/json
 
 ###
 # 18. PUT Update - válido (atualiza nome e descrição)
-PUT {{portURL}}/api/VesselType/b4d5f3aa-e1a9-4b32-bd94-06f8a1742b54
+PUT {{portURL}}/api/VesselType/965c49f5-4693-49bd-9168-7d35038425b7
 Content-Type: application/json
 Accept: application/json
 
@@ -154,7 +158,7 @@ Accept: application/json
 
 ###
 # 19. PUT Update - inválido (nome duplicado)
-PUT {{portURL}}/api/VesselType/b928c0c9-90c8-4e41-9a6d-59ec1ffef048
+PUT {{portURL}}/api/VesselType/965c49f5-4693-49bd-9168-7d35038425b7
 Content-Type: application/json
 Accept: application/json
 
@@ -164,17 +168,17 @@ Accept: application/json
 
 ###
 # 20. PUT Update - inválido (descrição curta)
-PUT {{portURL}}/api/VesselType/b928c0c9-90c8-4e41-9a6d-59ec1ffef048
+PUT {{portURL}}/api/VesselType/965c49f5-4693-49bd-9168-7d35038425b7
 Content-Type: application/json
 Accept: application/json
 
 {
-  "description": "short"
+  "description": "shortsasaszds"
 }
 
 ###
 # 21. PUT Update - inválido (valores negativos)
-PUT {{portURL}}/api/VesselType/b928c0c9-90c8-4e41-9a6d-59ec1ffef048
+PUT {{portURL}}/api/VesselType/965c49f5-4693-49bd-9168-7d35038425b7
 Content-Type: application/json
 Accept: application/json
 
@@ -186,7 +190,7 @@ Accept: application/json
 
 ###
 # 22. PUT Update - ID inexistente
-PUT {{portURL}}/api/VesselType/00000000-0000-0000-0000-000000000000
+PUT {{portURL}}/api/VesselType/965c49f5-4693-49bd-9168-7d3503842521
 Content-Type: application/json
 Accept: application/json
 

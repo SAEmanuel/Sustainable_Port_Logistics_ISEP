@@ -10,7 +10,7 @@ Accept: application/json
 
 ###
 # 2. GET by Id - valid 
-GET {{portURL}}/api/vessel/id/2befd59d-4363-470c-92ba-b60915e4ab69
+GET {{portURL}}/api/vessel/id/106b1813-31fd-405a-acdb-546baa42da5e
 Accept: application/json
 
 ###
@@ -20,7 +20,7 @@ Accept: application/json
 
 ###
 # 4. GET by IMO - valid
-GET {{portURL}}/api/vessel/imo/IMO 9399014
+GET {{portURL}}/api/vessel/imo/9823455
 Accept: application/json
 
 ###
@@ -30,7 +30,7 @@ Accept: application/json
 
 ###
 # 6. GET by Name - valid
-GET {{portURL}}/api/vessel/name/Ever Given
+GET {{portURL}}/api/vessel/name/Ever Majesty
 Accept: application/json
 
 ###
@@ -40,7 +40,7 @@ Accept: application/json
 
 ###
 # 8. GET by Owner - valid
-GET {{portURL}}/api/vessel/owner/Evergreen Marine
+GET {{portURL}}/api/vessel/owner/BlueWave Shipping Ltd.
 Accept: application/json
 
 ###
@@ -58,7 +58,7 @@ Content-Type: application/json
 Accept: application/json
 
 {
-  "imoNumber": "IMO 9876543",
+  "imoNumber": "IMO 9872339",
   "name": "Ever Given",
   "owner": "Evergreen Marine",
   "vesselTypeName": "Panamax Plus"
@@ -78,13 +78,13 @@ Accept: application/json
 }
 
 ###
-# 12. POST Create - valid vessel (OOCL)
+# 12. POST Create - invalid vessel (OOCL)
 POST {{portURL}}/api/vessel
 Content-Type: application/json
 Accept: application/json
 
 {
-  "imoNumber": "IMO 9706901",
+  "imoNumber": "IMO 9706906",
   "name": "OOCL Hong Kong",
   "owner": "OOCL",
   "vesselTypeName": "Panamax"
@@ -111,7 +111,7 @@ Content-Type: application/json
 Accept: application/json
 
 {
-  "imoNumber": "IMO 9999993",
+  "imoNumber": "IMO 9999448",
   "name": "",
   "owner": "NoName Shipping",
   "vesselTypeName": "Panamax Plus"
@@ -133,7 +133,7 @@ Accept: application/json
 
 ###
 # 16. PATCH existing vessel by IMO - valid
-PATCH {{portURL}}/api/vessel/imo/IMO 9399014
+PATCH {{portURL}}/api/vessel/imo/9234563
 Content-Type: application/json
 
 {

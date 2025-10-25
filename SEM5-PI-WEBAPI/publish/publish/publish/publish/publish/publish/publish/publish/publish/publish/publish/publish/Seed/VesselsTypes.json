@@ -1,0 +1,37 @@
+[
+  {
+    "name": "Panamax",
+    "description": "Medium-sized vessel capable of passing through the original Panama Canal locks",
+    "maxBays": 20,
+    "maxRows": 15,
+    "maxTiers": 10
+  },
+  {
+    "name": "Post-Panamax",
+    "description": "Large vessel exceeding Panamax dimensions, used in major global routes",
+    "maxBays": 24,
+    "maxRows": 18,
+    "maxTiers": 12
+  },
+  {
+    "name": "Handymax",
+    "description": "Versatile mid-size cargo vessel suitable for smaller ports",
+    "maxBays": 16,
+    "maxRows": 12,
+    "maxTiers": 8
+  },
+  {
+    "name": "Feedermax",
+    "description": "Small regional vessel optimized for feeder and coastal operations",
+    "maxBays": 12,
+    "maxRows": 10,
+    "maxTiers": 6
+  },
+  {
+    "name": "ULCV",
+    "description": "Ultra Large Container Vessel used for high-capacity intercontinental shipping",
+    "maxBays": 26,
+    "maxRows": 22,
+    "maxTiers": 14
+  }
+]

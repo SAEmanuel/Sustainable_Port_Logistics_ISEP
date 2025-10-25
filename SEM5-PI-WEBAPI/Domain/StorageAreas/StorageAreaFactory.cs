@@ -18,11 +18,11 @@ public class StorageAreaFactory
         if (duplicateDock != null)
             throw new BusinessRuleValidationException($"Duplicate DockCode '{duplicateDock}' detected in distances list.");
 
-        if (dto.DistancesToDocks.Any(d => d.DistanceKm <= 0))
+        if (dto.DistancesToDocks.Any(d => d.Distance <= 0))
             throw new BusinessRuleValidationException("All dock distances must be positive values and greater than zero.");
         
         var dockDistances = dto.DistancesToDocks
-            .Select(d => new StorageAreaDockDistance(new DockCode(d.DockCode), d.DistanceKm))
+            .Select(d => new StorageAreaDockDistance(new DockCode(d.DockCode), d.Distance))
             .ToList();
 
         var prCodes = dto.PhysicalResources

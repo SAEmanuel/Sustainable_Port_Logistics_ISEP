@@ -1,5 +1,5 @@
-@portURL = http://10.9.21.87:5008
-#@portURL = http://localhost:5008
+#@portURL = http://10.9.21.87:5008
+@portURL = http://localhost:5008
 
 # --- STORAGE AREAS ---
 
@@ -10,17 +10,17 @@ Accept: application/json
 
 ###
 # 2. GET by Id - Valid (Replace GUID after creating one)
-GET {{portURL}}/api/storageareas/id/27ac8087-e4a4-48c7-9bd8-017cf9c1223c
+GET {{portURL}}/api/storageareas/id/e4b27a02-9438-40a9-9b23-d34a2e1af9c6
 Accept: application/json
 
 ###
 # 3. GET by Id - Invalid (non-existing GUID)
-GET {{portURL}}/api/storageareas/id/00000000-0000-0000-0000-000000000000
+GET {{portURL}}/api/storageareas/id/09446e3d-ae3f-4ed7-b340-0205a4ef8491
 Accept: application/json
 
 ###
 # 4. GET by Name - Valid
-GET {{portURL}}/api/storageareas/name/Ware house do romeu
+GET {{portURL}}/api/storageareas/name/Yard A
 Accept: application/json
 
 ###
@@ -30,7 +30,7 @@ Accept: application/json
 
 ###
 # 6. GET Distances by Name - Valid
-GET {{portURL}}/api/storageareas/distances?name=Ware house do romeu
+GET {{portURL}}/api/storageareas/distances?name=Yard c
 Accept: application/json
 
 ###
@@ -50,14 +50,18 @@ Content-Type: application/json
 Accept: application/json
 
 {
-  "name": "Yard B",
+  "name": "Yard 88",
   "description": "Secondary yard near Dock 2",
   "type": "Yard",
-  "maxBays": 3,
-  "maxRows": 2,
-  "maxTiers": 2,
+  "maxBays": -1,
+  "maxRows": 1,
+  "maxTiers": 1,
   "distancesToDocks": [
-    { "dockCode": "DK-0001", "distanceKm": 0.7 }
+    {"dockCode": "DK-0001", "distance": 300},
+    {"dockCode": "DK-0002", "distance": 200},
+    {"dockCode": "DK-0003", "distance": 100},
+    {"dockCode": "DK-0004", "distance": 150},
+    {"dockCode": "DK-0005", "distance": 350}
   ],
   "physicalResources": ["TRUCK-0001"]
 }
@@ -69,13 +73,19 @@ Content-Type: application/json
 Accept: application/json
 
 {
-  "name": "Ware house do romeu",
+  "name": "Wa",
   "description": "Invalid yard",
   "type": "Yard",
   "maxBays": 2,
   "maxRows": 2,
   "maxTiers": 2,
-  "distancesToDocks": [],
+  "distancesToDocks": [
+    {"dockCode": "DK-0001", "distance": 300},
+    {"dockCode": "DK-0002", "distance": 200},
+    {"dockCode": "DK-0003", "distance": 100},
+    {"dockCode": "DK-0004", "distance": 150},
+    {"dockCode": "DK-0005", "distance": 350}
+  ],
   "physicalResources": []
 }
 
@@ -86,13 +96,19 @@ Content-Type: application/json
 Accept: application/json
 
 {
-  "name": "Yard C",
+  "name": "Yard CC",
   "description": "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
   "type": "Yard",
   "maxBays": 2,
   "maxRows": 2,
   "maxTiers": 2,
-  "distancesToDocks": [],
+  "distancesToDocks": [
+    {"dockCode": "DK-0001", "distance": 300},
+    {"dockCode": "DK-0002", "distance": 200},
+    {"dockCode": "DK-0003", "distance": 100},
+    {"dockCode": "DK-0004", "distance": 150},
+    {"dockCode": "DK-0005", "distance": 350}
+  ],
   "physicalResources": []
 }
 
@@ -110,8 +126,11 @@ Accept: application/json
   "maxRows": 2,
   "maxTiers": 2,
   "distancesToDocks": [
-    { "dockCode": "DK-0005", "distanceKm": 0.0 },
-    { "dockCode": "DK-0001", "distanceKm": 2.2 }
+    {"dockCode": "DK-0001", "distance": 300},
+    {"dockCode": "DK-0002", "distance": 200},
+    {"dockCode": "DK-0003", "distance": 100},
+    {"dockCode": "DK-0004", "distance": 150},
+    {"dockCode": "DK-0005", "distance": 350}
   ],
   "physicalResources": []
 }
@@ -130,19 +149,23 @@ Accept: application/json
   "maxRows": 2,
   "maxTiers": 2,
   "distancesToDocks": [
-    { "dockCode": "DK-0006", "distanceKm": -1.0 }
+    {"dockCode": "DK-0001", "distance": -300},
+    {"dockCode": "DK-0002", "distance": 200},
+    {"dockCode": "DK-0003", "distance": 100},
+    {"dockCode": "DK-0004", "distance": 150},
+    {"dockCode": "DK-0005", "distance": 350}
   ],
   "physicalResources": []
 }
 
 ###
 # 15. GET Physical Resources by Name - Valid
-GET {{portURL}}/api/storageareas/physicalresources?name=Ware house do romeu
+GET {{portURL}}/api/storageareas/physicalresources?name=Warehouse A
 Accept: application/json
 
 ###
 # 16. GET Physical Resources by Id - Valid
-GET {{portURL}}/api/storageareas/physicalresources?id=05ddc905-bf4a-43f3-a201-8aa5c2f43199
+GET {{portURL}}/api/storageareas/physicalresources?id=3ef22248-4c27-4c48-933b-c17f0731fc31
 Accept: application/json
 
 ###

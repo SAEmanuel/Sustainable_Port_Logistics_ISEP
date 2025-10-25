@@ -19,7 +19,7 @@ public class EmailTests
     [InlineData("   ")]
     public void CreateEmail_EmptyOrNull_ShouldThrow(string invalidEmail)
     {
-        Assert.Throws<ArgumentException>(() => new Email(invalidEmail));
+        Assert.Throws<SEM5_PI_WEBAPI.Domain.Shared.BusinessRuleValidationException>(() => new Email(invalidEmail));
     }
 
     [Theory]
@@ -29,7 +29,7 @@ public class EmailTests
     [InlineData("user@com")]
     public void CreateEmail_InvalidFormat_ShouldThrow(string invalidEmail)
     {
-        Assert.Throws<ArgumentException>(() => new Email(invalidEmail));
+        Assert.Throws<SEM5_PI_WEBAPI.Domain.Shared.BusinessRuleValidationException>(() => new Email(invalidEmail));
     }
 
     [Fact]

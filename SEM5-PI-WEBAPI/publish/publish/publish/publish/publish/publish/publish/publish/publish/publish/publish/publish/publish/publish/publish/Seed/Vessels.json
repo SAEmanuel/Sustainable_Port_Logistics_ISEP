@@ -1,0 +1,32 @@
+[
+  {
+    "imoNumber": "IMO 9234563",
+    "name": "Ocean Spirit",
+    "owner": "BlueWave Shipping Ltd.",
+    "vesselTypeName": "Post-Panamax"
+  },
+  {
+    "imoNumber": "IMO 9823455",
+    "name": "Global Titan",
+    "owner": "Oceanic Logistics Co.",
+    "vesselTypeName": "Handymax"
+  },
+  {
+    "imoNumber": "IMO 9345673",
+    "name": "Sea Voyager",
+    "owner": "Maritime Ventures SA",
+    "vesselTypeName": "Feedermax"
+  },
+  {
+    "imoNumber": "IMO 9456783",
+    "name": "Atlantic Trader",
+    "owner": "Atlantic Marine Group",
+    "vesselTypeName": "ULCV"
+  },
+  {
+    "imoNumber": "IMO 9999993",
+    "name": "Ever Majesty",
+    "owner": "Evergreen Marine Corp.",
+    "vesselTypeName": "Panamax"
+  }
+]

@@ -1,0 +1,91 @@
+[
+  {
+    "estimatedTimeArrival": "2025-12-01T08:00:00",
+    "estimatedTimeDeparture": "2025-12-03T18:00:00",
+    "volume": 2000,
+    "documents": null,
+    "crewManifest": {
+      "totalCrew": 15,
+      "captainName": "John Smith",
+      "crewMembers": [
+        {"name": "Carlos Mendes", "role": "Captain", "nationality": "Portugal", "citizenId": "A12345"},
+        {"name": "Anna Becker", "role": "SafetyOfficer", "nationality": "Peru", "citizenId": "B98765"}
+      ]
+    },
+    "loadingCargoManifest": {
+      "type": "Loading",
+      "createdBy": "Agent01@gmail.com",
+      "entries": [
+        {"bay": 2, "row": 3, "tier": 4, "storageAreaName": "Warehouse B", "container": {"isoCode": "MSCU6639870", "description": "Perishable frozen food cargo", "type": "Hazmat", "weightKg": 10800}},
+        {"bay": 3, "row": 1, "tier": 2, "storageAreaName": "Warehouse B", "container": {"isoCode": "BBCU5100617", "description": "Electronics", "type": "General", "weightKg": 4500}}
+      ]
+    },
+    "unloadingCargoManifest": {
+      "type": "Unloading",
+      "createdBy": "Agent02@gmail.com",
+      "entries": [
+        {"bay": 1, "row": 2, "tier": 3, "storageAreaName": "Warehouse A", "container": {"isoCode": "BBCU5100617", "description": "Automotive parts", "type": "General", "weightKg": 7000}},
+        {"bay": 4, "row": 3, "tier": 5, "storageAreaName": "Yard B", "container": {"isoCode": "CSQU3054383", "description": "Furniture Related", "type": "General", "weightKg": 12000}}
+      ]
+    },
+    "vesselImo": "IMO 9823455",
+    "emailSar": "alexandre.silva@gmail.com"
+  },
+
+  {
+    "estimatedTimeArrival": "2025-11-25T14:30:00",
+    "estimatedTimeDeparture": "2025-11-27T20:00:00",
+    "volume": 1800,
+    "documents": null,
+    "crewManifest": {
+      "totalCrew": 12,
+      "captainName": "Maria Santos",
+      "crewMembers": [
+        {"name": "João Silva", "role": "Captain", "nationality": "Brazil", "citizenId": "BR98765"},
+        {"name": "Emma Thompson", "role": "ChiefOfficer", "nationality": "China", "citizenId": "CH12345"},
+        {"name": "Lars Nielsen", "role": "ChiefEngineer", "nationality": "Denmark", "citizenId": "DK54321"}
+      ]
+    },
+    "loadingCargoManifest": {
+      "type": "Loading",
+      "createdBy": "Agent03@gmail.com",
+      "entries": [
+        {"bay": 5, "row": 2, "tier": 3, "storageAreaName": "Yard A", "container": {"isoCode": "MSCU6639870", "description": "Industrial machinery parts", "type": "General", "weightKg": 15200}},
+        {"bay": 6, "row": 4, "tier": 1, "storageAreaName": "Yard C", "container": {"isoCode": "CSQU3054383", "description": "Textile products", "type": "General", "weightKg": 6500}},
+        {"bay": 8, "row": 3, "tier": 2, "storageAreaName": "Yard B", "container": {"isoCode": "BBCU5100617", "description": "Construction equipment", "type": "Oversized", "weightKg": 18750}}
+      ]
+    },
+    "unloadingCargoManifest": null,
+    "vesselImo": "IMO 9999993",
+    "emailSar": "alexandre.silva@gmail.com"
+  },
+  
+  
+  {
+    "estimatedTimeArrival": "2025-11-28T06:45:00",
+    "estimatedTimeDeparture": "2025-11-30T12:00:00",
+    "volume": 1500,
+    "documents": null,
+    "crewManifest": {
+      "totalCrew": 10,
+      "captainName": "Olga Petrov",
+      "crewMembers": [
+        {"name": "Hans Schmidt", "role": "Captain", "nationality": "Germany", "citizenId": "DE55443"},
+        {"name": "Mei Chen", "role": "ThirdOfficer", "nationality": "China", "citizenId": "CN88776"},
+        {"name": "Carlos Rodrigues", "role": "Bosun", "nationality": "Brazil", "citizenId": "BR99887"}
+      ]
+    },
+    "loadingCargoManifest": null,
+    "unloadingCargoManifest": {
+      "type": "Unloading",
+      "createdBy": "Agent06@gmail.com",
+      "entries": [
+        {"bay": 1, "row": 3, "tier": 1, "storageAreaName": "Yard A", "container": {"isoCode": "CSIU4400699", "description": "Furniture components", "type": "General", "weightKg": 8700}},
+        {"bay": 4, "row": 2, "tier": 4, "storageAreaName": "Warehouse B", "container": {"isoCode": "MSCU6639870", "description": "Packaged foods", "type": "General", "weightKg": 7300}},
+        {"bay": 5, "row": 5, "tier": 2, "storageAreaName": "Yard C", "container": {"isoCode": "BBCU5100617", "description": "Steel beams", "type": "Oversized", "weightKg": 22100}}
+      ]
+    },
+    "vesselImo": "IMO 9456783",
+    "emailSar": "beatriz.costa@gmail.com"
+  }
+]
