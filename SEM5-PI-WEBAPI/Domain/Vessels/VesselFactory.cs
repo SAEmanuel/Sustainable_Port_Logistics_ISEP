@@ -9,9 +9,5 @@ public class VesselFactory
     {
         return new Vessel(instanceDto.ImoNumber,instanceDto.Name,instanceDto.Owner,vesselTypeId);
     }
-
-    public static VesselDto CreateVesselDto(Vessel instance)
-    {
-        return new VesselDto(instance.Id.AsGuid(),instance.ImoNumber, instance.Name, instance.Owner, instance.VesselTypeId);
-    }
+    
 }

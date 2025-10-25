@@ -29,7 +29,7 @@ public class VesselService : IVesselService
         _logger.LogInformation("Business Domain: Found [{Count}] Vessel in database.", listVesselsInDb.Count);
 
         var listVesselsDto = listVesselsInDb
-            .Select(instance => VesselFactory.CreateVesselDto(instance))
+            .Select(instance => VesselMapper.CreateVesselDto(instance))
             .ToList();
             
         _logger.LogInformation("Business Domain: Returning [{Count}] Vessels DTOs.", listVesselsDto.Count);
@@ -59,7 +59,7 @@ public class VesselService : IVesselService
 
         _logger.LogInformation("Business Domain: Vessel Created Successfully with IMO Number [{IMO}] and System ID [{ID}].", createdVessel.ImoNumber,createdVessel.Id);
 
-        return VesselFactory.CreateVesselDto(createdVessel);
+        return VesselMapper.CreateVesselDto(createdVessel);
     }
 
     public async Task<VesselDto> GetByIdAsync(VesselId vesselId)
@@ -73,7 +73,7 @@ public class VesselService : IVesselService
        
         _logger.LogInformation("Business Domain: Vessel with ID = {Id} found successfully.", vesselId.Value);
     
-        return VesselFactory.CreateVesselDto(vesselInDb);
+        return VesselMapper.CreateVesselDto(vesselInDb);
     }
 
 
@@ -90,7 +90,7 @@ public class VesselService : IVesselService
         
         _logger.LogInformation("Business Domain: Vessel with IMO Number = {IMO} found successfully.", imoNumber.Value);
 
-        return VesselFactory.CreateVesselDto(vesselOnDb);
+        return VesselMapper.CreateVesselDto(vesselOnDb);
     }
     
     public async Task<List<VesselDto>> GetByNameAsync(string name)
@@ -104,7 +104,7 @@ public class VesselService : IVesselService
         
         _logger.LogInformation("Business Domain: Vessel with Name = {NAME} found successfully.", name);
 
-        var vesselListDto = vesselListOnDb.Select(VesselFactory.CreateVesselDto).ToList();
+        var vesselListDto = vesselListOnDb.Select(VesselMapper.CreateVesselDto).ToList();
         
         return vesselListDto;
     }
@@ -120,7 +120,7 @@ public class VesselService : IVesselService
         
         _logger.LogInformation("Business Domain: Vessel with Owner = {Owner} found successfully.", ownerName);
 
-        var vesselListDto = vesselListOnDb.Select(VesselFactory.CreateVesselDto).ToList();
+        var vesselListDto = vesselListOnDb.Select(VesselMapper.CreateVesselDto).ToList();
         
         return vesselListDto;
     }
@@ -138,7 +138,7 @@ public class VesselService : IVesselService
         
         _logger.LogInformation("Business Domain: Where found [{Count}] Vessel/s Type/s with filters",vesselListOnDb.Count);
 
-        return vesselListOnDb.Select(VesselFactory.CreateVesselDto).ToList();
+        return vesselListOnDb.Select(VesselMapper.CreateVesselDto).ToList();
     }
 
     public async Task<VesselDto> PatchByImoAsync(string imo, UpdatingVesselDto dto)
@@ -159,7 +159,7 @@ public class VesselService : IVesselService
 
         await _unitOfWork.CommitAsync();
 
-        return VesselFactory.CreateVesselDto(vessel);
+        return VesselMapper.CreateVesselDto(vessel);
     }
 
 }
