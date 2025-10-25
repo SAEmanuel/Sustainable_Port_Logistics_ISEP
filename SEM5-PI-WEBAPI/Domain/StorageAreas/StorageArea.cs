@@ -15,7 +15,10 @@ public class StorageArea : Entity<StorageAreaId>, IAggregateRoot
     private const string DefaultDescription = "No description.";
     private const int MinNameLength = 3;
     private const int MaxDescriptionLength = 100;
-
+    private const int MinBays = 1;
+    private const int MinRows = 1;
+    private const int MinTiers = 1;
+    
     public string Name { get; private set; }
     public string? Description { get; private set; }
     public StorageAreaType Type { get; private set; }
@@ -43,9 +46,9 @@ public class StorageArea : Entity<StorageAreaId>, IAggregateRoot
         SetDescription(description);
         SetType(type);
 
-        MaxBays = maxBays;
-        MaxRows = maxRows;
-        MaxTiers = maxTiers;
+        SetMaxBays(maxBays);
+        SetMaxRows(maxRows);
+        SetMaxTiers(maxTiers);
 
         _distancesToDocks.AddRange(distancesToDocks);
         PhysicalResources = physicalResources?.ToList() ?? new List<PhysicalResourceCode>();
@@ -58,7 +61,12 @@ public class StorageArea : Entity<StorageAreaId>, IAggregateRoot
     public void ChangeDescription(string description) => SetDescription(description);
     public void AddPhysicalResources(IEnumerable<PhysicalResourceCode> physicalResources) => AggPhysicalResources(physicalResources);
     public void RemovePhysicalResources(IEnumerable<PhysicalResourceCode> physicalResources) => RmvPhysicalResources(physicalResources);
-    
+    public void ChangeMaxBays(int updatedMaxBays) => SetMaxBays(updatedMaxBays);
+        
+    public void ChangeMaxRows(int updatedMaxRows) => SetMaxRows(updatedMaxRows);
+        
+    public void ChangeMaxTiers(int updatedMaxTiers)=> SetMaxTiers(updatedMaxTiers);
+
 
     public void PlaceContainer(Iso6346Code containerIso, int bay, int row, int tier)
     {
@@ -150,6 +158,23 @@ public class StorageArea : Entity<StorageAreaId>, IAggregateRoot
         this.Type = type;
     }
     
+    private void SetMaxBays(int maxBays)
+    {
+        if (maxBays < MinBays) throw new BusinessRuleValidationException($"Max 'Bays' must be greater than {MinBays}.");
+        this.MaxBays = maxBays;
+    }
+        
+    private void SetMaxRows(int maxRows)
+    {
+        if (maxRows < MinRows) throw new BusinessRuleValidationException($"Max 'Rows' must be greater than {MinRows}.");
+        this.MaxRows = maxRows;
+    }
+
+    private void SetMaxTiers(int maxTiers)
+    {
+        if(maxTiers < MinTiers) throw new BusinessRuleValidationException($"Max 'Tiers' must be greater than {MinTiers}.");
+        this.MaxTiers = maxTiers;
+    }
     
     public override string ToString() =>
         $"StorageArea [Name={Name}, Type={Type}, Capacity={CurrentCapacityTeu}/{MaxCapacityTeu} TEUs]";

@@ -3,11 +3,11 @@ namespace SEM5_PI_WEBAPI.Domain.StorageAreas.DTOs;
 public class StorageAreaDockDistanceDto
 {
     public string DockCode { get; set; }
-    public float DistanceKm { get; set; }
+    public float Distance { get; set; }
 
-    public StorageAreaDockDistanceDto(string dockCode, float distanceKm)
+    public StorageAreaDockDistanceDto(string dockCode, float distance)
     {
         DockCode = dockCode;
-        DistanceKm = distanceKm;
+        Distance = distance;
     }
 }

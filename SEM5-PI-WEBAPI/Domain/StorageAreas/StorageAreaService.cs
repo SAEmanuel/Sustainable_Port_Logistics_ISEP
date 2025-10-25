@@ -125,13 +125,8 @@ public class StorageAreaService: IStorageAreaService
         if (existingSa != null)
             throw new BusinessRuleValidationException($"Storage Area with name '{dto.Name}' already exists.");
 
-        foreach (var dock in dto.DistancesToDocks)
-        {
-            var dockInDb = await _dockRepository.GetByCodeAsync(new DockCode(dock.DockCode));
-            if (dockInDb == null) throw new BusinessRuleValidationException($"Dock code '{dock.DockCode}' does not exist in DB.");
-            
-        }
-        
+        await CheckIfAllDistancesForExistenceDocksExsist(dto.DistancesToDocks);
+
         foreach (string pr in dto.PhysicalResources)
         {
             var exist = await _physicalResourceRepository.GetByCodeAsync(new PhysicalResourceCode(pr));
@@ -151,7 +146,23 @@ public class StorageAreaService: IStorageAreaService
         return StorageAreaMapper.CreateStorageAreaDto(storageAreaNew);
     }
 
+    private async Task CheckIfAllDistancesForExistenceDocksExsist(List<StorageAreaDockDistanceDto> dtoDistancesToDocks)
+    {
+        var docksInDb = await _dockRepository.GetAllAsync();
 
+        int dockInDbCount = docksInDb.Count(), dockInDtoCount = dtoDistancesToDocks.Count;
+        
+        if (dockInDbCount != dockInDtoCount) throw new BusinessRuleValidationException($"To validate your creation make sure you write (only once per dock) all docks distances to your new storage area. Docks in DB = [{dockInDbCount}]  ->  Docks distances you submited [{dockInDtoCount}]");
 
+        for (int i = 0; i < dockInDtoCount; i++)
+        {
 
+            var dockCode = new DockCode(dtoDistancesToDocks[i].DockCode);
+            
+
+            if (!docksInDb.Any(d => d.Code.Value == dockCode.Value))
+                throw new BusinessRuleValidationException($"Dock code '{dtoDistancesToDocks[i].DockCode}' does not exist in DB.");
+
+        }
+    }
 }

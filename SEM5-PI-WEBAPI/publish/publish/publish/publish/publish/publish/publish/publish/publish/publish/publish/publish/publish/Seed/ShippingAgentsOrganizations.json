@@ -1,0 +1,37 @@
+[
+  {
+    "shippingOrganizationCode": "1112223334",
+    "LegalName": "Atlantic Maritime Lines",
+    "AltName": "Atlantic Shipping",
+    "Address": "Rua Infante Dom Henrique 200, 4050-297 Porto",
+    "Taxnumber": "PT501223344"
+  },
+  {
+    "shippingOrganizationCode": "2223334445",
+    "LegalName": "BlueOcean Logistics SA",
+    "AltName": "BlueOcean",
+    "Address": "Av. da Liberdade 180, 1250-146 Lisboa",
+    "Taxnumber": "PT509876543"
+  },
+  {
+    "shippingOrganizationCode": "3334445556",
+    "LegalName": "Global Freight Solutions",
+    "AltName": "GFS Shipping",
+    "Address": "Rua das Flores 58, 4000-195 Porto",
+    "Taxnumber": "PT508112233"
+  },
+  {
+    "shippingOrganizationCode": "4445556667",
+    "LegalName": "PortoCargo Lines Lda",
+    "AltName": "PortoCargo",
+    "Address": "Av. Fernão de Magalhães 900, 4350-158 Porto",
+    "Taxnumber": "PT506778899"
+  },
+  {
+    "shippingOrganizationCode": "5556667778",
+    "LegalName": "Lusitanian Sea Transport",
+    "AltName": "LusiSea",
+    "Address": "Av. Marginal 75, 2775-604 Carcavelos",
+    "Taxnumber": "PT507334455"
+  }
+]

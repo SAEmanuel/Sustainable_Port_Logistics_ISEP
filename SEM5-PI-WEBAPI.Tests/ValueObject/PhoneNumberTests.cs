@@ -21,7 +21,7 @@ public class PhoneNumberTests
     [InlineData("   ")]
     public void CreatePhoneNumber_EmptyOrWhiteSpace_ShouldThrow(string invalidNumber)
     {
-        Assert.Throws<ArgumentException>(() => new PhoneNumber(invalidNumber!));
+        Assert.Throws<SEM5_PI_WEBAPI.Domain.Shared.BusinessRuleValidationException>(() => new PhoneNumber(invalidNumber!));
     }
 
     [Theory]
@@ -31,7 +31,7 @@ public class PhoneNumberTests
     [InlineData("++3514671555")]  
     public void CreatePhoneNumber_InvalidFormat_ShouldThrow(string invalidNumber)
     {
-        Assert.Throws<ArgumentException>(() => new PhoneNumber(invalidNumber));
+        Assert.Throws<SEM5_PI_WEBAPI.Domain.Shared.BusinessRuleValidationException>(() => new PhoneNumber(invalidNumber));
     }
 
     [Fact]

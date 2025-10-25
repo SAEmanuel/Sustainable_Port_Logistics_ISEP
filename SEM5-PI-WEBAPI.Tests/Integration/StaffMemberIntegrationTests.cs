@@ -300,7 +300,7 @@ public class StaffMemberIntegrationTests
         var result = await _controller.GetById(Guid.NewGuid());
 
         // Assert
-        Assert.IsType<NotFoundResult>(result.Result);
+        Assert.IsType<BadRequestObjectResult>(result.Result);
     }
 
     [Fact]

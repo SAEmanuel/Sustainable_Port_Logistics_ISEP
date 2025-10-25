@@ -1,0 +1,37 @@
+[
+  {
+    "description": "Volvo FH16 Truck",
+    "operationalCapacity": 25.5,
+    "setupTime": 10,
+    "physicalResourceType": "Truck",
+    "qualificationCode": "TRK-001"
+  },
+  {
+    "description": "Kalmar Reach Stacker RS450",
+    "operationalCapacity": 35.0,
+    "setupTime": 15,
+    "physicalResourceType": "RStacker",
+    "qualificationCode": "STS-001"
+  },
+  {
+    "description": "Liebherr STS Crane 600",
+    "operationalCapacity": 60.0,
+    "setupTime": 30,
+    "physicalResourceType": "STSCrane",
+    "qualificationCode": "STS-001"
+  },
+  {
+    "description": "Konecranes Yard Gantry Crane",
+    "operationalCapacity": 50.0,
+    "setupTime": 25,
+    "physicalResourceType": "YGCrane",
+    "qualificationCode": "STS-001"
+  },
+  {
+    "description": "Hyster H50 Forklift",
+    "operationalCapacity": 5.0,
+    "setupTime": 8,
+    "physicalResourceType": "Forklift",
+    "qualificationCode": "FLK-001"
+  }
+]

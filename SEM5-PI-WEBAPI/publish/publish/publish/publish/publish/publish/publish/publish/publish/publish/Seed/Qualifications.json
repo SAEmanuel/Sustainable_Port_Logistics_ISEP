@@ -1,0 +1,42 @@
+[
+  {
+    "name": "Truck Driver",
+    "code": "TRK-001"
+  },
+  {
+    "name": "STS Crane Operator",
+    "code": "STS-001"
+  },
+  {
+    "name": "Forklift Operator",
+    "code": "FLK-001"
+  },
+  {
+    "name": "Port Security Specialist",
+    "code": "PSS-001"
+  },
+  {
+    "name": "Harbor Pilot",
+    "code": "HBP-001"
+  },
+  {
+    "name": "Container Yard Supervisor",
+    "code": "CYS-001"
+  },
+  {
+    "name": "Maintenance Technician",
+    "code": "MTN-001"
+  },
+  {
+    "name": "Dock Manager",
+    "code": "DKM-001"
+  },
+  {
+    "name": "Logistics Coordinator",
+    "code": "LGC-001"
+  },
+  {
+    "name": "Vessel Traffic Controller",
+    "code": "VTC-001"
+  }
+]
