@@ -25,7 +25,7 @@ namespace SEM5_PI_WEBAPI.Domain.VesselsTypes
             _logger.LogInformation("Business Domain: Found [{Count}] Vessel Types in database.", listVesselsTypesInDb.Count);
 
             var listVesselsTypesDto = listVesselsTypesInDb
-                .Select(instance => VesselTypeFactory.CreateDtoVesselType(instance))
+                .Select(instance => VesselTypeMappers.CreateDtoVesselType(instance))
                 .ToList();
             
             _logger.LogInformation("Business Domain: Returning [{Count}] Vessel Types DTOs.", listVesselsTypesDto.Count);
@@ -47,7 +47,7 @@ namespace SEM5_PI_WEBAPI.Domain.VesselsTypes
 
             _logger.LogInformation("Business Domain: Vessel Type with ID = {Id} found successfully.", id.Value);
 
-            return VesselTypeFactory.CreateDtoVesselType(vesselTypeInDb);
+            return VesselTypeMappers.CreateDtoVesselType(vesselTypeInDb);
         }
 
         public async Task<VesselTypeDto> AddAsync(CreatingVesselTypeDto vesselTypeDto)
@@ -66,7 +66,7 @@ namespace SEM5_PI_WEBAPI.Domain.VesselsTypes
             
             _logger.LogInformation("Business Domain: Vessel Type created successfully with ID = {Id}", newVesselType.Id.Value);
 
-            return VesselTypeFactory.CreateDtoVesselType(newVesselType);
+            return VesselTypeMappers.CreateDtoVesselType(newVesselType);
         }
         
         public async Task<VesselTypeDto> GetByNameAsync(string name)
@@ -82,7 +82,7 @@ namespace SEM5_PI_WEBAPI.Domain.VesselsTypes
 
             _logger.LogInformation("Business Domain: Vessel Type with Name = {Name} found successfully.",name);
 
-            return VesselTypeFactory.CreateDtoVesselType(vesselTypeInDb);
+            return VesselTypeMappers.CreateDtoVesselType(vesselTypeInDb);
         }
         
         public async Task<List<VesselTypeDto>> GetByDescriptionAsync(string description)
@@ -97,7 +97,7 @@ namespace SEM5_PI_WEBAPI.Domain.VesselsTypes
             }
             
             var listVesselsTypesDto = listVesselsTypesInDb
-                .Select(instance => VesselTypeFactory.CreateDtoVesselType(instance))
+                .Select(instance => VesselTypeMappers.CreateDtoVesselType(instance))
                 .ToList();
             
 
@@ -117,7 +117,7 @@ namespace SEM5_PI_WEBAPI.Domain.VesselsTypes
             
             _logger.LogInformation("Business Domain: Where found [{Count}] Vessel/s Type/s with filters -> Name = {Name}, Description = {Description}, Query = {Query}",listVesselsTypesInDb.Count,name, description, query);
             
-            return listVesselsTypesInDb.Select(instance => VesselTypeFactory.CreateDtoVesselType(instance)).ToList();
+            return listVesselsTypesInDb.Select(instance => VesselTypeMappers.CreateDtoVesselType(instance)).ToList();
         }
         
         public async Task<VesselTypeDto> UpdateAsync(VesselTypeId id, UpdateVesselTypeDto dto)
@@ -156,7 +156,7 @@ namespace SEM5_PI_WEBAPI.Domain.VesselsTypes
 
             _logger.LogInformation("Business Domain: Vessel Type with ID = {Id} updated successfully.", id.Value);
 
-            return VesselTypeFactory.CreateDtoVesselType(vesselTypeInDb);
+            return VesselTypeMappers.CreateDtoVesselType(vesselTypeInDb);
         }
 
     }

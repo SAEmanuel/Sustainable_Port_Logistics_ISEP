@@ -1,5 +1,5 @@
 @startuml
-title US2.2.1 – Class Diagram (Complete)
+title US2.2.1 – Class Diagram (Complete + Mappers + Interfaces)
 
 skinparam packageStyle rectangle
 skinparam shadowing false
@@ -25,36 +25,16 @@ package "Domain" {
     + AsGuid() : Guid
   }
 
-  class BusinessRuleValidationException
+  class BusinessRuleValidationException {
+    + Message : string
+  }
 }
 
 ' ==================== DTOs ====================
 package "DTOs" {
-  class CreatingVesselTypeDto {
-    + string Name
-    + string Description
-    + int MaxBays
-    + int MaxRows
-    + int MaxTiers
-  }
-
-  class UpdatingVesselTypeDto {
-    + string? Name
-    + string? Description
-    + int? MaxBays
-    + int? MaxRows
-    + int? MaxTiers
-  }
-
-  class VesselTypeDto {
-    + Guid Id
-    + string Name
-    + string Description
-    + int MaxBays
-    + int MaxRows
-    + int MaxTiers
-    + float Capacity
-  }
+  class CreatingVesselTypeDto
+  class UpdatingVesselTypeDto
+  class VesselTypeDto
 }
 
 ' ==================== APPLICATION ====================
@@ -73,12 +53,17 @@ package "Application" {
     - IVesselTypeRepository _repo
     - IUnitOfWork _unitOfWork
     - ILogger<VesselTypeService> _logger
-    + All public methods defined in IVesselTypeService
+    + All public methods from IVesselTypeService
   }
 
   class VesselTypeFactory {
     + CreateBasicVesselType(CreatingVesselTypeDto) : VesselType
     + CreateDtoVesselType(VesselType) : VesselTypeDto
+  }
+
+  class VesselTypeMappers {
+    + ToDto(VesselType) : VesselTypeDto
+    + ToEntity(CreatingVesselTypeDto) : VesselType
   }
 }
 
@@ -94,15 +79,13 @@ package "Infrastructure" {
     + Save(VesselType)
   }
 
-  class VesselTypeRepository implements IVesselTypeRepository {
-  }
+  class VesselTypeRepository implements IVesselTypeRepository
 
   interface IUnitOfWork {
     + CommitAsync()
   }
 
-  class UnitOfWork implements IUnitOfWork {
-  }
+  class UnitOfWork implements IUnitOfWork
 }
 
 ' ==================== PRESENTATION ====================
@@ -131,12 +114,15 @@ package "Cross-cutting" {
 VesselType "1" *-- "1" VesselTypeId
 VesselTypeService --> IVesselTypeRepository : uses
 VesselTypeService --> IUnitOfWork : commits
-VesselTypeService --> VesselTypeFactory : converts
+VesselTypeService --> VesselTypeFactory : creates
+VesselTypeService --> VesselTypeMappers : maps
 VesselTypeService --> ILogger : logs
 VesselTypeRepository --> VesselType : persists
 VesselTypeFactory --> VesselType : builds
-VesselTypeFactory --> VesselTypeDto : maps
+VesselTypeFactory --> VesselTypeDto : converts
+VesselTypeMappers --> VesselTypeDto : maps
 VesselTypeController --> IVesselTypeService : depends on
 VesselTypeController --> ILogger : logs
+VesselTypeService ..> BusinessRuleValidationException : throws
 
 @enduml

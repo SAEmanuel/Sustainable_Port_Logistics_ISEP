@@ -3,59 +3,89 @@
 ' Sequence Diagram – US2.2.1 (Create and Manage Vessel Types)
 ' Author: Jorge Ubaldo Rodrigues
 ' Context: Port Management – Vessel Type Module
+' Updated: includes Mappers and Interfaces
 ' ==========================================================
 
 actor "Port Authority Officer" as Officer
-boundary "API (VesselTypeController)" as Controller
-control "VesselTypeService" as Service
-entity "VesselTypeRepository" as Repo
-entity "UnitOfWork" as UoW
-control "VesselTypeFactory" as Factory
-collections "Audit/Logs (ILogger/Serilog)" as Log
+boundary "API Layer\n(Controller)\n<<uses IVesselTypeService>>" as Controller
+control "Application Layer\n(VesselTypeService)\n(implements IVesselTypeService)" as Service
+control "Mapper\n(VesselTypeMappers)" as Mappers
+control "Factory\n(VesselTypeFactory)" as Factory
+entity "Repository\n<<interface>>\n(IVesselTypeRepository)" as Repo
+entity "UnitOfWork\n<<interface>>\n(IUnitOfWork)" as UoW
+collections "Audit/Logs\n(ILogger / Serilog)" as Log
 
+' ==========================================================
+' CREATE VESSEL TYPE
+' ==========================================================
 == Create ==
-Officer -> Controller : POST /api/VesselType\nBody: CreatingVesselTypeDto
-Controller -> Service : AddAsync(dto)
+
+Officer -> Controller : POST /api/vesseltypes\nBody: CreatingVesselTypeDto
+Controller -> Service : AddAsync(dto)  <<calls IVesselTypeService.AddAsync>>
 Service -> Repo : GetByNameAsync(dto.Name)
-Repo --> Service : null / VesselType
-Service -> Service : Validate(name unique,\nlength, constraints > 0)
+Repo --> Service : null (no duplicate found)
+
+Service -> Service : Validate name & constraints
 Service -> Factory : CreateBasicVesselType(dto)
 Factory --> Service : VesselType (entity)
+
 Service -> Repo : AddAsync(entity)
 Repo --> Service : Entity persisted
+
 Service -> UoW : CommitAsync()
 UoW --> Service : Transaction committed
-Service -> Factory : CreateDtoVesselType(entity)
-Factory --> Service : VesselTypeDto
+
+Service -> Mappers : CreateDtoVesselType(entity)
+Mappers --> Service : VesselTypeDto
+
 Service -> Log : Log(CREATE, officerId, vesselTypeId, SUCCESS)
 Service --> Controller : VesselTypeDto
 Controller --> Officer : 201 Created (VesselTypeDto)
 
+
+' ==========================================================
+' UPDATE VESSEL TYPE
+' ==========================================================
 == Update ==
-Officer -> Controller : PUT /api/VesselType/{id}\nBody: UpdateVesselTypeDto
-Controller -> Service : UpdateAsync(id, dto)
+
+Officer -> Controller : PUT /api/vesseltypes/{id}\nBody: UpdateVesselTypeDto
+Controller -> Service : UpdateAsync(id, dto)  <<calls IVesselTypeService.UpdateAsync>>
+
 Service -> Repo : GetByIdAsync(id)
-Repo --> Service : VesselType (existing)
-Service -> Service : Validate changes\n(unique name, positive dimensions)
-Service -> Repo : Save(updated entity)
+Repo --> Service : VesselType (existing entity)
+
+Service -> Service : Validate updates\n(unique name, positive dimensions)
+Service -> Repo : Save(updated entity)  <<IVesselTypeRepository.Save/Update>>
 Repo --> Service : Entity updated
+
 Service -> UoW : CommitAsync()
 UoW --> Service : Transaction committed
-Service -> Factory : CreateDtoVesselType(updated)
-Factory --> Service : VesselTypeDto
+
+Service -> Mappers : CreateDtoVesselType(updated)
+Mappers --> Service : VesselTypeDto
+
 Service -> Log : Log(UPDATE, officerId, vesselTypeId, SUCCESS)
 Service --> Controller : VesselTypeDto
 Controller --> Officer : 200 OK (VesselTypeDto)
 
+
+' ==========================================================
+' SEARCH VESSEL TYPES
+' ==========================================================
 == Search ==
-Officer -> Controller : GET /api/VesselType/filter?query=pan
-Controller -> Service : FilterAsync(query)
-Service -> Repo : FilterAsync(name/description contains query)
+
+Officer -> Controller : GET /api/vesseltypes/filter?query=pan
+Controller -> Service : FilterAsync(name, description, query)  <<calls IVesselTypeService.FilterAsync>>
+
+Service -> Repo : FilterAsync(name, description, query)  <<IVesselTypeRepository.FilterAsync>>
 Repo --> Service : List<VesselType>
-Service -> Factory : CreateDtoVesselType(list)
-Factory --> Service : List<VesselTypeDto>
+
+Service -> Mappers : CreateDtoVesselType(list)
+Mappers --> Service : List<VesselTypeDto>
+
 Service -> Log : Log(SEARCH, officerId, query, SUCCESS)
 Service --> Controller : List<VesselTypeDto>
 Controller --> Officer : 200 OK (List<VesselTypeDto))
+
 
 @enduml

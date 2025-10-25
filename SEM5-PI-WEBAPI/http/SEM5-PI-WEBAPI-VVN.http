@@ -173,7 +173,7 @@ Accept: {{accept}}
 # 3 - SUBMIT Vessel Visit Notification for approval
 
 ###
-PUT {{portURL}}/api/VesselVisitNotification/2025-THPA-000003/submit
+PUT {{portURL}}/api/VesselVisitNotification/d16d133f-9b81-43a9-b651-c0a8bbfef135/submit
 Content-Type: {{contentType}}
 Accept: {{accept}}
 
@@ -234,7 +234,9 @@ Accept: application/json
 # ️10 - Get Submitted
 
 ### 
-GET {{portURL}}/api/VesselVisitNotification/shippingAgentRepresentative/submitted/e0dc9e28-e9cf-4570-a168-89318863b921
+GET {{portURL}}/api/VesselVisitNotification/shippingAgentRepresentative/submitted/72f1d6b2-3475-46b8-bb2c-2cf2b379a913
+    ?submittedDate=2025-10-10T08:00
+    &vesselImoNumber=IMO9000123
 Accept: application/json
 
 # ️11 - Get Accepted

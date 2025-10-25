@@ -32,7 +32,7 @@ public class StorageAreaService: IStorageAreaService
         
 
         var listStorageAreasDto = listStorageAreasInDb
-            .Select(StorageAreaFactory.CreateStorageAreaDto)
+            .Select(StorageAreaMapper.CreateStorageAreaDto)
             .ToList();
 
         _logger.LogInformation("Domain: Returning {Count} storage areas", listStorageAreasDto.Count);
@@ -48,7 +48,7 @@ public class StorageAreaService: IStorageAreaService
         if (storageArea == null)
             throw new BusinessRuleValidationException($"Storage Area with ID {id.Value} not found.");
 
-        return StorageAreaFactory.CreateStorageAreaDto(storageArea);
+        return StorageAreaMapper.CreateStorageAreaDto(storageArea);
     }
 
     public async Task<StorageAreaDto> GetByNameAsync(string name)
@@ -60,7 +60,7 @@ public class StorageAreaService: IStorageAreaService
         if (storageArea == null)
             throw new BusinessRuleValidationException($"Storage Area with Name '{name}' not found.");
 
-        return StorageAreaFactory.CreateStorageAreaDto(storageArea);
+        return StorageAreaMapper.CreateStorageAreaDto(storageArea);
     }
 
     public async Task<List<StorageAreaDockDistanceDto>> GetDistancesToDockAsync(string? name, StorageAreaId? id)
@@ -148,7 +148,7 @@ public class StorageAreaService: IStorageAreaService
 
         _logger.LogInformation("Domain: Storage Area created successfully with Id = {Id}, Name = {Name}", storageAreaNew.Id.AsGuid(), storageAreaNew.Name);
 
-        return StorageAreaFactory.CreateStorageAreaDto(storageAreaNew);
+        return StorageAreaMapper.CreateStorageAreaDto(storageAreaNew);
     }
 
 

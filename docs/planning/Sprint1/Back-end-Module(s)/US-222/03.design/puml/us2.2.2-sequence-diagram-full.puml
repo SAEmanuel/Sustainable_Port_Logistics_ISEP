@@ -1,156 +1,179 @@
 @startuml
 ' ==========================================================
-' Full Sequence Diagram – US2.2.2 (Register and Update Vessel Records)
+' Sequence Diagram – US2.2.2 (Register and Update Vessel Records)
+' Style aligned with VesselType diagram (interfaces + mappers)
 ' Author: Jorge Ubaldo Rodrigues
-' Context: Port Management – Vessel Registration and Maintenance
 ' ==========================================================
 
 skinparam monochrome true
 skinparam shadowing false
 skinparam sequenceMessageAlign center
-skinparam ParticipantPadding 25
-skinparam responseMessageBelowArrow true
-
-title US2.2.2 – Full Sequence Diagram (Vessel Management)
 
 actor "Port Authority Officer" as Officer
-boundary "API Controller" as Controller
-control "VesselService" as Service
-entity "VesselRepository" as Repo
-entity "VesselTypeRepository" as TypeRepo
-control "VesselFactory" as Factory
-control "ILogger / AuditService" as Audit
+boundary "API Layer\n(VesselController)\n<<uses IVesselService>>" as Controller
+control "Application Layer\n(VesselService)\n(implements IVesselService)" as Service
+control "Mapper\n(VesselMapper)" as Mapper
+control "Factory\n(VesselFactory)" as Factory
+entity "Repository\n<<interface>>\n(IVesselRepository)" as IRepo
+entity "Repository Impl\n(VesselRepository)" as Repo
+entity "VesselTypeRepository\n<<interface>>\n(IVesselTypeRepository)" as ITypeRepo
+entity "VesselTypeRepository Impl\n(VesselTypeRepository)" as TypeRepo
+entity "UnitOfWork\n<<interface>>\n(IUnitOfWork)" as UoW
+collections "Audit/Logs\n(ILogger / Serilog)" as Log
 database "Database" as DB
 
 ' ==========================================================
-== Create Vessel ==
+' CREATE VESSEL
 ' ==========================================================
-Officer -> Controller : POST /api/vessel {CreatingVesselDto}
-Controller -> Service : CreateAsync(dto)
+== Create ==
+Officer -> Controller : POST /api/vessel\nBody: CreatingVesselDto
+Controller -> Service : CreateAsync(dto)  <<calls IVesselService.CreateAsync>>
 
-Service -> TypeRepo : GetById(dto.VesselTypeId)
-TypeRepo --> Service : VesselType or null
+Service -> ITypeRepo : GetByNameAsync(dto.VesselTypeName)
+ITypeRepo --> Service : VesselType / null
+ITypeRepo -> TypeRepo : delegate to implementation
 
-Service -> Repo : GetByImoNumber(dto.ImoNumber)
-Repo --> Service : Vessel? (to check duplicates)
+Service -> IRepo : GetByImoNumberAsync(dto.ImoNumber)
+IRepo --> Service : null / Vessel (duplicate check)
+IRepo -> Repo : delegate to implementation
 
-Service -> Factory : CreateVessel(dto)
+Service -> Factory : CreateVessel(dto, vesselTypeId)
 Factory --> Service : Vessel (entity)
 
-Service -> Repo : AddAsync(vessel)
-Repo --> DB : INSERT Vessel
+Service -> IRepo : AddAsync(vessel)
+IRepo -> Repo : persist vessel
+Repo -> DB : INSERT Vessel
 DB --> Repo : OK
+Repo --> IRepo : persisted
+IRepo --> Service : Entity persisted
 
-Service -> Audit : log(CREATE, officerId, vessel.ImoNumber, timestamp, SUCCESS)
+Service -> UoW : CommitAsync()
+UoW --> Service : Transaction committed
+
+Service -> Mapper : CreateVesselDto(vessel)
+Mapper --> Service : VesselDto
+
+Service -> Log : Log(CREATE, officerId, vessel.ImoNumber, SUCCESS)
 Service --> Controller : VesselDto
 Controller --> Officer : 201 Created (VesselDto)
 
 ' ==========================================================
-== Update Vessel (PATCH by IMO) ==
+' PATCH BY IMO (UPDATE)
 ' ==========================================================
-Officer -> Controller : PATCH /api/vessel/imo/{imo} {UpdatingVesselDto}
-Controller -> Service : PatchByImoAsync(imo, dto)
+== Patch by IMO ==
+Officer -> Controller : PATCH /api/vessel/imo/{imo}\nBody: UpdatingVesselDto
+Controller -> Service : PatchByImoAsync(imo, dto)  <<calls IVesselService.PatchByImoAsync>>
 
-Service -> Repo : GetByImoNumber(imo)
-Repo --> Service : Vessel or null
+Service -> IRepo : GetByImoNumberAsync(imo)
+IRepo --> Service : Vessel / null
+IRepo -> Repo : SELECT ...
 
 Service -> Service : ApplyUpdates(name?, owner?)
-Service -> Repo : CommitAsync()
-Repo --> DB : UPDATE Vessel
-DB --> Repo : OK
+Service -> UoW : CommitAsync()  'persist changes via UoW
+UoW --> Service : Transaction committed
 
-Service -> Audit : log(UPDATE, officerId, imo, timestamp, SUCCESS)
+Service -> Mapper : CreateVesselDto(vessel)
+Mapper --> Service : VesselDto
+
+Service -> Log : Log(UPDATE, officerId, imo, SUCCESS)
 Service --> Controller : VesselDto
 Controller --> Officer : 200 OK (VesselDto)
 
 ' ==========================================================
-== Get All Vessels ==
+' GET ALL
 ' ==========================================================
+== Get All ==
 Officer -> Controller : GET /api/vessel
 Controller -> Service : GetAllAsync()
 
-Service -> Repo : GetAllAsync()
-Repo --> Service : List<Vessel>
+Service -> IRepo : GetAllAsync()
+IRepo --> Service : List<Vessel>
+IRepo -> Repo : SELECT ...
 
-Service -> Factory : CreateVesselDto(vessel*)
-Factory --> Service : List<VesselDto>
+Service -> Mapper : CreateVesselDto(vessel*)  'maps each entity
+Mapper --> Service : List<VesselDto>
 
 Service --> Controller : List<VesselDto>
 Controller --> Officer : 200 OK (List<VesselDto>)
 
 ' ==========================================================
-== Get Vessel by Id ==
+' GET BY ID
 ' ==========================================================
+== Get by Id ==
 Officer -> Controller : GET /api/vessel/id/{id}
 Controller -> Service : GetByIdAsync(id)
 
-Service -> Repo : GetById(id)
-Repo --> Service : Vessel or null
+Service -> IRepo : GetByIdAsync(id)
+IRepo --> Service : Vessel / null
 
-Service -> Factory : CreateVesselDto(vessel)
-Factory --> Service : VesselDto
+Service -> Mapper : CreateVesselDto(vessel)
+Mapper --> Service : VesselDto
 
 Service --> Controller : VesselDto
 Controller --> Officer : 200 OK (VesselDto)
 
 ' ==========================================================
-== Get Vessel by IMO ==
+' GET BY IMO
 ' ==========================================================
+== Get by IMO ==
 Officer -> Controller : GET /api/vessel/imo/{imo}
 Controller -> Service : GetByImoNumberAsync(imo)
 
-Service -> Repo : GetByImoNumber(imo)
-Repo --> Service : Vessel or null
+Service -> IRepo : GetByImoNumberAsync(imo)
+IRepo --> Service : Vessel / null
 
-Service -> Factory : CreateVesselDto(vessel)
-Factory --> Service : VesselDto
+Service -> Mapper : CreateVesselDto(vessel)
+Mapper --> Service : VesselDto
 
 Service --> Controller : VesselDto
 Controller --> Officer : 200 OK (VesselDto)
 
 ' ==========================================================
-== Get Vessel(s) by Name ==
+' GET BY NAME
 ' ==========================================================
+== Get by Name ==
 Officer -> Controller : GET /api/vessel/name/{name}
 Controller -> Service : GetByNameAsync(name)
 
-Service -> Repo : GetByName(name)
-Repo --> Service : List<Vessel>
+Service -> IRepo : GetByNameAsync(name)
+IRepo --> Service : List<Vessel>
 
-Service -> Factory : CreateVesselDto(vessel*)
-Factory --> Service : List<VesselDto>
+Service -> Mapper : CreateVesselDto(vessel*)
+Mapper --> Service : List<VesselDto>
 
 Service --> Controller : List<VesselDto>
-Controller --> Officer : 200 OK (List<VesselDto>)
+Controller --> Officer : 200 OK (List<VesselDto))
 
 ' ==========================================================
-== Get Vessel(s) by Owner ==
+' GET BY OWNER
 ' ==========================================================
+== Get by Owner ==
 Officer -> Controller : GET /api/vessel/owner/{owner}
 Controller -> Service : GetByOwnerAsync(owner)
 
-Service -> Repo : GetByOwner(owner)
-Repo --> Service : List<Vessel>
+Service -> IRepo : GetByOwnerAsync(owner)
+IRepo --> Service : List<Vessel>
 
-Service -> Factory : CreateVesselDto(vessel*)
-Factory --> Service : List<VesselDto>
+Service -> Mapper : CreateVesselDto(vessel*)
+Mapper --> Service : List<VesselDto>
 
 Service --> Controller : List<VesselDto>
-Controller --> Officer : 200 OK (List<VesselDto>)
+Controller --> Officer : 200 OK (List<VesselDto))
 
 ' ==========================================================
-== Filter Vessels ==
+' FILTER
 ' ==========================================================
+== Filter ==
 Officer -> Controller : GET /api/vessel/filter?name=x&imo=y&owner=z&query=q
 Controller -> Service : GetFilterAsync(name, imo, owner, query)
 
-Service -> Repo : GetFilter(name, imo, owner, query)
-Repo --> Service : List<Vessel>
+Service -> IRepo : GetFilterAsync(name, imoNumber?, owner, query)
+IRepo --> Service : List<Vessel>
 
-Service -> Factory : CreateVesselDto(vessel*)
-Factory --> Service : List<VesselDto>
+Service -> Mapper : CreateVesselDto(vessel*)
+Mapper --> Service : List<VesselDto>
 
 Service --> Controller : List<VesselDto>
-Controller --> Officer : 200 OK (List<VesselDto>)
+Controller --> Officer : 200 OK (List<VesselDto))
 
 @enduml

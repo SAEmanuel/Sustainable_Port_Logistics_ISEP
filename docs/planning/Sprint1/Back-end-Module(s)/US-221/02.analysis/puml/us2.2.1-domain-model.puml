@@ -9,11 +9,13 @@ skinparam monochrome true
 skinparam shadowing false
 hide methods
 hide circle
-
 title US2.2.1 – Domain Model (Vessel Type Management)
 
 package "Vessel Type Context" as VTC {
 
+    ' ==========================
+    ' ENTITY
+    ' ==========================
     class VesselType {
         - Name : string
         - Description : string
@@ -25,12 +27,18 @@ package "Vessel Type Context" as VTC {
         + ChangeName(name)
         + ChangeDescription(description)
         + ChangeDimensions(maxBays, maxRows, maxTiers)
+        + ChangeMaxBays(bays)
+        + ChangeMaxRows(rows)
+        + ChangeMaxTiers(tiers)
     }
 
     class VesselTypeId {
         - Value : Guid
     }
 
+    ' ==========================
+    ' DATA TRANSFER OBJECTS (DTOs)
+    ' ==========================
     class VesselTypeDto {
         + Id : Guid
         + Name : string
@@ -49,11 +57,28 @@ package "Vessel Type Context" as VTC {
         + MaxTiers : int
     }
 
+    class UpdateVesselTypeDto {
+        + Name : string?
+        + Description : string?
+        + MaxBays : int?
+        + MaxRows : int?
+        + MaxTiers : int?
+    }
+
+    ' ==========================
+    ' FACTORY & MAPPERS
+    ' ==========================
     class VesselTypeFactory {
         + CreateBasicVesselType(dto)
+    }
+
+    class VesselTypeMappers {
         + CreateDtoVesselType(entity)
     }
 
+    ' ==========================
+    ' REPOSITORY
+    ' ==========================
     interface IVesselTypeRepository {
         + GetAllAsync()
         + GetByIdAsync(id)
@@ -63,6 +88,9 @@ package "Vessel Type Context" as VTC {
         + AddAsync(entity)
     }
 
+    ' ==========================
+    ' SERVICE (Domain/Application Layer)
+    ' ==========================
     class VesselTypeService {
         + GetAllAsync()
         + GetByIdAsync(id)
@@ -73,6 +101,9 @@ package "Vessel Type Context" as VTC {
         + UpdateAsync(id, dto)
     }
 
+    ' ==========================
+    ' CONTROLLER (Interface Layer)
+    ' ==========================
     class VesselTypeController {
         + GetAll()
         + GetById(id)
@@ -83,23 +114,29 @@ package "Vessel Type Context" as VTC {
         + Update(id, dto)
     }
 
+    ' ==========================
+    ' SHARED COMPONENTS
+    ' ==========================
     class BusinessRuleValidationException
     class IUnitOfWork
 }
 
 ' ==========================
-' Relationships
+' RELATIONSHIPS
 ' ==========================
 
 VesselTypeController --> VesselTypeService : uses
 VesselTypeService --> IVesselTypeRepository : depends on
 VesselTypeService --> IUnitOfWork : commits
-VesselTypeService --> VesselTypeFactory : converts entities ↔ DTOs
-VesselTypeFactory --> VesselType : creates instances
-VesselType --> VesselTypeId : identity
+VesselTypeService --> VesselTypeFactory : creates entities
+VesselTypeService --> VesselTypeMappers : maps entities ↔ DTOs
+VesselTypeFactory --> VesselType : instantiates
+VesselType --> VesselTypeId : identified by
 IVesselTypeRepository --> VesselType : manages persistence
 
-' Possible future reference from Vessel entity (US2.2.2)
+' ==========================
+' FUTURE LINK (US2.2.2 – Vessel Definition)
+' ==========================
 class Vessel {
     - ImoNumber : string
 }

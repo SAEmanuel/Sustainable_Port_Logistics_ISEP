@@ -52,7 +52,7 @@ package "DTOs" {
     + string ImoNumber
     + string Name
     + string Owner
-    + VesselTypeId VesselTypeId
+    + Guid VesselTypeId
   }
 
   class UpdatingVesselDto {
@@ -62,10 +62,10 @@ package "DTOs" {
 
   class VesselDto {
     + Guid Id
-    + ImoNumber ImoNumber
+    + string ImoNumber
     + string Name
     + string Owner
-    + VesselTypeId VesselTypeId
+    + Guid VesselTypeId
   }
 }
 
@@ -89,7 +89,11 @@ package "Application" {
 
   class VesselFactory {
     + CreateVessel(CreatingVesselDto) : Vessel
-    + CreateVesselDto(Vessel) : VesselDto
+  }
+
+  class VesselMapper {
+    + ToDto(Vessel) : VesselDto
+    + ToEntity(CreatingVesselDto) : Vessel
   }
 }
 
@@ -110,6 +114,13 @@ package "Infrastructure" {
   class VesselRepository implements IVesselRepository {
   }
 
+  interface IVesselTypeRepository {
+    + GetByIdAsync(VesselTypeId) : VesselType
+  }
+
+  class VesselTypeRepository implements IVesselTypeRepository {
+  }
+
   interface IUnitOfWork {
     + CommitAsync()
   }
@@ -128,7 +139,7 @@ package "Presentation" {
     + GetByImo(string) : VesselDto
     + GetByName(string) : List<VesselDto>
     + GetByOwner(string) : List<VesselDto>
-    + GetByFilter(string?, string?, string?, string?) : List<VesselDto>
+    + GetFilter(string?, string?, string?, string?) : List<VesselDto>
     + Create(CreatingVesselDto) : VesselDto
     + PatchByImo(string, UpdatingVesselDto) : VesselDto
   }
@@ -153,12 +164,15 @@ Vessel "1" *-- "1" ImoNumber
 Vessel --> VesselTypeId : references >
 
 VesselService --> IVesselRepository
+VesselService --> IVesselTypeRepository
 VesselService --> IUnitOfWork
 VesselService --> VesselFactory
+VesselService --> VesselMapper
 VesselService --> ILogger
 VesselRepository --> Vessel
 VesselFactory --> Vessel
-VesselFactory --> VesselDto
+VesselMapper --> Vessel
+VesselMapper --> VesselDto
 VesselController --> IVesselService
 VesselController --> ILogger
 

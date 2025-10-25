@@ -1,25 +1,26 @@
 @portURL = http://10.9.21.87:5008
+#@portURL = http://localhost:5008
 
 # --- VESSEL ---
 
 ###
-# 1. GET all vessels (list, possibly empty)
+# 1. GET all vessels 
 GET {{portURL}}/api/vessel
 Accept: application/json
 
 ###
-# 2. GET by Id - valid (replace GUID with an existing vessel)
-GET {{portURL}}/api/vessel/id/cbfa5eb4-7d11-4032-baeb-c2bdaa888ce6
+# 2. GET by Id - valid 
+GET {{portURL}}/api/vessel/id/2befd59d-4363-470c-92ba-b60915e4ab69
 Accept: application/json
 
 ###
 # 3. GET by Id - not found
-GET {{portURL}}/api/vessel/id/00000000-0000-0000-0000-000000000000
+GET {{portURL}}/api/vessel/id/2befd59d-4363-470c-92ba-b60915e4ab61
 Accept: application/json
 
 ###
 # 4. GET by IMO - valid
-GET {{portURL}}/api/vessel/imo/IMO 9706906
+GET {{portURL}}/api/vessel/imo/IMO 9399014
 Accept: application/json
 
 ###
@@ -60,7 +61,7 @@ Accept: application/json
   "imoNumber": "IMO 9876543",
   "name": "Ever Given",
   "owner": "Evergreen Marine",
-  "vesselTypeName": "Panamax"
+  "vesselTypeName": "Panamax Plus"
 }
 
 ###
@@ -73,7 +74,7 @@ Accept: application/json
   "imoNumber": "IMO 9399014",
   "name": "MSC Gülsün",
   "owner": "Mediterranean Shipping Company",
-  "vesselTypeName": "Panamax"
+  "vesselTypeName": "Panamax Plus"
 }
 
 ###
@@ -110,9 +111,10 @@ Content-Type: application/json
 Accept: application/json
 
 {
-  "imoNumber": "IMO 9999999",
+  "imoNumber": "IMO 9999993",
+  "name": "",
   "owner": "NoName Shipping",
-  "vesselTypeName": "Panamax8"
+  "vesselTypeName": "Panamax Plus"
 }
 
 ###
@@ -131,7 +133,7 @@ Accept: application/json
 
 ###
 # 16. PATCH existing vessel by IMO - valid
-PATCH {{portURL}}/api/vessel/imo/IMO 9319466
+PATCH {{portURL}}/api/vessel/imo/IMO 9399014
 Content-Type: application/json
 
 {
@@ -140,7 +142,7 @@ Content-Type: application/json
 }
 ###
 # 17. PATCH non-existing vessel (should fail)
-PATCH {{portURL}}/api/vessel/imo/IMO 0000000
+PATCH {{portURL}}/api/vessel/imo/IMO 9399234
 Content-Type: application/json
 
 {
@@ -149,7 +151,7 @@ Content-Type: application/json
 }
 ###
 # 18. PATCH with invalid data (too short name)
-PATCH {{portURL}}/api/vessel/imo/IMO 9319466
+PATCH {{portURL}}/api/vessel/imo/IMO 9399014
 Content-Type: application/json
 
 {

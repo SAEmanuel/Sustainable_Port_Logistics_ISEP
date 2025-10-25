@@ -6,80 +6,104 @@
 
 ### **2.1. Relevant Domain Model Excerpt**
 
-![Domain Model](./puml/us2.2.2-domain-model.svg)
+![Domain Model – US2.2.2](./puml/us2.2.2-domain-model.svg)
 
-**Concepts identified:**
+This excerpt focuses on the **Vessel Aggregate** and its relationship with the **VesselType** aggregate created in *US2.2.1*.
 
 ---
+
+### **Main Concepts Identified**
 
 #### **Vessel (Aggregate Root)**
 
 **Attributes:**
 
-* `Id` → Surrogate key (`VesselId`).
-* `ImoNumber` → Natural key (Value Object).
-* `Name` → Vessel name.
-* `Owner` → Operator or owning entity.
-* `VesselTypeId` → Foreign key referencing an existing `VesselType`.
+| Attribute      | Description                                     | Type / Notes                                |
+| -------------- | ----------------------------------------------- | ------------------------------------------- |
+| `Id`           | Surrogate primary key                           | `VesselId` (Value Object wrapping a `Guid`) |
+| `ImoNumber`    | Natural key ensuring vessel uniqueness          | `ImoNumber` (Value Object)                  |
+| `Name`         | Vessel name                                     | `string` (≥ 5 chars, non-null)              |
+| `Owner`        | Operator or owner company                       | `string` (≥ 5 chars, non-null)              |
+| `VesselTypeId` | Foreign key referencing an existing Vessel Type | `VesselTypeId`                              |
 
-**Behaviors (methods):**
+**Behaviours:**
 
-* `UpdateName(name)` → Validates minimum length and non-nullity.
-* `UpdateOwner(owner)` → Validates minimum length and non-nullity.
-* `UpdateImoNumber(imoNumber)` and `UpdateVesselType(vesselTypeId)` → Private (used internally, not accessible externally).
+* `UpdateName(name)` → Validates length and non-nullity.
+* `UpdateOwner(owner)` → Validates length and non-nullity.
+* `UpdateImoNumber(imoNumber)` and `UpdateVesselType(vesselTypeId)` → **Private**, used internally during creation.
+
+**Design Notes:**
+
+* Acts as the **Aggregate Root** for all vessel-related entities.
+* Responsible for enforcing **domain invariants** (name, owner, and type integrity).
 
 ---
 
 #### **ImoNumber (Value Object)**
 
-* Represents the **International Maritime Organization number** (7 digits, final digit as check digit).
-* Validates format and check digit upon instantiation.
-* Immutable once created.
-* Ensures global uniqueness of vessels across the system.
+* Represents the **International Maritime Organization (IMO)** identification number.
+* Composed of **7 digits**, where the last is a **checksum**.
+* Provides validation logic (`ValidateFormat`, `ValidateCheckDigit`) ensuring domain consistency.
+* **Immutable** once created and used as the **natural key** for `Vessel`.
 
 ---
 
-#### **VesselType (Entity / Aggregate Root)**
+#### **VesselType (External Aggregate Reference)**
 
-* Defined and created in **US2.2.1 – Create and Manage Vessel Types**.
-* Each `Vessel` must reference an existing `VesselType` through `VesselTypeId`.
-* Acts as a foreign aggregate dependency for `Vessel`.
-
----
-
-#### **Owner / Operator (string property)**
-
-* Represents the company or entity responsible for the vessel’s operation.
-* Must not be null or blank.
-* Must have a minimum length of **5 characters**.
-* Candidate for future refactoring into a **Value Object** or **Entity** if ownership becomes relevant for authorization or contracts (see dependency with US2.2.5).
+* Defined in **US2.2.1 – Create and Manage Vessel Types**.
+* Every `Vessel` must reference an existing `VesselType` through its `VesselTypeId`.
+* Referential integrity enforced by the **VesselService** prior to persistence.
 
 ---
 
-### **Invariants and Business Rules**
+#### **Owner (String Attribute)**
 
-* A `Vessel` **must always** satisfy the following conditions:
-
-  * Valid and unique `ImoNumber`.
-  * Non-empty `Name` (≥ 5 characters).
-  * Non-empty `Owner` (≥ 5 characters).
-  * Valid and existing `VesselTypeId` (not empty GUID).
-* **ImoNumber is immutable** after creation (serves as the natural key).
-* **Duplicate IMO numbers are forbidden**, enforced at the service layer before persistence.
-* **Updates** are restricted to `Name` and `Owner` attributes.
-* Referential integrity is mandatory: every `Vessel` must reference an existing `VesselType`.
+* Represents the organization or person responsible for vessel operation.
+* Must not be null, empty, or shorter than 5 characters.
+* Potential candidate for evolution into a **Value Object (OwnerName)** or **Entity (Owner)** in future user stories (e.g., *US2.2.5 – Manage Vessel Ownership*).
 
 ---
 
-### **2.2. Other Remarks**
+### **2.2. Business Rules and Invariants**
 
-* The `ImoNumber` value object encapsulates the **validation and checksum logic**, ensuring domain consistency without external dependencies.
-* **Search operations** (`GetByImo`, `GetByName`, `GetByOwner`, `GetFilter`) are implemented at the **Application Service layer** (`VesselService`) and not modeled inside the domain aggregate.
-* **Logging and traceability** are handled via structured logging (`ILogger`) within both `VesselService` and `VesselController`, ensuring auditability of all CRUD operations.
-* **Error handling strategy:**
+| Rule   | Description                                        | Enforcement                                            |
+| ------ | -------------------------------------------------- | ------------------------------------------------------ |
+| **R1** | IMO Number must be valid and unique                | `ImoNumber` validation + service-level duplicate check |
+| **R2** | Name must be non-empty and ≥ 5 chars               | Domain validation in `SetName()`                       |
+| **R3** | Owner must be non-empty and ≥ 5 chars              | Domain validation in `SetOwner()`                      |
+| **R4** | VesselTypeId must reference an existing VesselType | Verified at the application layer                      |
+| **R5** | IMO Number is immutable after creation             | No public setter or update method                      |
+| **R6** | Updates allowed only for Name and Owner            | Enforced in `VesselService.PatchByImoAsync()`          |
 
-  * Violations of domain rules throw `BusinessRuleValidationException`.
-  * Controller layer translates exceptions into appropriate HTTP responses:
+---
 
-    * `400 Bad Request` → Invalid input or business rule violation.
-    * `404 Not Found` → Entity not found in repository.
+### **2.3. Supporting Domain Principles**
+
+* **Encapsulation of Invariants:**
+  All validation logic (length, null checks, IMO checksum) is embedded within the domain layer.
+
+* **Consistency via Value Objects:**
+  `ImoNumber`, `VesselId`, and `VesselTypeId` are implemented as **Value Objects** ensuring strong typing and equality semantics.
+
+* **Referential Integrity:**
+  Before persisting a new vessel, the system checks that the `VesselType` exists in the repository.
+
+* **Uniqueness Guarantee:**
+  Duplicate IMO numbers are prevented at the domain service level before commit.
+
+---
+
+### **2.4. Cross-Cutting Concerns**
+
+* **Logging:**
+  All CRUD operations are logged using `ILogger<VesselService>` and `ILogger<VesselController>`, ensuring traceability and audit compliance.
+
+* **Error Handling:**
+
+    * `BusinessRuleValidationException` → Violated invariants (400 Bad Request).
+    * Entity not found → 404 Not Found.
+    * Repository or system errors → 500 Internal Server Error.
+
+* **DTO Usage:**
+  `CreatingVesselDto`, `UpdatingVesselDto`, and `VesselDto` isolate the domain model from external representation (REST API), following the **DTO Pattern**.
+
