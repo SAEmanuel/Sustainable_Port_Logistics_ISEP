@@ -1,5 +1,5 @@
-#@portURL = http://10.9.21.87:5008
-@portURL = http://localhost:5008
+@portURL = http://10.9.21.87:5008
+#@portURL = http://localhost:5008
 
 # --- STORAGE AREAS ---
 

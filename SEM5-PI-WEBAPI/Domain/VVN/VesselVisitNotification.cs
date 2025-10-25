@@ -209,9 +209,8 @@ namespace SEM5_PI_WEBAPI.Domain.VVN
 
         public void Submit()
         {
-            if (Status.StatusValue != VvnStatus.InProgress)
-                throw new BusinessRuleValidationException(
-                    $"Only In-progress VVNs can be submitted. Current status: {Status}");
+            if (!IsEditable)
+                throw new BusinessRuleValidationException($"Only In-progress VVNs can be submitted. Current status: {Status}");
             
             SubmittedDate = new ClockTime(DateTime.Now);
             Status = new Status(VvnStatus.Submitted, null);

@@ -6,11 +6,13 @@
     "maxBays": 20,
     "maxRows": 8,
     "maxTiers": 4,
-    "physicalResources": [
-      "YGCRA-0001"
-    ],
+    "physicalResources": ["YGCRA-0001"],
     "distancesToDocks": [
-      {"dockCode": "DK-0005", "distanceKm": 0.15}
+      {"dockCode": "DK-0001", "distance": 300},
+      {"dockCode": "DK-0002", "distance": 200},
+      {"dockCode": "DK-0003", "distance": 100},
+      {"dockCode": "DK-0004", "distance": 150},
+      {"dockCode": "DK-0005", "distance": 350}
     ]
   },
   {
@@ -20,10 +22,14 @@
     "maxBays": 25,
     "maxRows": 10,
     "maxTiers": 5,
-    "physicalResources": [
-      "TRUCK-0001"
-    ]
-  },
+    "physicalResources": ["TRUCK-0001"],
+    "distancesToDocks": [
+      {"dockCode": "DK-0001", "distance": 300},
+      {"dockCode": "DK-0002", "distance": 200},
+      {"dockCode": "DK-0003", "distance": 100},
+      {"dockCode": "DK-0004", "distance": 150},
+      {"dockCode": "DK-0005", "distance": 350}
+    ]  },
   {
     "name": "Warehouse A",
     "description": "Indoor covered storage facility for sensitive cargo",
@@ -31,10 +37,14 @@
     "maxBays": 15,
     "maxRows": 6,
     "maxTiers": 3,
-    "physicalResources": [
-      "RSTAC-0001"
-    ]
-  },
+    "physicalResources": ["RSTAC-0001"],
+    "distancesToDocks": [
+      {"dockCode": "DK-0001", "distance": 300},
+      {"dockCode": "DK-0002", "distance": 200},
+      {"dockCode": "DK-0003", "distance": 100},
+      {"dockCode": "DK-0004", "distance": 150},
+      {"dockCode": "DK-0005", "distance": 350}
+    ]  },
   {
     "name": "Warehouse B",
     "description": "Indoor temperature-controlled storage for perishable goods",
@@ -42,10 +52,14 @@
     "maxBays": 12,
     "maxRows": 5,
     "maxTiers": 3,
-    "physicalResources": [
-      "FORKL-0001"
-    ]
-  },
+    "physicalResources": ["FORKL-0001"],
+    "distancesToDocks": [
+      {"dockCode": "DK-0001", "distance": 300},
+      {"dockCode": "DK-0002", "distance": 200},
+      {"dockCode": "DK-0003", "distance": 100},
+      {"dockCode": "DK-0004", "distance": 150},
+      {"dockCode": "DK-0005", "distance": 350}
+    ]  },
   {
     "name": "Yard C",
     "description": "Outdoor storage area for heavy and oversized cargo",
@@ -53,12 +67,13 @@
     "maxBays": 18,
     "maxRows": 7,
     "maxTiers": 3,
-    "physicalResources": [
-      "STSCR-0001"
-    ],
+    "physicalResources": ["STSCR-0001"],
     "distancesToDocks": [
-      {"dockCode": "DK-0001", "distanceKm": 0.3},
-      {"dockCode": "DK-0003", "distanceKm": 0.1}
+      {"dockCode": "DK-0001", "distance": 300},
+      {"dockCode": "DK-0002", "distance": 200},
+      {"dockCode": "DK-0003", "distance": 100},
+      {"dockCode": "DK-0004", "distance": 150},
+      {"dockCode": "DK-0005", "distance": 350}
     ]
   }
 ]

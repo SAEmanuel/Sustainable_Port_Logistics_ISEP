@@ -1,5 +1,5 @@
-@portURL = http://10.9.21.87:5008
-#@portURL = http://localhost:5008
+#@portURL = http://10.9.21.87:5008
+@portURL = http://localhost:5008
 @contentType = application/json
 @accept = application/json
 
@@ -9,171 +9,74 @@ POST {{portURL}}/api/VesselVisitNotification
 Content-Type: {{contentType}}
 Accept: {{accept}}
 
-{
-  "estimatedTimeArrival": "2025-12-01T08:00:00",
-  "estimatedTimeDeparture": "2025-12-03T18:00:00",
-  "volume": 2000,
-  "documents": null,
-
-  "crewManifest": {
-    "totalCrew": 15,
-    "captainName": "John Smith",
-    "crewMembers": [
-      {
-        "name": "Carlos Mendes",
-        "role": "Captain",
-        "nationality": "Portugal",
-        "citizenId": "A12345"
-      },
-      {
-        "name": "Anna Becker",
-        "role": "SafetyOfficer",
-        "nationality": "Peru",
-        "citizenId": "B98765"
-      }
-    ]
-  },
-
-  "loadingCargoManifest": {
-    "type": "Loading",
-    "createdBy": "Agent01@gmail.com",
-    "entries": [
-      {
-        "bay": 2,
-        "row": 3,
-        "tier": 4,
-        "storageAreaName": "Yard B",
-        "container": {
-          "isoCode": "MSCU6639870",
-          "description": "Perishable frozen food cargo",
-          "type": "Hazmat",
-          "weightKg": 10800
-        }
-      }
-    ]
-  },
-
-  "unloadingCargoManifest": null,
-  "vesselImo": "IMO 9234563"
-}
-
-
-# CREATE a new Vessel Visit Notification
-###
-POST {{portURL}}/api/VesselVisitNotification
-Content-Type: {{contentType}}
-Accept: {{accept}}
-
-{
-  "estimatedTimeArrival": "2025-12-01T08:00:00",
-  "estimatedTimeDeparture": "2025-12-03T18:00:00",
-  "volume": 2000,
-  "documents": null,
-
-  "crewManifest": null,
-
-  "loadingCargoManifest": {
-    "type": "Loading",
-    "createdBy": "Agent01",
-    "entries": [
-      {
-        "bay": 2,
-        "row": 3,
-        "tier": 4,
-        "storageAreaId": "fbddd277-3240-4008-815f-bfb332140923",
-        "container": {
-          "isoCode": "MSCU6639870",
-          "description": "Perishable frozen food cargo",
-          "type": "Reefer",
-          "weightKg": 10800
-        }
-      }
-    ]
-  },
-
-  "unloadingCargoManifest": null,
-  "vesselImo": "IMO 9876543"
-}
+ {
+    "estimatedTimeArrival": "2025-12-01T08:00:00",
+    "estimatedTimeDeparture": "2025-12-03T18:00:00",
+    "volume": 2000,
+    "documents": null,
+    "crewManifest": {
+      "totalCrew": 15,
+      "captainName": "John Smith",
+      "crewMembers": [
+        {"name": "Carlos Mendes", "role": "Captain", "nationality": "Portugal", "citizenId": "A12345"},
+        {"name": "Anna Becker", "role": "SafetyOfficer", "nationality": "Peru", "citizenId": "B98765"}
+      ]
+    },
+    "loadingCargoManifest": {
+      "type": "Loading",
+      "createdBy": "Agent01@gmail.com",
+      "entries": [
+        {"bay": 2, "row": 3, "tier": 4, "storageAreaName": "Warehouse B", "container": {"isoCode": "MSCU6639870", "description": "Perishable frozen food cargo", "type": "Hazmat", "weightKg": 10800}},
+        {"bay": 3, "row": 1, "tier": 2, "storageAreaName": "Warehouse B", "container": {"isoCode": "BBCU5100617", "description": "Electronics", "type": "General", "weightKg": 4500}}
+      ]
+    },
+    "unloadingCargoManifest": {
+      "type": "Unloading",
+      "createdBy": "Agent02@gmail.com",
+      "entries": [
+        {"bay": 1, "row": 2, "tier": 3, "storageAreaName": "Warehouse A", "container": {"isoCode": "BBCU5100617", "description": "Automotive parts", "type": "General", "weightKg": 7000}},
+        {"bay": 4, "row": 3, "tier": 5, "storageAreaName": "Yard B", "container": {"isoCode": "CSQU3054383", "description": "Furniture Related", "type": "General", "weightKg": 12000}}
+      ]
+    },
+    "vesselImo": "IMO 9823455",
+    "emailSar": "alexandre.silva@gmail.com"
+ }
 ###
 # 2 - UPDATE an existing Vessel Visit Notification (editable state)
 
 ###
-PUT {{portURL}}/api/VesselVisitNotification/b7d33c6d-9335-4ac7-8309-9afb528c3e89/update
+PUT {{portURL}}/api/VesselVisitNotification/17c6a945-3cde-4776-9158-391a8bd9c03f/update
 Content-Type: {{contentType}}
 Accept: {{accept}}
 
 {
-  "estimatedTimeArrival": "2025-12-02T10:30:00",
-  "estimatedTimeDeparture": "2025-12-04T14:00:00",
+  "estimatedTimeArrival": "2025-10-01T10:30:00",
+  "estimatedTimeDeparture": "2025-10-04T14:00:00",
   "volume": 2300,
   "vesselImo": "IMO 9876544",
   "listDocks": ["DK-0001"],
   "crewManifest": {
     "totalCrew": 17,
     "captainName": "John Smith",
-    "crewMembers": [
-      {
-        "name": "Carlos Mendes",
-        "role": "FirstOfficer",
-        "nationality": "PT",
-        "citizenId": "A12345"
-      },
-      {
-        "name": "Anna Becker",
-        "role": "Engineer",
-        "nationality": "DE",
-        "citizenId": "B98765"
-      },
-      {
-        "name": "Ravi Patel",
-        "role": "Technician",
-        "nationality": "IN",
-        "citizenId": "C32154"
-      }
-    ]
+     "crewManifest": {
+      "totalCrew": 15,
+      "captainName": "John Smith",
+      "crewMembers": [
+        {"name": "Carlos Mendes", "role": "Captain", "nationality": "Portugal", "citizenId": "A12345"},
+        {"name": "Anna Becker", "role": "SafetyOfficer", "nationality": "Peru", "citizenId": "B98765"}
+      ]
+    },
   },
   "loadingCargoManifest": null,
   "unloadingCargoManifest": null
 }
 
-###
-PUT {{portURL}}/api/VesselVisitNotification/b7d33c6d-9335-4ac7-8309-9afb528c3e89/update
-Content-Type: {{contentType}}
-Accept: {{accept}}
-
-{
-  "estimatedTimeArrival": "2025-12-02T10:30:00",
-  "estimatedTimeDeparture": "2025-12-04T14:00:00",
-  "volume": 2300,
-  "vesselImo": "IMO 9876544",
-  "listDocks": ["DK-0001"],
-  "crewManifest": null,
-  "loadingCargoManifest": {
-    "type": "Loading",
-    "createdBy": "Agent02",
-    "entries": [
-      {
-        "bay": 2,
-        "row": 3,
-        "tier": 4,
-        "storageAreaId": "fbddd277-3240-4008-815f-bfb332140923",
-        "container": {
-          "isoCode": "MSCU6639870",
-          "description": "Perishable frozen food cargo",
-          "type": "Reefer",
-          "weightKg": 10800
-        }
-      }
-    ]
-  },
-  "unloadingCargoManifest": null
-}
 
 ###
 # 3 - SUBMIT Vessel Visit Notification for approval
 
 ###
-PUT {{portURL}}/api/VesselVisitNotification/d16d133f-9b81-43a9-b651-c0a8bbfef135/submit
+PUT {{portURL}}/api/VesselVisitNotification/474b7217-b732-4cfb-8f99-945f53ace1cb/submit
 Content-Type: {{contentType}}
 Accept: {{accept}}
 
@@ -196,7 +99,7 @@ Accept: {{accept}}
 # ️6 - PUT Accept VVN
 
 ###
-PUT {{portURL}}/api/VesselVisitNotification/accept/id/49de6f49-0649-4abe-9667-8d25acfb3248
+PUT {{portURL}}/api/VesselVisitNotification/accept/id/474b7217-b732-4cfb-8f99-945f53ace1cb
 Accept: {{accept}}
 
 # ️7 - PUT Reject/MarkAsPending VVN
@@ -207,7 +110,7 @@ Content-Type: {{contentType}}
 Accept: {{accept}}
 
 {
-    "vvnCode": "2025-THPA-000002",
+    "vvnCode": "2025-THPA-000001",
     "reason": "Rejecting the VVN due to inconsistencies found in the estimated time of arrival and departure, which require correction before approval."
 }
 
@@ -216,7 +119,7 @@ Accept: {{accept}}
 # ️8 - Get InProgress & PendingInformation
 
 ### 
-GET {{portURL}}/api/VesselVisitNotification/shippingAgentRepresentative/inProgress-pendingInformation/72f1d6b2-3475-46b8-bb2c-2cf2b379a913
+GET {{portURL}}/api/VesselVisitNotification/shippingAgentRepresentative/inProgress-pendingInformation/f7135f03-505f-40ec-bf5d-55788109b4d4
     ?specificRepresentative=73fbd011-5c94-4029-8a6b-22c1900a39a2
     &vesselImoNumber=IMO9706906
     &estimatedTimeArrival=2025-10-15T10:00

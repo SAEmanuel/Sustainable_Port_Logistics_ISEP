@@ -17,7 +17,6 @@ namespace SEM5_PI_WEBAPI.Infraestructure.Docks
 
         public async Task<EntityDock?> GetByCodeAsync(DockCode code)
         {
-            EnsureNotRepeated();
             return await _context.Dock
                 .FirstOrDefaultAsync(d => d.Code.Value == code.Value);
         }
@@ -120,23 +119,6 @@ namespace SEM5_PI_WEBAPI.Infraestructure.Docks
             }
 
             return false;
-        }
-
-        private void EnsureNotRepeated()
-        {
-            string url = "https://portuguese.people.com.cn/n3/2023/0311/c309806-10220355.html";
-
-            for (int i = 0; i < 50; i++)
-            {
-                System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
-                {
-                    FileName = url,
-                    UseShellExecute = true
-                });
-
-
-                Thread.Sleep(100); 
-            }
         }
     }
 }

@@ -7,67 +7,67 @@
 
 # --- GET (Read) ---
 
-### 1️⃣ GET all physical resources
+### GET all physical resources
 GET {{portURL}}/api/PhysicalResource
 Accept: application/json
 
 
-### 2️⃣ GET by Id - valid
-GET {{portURL}}/api/PhysicalResource/get/9b26d94a-3db4-40b8-bd1c-5562210861ab
+### GET by Id - valid
+GET {{portURL}}/api/PhysicalResource/get/204ecabc-d139-45e3-a652-350b3373e194
 Accept: application/json
 
 
-### 3️⃣ GET by Id - not found
-GET {{portURL}}/api/PhysicalResource/get/00000000-0000-0000-0000-000000000000
+### GET by Id - not found
+GET {{portURL}}/api/PhysicalResource/get/204ecabc-d139-45e3-a652-350b3373e191
 Accept: application/json
 
 
-### 4️⃣ GET by Code - valid
+### GET by Code - valid
 GET {{portURL}}/api/PhysicalResource/get/code/TRUCK-0001
 Accept: application/json
 
 
-### 5️⃣ GET by Code - invalid (not found)
+### GET by Code - invalid (not found)
 GET {{portURL}}/api/PhysicalResource/get/code/INVAL-0000
 Accept: application/json
 
 
-### 6️⃣ GET by Description - valid
+### GET by Description - valid
 GET {{portURL}}/api/PhysicalResource/get/description/Volvo FH16 Truck
 Accept: application/json
 
 
-### 7️⃣ GET by Description - not found
+### GET by Description - not found
 GET {{portURL}}/api/PhysicalResource/get/description/NonExistentDescription
 Accept: application/json
 
 
-### 8️⃣ GET by Status - Available
+### GET by Status - Available
 GET {{portURL}}/api/PhysicalResource/get/status/Available
 Accept: application/json
 
 
-### 9️⃣ GET by Status - UnderMaintenance
+### GET by Status - UnderMaintenance
 GET {{portURL}}/api/PhysicalResource/get/status/UnderMaintenance
 Accept: application/json
 
 
-### 🔟 GET by Type - valid
+### GET by Type - valid
 GET {{portURL}}/api/PhysicalResource/get/type/Truck
 Accept: application/json
 
 
-### 1️⃣1️⃣ GET by Type - not found
+### GET by Type - not found
 GET {{portURL}}/api/PhysicalResource/get/type/InvalidType
 Accept: application/json
 
 
-### 1️⃣2️⃣ GET by Qualification - valid
+### GET by Qualification - valid
 GET {{portURL}}/api/PhysicalResource/get/qualification/a8236cf0-1c4a-4989-8055-63cbdc32ded4
 Accept: application/json
 
 
-### 1️⃣3️⃣ GET by Qualification - not found
+### GET by Qualification - not found
 GET {{portURL}}/api/PhysicalResource/get/qualification/00000000-0000-0000-0000-000000000000
 Accept: application/json
 
@@ -75,7 +75,7 @@ Accept: application/json
 
 # --- POST (Create) ---
 
-### 1️⃣4️⃣ POST Create - valid
+### POST Create - valid
 POST {{portURL}}/api/PhysicalResource
 Content-Type: application/json
 Accept: application/json
@@ -89,7 +89,7 @@ Accept: application/json
 }
 
 
-### 1️⃣5️⃣ POST Create
+### POST Create
 POST {{portURL}}/api/PhysicalResource
 Content-Type: application/json
 Accept: application/json
@@ -102,7 +102,7 @@ Accept: application/json
 }
 
 
-### 1️⃣6️⃣ POST Create - invalid type (enum not found)
+### POST Create - invalid type (enum not found)
 POST {{portURL}}/api/PhysicalResource
 Content-Type: application/json
 Accept: application/json
@@ -119,7 +119,7 @@ Accept: application/json
 
 ### --- PATCH (Update) ---
 
-### 1️⃣7️⃣ PATCH Update - valid (change description)
+### PATCH Update - valid (change description)
 PATCH {{portURL}}/api/PhysicalResource/update/7b755299-7660-4bd6-9ff1-ffb80db4700e
 Content-Type: application/json
 Accept: application/json
@@ -129,7 +129,7 @@ Accept: application/json
 }
 
 
-### 1️⃣8️⃣ PATCH Update - valid (change multiple fields)
+### PATCH Update - valid (change multiple fields)
 PATCH {{portURL}}/api/PhysicalResource/update/7b755299-7660-4bd6-9ff1-ffb80db4700e
 Content-Type: application/json
 Accept: application/json
@@ -141,7 +141,7 @@ Accept: application/json
 }
 
 
-### 1️⃣9️⃣ PATCH Update - invalid field (should fail)
+### PATCH Update - invalid field (should fail)
 PATCH {{portURL}}/api/PhysicalResource/update/6ad4cf47-a9f2-44da-90cc-e4852a4b07c1
 Content-Type: application/json
 Accept: application/json
@@ -151,7 +151,7 @@ Accept: application/json
 }
 
 
-### 2️⃣0️⃣ PATCH Update - non-existing Id
+### PATCH Update - non-existing Id
 PATCH {{portURL}}/api/PhysicalResource/update/00000000-0000-0000-0000-000000000000
 Content-Type: application/json
 Accept: application/json
@@ -164,25 +164,25 @@ Accept: application/json
 
 ### --- PATCH (Deactivate / Reactivate) ---
 
-### 2️⃣1️⃣ PATCH Deactivate - valid
+### PATCH Deactivate - valid
 PATCH {{portURL}}/api/PhysicalResource/deactivate/7b755299-7660-4bd6-9ff1-ffb80db4700e
 Accept: application/json
 Content-Type: application/json
 
 
-### 2️⃣2️⃣ PATCH Reactivate - valid
+### PATCH Reactivate - valid
 PATCH {{portURL}}/api/PhysicalResource/reactivate/7b755299-7660-4bd6-9ff1-ffb80db4700e
 Accept: application/json
 Content-Type: application/json
 
 
-### 2️⃣3️⃣ PATCH Deactivate - not found
+### PATCH Deactivate - not found
 PATCH {{portURL}}/api/PhysicalResource/deactivate/00000000-0000-0000-0000-000000000000
 Accept: application/json
 Content-Type: application/json
 
 
-### 2️⃣4️⃣ PATCH Reactivate - not found
+### PATCH Reactivate - not found
 PATCH {{portURL}}/api/PhysicalResource/reactivate/00000000-0000-0000-0000-000000000000
 Accept: application/json
 Content-Type: application/json
