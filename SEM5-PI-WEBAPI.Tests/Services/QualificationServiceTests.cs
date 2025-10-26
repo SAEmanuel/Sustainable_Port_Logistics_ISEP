@@ -55,15 +55,16 @@ public class QualificationServiceTests
     }
 
     [Fact]
-    public async Task GetByIdAsync_ShouldReturnNull_WhenNotFound()
+    public async Task GetByIdAsync_ShouldThrowBusinessRuleValidationException_WhenNotFound()
     {
         var id = new QualificationId(Guid.NewGuid());
-        _repoMock.Setup(r => r.GetByIdAsync(id)).ReturnsAsync((Qualification?)null);
+        _repoMock.Setup(r => r.GetByIdAsync(id))
+            .ReturnsAsync((Qualification?)null);
 
-        var result = await _service.GetByIdAsync(id);
-
-        result.Should().BeNull();
+        await Assert.ThrowsAsync<BusinessRuleValidationException>(() =>
+            _service.GetByIdAsync(id));
     }
+
 
     [Fact]
     public async Task AddAsync_ShouldCreateQualification_WhenValid()

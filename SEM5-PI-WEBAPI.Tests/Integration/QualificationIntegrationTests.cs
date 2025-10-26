@@ -98,7 +98,7 @@ public class QualificationIntegrationTests
     }
 
     [Fact]
-    public async Task GetById_NonExisting_ShouldReturnNotFound()
+    public async Task GetById_NonExisting_ShouldReturnBadRequest()
     {
         // Arrange
         _repoMock.Setup(r => r.GetByIdAsync(It.IsAny<QualificationId>()))
@@ -108,8 +108,9 @@ public class QualificationIntegrationTests
         var result = await _controller.GetGetById(Guid.NewGuid());
 
         // Assert
-        Assert.IsType<NotFoundResult>(result.Result);
+        Assert.IsType<BadRequestObjectResult>(result.Result);
     }
+
 
     [Fact]
     public async Task GetByCode_ExistingQualification_ShouldReturnOk()
