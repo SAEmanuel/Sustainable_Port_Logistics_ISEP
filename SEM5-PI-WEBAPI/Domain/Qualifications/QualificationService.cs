@@ -34,7 +34,7 @@ public class QualificationService : IQualificationService
         if (q == null)
         {
             _logger.LogWarning("Qualification with ID: {Id} not found.", id.Value);
-            return null;
+            throw new BusinessRuleValidationException($"Qualification with ID: {id.Value} not found");
         }
 
         var dto = QualificationMapper.ToDto(q); 

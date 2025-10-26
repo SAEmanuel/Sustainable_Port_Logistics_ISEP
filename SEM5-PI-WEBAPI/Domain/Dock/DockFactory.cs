@@ -6,12 +6,12 @@ namespace SEM5_PI_WEBAPI.Domain.Dock
 {
     public static class DockFactory
     {
-        public static EntityDock RegisterDock(RegisterDockDto dto)
+        public static EntityDock RegisterDock(RegisterDockDto dto, List<PhysicalResourceCode> prc)
         {
             
             return new EntityDock(
                 new DockCode(dto.Code),
-                dto.PhysicalResourceCodesList,
+                prc,
                 dto.Location,
                 dto.LengthM,
                 dto.DepthM,

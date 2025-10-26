@@ -7,7 +7,7 @@ namespace SEM5_PI_WEBAPI.Domain.Dock.DTOs
     {
         public string Code { get; set; } = null!;
         public List<string> PhysicalResourceCodes { get; set; } = new();
-        public List<PhysicalResourceCode> PhysicalResourceCodesList { get; set; } 
+        //public List<PhysicalResourceCode> PhysicalResourceCodesList { get; set; } 
         public string Location { get; set; } = null!;
         public double LengthM  { get; set; }
         public double DepthM   { get; set; }

@@ -54,7 +54,7 @@ namespace SEM5_PI_WEBAPI.Domain.Dock
                         throw new BusinessRuleValidationException($"Dock with PhysicalResourceCode '{prc.Value}' already exists in DB.");
                     prcList.Add(physicalResource.Code);
             }
-            dto.PhysicalResourceCodesList = prcList;
+            
             
             List<VesselTypeId> vesselsTypes = new List<VesselTypeId>();
             foreach (var raw in dto.AllowedVesselTypeNames)
@@ -67,7 +67,7 @@ namespace SEM5_PI_WEBAPI.Domain.Dock
 
             dto.VesselsTypesObjs = vesselsTypes;
 
-            var dock = DockFactory.RegisterDock(dto);
+            var dock = DockFactory.RegisterDock(dto, prcList);
             await _dockRepository.AddAsync(dock);
             await _unitOfWork.CommitAsync();
 
