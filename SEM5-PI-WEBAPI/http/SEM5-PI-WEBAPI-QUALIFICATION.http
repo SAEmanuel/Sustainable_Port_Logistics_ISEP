@@ -1,17 +1,72 @@
-@portURL = http://10.9.23.173:5008
+@portURL = http://10.9.23.188
 
+
+# ============ GET ALL ============
+
+### Get All Qualifications
 GET {{portURL}}/api/qualifications
 Accept: application/json
 
-###
+
+# ============ GET BY ID ============
+
+### Get by ID - Valid
+GET {{portURL}}/api/qualifications/0d868c4e-2c92-4d4d-9cab-70c549e839d0
+Accept: application/json
+
+### Get by ID - Not Found
+GET {{portURL}}/api/qualifications/00000000-0000-0000-0000-000000000000
+Accept: application/json
+
+### Get by ID - Invalid GUID
+GET {{portURL}}/api/qualifications/invalid-guid
+Accept: application/json
+
+
+# ============ GET BY CODE ============
+
+### Get by Code - Valid
 GET {{portURL}}/api/qualifications/code/TRK-001
 Accept: application/json
 
-###
+### Get by Code - Not Found
+GET {{portURL}}/api/qualifications/code/NOTFOUND-999
+Accept: application/json
+
+
+# ============ GET BY NAME ============
+
+### Get by Name - Exact Match
 GET {{portURL}}/api/qualifications/name/Logistics Coordinator
 Accept: application/json
 
-###
+### Get by Name - Partial Match not found
+GET {{portURL}}/api/qualifications/name/Coordinator
+Accept: application/json
+
+
+# ============ CREATE ============
+
+### Create - With Code and Name
+POST {{portURL}}/api/qualifications
+Content-Type: application/json
+Accept: application/json
+
+{
+  "code": "NEW-001",
+  "name": "New Qualification Test"
+}
+
+### Create - Only Name (Auto-generate Code)
+POST {{portURL}}/api/qualifications
+Content-Type: application/json
+Accept: application/json
+
+{
+  "name": "Auto Generated Code Qualification"
+}
+
+### Create - Empty Name
 POST {{portURL}}/api/qualifications
 Content-Type: application/json
 Accept: application/json
@@ -21,11 +76,119 @@ Accept: application/json
   "name": ""
 }
 
-###
+
+### Create - Repeated Code
+POST {{portURL}}/api/qualifications
+Content-Type: application/json
+Accept: application/json
+
+{
+  "code": "TRK-001",
+  "name": "Duplicate Code Test"
+}
+
+### Create - Repeated Name
+POST {{portURL}}/api/qualifications
+Content-Type: application/json
+Accept: application/json
+
+{
+  "code": "UNIQUE-001",
+  "name": "Logistics Coordinator"
+}
+
+### Create - Name Too Long
+POST {{portURL}}/api/qualifications
+Content-Type: application/json
+Accept: application/json
+
+{
+  "code": "LON-001",
+  "name": "This is an extremely long qualification name that exceeds the maximum allowed length for this field and should be rejected by validation"
+}
+
+### Create - Invalid Code Format
+POST {{portURL}}/api/qualifications
+Content-Type: application/json
+Accept: application/json
+
+{
+  "code": "invalid code with spaces",
+  "name": "Invalid Code Format"
+}
+
+
+### ============ UPDATE ============
+
+### Update - Name Only
 PATCH {{portURL}}/api/qualifications/0d868c4e-2c92-4d4d-9cab-70c549e839d0
 Content-Type: application/json
 Accept: application/json
 
 {
-  "name": "Qualification 2"
+  "name": "Updated Qualification Name"
+}
+
+### Update - Code Only
+PATCH {{portURL}}/api/qualifications/0d868c4e-2c92-4d4d-9cab-70c549e839d0
+Content-Type: application/json
+Accept: application/json
+
+{
+  "code": "UPD-001"
+}
+
+### Update - Both Name and Code
+PATCH {{portURL}}/api/qualifications/0d868c4e-2c92-4d4d-9cab-70c549e839d0
+Content-Type: application/json
+Accept: application/json
+
+{
+  "code": "UPD-002",
+  "name": "Fully Updated Qualification"
+}
+
+### Update - Not Found
+PATCH {{portURL}}/api/qualifications/00000000-0000-0000-0000-000000000000
+Content-Type: application/json
+Accept: application/json
+
+{
+  "name": "This Should Fail"
+}
+
+### Update - Repeated Name
+PATCH {{portURL}}/api/qualifications/0d868c4e-2c92-4d4d-9cab-70c549e839d0
+Content-Type: application/json
+Accept: application/json
+
+{
+  "name": "Logistics Coordinator"
+}
+
+### Update - Empty Name
+PATCH {{portURL}}/api/qualifications/0d868c4e-2c92-4d4d-9cab-70c549e839d0
+Content-Type: application/json
+Accept: application/json
+
+{
+  "name": ""
+}
+
+### Update - Empty Code
+PATCH {{portURL}}/api/qualifications/0d868c4e-2c92-4d4d-9cab-70c549e839d0
+Content-Type: application/json
+Accept: application/json
+
+{
+  "code": ""
+}
+
+### Update - Invalid Code Format
+PATCH {{portURL}}/api/qualifications/0d868c4e-2c92-4d4d-9cab-70c549e839d0
+Content-Type: application/json
+Accept: application/json
+
+{
+  "code": "invalid code"
 }
