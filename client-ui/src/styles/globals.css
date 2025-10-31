@@ -1,99 +1,56 @@
-/* === Base Theme ThPA S.A. === */
-@import "@fontsource/poppins";
-
-/* --- COLOR VARIABLES --- */
-:root {
-    --bg: #f4f6f8;
-    --text: #444b55;
-    --card-bg: #ffffff;
-    --header-bg: #003366;
-    --accent: #1a73e8;
-    --footer-bg: #ffffff;
-    --shadow: rgba(0, 0, 0, 0.15);
-}
-
-[data-theme="dark"] {
-    --bg: #121212;
-    --text: #e5e5e5;
-    --card-bg: #1e1e1e;
-    --header-bg: #001f3f;
-    --accent: #64b5f6;
-    --footer-bg: #1a1a1a;
-    --shadow: rgba(255, 255, 255, 0.08);
-}
-
-/* --- GLOBAL RESET --- */
+/* === GLOBAL LAYOUT BASE === */
 html,
 body {
-    margin: 0;
-    padding: 0;
-    background-color: var(--bg);
-    font-family: "Poppins", system-ui, sans-serif;
-    color: var(--text);
-    transition: background-color 0.4s, color 0.4s;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  background-color: var(--bg);
+  color: var(--text);
+  font-family: "Poppins", system-ui, sans-serif;
+  transition: background-color 0.4s ease, color 0.4s ease;
 }
 
-/* --- HEADER --- */
-.header {
-    background-color: var(--header-bg);
-    color: white;
-    padding: 12px 24px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    box-shadow: 0 2px 6px var(--shadow);
-    position: sticky;
-    top: 0;
-    z-index: 10;
+/* Contém todo o app (header + content + footer) */
+.app {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: var(--bg);
 }
 
-.header .brand {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-}
-
-.header h1 {
-    font-size: 1.25rem;
-    font-weight: 600;
-    letter-spacing: 0.5px;
-}
-
-/* --- NAVIGATION --- */
-.nav ul {
-    display: flex;
-    list-style: none;
-    gap: 25px;
-    margin: 0;
-    padding: 0;
-}
-
-.nav a {
-    color: white;
-    text-decoration: none;
-    font-weight: 500;
-    transition: color 0.2s;
-}
-
-.nav a:hover {
-    color: var(--accent);
-}
-
-/* --- CONTENT AREA --- */
+/* Conteúdo principal */
 .content {
-    padding: 30px;
-    max-width: 1200px;
-    margin: 0 auto;
+  flex: 1;
+  display: block;
+  width: 100%;
+  padding: 30px 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+  background: transparent; /* 🔹 Importante — NÃO definir cor aqui */
+  box-sizing: border-box;
 }
 
-/* --- FOOTER --- */
+/* Footer fixo ao fundo */
 .footer {
-    background-color: var(--footer-bg);
-    color: #666;
-    text-align: center;
-    padding: 12px;
-    border-top: 1px solid #e5e5e5;
-    font-size: 0.9rem;
-    margin-top: 40px;
-    transition: background-color 0.4s;
+  margin-top: auto;
+  background-color: var(--footer-bg);
+  color: #666;
+  text-align: center;
+  padding: 16px;
+  border-top: 1px solid #e5e5e5;
+  font-size: 0.9rem;
+}
+
+/* Corrige cores das cards */
+.feature-card {
+  background: var(--card-bg);
+  color: var(--text);
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+/* Mantém seções transparentes */
+.hero,
+.about,
+.callout {
+  background-color: transparent;
 }

@@ -1,72 +1,106 @@
-import { Outlet } from "react-router-dom";
-import Nav from "./Nav";
-import { FaShip, FaSun, FaMoon } from "react-icons/fa";
-import { useState } from "react";
+import { Outlet, Link } from "react-router-dom";
+import { FaShip, FaSun, FaMoon, FaBars, FaTimes, FaUserCircle } from "react-icons/fa";
+import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import portugalFlag from "../../assets/flags/pt.png";
-import ukFlag from "../../assets/flags/uk.png";
+import "./layout.css";
 
 export default function AppLayout() {
-    const [dark, setDark] = useState(false);
-    const { i18n } = useTranslation();
+  const [dark, setDark] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const { i18n } = useTranslation();
 
-    const toggleTheme = () => {
-        const newTheme = dark ? "light" : "dark";
-        document.documentElement.setAttribute("data-theme", newTheme);
-        setDark(!dark);
+  // Alternar tema (escuro/claro)
+  const toggleTheme = () => {
+    const newTheme = dark ? "light" : "dark";
+    document.documentElement.setAttribute("data-theme", newTheme);
+    setDark(!dark);
+  };
+
+  // Abrir/fechar menu lateral
+  const toggleMenu = () => setMenuOpen(!menuOpen);
+
+  // Alternar idioma (PT ↔ EN)
+  const changeLang = () => {
+    const newLang = i18n.language === "en" ? "pt" : "en";
+    i18n.changeLanguage(newLang);
+  };
+
+  // Efeito "Shrink" no header ao fazer scroll
+  useEffect(() => {
+    const header = document.querySelector(".header");
+    const handleScroll = () => {
+      if (window.scrollY > 40) header?.classList.add("shrink");
+      else header?.classList.remove("shrink");
     };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
-    const changeLang = (lang: string) => {
-        i18n.changeLanguage(lang);
-    };
+  return (
+    <div className="app">
+      {/* HEADER */}
+      <header className="header">
+        <div className="header-inner">
+          <div className="brand">
+            <FaShip size={32} color="#4fa3ff" />
+            <h1>ThPA Port Management</h1>
+          </div>
 
-    return (
-        <div className="app">
-            <header className="header">
-                <div className="brand">
-                    <FaShip size={32} color="#1A73E8" />
-                    <h1>ThPA Port Management System</h1>
-                </div>
+          <div className="header-right">
+            <span className="lang-switch" onClick={changeLang}>
+              {i18n.language === "en" ? "EN | PT" : "PT | EN"}
+            </span>
 
-                <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
-                    <img
-                        src={portugalFlag}
-                        alt="PT"
-                        width={24}
-                        style={{ cursor: "pointer" }}
-                        onClick={() => changeLang("pt")}
-                    />
-                    <img
-                        src={ukFlag}
-                        alt="EN"
-                        width={24}
-                        style={{ cursor: "pointer" }}
-                        onClick={() => changeLang("en")}
-                    />
+            <button
+              onClick={toggleTheme}
+              className="theme-btn"
+              title={dark ? "Modo claro" : "Modo escuro"}
+            >
+              {dark ? (
+                <FaSun size={22} className="theme-icon rotate" />
+              ) : (
+                <FaMoon size={22} className="theme-icon" />
+              )}
+            </button>
 
-                    <button
-                        onClick={toggleTheme}
-                        style={{
-                            background: "transparent",
-                            border: "none",
-                            cursor: "pointer",
-                            color: "white",
-                        }}
-                    >
-                        {dark ? <FaSun /> : <FaMoon />}
-                    </button>
-                </div>
+            <FaUserCircle
+              size={26}
+              className="login-icon"
+              title="Login"
+              onClick={() => alert("Abrir modal de login futuramente")}
+            />
 
-                <Nav />
-            </header>
-
-            <main className="content">
-                <Outlet />
-            </main>
-
-            <footer className="footer">
-                © 2025 ThPA S.A. — Smart Port Operations Platform
-            </footer>
+            <button className="menu-btn" onClick={toggleMenu} title="Menu">
+              {menuOpen ? <FaTimes size={22} /> : <FaBars size={22} />}
+            </button>
+          </div>
         </div>
-    );
+      </header>
+
+      {/* SIDEBAR */}
+      <aside className={`sidebar ${menuOpen ? "open" : ""}`}>
+        <nav>
+          <ul>
+            <li><Link to="/" onClick={toggleMenu}>Início</Link></li>
+            <li><Link to="/vvn" onClick={toggleMenu}>VVNs</Link></li>
+            <li><Link to="/storage-areas" onClick={toggleMenu}>Storage Areas</Link></li>
+            <li><Link to="/admin" onClick={toggleMenu}>Administração</Link></li>
+            <li><Link to="/login" onClick={toggleMenu}>Login</Link></li>
+          </ul>
+        </nav>
+      </aside>
+
+      {menuOpen && <div className="overlay" onClick={toggleMenu}></div>}
+
+      {/* CONTEÚDO PRINCIPAL */}
+      <main className="content">
+        <Outlet />
+      </main>
+
+      {/* FOOTER */}
+      <footer className="footer">
+        © 2025 ThPA S.A. — Smart Port Operations Platform
+      </footer>
+    </div>
+  );
 }

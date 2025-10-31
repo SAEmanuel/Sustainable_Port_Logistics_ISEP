@@ -130,17 +130,24 @@
 
 /* --- CALLOUT --- */
 .callout {
-    background-color: var(--header-bg);
+    background: linear-gradient(135deg, var(--accent) 0%, var(--accent-light) 100%);
     color: white;
     text-align: center;
     border-radius: 30px;
     padding: 50px 20px;
-    margin: 150px auto 6px auto; /* mais afastada das cards */
-    max-width: 1000px; /* largura máxima elegante */
+    margin: 150px auto 6px auto;
+    max-width: 1000px;
     box-shadow: 0 6px 18px var(--shadow);
     letter-spacing: 0.5px;
     font-weight: 600;
     font-size: 1.5rem;
     line-height: 1.5;
+    transition: background 0.4s ease;
 }
+
+/* Efeito no modo dark */
+[data-theme="dark"] .callout {
+    background: linear-gradient(135deg, #162133 0%, #1e2b44 100%);
+}
+
 
