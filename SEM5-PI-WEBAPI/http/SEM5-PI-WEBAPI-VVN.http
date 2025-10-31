@@ -44,7 +44,7 @@ Accept: {{accept}}
 # 2 - UPDATE an existing Vessel Visit Notification (editable state)
 
 ###
-PUT {{portURL}}/api/VesselVisitNotification/17c6a945-3cde-4776-9158-391a8bd9c03f/update
+PUT {{portURL}}/api/VesselVisitNotification/6dce6c95-9b5b-40f3-9356-4f4588b211a0/update
 Content-Type: {{contentType}}
 Accept: {{accept}}
 
@@ -75,7 +75,7 @@ Accept: {{accept}}
 # 3 - SUBMIT Vessel Visit Notification for approval
 
 ###
-PUT {{portURL}}/api/VesselVisitNotification/474b7217-b732-4cfb-8f99-945f53ace1cb/submit
+PUT {{portURL}}/api/VesselVisitNotification/46d6b08b-feba-43ec-b4ea-d083696301c2/submit
 Content-Type: {{contentType}}
 Accept: {{accept}}
 
@@ -91,14 +91,14 @@ Accept: {{accept}}
 # 5 - GET Vessel Visit Notification by ID
 
 ###
-GET {{portURL}}/api/VesselVisitNotification/id/b6a5e2c0-0a58-42ef-8612-3cf7a47d65ec
+GET {{portURL}}/api/VesselVisitNotification/id/46d6b08b-feba-43ec-b4ea-d083696301c2
 Accept: {{accept}}
 
 
 # ️6 - PUT Accept VVN
 
 ###
-PUT {{portURL}}/api/VesselVisitNotification/accept/id/474b7217-b732-4cfb-8f99-945f53ace1cb
+PUT {{portURL}}/api/VesselVisitNotification/accept/id/46d6b08b-feba-43ec-b4ea-d083696301c2
 Accept: {{accept}}
 
 # ️7 - PUT Reject/MarkAsPending VVN

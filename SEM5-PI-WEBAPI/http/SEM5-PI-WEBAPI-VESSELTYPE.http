@@ -7,7 +7,7 @@
 GET {{portURL}}/api/VesselType
 Accept: application/json
 
-###
+###vd 
 # 2. GET by Id - válido (GUID existente)
 GET {{portURL}}/api/VesselType/id/3c7d14d5-e828-4b57-a84b-d5560c315b6d
 Accept: application/json

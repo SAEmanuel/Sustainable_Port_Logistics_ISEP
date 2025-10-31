@@ -13,6 +13,11 @@ namespace SEM5_PI_WEBAPI.Domain.Shared
         
         public async Task InvokeAsync(HttpContext context)
         {
+            if (context.Request.Path.StartsWithSegments("/api/health"))
+            {
+                await _next(context);
+                return;
+            }
             _logger.LogInformation("┌───────────────────────────────────────────────");
             _logger.LogInformation("│ HTTP {Method} {Path}", context.Request.Method, context.Request.Path);
             _logger.LogInformation("│ From IP: {Ip}", context.Connection.RemoteIpAddress?.ToString());
