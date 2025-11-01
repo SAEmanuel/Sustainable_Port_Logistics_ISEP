@@ -59,6 +59,25 @@
   "layout": {
     "light": "Modo claro",
     "dark": "Modo escuro"
+  },
+  "vesselTypes": {
+    "title": "Tipos de Navio",
+    "count": "{{count}} tipos registados",
+    "searchPlaceholder": "Pesquisar tipo de navio...",
+    "empty": "Nenhum tipo de navio encontrado...",
+    "add": "Adicionar",
+    "loading": "A carregar tipos de navio...",
+    "loadSuccess": "{{count}} tipos de navio carregados ✅",
+    "loadError": "Falha ao carregar tipos de navio ❌",
+    "details": {
+      "description": "Descrição",
+      "bays": "Bays",
+      "rows": "Linhas",
+      "tiers": "Níveis",
+      "capacity": "Capacidade"
+    },
+    "edit": "Editar",
+    "delete": "Eliminar"
   }
 
 }

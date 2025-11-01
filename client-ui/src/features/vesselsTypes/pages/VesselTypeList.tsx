@@ -6,6 +6,7 @@ import "../style/vesselTypeList.css";
 import { FaShip, FaTimes } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
+import { useTranslation } from "react-i18next";
 
 const debounce = (fn: Function, delay = 450) => {
     let timer: number;
@@ -23,29 +24,29 @@ export default function VesselTypeList() {
     const [, setQuery] = useState("");
 
     const navigate = useNavigate();
+    const { t } = useTranslation();
 
-useEffect(() => {
-    async function load() {
-        notifyLoading("Loading vessel types...");
+    useEffect(() => {
+        async function load() {
+            notifyLoading(t("vesselTypes.loading"));
 
-        try {
-            const data = await getVesselTypes();
-            setItems(data);
-            setFiltered(data);
+            try {
+                const data = await getVesselTypes();
+                setItems(data);
+                setFiltered(data);
 
-            toast.dismiss("loading-global");
-            notifySuccess(`Loaded ${data.length} vessel types`);
-        } catch {
-            toast.dismiss("loading-global");
-            notifyError("Failed to load vessel types");
-        } finally {
-            setLoading(false);
+                toast.dismiss("loading-global");
+                notifySuccess(t("vesselTypes.loadSuccess", { count: data.length }));
+            } catch {
+                toast.dismiss("loading-global");
+                notifyError(t("vesselTypes.loadError"));
+            } finally {
+                setLoading(false);
+            }
         }
-    }
 
-    load();
-}, []);
-
+        load();
+    }, [t]);
 
     const handleSearch = debounce((val: string) => {
         setQuery(val);
@@ -61,47 +62,50 @@ useEffect(() => {
     return (
         <div className="vt-page">
 
-            {selected && <div className="vt-overlay"></div>}
+            {selected && <div className="vt-overlay" />}
 
+            {/* Header */}
             <div className="vt-title-area">
                 <div className="vt-title-box">
                     <h2 className="vt-title">
-                        <FaShip className="vt-icon" /> Vessel Types
+                        <FaShip className="vt-icon" /> {t("vesselTypes.title")}
                     </h2>
-                    <p className="vt-sub">{items.length} registered types</p>
+                    <p className="vt-sub">
+                        {t("vesselTypes.count", { count: items.length })}
+                    </p>
                 </div>
 
                 <button
                     className="vt-create-btn-top"
                     onClick={() => navigate("/vessel-types/create")}
                 >
-                    + Add
+                    + {t("vesselTypes.add")}
                 </button>
             </div>
 
+            {/* Search */}
             <div className="vt-search-box">
                 <input
-                    placeholder="Search vessel type..."
+                    placeholder={t("vesselTypes.searchPlaceholder")}
                     className="vt-search"
                     onChange={(e) => handleSearch(e.target.value)}
                 />
             </div>
 
-            {loading ? (
-                null
-            ) : filtered.length === 0 ? (
-                <p>No vessel types found...</p>
+            {/* Table */}
+            {loading ? null : filtered.length === 0 ? (
+                <p>{t("vesselTypes.empty")}</p>
             ) : (
                 <div className="vt-table-wrapper">
                     <table className="vt-table">
                         <thead>
                         <tr>
-                            <th>Name</th>
-                            <th>Description</th>
-                            <th>Bays</th>
-                            <th>Rows</th>
-                            <th>Tiers</th>
-                            <th>Capacity</th>
+                            <th>{t("vesselTypes.details.description")}</th>
+                            <th>{t("vesselTypes.details.description")}</th>
+                            <th>{t("vesselTypes.details.bays")}</th>
+                            <th>{t("vesselTypes.details.rows")}</th>
+                            <th>{t("vesselTypes.details.tiers")}</th>
+                            <th>{t("vesselTypes.details.capacity")}</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -120,6 +124,7 @@ useEffect(() => {
                 </div>
             )}
 
+            {/* Slide Panel */}
             {selected && (
                 <div className="vt-slide">
                     <button className="vt-slide-close" onClick={() => setSelected(null)}>
@@ -127,15 +132,16 @@ useEffect(() => {
                     </button>
 
                     <h3>{selected.name}</h3>
-                    <p><strong>Description:</strong> {selected.description}</p>
-                    <p><strong>Bays:</strong> {selected.maxBays}</p>
-                    <p><strong>Rows:</strong> {selected.maxRows}</p>
-                    <p><strong>Tiers:</strong> {selected.maxTiers}</p>
-                    <p><strong>Capacity:</strong> {selected.capacity} TEU</p>
+
+                    <p><strong>{t("vesselTypes.details.description")}:</strong> {selected.description}</p>
+                    <p><strong>{t("vesselTypes.details.bays")}:</strong> {selected.maxBays}</p>
+                    <p><strong>{t("vesselTypes.details.rows")}:</strong> {selected.maxRows}</p>
+                    <p><strong>{t("vesselTypes.details.tiers")}:</strong> {selected.maxTiers}</p>
+                    <p><strong>{t("vesselTypes.details.capacity")}:</strong> {selected.capacity} TEU</p>
 
                     <div className="vt-slide-actions">
-                        <button className="vt-btn-edit">Edit</button>
-                        <button className="vt-btn-delete">Delete</button>
+                        <button className="vt-btn-edit">{t("vesselTypes.edit")}</button>
+                        <button className="vt-btn-delete">{t("vesselTypes.delete")}</button>
                     </div>
                 </div>
             )}

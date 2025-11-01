@@ -2,34 +2,31 @@
 .vt-page {
     position: relative;
     padding: 25px;
-    font-family: "Inter", sans-serif;
+    font-family: "Poppins", system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
 }
 
-/* Overlay */
+/* Overlay Blur */
 .vt-overlay {
     position: fixed;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
+    inset: 0;
     backdrop-filter: blur(5px);
-    background: rgba(0,0,0,0.25);
+    background: rgba(0, 0, 0, 0.3);
     z-index: 1500;
 }
 
-/* Header */
+/* Header Box */
 .vt-title-area {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background: rgba(15, 23, 42, 0.15);
+    background: var(--card-bg);
     padding: 20px;
     border-radius: 18px;
     margin-bottom: 25px;
-}
-
-/* Title Box */
-.vt-title-box {
-    display: flex;
-    flex-direction: column;
+    border: 1px solid var(--shadow);
+    box-shadow: 0 4px 15px var(--shadow);
 }
 
 .vt-title-box h2 {
@@ -39,28 +36,30 @@
     align-items: center;
     gap: 10px;
     margin-bottom: 4px;
-}
-
-.vt-icon {
-    color: #0A84FF;
+    color: var(--text);
 }
 
 .vt-sub {
     font-size: 14px;
-    color: #666;
+    color: var(--text);
+    opacity: .7;
 }
 
-/* Add button */
+.vt-icon {
+    color: var(--accent);
+}
+
+/* Add Button */
 .vt-create-btn-top {
     padding: 12px 22px;
     border-radius: 10px;
-    background: linear-gradient(135deg, #0A84FF, #0063D1);
+    background: linear-gradient(135deg, var(--accent), var(--accent-light));
     color: #fff;
     font-size: 15px;
     font-weight: 600;
     border: none;
     cursor: pointer;
-    transition: 0.25s;
+    transition: .25s;
     box-shadow: 0 4px 14px rgba(0, 132, 255, .35);
 }
 
@@ -77,11 +76,12 @@
 
 .vt-search {
     width: 350px;
-    max-width: 90%;
+    max-width: 100%;
     padding: 10px;
     border-radius: 8px;
-    border: 1px solid #ccc;
-    font-size: 14px;
+    border: 1px solid var(--shadow);
+    background: var(--card-bg);
+    color: var(--text);
 }
 
 /* Table */
@@ -89,47 +89,50 @@
     overflow-y: auto;
     max-height: 420px;
     border-radius: 10px;
-    border: 1px solid #eee;
+    border: 1px solid var(--shadow);
+    background: var(--card-bg);
 }
 
 .vt-table {
     width: 100%;
     border-collapse: collapse;
+    color: var(--text);
 }
 
 .vt-table th {
-    background: #f3f6ff;
+    background: var(--card-bg);
     padding: 12px;
     font-size: 12px;
     font-weight: 700;
-    color: #555;
-    text-align: left;
+    color: var(--text);
+    opacity: .7;
+    border-bottom: 1px solid var(--shadow);
 }
 
 .vt-table td {
     padding: 10px;
-    border-bottom: 1px solid #eee;
-    font-size: 14px;
+    border-bottom: 1px solid var(--shadow);
 }
 
-/* Hover + pointer */
+/* Hover */
 .vt-row {
     cursor: pointer;
-    transition: 0.2s;
+    transition: .2s;
 }
-
 .vt-row:hover {
-    background: rgba(10,132,255,0.12);
-    cursor: pointer;
+    background: rgba(0,0,0,0.06);
+}
+[data-theme="dark"] .vt-row:hover {
+    background: rgba(255,255,255,0.08);
 }
 
 /* Badge */
 .vt-badge {
-    background: #435b73;
+    background: var(--accent);
     padding: 5px 12px;
     font-size: 13px;
     border-radius: 6px;
-    color: white;
+    color: #fff;
     font-weight: 600;
 }
 
@@ -139,19 +142,22 @@
     top: 0; right: 0;
     width: 360px;
     height: 100%;
-    background: #fff;
+    background: var(--card-bg);
     padding: 22px;
-    border-left: 1px solid #ddd;
-    box-shadow: -4px 0 12px rgba(0,0,0,.15);
+    border-left: 1px solid var(--shadow);
+    box-shadow: -4px 0 12px var(--shadow);
     z-index: 2000;
     animation: slideIn .3s ease;
+    color: var(--text);
 }
 
+/* Slide Anim */
 @keyframes slideIn {
     from { transform: translateX(100%); }
     to { transform: translateX(0); }
 }
 
+/* Close Btn */
 .vt-slide-close {
     background: none;
     border: none;
@@ -159,14 +165,14 @@
     cursor: pointer;
     float: right;
     transition: .2s;
+    color: var(--text);
 }
-
 .vt-slide-close:hover {
     color: #ff4b4b;
     transform: scale(1.2);
 }
 
-/* Slide buttons */
+/* Slide action buttons */
 .vt-slide-actions {
     margin-top: 20px;
     display: flex;
@@ -184,23 +190,21 @@
     transition: .25s;
 }
 
-/* Edit button */
 .vt-btn-edit {
-    background: #0A84FF;
+    background: var(--accent);
     color: #fff;
 }
 .vt-btn-edit:hover {
-    background: #0063D1;
+    background: var(--accent-light);
     transform: scale(1.05);
 }
 
-/* Delete button */
 .vt-btn-delete {
-    background: #FF3B30;
+    background: #ff3b30;
     color: #fff;
 }
 .vt-btn-delete:hover {
-    background: #CC2A23;
+    background: #d9261f;
     transform: scale(1.05);
 }
 

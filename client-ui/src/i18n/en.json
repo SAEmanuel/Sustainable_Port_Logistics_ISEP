@@ -57,6 +57,25 @@
   "layout": {
     "light": "Light mode",
     "dark": "Dark mode"
+  },
+  "vesselTypes": {
+    "title": "Vessel Types",
+    "count": "{{count}} registered types",
+    "searchPlaceholder": "Search vessel type...",
+    "empty": "No vessel types found...",
+    "add": "Add",
+    "loading": "Loading vessel types...",
+    "loadSuccess": "Loaded {{count}} vessel types ✅",
+    "loadError": "Failed to load vessel types ❌",
+    "details": {
+      "description": "Description",
+      "bays": "Bays",
+      "rows": "Rows",
+      "tiers": "Tiers",
+      "capacity": "Capacity"
+    },
+    "edit": "Edit",
+    "delete": "Delete"
   }
 
 }
