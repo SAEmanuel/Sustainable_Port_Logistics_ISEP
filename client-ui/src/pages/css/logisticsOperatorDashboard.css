@@ -1,0 +1,163 @@
+/* CONTAINER */
+.lo-dashboard {
+    padding: 3rem 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    min-height: calc(100vh - 200px);
+}
+
+/* CABEÇALHO */
+.lo-header {
+    text-align: center;
+    margin-bottom: 4rem;
+}
+
+.lo-header h1 {
+    font-size: 2.5rem;
+    margin: 0 0 1rem 0;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.lo-header p {
+    font-size: 1.2rem;
+    color: #666;
+    margin: 0;
+}
+
+/* GRID DE CARDS */
+.lo-cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+/* CARD */
+.lo-card {
+    background: white;
+    border-radius: 20px;
+    padding: 2.5rem 2rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    position: relative;
+    overflow: hidden;
+    border: 2px solid transparent;
+}
+
+.lo-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 6px;
+    background: var(--card-color);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.3s ease;
+}
+
+.lo-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+    border-color: var(--card-color);
+}
+
+.lo-card:hover::before {
+    transform: scaleX(1);
+}
+
+/* ÍCONE */
+.lo-card-icon {
+    margin-bottom: 1.5rem;
+    display: flex;
+    justify-content: center;
+    transition: transform 0.3s ease;
+}
+
+.lo-card:hover .lo-card-icon {
+    transform: scale(1.1);
+}
+
+/* TÍTULO */
+.lo-card-title {
+    font-size: 1.5rem;
+    margin: 0 0 1rem 0;
+    color: #333;
+    font-weight: 700;
+}
+
+/* DESCRIÇÃO */
+.lo-card-description {
+    color: #666;
+    line-height: 1.6;
+    margin: 0 0 1.5rem 0;
+    font-size: 0.95rem;
+}
+
+/* SETA */
+.lo-card-arrow {
+    font-size: 2rem;
+    color: var(--card-color);
+    text-align: right;
+    opacity: 0;
+    transform: translateX(-10px);
+    transition: all 0.3s ease;
+}
+
+.lo-card:hover .lo-card-arrow {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+/* DARK MODE */
+[data-theme="dark"] .lo-dashboard {
+    color: #eee;
+}
+
+[data-theme="dark"] .lo-header h1 {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+[data-theme="dark"] .lo-header p {
+    color: #aaa;
+}
+
+[data-theme="dark"] .lo-card {
+    background: #2d2d2d;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+[data-theme="dark"] .lo-card-title {
+    color: #eee;
+}
+
+[data-theme="dark"] .lo-card-description {
+    color: #bbb;
+}
+
+/* RESPONSIVO */
+@media (max-width: 768px) {
+    .lo-dashboard {
+        padding: 2rem 1rem;
+    }
+
+    .lo-header h1 {
+        font-size: 2rem;
+    }
+
+    .lo-header p {
+        font-size: 1rem;
+    }
+
+    .lo-cards-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+}

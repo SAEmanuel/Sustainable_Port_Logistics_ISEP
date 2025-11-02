@@ -5,6 +5,9 @@ import "./css/login.css";
 import { FaUserShield, FaUserTie, FaUserCog, FaUsers, FaEye } from "react-icons/fa";
 import { useTranslation } from "react-i18next";
 import toast from "react-hot-toast";
+interface CustomCSSProperties extends React.CSSProperties {
+    "--btn-color"?: string;
+}
 
 export default function Login() {
     const { t } = useTranslation();
@@ -26,7 +29,21 @@ export default function Login() {
 
             toast.dismiss(loadingId);
             toast.success(t("auth.success"));
-            navigate("/");
+
+            const firstRole = roleList[0];
+
+            if (firstRole === Roles.Administrator) {
+                navigate("/vessel-types");
+            } else if (firstRole === Roles.LogisticsOperator) {
+                navigate("/logistics-dashboard");
+            } else if (firstRole === Roles.PortAuthorityOfficer) {
+                navigate("/vvn"); // quando implementares
+            } else if (firstRole === Roles.ShippingAgentRepresentative) {
+                navigate("/vvn"); // quando implementares
+            } else {
+                navigate("/"); // fallback
+            }
+
         } catch {
             toast.dismiss(loadingId);
             toast.error(t("auth.error"));
@@ -52,7 +69,7 @@ export default function Login() {
                         <button
                             key={r.role}
                             className="role-btn"
-                            style={{ "--btn-color": r.color } as any}
+                            style={{ "--btn-color": r.color } as CustomCSSProperties }
                             onClick={() => loginAs([r.role])}
                         >
                             <span className="icon">{r.icon}</span>
