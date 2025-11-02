@@ -56,6 +56,7 @@
     "vvn": "VVNs",
     "storage": "Storage Areas",
     "vesselTypes": "Vessel Types",
+    "vessels": "Vessels",
     "admin": "Admin",
     "qualifications": "Qualifications",
     "dashboard": "Dashboard",
@@ -80,7 +81,7 @@
 
   "vesselTypes": {
     "title": "Vessel Types",
-    "count": "{{count}} registered types",
+    "count": "{{count}} registered types.",
     "searchPlaceholder": "Search vessel type...",
     "empty": "No vessel types found...",
     "add": "Add",
@@ -88,8 +89,6 @@
     "loadSuccess": "Loaded {{count}} vessel types.",
     "loadError": "Failed to load vessel types.",
     "created": "Vessel type created successfully",
-    "edit": "Edit",
-    "delete": "Delete",
     "save": "Save",
     "cancel": "Cancel",
     "errors": {
@@ -108,7 +107,63 @@
     "edit": "Edit",
     "delete": "Delete"
   },
-  "qualifications": {
+  
+  
+  "Vessel": {
+    "title": "Vessel Management",
+    "count": "{count}} registered vessels.",
+
+    "searchPlaceholder": "Search vessels...",
+
+    "modes": {
+      "local": "LOCAL",
+      "imo": "IMO",
+      "id": "ID",
+      "owner": "OWNER"
+    },
+
+    "fields": {
+      "imo": "IMO Number *",
+      "name": "Vessel Name *",
+      "owner": "Owner *",
+      "type": "Vessel Type *",
+      "selectType": "Select Vessel Type"
+    },
+
+    "buttons": {
+      "add": "Add Vessel",
+      "search": "Search",
+      "clear": "Clear",
+      "cancel": "Cancel",
+      "save": "Save",
+      "edit": "Edit",
+      "viewType": "View Type"
+    },
+
+    "messages": {
+      "invalidIMO": "Invalid IMO number (must be 7 digits)",
+      "fillAll": "Fill all fields",
+      "created": "Vessel created successfully!",
+      "updated": "Vessel updated successfully!",
+      "loading": "Loading vessels...",
+      "searchSuccess": "Loaded {{count}} vessels.",
+      "noResults": "No vessel found."
+    },
+
+    "modal": {
+      "addTitle": "Add Vessel",
+      "editTitle": "Edit Vessel"
+    },
+
+    "details": {
+      "owner": "Owner",
+      "type": "Type"
+    }
+  },
+
+
+
+"qualifications": {
     "title": "Qualifications",
     "count": "{{count}} qualifications registered",
     "searchPlaceholder": "Search qualification...",

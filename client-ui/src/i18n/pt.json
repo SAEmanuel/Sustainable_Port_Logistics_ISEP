@@ -56,6 +56,7 @@
     "vvn": "VVNs",
     "storage": "Áreas de Armazenamento",
     "vesselTypes": "Tipos de Navio",
+    "vessels": "Navios",
     "admin": "Administração",
     "qualifications": "Qualificações",
     "dashboard": "Dashboard",
@@ -79,7 +80,7 @@
 
   "vesselTypes": {
     "title": "Tipos de Navio",
-    "count": "{{count}} tipos registados",
+    "count": "{{count}} tipos de navio registados.",
     "searchPlaceholder": "Pesquisar tipo de navio...",
     "empty": "Nenhum tipo de navio encontrado...",
     "add": "Adicionar",
@@ -87,8 +88,6 @@
     "loadSuccess": "{{count}} tipos de navio carregados.",
     "loadError": "Falha ao carregar tipos de navio.",
     "created": "Tipo de navio criado com sucesso",
-    "edit": "Editar",
-    "delete": "Eliminar",
     "save": "Guardar",
     "cancel": "Cancelar",
     "autoCapacity": "A capacidade é calculada automaticamente",
@@ -107,7 +106,65 @@
     "edit": "Editar",
     "delete": "Eliminar"
   },
-  "qualifications": {
+
+  
+  
+  "Vessel": {
+    "title": "Gestão de Navios",
+    "count": "{{count}} navios registados.",
+
+    "searchPlaceholder": "Pesquisar navios...",
+
+    "modes": {
+      "local": "LOCAL",
+      "imo": "IMO",
+      "id": "ID",
+      "owner": "DONO"
+    },
+
+    "fields": {
+      "imo": "Número IMO *",
+      "name": "Nome do Navio *",
+      "owner": "Proprietário *",
+      "type": "Tipo de Navio *",
+      "selectType": "Selecione o Tipo de Navio"
+    },
+
+    "buttons": {
+      "add": "Adicionar Navio",
+      "search": "Pesquisar",
+      "clear": "Limpar",
+      "cancel": "Cancelar",
+      "save": "Guardar",
+      "edit": "Editar",
+      "viewType": "Ver Tipo"
+    },
+
+    "messages": {
+      "invalidIMO": "IMO inválido (deve ter 7 dígitos)",
+      "fillAll": "Preencha todos os campos",
+      "created": "Navio criado com sucesso!",
+      "updated": "Navio atualizado com sucesso!",
+      "loading": "A carregar navios...",
+      "searchSuccess": "{{count}} navios carregados.",
+      "noResults": "Nenhum navio encontrado."
+    },
+
+    "modal": {
+      "addTitle": "Adicionar Navio",
+      "editTitle": "Editar Navio"
+    },
+
+    "details": {
+      "owner": "Proprietário",
+      "type": "Tipo"
+    }
+  },
+
+
+
+
+"qualifications": {
     "title": "Qualificações",
     "count": "{{count}} qualificações registadas",
     "searchPlaceholder": "Pesquisar qualificação...",
