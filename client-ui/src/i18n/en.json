@@ -161,6 +161,40 @@
     "editEmptyError": "Fill in at least one field to update",
     "editRequired": "Mandatory field*",
     "create" : "Create"
+    },
+
+  "staffMembers": {
+    "title": "Staff Members",
+    "count": "{{count}} staff members",
+    "add": "Add Member",
+    "loading": "Loading staff members...",
+    "loadSuccess": "Successfully loaded {{count}} staff members.",
+    "empty": "No staff members found.",
+    "detailsTitle": "Details",
+    "edit" : "Edit",
+    "deactivate": "Deactivate",
+    "details": {
+      "name": "Name",
+      "email": "Email",
+      "mecNumber": "Mecanographic Number",
+      "phone": "Phone",
+      "schedule": "Schedule"
     }
+  },
+  "shiftType": {
+    "Morning": "Morning",
+    "Evening": "Afternoon",
+    "Night": "Night",
+    "NonStop": "Non Stop"
+  },
+  "weekDay": {
+    "Monday": "Monday",
+    "Tuesday": "Tuesday",
+    "Wednesday": "Wednesday",
+    "Thursday": "Thursday",
+    "Friday": "Friday",
+    "Saturday": "Saturday",
+    "Sunday": "Sunday"
+  }
   }
 

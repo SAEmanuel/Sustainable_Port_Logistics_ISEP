@@ -160,6 +160,40 @@
     "editEmptyError": "Preencha pelo menos um campo para atualizar",
     "editRequired": "Campo obrigatório*",
     "create" : "Criar"
+    },
+
+  "staffMembers": {
+    "title": "Membros da Equipa",
+    "count": "{{count}} membros da equipa",
+    "add": "Adicionar Membro",
+    "loading": "A carregar membros da equipa...",
+    "loadSuccess": "Carregados {{count}} membros da equipa com sucesso.",
+    "empty": "Nenhum membro da equipa encontrado.",
+    "detailsTitle": "Detalhes",
+    "edit" : "Editar",
+    "deactivate": "Desativar",
+    "details": {
+      "name": "Nome",
+      "email": "Email",
+      "mecNumber": "Número Mecanográfico",
+      "phone": "Telemóvel",
+      "schedule": "Horário"
     }
+  },
+  "shiftType": {
+    "Morning": "Manhã",
+    "Evening": "Tarde",
+    "Night": "Noite",
+    "NonStop": "Sem paragem"
+  },
+  "weekDay": {
+    "Monday": "Segunda-feira",
+    "Tuesday": "Terça-feira",
+    "Wednesday": "Quarta-feira",
+    "Thursday": "Quinta-feira",
+    "Friday": "Sexta-feira",
+    "Saturday": "Sábado",
+    "Sunday": "Domingo"
+  }
   }
 

@@ -19,7 +19,7 @@
     "shortName": "Carol White",
     "email": "carol.white@example.com",
     "phone": "+351912345602",
-    "schedule": { "shift": 3, "daysOfWeek": "0101010" },
+    "schedule": { "shift": 0, "daysOfWeek": "0101010" },
     "isActive": true,
     "qualificationCodes": [ "TRK-001", "FLK-001" ]
   },

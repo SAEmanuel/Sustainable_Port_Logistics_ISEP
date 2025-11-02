@@ -1,0 +1,214 @@
+/* PÁGINA */
+.staffMember-page {
+    padding: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* CABEÇALHO */
+.staffMember-title-area {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.staffMember-title {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 1.8rem;
+    margin: 0;
+}
+
+.staffMember-icon {
+    color: #4fa3ff;
+}
+
+.staffMember-sub {
+    margin: 0.5rem 0 0 0;
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.staffMember-create-btn-top {
+    padding: 0.75rem 1.5rem;
+    background: #4fa3ff;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.staffMember-create-btn-top:hover {
+    background: #3a8fd9;
+}
+
+/* TABELA */
+.staffMember-table-wrapper {
+    overflow-x: auto;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.staffMember-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+}
+
+.staffMember-table thead {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.staffMember-table th {
+    padding: 1rem;
+    text-align: left;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 0.5px;
+}
+
+.staffMember-table tbody tr {
+    border-bottom: 1px solid #eee;
+    transition: background 0.2s;
+}
+
+.staffMember-row {
+    cursor: pointer;
+}
+
+.staffMember-row:hover {
+    background: #f8f9ff;
+}
+
+.staffMember-table td {
+    padding: 1rem;
+}
+
+
+.staffMember-badge {
+    background: #e3f2fd;
+    color: #1976d2;
+    padding: 0.25rem 0.75rem;
+    border-radius: 16px;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+/* ESTADOS */
+.staffMember-loading,
+.staffMember-empty {
+    text-align: center;
+    padding: 3rem;
+    color: #666;
+    font-size: 1.1rem;
+}
+
+/* DARK MODE */
+[data-theme="dark"] .staffMember-table {
+    background: #2d2d2d;
+}
+
+[data-theme="dark"] .staffMember-table tbody tr {
+    border-bottom-color: #444;
+}
+
+[data-theme="dark"] .staffMember-row:hover {
+    background: #3a3a3a;
+}
+
+.staffMember-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+}
+
+.staffMember-slide {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    max-width: 480px;
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    padding: 2rem;
+    z-index: 1000;
+    animation: modalFadeIn 0.3s ease-out;
+    overflow-y: auto;
+}
+
+@keyframes modalFadeIn {
+    from {
+        opacity: 0;
+        transform: translate(-50%, -45%);
+    }
+    to {
+        opacity: 1;
+        transform: translate(-50%, -50%);
+    }
+}
+
+.staffMember-slide-close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #666;
+    transition: color 0.2s;
+}
+
+.staffMember-slide-close:hover {
+    color: #e63946;
+}
+
+/* BOTÕES DETALHES */
+.staffMember-slide-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
+.staffMember-btn-edit,
+.staffMember-btn-deactivate {
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: background 0.2s, color 0.2s;
+    font-size: 1rem;
+}
+
+.staffMember-btn-edit {
+    background-color: #4fa3ff;
+    color: white;
+}
+
+.staffMember-btn-edit:hover {
+    background-color: #3a8fd9;
+}
+
+.staffMember-btn-deactivate {
+    background-color: #ffebee;
+    color: #e63946;
+}
+
+.staffMember-btn-deactivate:hover {
+    background-color: #e63946;
+    color: white;
+}

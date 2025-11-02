@@ -3,6 +3,7 @@ import AppLayout from "../components/layout/AppLayout";
 import Home from "../pages/Home";
 import Login from "../pages/Login";
 import Qualification from "../features/qualifications/pages/Qualification.tsx";
+import StaffMember from "../features/staffMembers/pages/StaffMember.tsx";
 import LogisticsOperatorDashboard from "../pages/LogisticsOperatorDashboard";
 import Logout from "../pages/Logout";
 import VesselsTypes from "../features/vesselsTypes/pages/VesselsTypes";
@@ -34,6 +35,13 @@ export const router = createBrowserRouter([
                         element: <RequireRole roles={[Roles.LogisticsOperator]} />,
                         children: [
                             { index: true, element: <Qualification /> }
+                        ]
+                    },
+                    {
+                        path: "staff-members",
+                        element: <RequireRole roles={[Roles.LogisticsOperator]} />,
+                        children: [
+                            { index: true, element: <StaffMember /> }
                         ]
                     },
 

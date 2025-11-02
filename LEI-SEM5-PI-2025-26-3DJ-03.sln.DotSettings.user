@@ -51,9 +51,8 @@
     &lt;TestId&gt;xUnit::25307884-991E-499B-A1E8-31E90F954FB9::net9.0::SEM5_PI_WEBAPI.Tests.Integration.PhysicalResourceServiceControllerTests.GetById_ShouldReturnBadRequest_WhenResourceMissing&lt;/TestId&gt;
     &lt;TestId&gt;xUnit::25307884-991E-499B-A1E8-31E90F954FB9::net9.0::SEM5_PI_WEBAPI.Tests.Domain.EntityPhysicalResourceTests&lt;/TestId&gt;
     &lt;TestId&gt;xUnit::25307884-991E-499B-A1E8-31E90F954FB9::net9.0::SEM5_PI_WEBAPI.Tests.Controllers.PhysicalResourceControllerTests&lt;/TestId&gt;
-    &lt;TestId&gt;xUnit::25307884-991E-499B-A1E8-31E90F954FB9::net9.0::SEM5_PI_WEBAPI.Tests.Integration.VesselTypeServiceControllerTests&lt;/TestId&gt;
-    &lt;TestId&gt;xUnit::25307884-991E-499B-A1E8-31E90F954FB9::net9.0::SEM5_PI_WEBAPI.Tests.Controllers.VesselTypeControllerTests&lt;/TestId&gt;
-    &lt;TestId&gt;xUnit::25307884-991E-499B-A1E8-31E90F954FB9::net9.0::SEM5_PI_WEBAPI.Tests.Domain.VesselTypeTests&lt;/TestId&gt;
+    &lt;TestId&gt;xUnit::25307884-991E-499B-A1E8-31E90F954FB9::net9.0::SEM5_PI_WEBAPI.Tests.Integration.QualificationIntegrationTests&lt;/TestId&gt;
+    &lt;TestId&gt;xUnit::25307884-991E-499B-A1E8-31E90F954FB9::net9.0::SEM5_PI_WEBAPI.Tests.Controllers.QualificationsControllerTests&lt;/TestId&gt;
   &lt;/TestAncestor&gt;
 &lt;/SessionState&gt;</s:String>
 	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=c8bc73db_002D5782_002D48e3_002D9e75_002D5cf572640590/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="StaffMemberAggregateTests" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;
