@@ -1,6 +1,4 @@
-/* ==============================
-   VESSELS PAGE – ORIGINAL + SLIDE PANEL + CARD ANIMATION RESTORED
-============================== */
+
 
 /* PAGE BASE */
 .vt-page {
@@ -154,7 +152,6 @@
     box-shadow: 0 14px 34px rgba(0,0,0,.24);
 }
 
-/* ✅ CARD EDGE LIGHT SWEEP */
 .vt-card::after {
     content: "";
     position: absolute;
@@ -167,7 +164,6 @@
     transform: translateX(130%);
 }
 
-/* ✅ CARD ROTATING BORDER NEON EFFECT */
 .vt-card::before {
     content: "";
     position: absolute;
@@ -240,7 +236,6 @@
     color: var(--text);
 }
 
-/* ====== ✅ SLIDE PANEL — EXACT FROM VESSELTYPE ====== */
 
 .vt-overlay {
     position: fixed;
@@ -348,10 +343,20 @@
     padding: 8px 14px;
     border-radius: 8px;
     border: none;
-    background: rgba(0,0,0,.1);
+    color: #fff;
+    background: linear-gradient(135deg, var(--accent), #0099ff);
     cursor: pointer;
+    font-weight: 600;
+    box-shadow: 0 6px 14px rgba(0,0,0,.18);
+    transition: .25s ease;
+
 }
 
+
+.vt-btn-cancel:hover {
+    transform: translateY(-2px) scale(1.04);
+    box-shadow: 0 10px 26px rgba(0,0,0,.24);
+}
 .vt-btn-save {
     padding: 8px 14px;
     border-radius: 8px;
@@ -370,3 +375,54 @@
     display: flex;
     font-size: 12px;
 }
+
+/* ==============================
+   STATS MODAL
+============================== */
+.vt-modal-overlay {
+    background: rgba(0,0,0,0.5);
+    position: fixed;
+    inset: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.vt-modal-stats {
+    background: var(--bg);
+    width: 90vw;
+    max-width: 900px;
+    height: 80vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    border-radius: 14px;
+    padding: 28px;
+    animation: vtFadeUp .3s ease;
+}
+
+.vt-stats-chart {
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* centra vertical */
+    align-items: center;     /* centra horizontal */
+}
+
+.vt-modal-title {
+    text-align: center;
+    font-size: 1.4rem;
+    font-weight: 700;
+    margin-bottom: 12px;
+}
+
+.vt-stats-chart {
+    flex: 1;
+    min-height: 300px;
+}
+
+/* animation */
+@keyframes vtFadeUp {
+    from { transform: translateY(30px); opacity: 0; }
+    to   { transform: translateY(0); opacity: 1; }
+}
+

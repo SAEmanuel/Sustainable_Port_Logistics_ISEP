@@ -137,9 +137,16 @@
       "cancel": "Cancelar",
       "save": "Guardar",
       "edit": "Editar",
-      "viewType": "Ver Tipo"
+      "viewType": "Ver Tipo",
+      "stats": "Estatísticas",
+      "close": "Fechar"
     },
 
+    "analytics": {
+      "title": "Estatísticas de Navios",
+      "types": "Quantidade"
+    },
+    
     "messages": {
       "invalidIMO": "IMO inválido (deve ter 7 dígitos)",
       "fillAll": "Preencha todos os campos",
@@ -160,6 +167,7 @@
       "type": "Tipo"
     }
   },
+
 
 
 

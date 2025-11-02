@@ -111,7 +111,7 @@
   
   "Vessel": {
     "title": "Vessel Management",
-    "count": "{count}} registered vessels.",
+    "count": "{{count}} registered vessels.",
 
     "searchPlaceholder": "Search vessels...",
 
@@ -137,7 +137,14 @@
       "cancel": "Cancel",
       "save": "Save",
       "edit": "Edit",
-      "viewType": "View Type"
+      "viewType": "View Type",
+      "stats": "Statistics",
+      "close": "Close"
+    },
+    
+    "analytics": {
+      "title": "Vessel Statistics",
+      "types": "Count"
     },
 
     "messages": {

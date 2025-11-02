@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { FaShip, FaSearch, FaPlus, FaTimes } from "react-icons/fa";
 import toast from "react-hot-toast";
-import { useTranslation } from "react-i18next";
 
 import {
     getVessels,
@@ -17,6 +16,19 @@ import type { VesselType } from "../../vesselsTypes/types/vesselType";
 import type { Vessel, CreateVesselRequest, UpdateVesselRequest } from "../types/vessel";
 
 import "../style/vesselspage.css";
+import {useTranslation} from "react-i18next";
+
+// === Chart.js imports ===
+import { Bar } from "react-chartjs-2";
+import {
+    Chart as ChartJS,
+    BarElement,
+    CategoryScale,
+    LinearScale,
+    Tooltip,
+    Legend
+} from "chart.js";
+ChartJS.register(BarElement, CategoryScale, LinearScale, Tooltip, Legend);
 
 export default function Vessel() {
     const [items, setItems] = useState<Vessel[]>([]);
@@ -30,17 +42,12 @@ export default function Vessel() {
     const [editData, setEditData] = useState<UpdateVesselRequest>({});
     const [searchMode, setSearchMode] = useState<"local" | "imo" | "id" | "owner">("local");
     const [searchValue, setSearchValue] = useState("");
-    const [form, setForm] = useState<CreateVesselRequest>({
-        imoNumber: "",
-        name: "",
-        owner: "",
-        vesselTypeName: ""
-    });
-
+    const [form, setForm] = useState<CreateVesselRequest>({imoNumber: "", name: "", owner: "", vesselTypeName: ""});
     const { t } = useTranslation();
     const imoRegex = /^\d{7}$/;
     const val = (x: any) => (typeof x === "string" ? x : x?.value);
     const MIN_LOADING_TIME = 500;
+    const [isStatsOpen, setIsStatsOpen] = useState(false);
 
     async function runWithLoading<T>(promise: Promise<T>, text: string) {
         const id = toast.loading(text);
@@ -55,14 +62,14 @@ export default function Vessel() {
         }
     }
 
-    // ====== Load Data Sequential ======
+    // ====== Load data ======
     useEffect(() => {
         async function load() {
             try {
-                const vessels = await runWithLoading(getVessels(), t("Vessel.messages.loading"));
-                setItems(vessels);
-                setFiltered(vessels);
-                toast.success(t("Vessel.messages.searchSuccess", { count: vessels.length }));
+                const data = await runWithLoading(getVessels(), t("Vessel.messages.loading"));
+                setItems(data);
+                setFiltered(data);
+                toast.success(t("Vessel.messages.searchSuccess", { count: data.length }));
 
                 const types = await runWithLoading(getVesselTypes(), t("Vessel.messages.loading"));
                 setVesselTypes(types);
@@ -76,8 +83,20 @@ export default function Vessel() {
     function getVesselTypeNameById(vesselTypeId: any) {
         const id = vesselTypeId?.value ?? vesselTypeId;
         const type = vesselTypes.find(t => t.id === id);
-        return type?.name ?? t("Vessel.details.type");
+        return type?.name ?? "Unknown";
     }
+
+    // ====== Prep chart data ======
+    const vesselTypeCounts = vesselTypes.map(type => {
+        const count = items.filter(v => {
+            const id = typeof v.vesselTypeId === "string"
+                ? v.vesselTypeId
+                : v.vesselTypeId.value;
+            return id === type.id;
+        }).length;
+
+        return { name: type.name, count };
+    });
 
     // ====== Search ======
     async function executeSearch() {
@@ -100,32 +119,40 @@ export default function Vessel() {
             return;
         }
 
-        // Validate
+        // Validate GUID
         if (searchMode === "id") {
             const guidRegex = /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/;
             if (!guidRegex.test(searchValue)) {
-                toast.error(t("Vessel.messages.invalidID", { defaultValue: "Invalid ID" }));
+                toast.error("Invalid ID format. Please enter a valid GUID.");
                 return;
             }
         }
 
-        if (searchMode === "imo" && !imoRegex.test(searchValue)) {
-            toast.error(t("Vessel.messages.invalidIMO"));
-            return;
+        // Validate IMO
+        if (searchMode === "imo") {
+            if (!imoRegex.test(searchValue)) {
+                toast.error(t("Vessel.messages.invalidIMO"));
+                return;
+            }
         }
 
+        // Wrap single object APIs so they return arrays
         let apiPromise: Promise<Vessel[]>;
 
-        if (searchMode === "imo") apiPromise = getVesselByIMO(searchValue).then(v => [v]);
-        else if (searchMode === "id") apiPromise = getVesselById(searchValue).then(v => [v]);
-        else apiPromise = getVesselByOwner(searchValue);
+        if (searchMode === "imo") {
+            apiPromise = getVesselByIMO(searchValue).then(v => [v]);
+        } else if (searchMode === "id") {
+            apiPromise = getVesselById(searchValue).then(v => [v]);
+        } else {
+            apiPromise = getVesselByOwner(searchValue);
+        }
 
         const result = await runWithLoading(apiPromise, t("Vessel.messages.loading"))
             .catch(() => null);
 
         if (!result || result.length === 0) {
-            toast.error(t("Vessel.messages.noResults"));
             setFiltered([]);
+            toast.error(t("Vessel.messages.noResults"));
             return;
         }
 
@@ -141,19 +168,24 @@ export default function Vessel() {
         if (!form.name.trim() || !form.owner.trim() || !form.vesselTypeName.trim())
             return toast.error(t("Vessel.messages.fillAll"));
 
-        const created = await runWithLoading(createVessel(form), t("Vessel.modal.addTitle"))
-            .catch(() => null);
+        const created = await runWithLoading(createVessel(form), t("Vessel.modal.addTitle")).catch(() => null);
 
         if (!created) return;
 
         const data = await getVessels();
-        toast.success(t("Vessel.messages.created"));
 
-        setItems(data);
+        toast.success(t("Vessel.messages.created"));
+        setItems(data)
         setFiltered(data);
         setIsCreateOpen(false);
 
-        setForm({ imoNumber: "", name: "", owner: "", vesselTypeName: "" });
+        setForm({
+            imoNumber: "",
+            name: "",
+            owner: "",
+            vesselTypeName: ""
+        });
+
     }
 
     // ====== Edit ======
@@ -177,15 +209,15 @@ export default function Vessel() {
         toast.success(t("Vessel.messages.updated"));
 
         const data = await getVessels();
-        setItems(data);
-        setFiltered(data);
+
+        setItems(data);setFiltered(data);
         setIsEditOpen(false);
         setEditIMO(null);
+
     }
 
     const closeSlide = () => setSelected(null);
 
-    // ====== UI ======
     return (
         <div className="vt-page">
             {selected && <div className="vt-overlay" onClick={closeSlide} />}
@@ -193,15 +225,20 @@ export default function Vessel() {
             {/* HEADER */}
             <div className="vt-title-area">
                 <div>
-                    <h2 className="vt-title">
-                        <FaShip /> {t("Vessel.title")}
-                    </h2>
+                    <h2 className="vt-title"><FaShip /> {t("Vessel.title")}</h2>
                     <p className="vt-sub">{t("Vessel.count", { count: items.length })}</p>
                 </div>
+                <div style={{ display: "flex", gap: "10px" }}>
+                    <button className="vt-create-btn-top" onClick={() => setIsCreateOpen(true)}>
+                        <FaPlus /> {t("Vessel.buttons.add")}
+                    </button>
 
-                <button className="vt-create-btn-top" onClick={() => setIsCreateOpen(true)}>
-                    <FaPlus /> {t("Vessel.buttons.add")}
-                </button>
+                    <button className="vt-create-btn-top" style={{ background: "#444" }}
+                            onClick={() => setIsStatsOpen(true)}>
+                        📊 {t("Vessel.buttons.stats", { defaultValue: "Statistics" })}
+                    </button>
+                </div>
+
             </div>
 
             {/* SEARCH MODE */}
@@ -230,19 +267,14 @@ export default function Vessel() {
                         }}
                         onKeyDown={e => e.key === "Enter" && executeSearch()}
                     />
-
                     {searchValue !== "" && (
-                        <button
-                            className="vt-clear-input"
-                            onClick={() => { setSearchValue(""); setFiltered(items); }}>
-                            {t("Vessel.buttons.clear")}
+                        <button className="vt-clear-input" onClick={() => { setSearchValue(""); setFiltered(items); }}>
+                            ✕
                         </button>
                     )}
                 </div>
-
                 <button className="vt-search-btn" onClick={executeSearch}>
                     <FaSearch />
-                    &nbsp;{t("Vessel.buttons.search")}
                 </button>
             </div>
 
@@ -259,7 +291,6 @@ export default function Vessel() {
                                 <span className="vt-label">{t("Vessel.details.owner")}</span>
                                 <span className="vt-chip">{v.owner}</span>
                             </div>
-
                             <div className="vt-row-item">
                                 <span className="vt-label">{t("Vessel.details.type")}</span>
                                 <span className="vt-chip vt-chip-type">
@@ -294,7 +325,7 @@ export default function Vessel() {
                                 setSelected(null);
                             }}
                         >
-                            {t("Vessel.buttons.edit")}
+                            Edit
                         </button>
 
                         <button
@@ -306,7 +337,7 @@ export default function Vessel() {
                                 window.location.href = `/vessel-types?id=${id}`;
                             }}
                         >
-                            {t("Vessel.buttons.viewType")}
+                            View Type
                         </button>
                     </div>
                 </div>
@@ -345,21 +376,15 @@ export default function Vessel() {
                             value={form.vesselTypeName}
                             onChange={e => setForm({ ...form, vesselTypeName: e.target.value })}
                         >
-                            <option value="">
-                                {t("Vessel.fields.selectType")}
-                            </option>
-                            {vesselTypes.map(ti => (
-                                <option key={ti.id} value={ti.name}>{ti.name}</option>
+                            <option value="">Select Vessel Type</option>
+                            {vesselTypes.map(t => (
+                                <option key={t.id} value={t.name}>{t.name}</option>
                             ))}
                         </select>
 
                         <div className="vt-modal-actions">
-                            <button className="vt-btn-cancel" onClick={() => setIsCreateOpen(false)}>
-                                {t("Vessel.buttons.cancel")}
-                            </button>
-                            <button className="vt-btn-save" onClick={handleCreate}>
-                                {t("Vessel.buttons.save")}
-                            </button>
+                            <button className="vt-btn-cancel" onClick={() => setIsCreateOpen(false)}>Cancel</button>
+                            <button className="vt-btn-save" onClick={handleCreate}>Save</button>
                         </div>
                     </div>
                 </div>
@@ -386,16 +411,48 @@ export default function Vessel() {
                         />
 
                         <div className="vt-modal-actions">
-                            <button className="vt-btn-cancel" onClick={() => setIsEditOpen(false)}>
-                                {t("Vessel.buttons.cancel")}
-                            </button>
-                            <button className="vt-btn-save" onClick={handleSaveEdit}>
-                                {t("Vessel.buttons.save")}
+                            <button className="vt-btn-cancel" onClick={() => setIsEditOpen(false)}>Cancel</button>
+                            <button className="vt-btn-save" onClick={handleSaveEdit}>Save</button>
+                        </div>
+                    </div>
+                </div>
+            )}
+            
+            {/* STATS MODAL */}
+            {isStatsOpen && (
+                <div className="vt-modal-overlay">
+                    <div className="vt-modal-stats">
+                        <h3 className="vt-modal-title">{t("Vessel.analytics.title", { defaultValue: "Vessel Statistics" })}</h3>
+
+                        <div className="vt-stats-chart">
+                            <Bar
+                                data={{
+                                    labels: vesselTypeCounts.map(v => v.name),
+                                    datasets: [
+                                        {
+                                            label: t("Vessel.analytics.types", { defaultValue: "Count" }),
+                                            data: vesselTypeCounts.map(v => v.count),
+                                            backgroundColor: "#4e79a7"
+                                        }
+                                    ]
+                                }}
+                                options={{
+                                    responsive: true,
+                                    plugins: { legend: { display: false } },
+                                    scales: { y: { ticks: { precision: 0 } } }
+                                }}
+                            />
+                        </div>
+
+                        <div className="vt-modal-actions">
+                            <button className="vt-btn-cancel" onClick={() => setIsStatsOpen(false)}>
+                                {t("Vessel.buttons.close", { defaultValue: "Close" })}
                             </button>
                         </div>
                     </div>
                 </div>
             )}
+
         </div>
     );
 }
