@@ -24,6 +24,6 @@ export async function createQualification(data: CreateQualificationRequest): Pro
 }
 
 export async function updateQualification(id: string, data: UpdateQualificationRequest): Promise<Qualification> {
-    const res = await api.put(`/api/Qualifications/${id}`, data);
+    const res = await api.patch(`/api/Qualifications/update/${id}`, data);
     return res.data;
 }

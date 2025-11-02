@@ -92,10 +92,10 @@ public class QualificationService : IQualificationService
         return resultDto;
     }
 
-    public async Task<QualificationDto?> UpdateAsync(QualificationId id, CreatingQualificationDto dto)
+    public async Task<QualificationDto?> UpdateAsync(QualificationId id, UpdateQualificationDto dto)
     {
         _logger.LogInformation("Updating qualification with ID: {Id}", id.Value);
-        await EnsureNotRepeatedNameAsync(dto);
+        await EnsureNotRepeatedAsync(dto);
         var qualification = await _repo.GetByIdAsync(id);
         if (qualification == null)
         {
@@ -142,18 +142,25 @@ public class QualificationService : IQualificationService
         }
     }
     
-    private async Task EnsureNotRepeatedNameAsync(CreatingQualificationDto dto)
+    private async Task EnsureNotRepeatedAsync(UpdateQualificationDto dto)
     {
-        _logger.LogInformation("Checking for repeated qualification name.");
+        _logger.LogInformation("Checking for repeated qualification name or code.");
         var allQualifications = await _repo.GetAllAsync();
-        
-        bool repeatedName = allQualifications.Any(q =>
+
+        bool repeatedCode = !string.IsNullOrEmpty(dto.Code) &&
+                            allQualifications.Any(q => q.Code == dto.Code);
+        bool repeatedName = !string.IsNullOrEmpty(dto.Name) && allQualifications.Any(q =>
             q.Name.Trim().Equals(dto.Name.Trim(), StringComparison.OrdinalIgnoreCase));
 
         if (repeatedName)
         {
             _logger.LogWarning("Repeated qualification name detected: {Name}", dto.Name);
             throw new BusinessRuleValidationException("Repeated Qualification name!");
+        }
+        if (repeatedCode)
+        {
+            _logger.LogWarning("Repeated qualification code detected: {Code}", dto.Code);
+            throw new BusinessRuleValidationException("Repeated Qualification code!");
         }
         
     }

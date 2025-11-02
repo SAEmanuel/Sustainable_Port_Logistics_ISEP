@@ -1,4 +1,5 @@
 using Microsoft.Extensions.Logging;
+using SEM5_PI_WEBAPI.Domain.Qualifications.DTOs;
 
 namespace SEM5_PI_WEBAPI.Tests.Services;
 
@@ -143,7 +144,7 @@ public class QualificationServiceTests
         _unitOfWorkMock.Setup(u => u.CommitAsync())
             .ReturnsAsync(1);
 
-        var dto = new CreatingQualificationDto("Sts Crane Operator", "QLF-008");
+        var dto = new UpdateQualificationDto("Sts Crane Operator", "QLF-008");
 
         // Act
         var result = await _service.UpdateAsync(id, dto);
@@ -165,7 +166,7 @@ public class QualificationServiceTests
         _repoMock.Setup(r => r.GetAllAsync()) 
             .ReturnsAsync(new List<Qualification>());
     
-        var dto = new CreatingQualificationDto("Engineer", "QLF-009");
+        var dto = new UpdateQualificationDto("Engineer", "QLF-009");
 
         // Act
         var result = await _service.UpdateAsync(id, dto);

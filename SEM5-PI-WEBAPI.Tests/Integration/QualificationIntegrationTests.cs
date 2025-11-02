@@ -306,13 +306,13 @@ public class QualificationIntegrationTests
     {
         // Arrange
         var existingQual = CreateQualification("QLF-001", "Old Name"); 
-        var dto = new CreatingQualificationDto("Updated Name", "QLF-001"); 
+        var dto = new UpdateQualificationDto("Updated Name", "QLF-001"); 
     
         _repoMock.Setup(r => r.GetByIdAsync(existingQual.Id))
             .ReturnsAsync(existingQual);
         _repoMock.Setup(r => r.GetQualificationByName("Updated Name"))
             .ReturnsAsync((Qualification)null);
-        _repoMock.Setup(r => r.GetQualificationByCodeAsync("QLF-001")) // ✅ ADICIONA ESTE MOCK
+        _repoMock.Setup(r => r.GetQualificationByCodeAsync("QLF-001"))
             .ReturnsAsync(existingQual); 
         _repoMock.Setup(r => r.GetAllAsync()) 
             .ReturnsAsync(new List<Qualification> { existingQual });
@@ -326,7 +326,7 @@ public class QualificationIntegrationTests
         var okResult = Assert.IsType<OkObjectResult>(result.Result);
         var value = Assert.IsType<QualificationDto>(okResult.Value);
         Assert.Equal("Updated Name", value.Name);
-        Assert.Equal("QLF-001", value.Code); // ✅ Código mantém-se
+        Assert.Equal("QLF-001", value.Code);
     
         _uowMock.Verify(u => u.CommitAsync(), Times.Once);
     }
@@ -335,7 +335,7 @@ public class QualificationIntegrationTests
     public async Task Update_NonExisting_ShouldReturnNotFound()
     {
         // Arrange
-        var dto = new CreatingQualificationDto("Test Name", "QLF-001");
+        var dto = new UpdateQualificationDto("Test Name", "QLF-001");
         
         _repoMock.Setup(r => r.GetByIdAsync(It.IsAny<QualificationId>()))
             .ReturnsAsync((Qualification)null);
@@ -357,7 +357,7 @@ public class QualificationIntegrationTests
         // Arrange
         var existingQual1 = CreateQualification("QLF-001", "Qualification 1"); 
         var existingQual2 = CreateQualification("QLF-002", "Qualification 2");
-        var dto = new CreatingQualificationDto("Qualification 2", "QLF-001"); 
+        var dto = new UpdateQualificationDto("Qualification 2", "QLF-001"); 
     
         _repoMock.Setup(r => r.GetByIdAsync(existingQual1.Id))
             .ReturnsAsync(existingQual1);
@@ -379,7 +379,7 @@ public class QualificationIntegrationTests
     {
         // Arrange
         var existingQual = CreateQualification("QLF-001", "Old Name");
-        var dto = new CreatingQualificationDto("", "QLF-001");
+        var dto = new UpdateQualificationDto("", "QLF-001");
         
         _repoMock.Setup(r => r.GetByIdAsync(existingQual.Id))
             .ReturnsAsync(existingQual);

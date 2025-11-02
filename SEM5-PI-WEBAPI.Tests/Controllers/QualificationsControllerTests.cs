@@ -180,7 +180,7 @@ public class QualificationsControllerTests
     public async Task Update_ShouldReturnOk_WhenFound()
     {
         var id = Guid.NewGuid();
-        var updateDto = new CreatingQualificationDto { Name = "Qualification Updated", Code = "QLF-002" };
+        var updateDto = new UpdateQualificationDto { Name = "Qualification Updated", Code = "QLF-002" };
         var dto = BuildDto();
 
         _serviceMock.Setup(s => s.UpdateAsync(It.IsAny<QualificationId>(), updateDto)).ReturnsAsync(dto);
@@ -195,9 +195,9 @@ public class QualificationsControllerTests
     [Fact]
     public async Task Update_ShouldReturnNotFound_WhenMissing()
     {
-        _serviceMock.Setup(s => s.UpdateAsync(It.IsAny<QualificationId>(), It.IsAny<CreatingQualificationDto>())).ReturnsAsync((QualificationDto?)null);
+        _serviceMock.Setup(s => s.UpdateAsync(It.IsAny<QualificationId>(), It.IsAny<UpdateQualificationDto>())).ReturnsAsync((QualificationDto?)null);
 
-        var result = await _controller.Update(Guid.NewGuid(), new CreatingQualificationDto());
+        var result = await _controller.Update(Guid.NewGuid(), new UpdateQualificationDto());
 
         Assert.IsType<NotFoundResult>(result.Result);
     }
@@ -205,10 +205,10 @@ public class QualificationsControllerTests
     [Fact]
     public async Task Update_ShouldReturnBadRequest_OnBusinessRuleValidationException()
     {
-        _serviceMock.Setup(s => s.UpdateAsync(It.IsAny<QualificationId>(), It.IsAny<CreatingQualificationDto>()))
+        _serviceMock.Setup(s => s.UpdateAsync(It.IsAny<QualificationId>(), It.IsAny<UpdateQualificationDto>()))
             .ThrowsAsync(new BusinessRuleValidationException("Error"));
 
-        var result = await _controller.Update(Guid.NewGuid(), new CreatingQualificationDto());
+        var result = await _controller.Update(Guid.NewGuid(), new UpdateQualificationDto());
 
         var bad = Assert.IsType<BadRequestObjectResult>(result.Result);
         Assert.Contains("Error", bad.Value.ToString());

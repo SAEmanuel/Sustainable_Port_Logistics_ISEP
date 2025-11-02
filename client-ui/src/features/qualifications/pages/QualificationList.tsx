@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { notifyError, notifyLoading, notifySuccess } from "../../../utils/notify";
-import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import toast from "react-hot-toast";
 import { FaCertificate, FaTimes, FaSearch, FaEdit } from "react-icons/fa";
@@ -37,7 +36,6 @@ export default function QualificationList() {
     const [createName, setCreateName] = useState("");
     const [creating, setCreating] = useState(false);
 
-    const navigate = useNavigate();
     const { t } = useTranslation();
 
     useEffect(() => {

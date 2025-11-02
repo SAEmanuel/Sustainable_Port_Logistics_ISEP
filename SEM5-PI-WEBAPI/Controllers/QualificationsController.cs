@@ -112,8 +112,8 @@ public class QualificationsController : ControllerBase
         }
     }
     
-    [HttpPatch("{id}")]
-    public async Task<ActionResult<QualificationDto>> Update(Guid id, CreatingQualificationDto dto)
+    [HttpPatch("update/{id}")]
+    public async Task<ActionResult<QualificationDto>> Update(Guid id, UpdateQualificationDto dto)
     {
         _logger.LogInformation("API Request: Update Qualification with ID = {Id} and data {@Dto}", id, dto);
         try
