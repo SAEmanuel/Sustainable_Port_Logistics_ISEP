@@ -17,6 +17,7 @@ export default function Nav() {
     const adminMenu = user?.roles.includes(Roles.Administrator)
         ? [
             { label: t("menu.vesselTypes"), path: "/vessel-types" },
+            { label: t("menu.vessels"), path: "/vessels" },
             { label: t("menu.admin"), path: "/admin" },
         ]
         : [];

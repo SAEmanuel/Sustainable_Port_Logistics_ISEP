@@ -1,0 +1,351 @@
+/* ==============================
+   VESSELS PAGE – SAME SYSTEM AS VESSEL TYPES (vt-*), CARD VERSION
+   File: vesselspage.css
+   ============================== */
+
+/* === PAGE BASE === */
+.vt-page {
+    position: relative;
+    padding: 24px;
+    background: var(--bg);
+    color: var(--text);
+    font-family: "Poppins", sans-serif;
+}
+
+.no-scroll { overflow: hidden; }
+
+/* === HEADER === */
+.vt-title-area {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 18px 24px;
+    border-radius: 16px;
+    background: var(--card-bg);
+    border: 1px solid var(--shadow);
+    margin-bottom: 24px;
+}
+
+.vt-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 26px;
+    font-weight: 600;
+}
+
+/* === CREATE BUTTON === */
+.vt-create-btn-top {
+    padding: 12px 22px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, var(--accent), #0099ff);
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    transition: .25s ease;
+    font-weight: 600;
+    box-shadow: 0 6px 14px rgba(0,0,0,.18);
+}
+
+.vt-create-btn-top:hover {
+    transform: translateY(-2px) scale(1.04);
+    box-shadow: 0 10px 26px rgba(0,0,0,.24);
+}
+
+/* === SEARCH MODE BUTTONS === */
+.vt-search-mode {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.vt-search-mode button {
+    padding: 6px 14px;
+    border-radius: 8px;
+    border: 1px solid var(--shadow);
+    background: transparent;
+    cursor: pointer;
+    transition: .2s;
+    font-size: 14px;
+    color: var(--text);
+}
+
+.vt-search-mode button.active {
+    background: var(--accent);
+    color: white;
+    transform: scale(1.05);
+    box-shadow: 0 0 8px var(--accent);
+}
+
+/* === SEARCH BOX === */
+.vt-search-box {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 18px;
+    justify-content: center;
+}
+
+.vt-search-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 320px;
+}
+
+.vt-search {
+    width: 100%;
+    padding: 8px 32px 8px 10px;
+    border-radius: 8px;
+    border: 1px solid var(--shadow);
+    background: var(--card-bg);
+    color: var(--text);
+    font-size: 14px;
+}
+
+.vt-clear-input {
+    position: absolute;
+    right: 8px;
+    background: rgba(0,0,0,0.07);
+    border: none;
+    border-radius: 50%;
+    width: 18px;
+    height: 18px;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+.vt-search-btn {
+    padding: 8px 10px;
+    border-radius: 8px;
+    border: 1px solid var(--accent);
+    background: transparent;
+    color: var(--accent);
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 10px;
+    transition: .25s;
+}
+
+.vt-search-btn:hover {
+    background: var(--accent);
+    color: white;
+}
+
+/* === CARD GRID === */
+.vt-card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 16px;
+}
+
+/* === CARD === */
+.vt-card {
+    position: relative;
+    overflow: hidden;
+    border-radius: 14px;
+    border: 1px solid var(--shadow);
+    background: var(--card-bg);
+    box-shadow: 0 4px 14px rgba(0,0,0,.08);
+    cursor: pointer;
+    transition: .35s ease;
+}
+
+.vt-card:hover {
+    transform: translateY(-6px) scale(1.05);
+    box-shadow: 0 14px 34px rgba(0,0,0,.24);
+}
+
+/* Shine swipe */
+.vt-card::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(120deg, transparent 20%, rgba(255,255,255,.55) 50%, transparent 80%);
+    transform: translateX(-120%);
+    transition: transform .65s ease;
+}
+.vt-card:hover::after {
+    transform: translateX(130%);
+}
+
+/* Border beam effect */
+.vt-card::before {
+    content: "";
+    position: absolute;
+    inset: -2px;
+    border-radius: 14px;
+    padding: 2px;
+    background: conic-gradient(from 0deg, var(--accent), transparent 60%, var(--accent), transparent 90%);
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask-composite: exclude;
+    animation: vtRotateBorder 2.8s linear infinite;
+    opacity: 0;
+    transition: .35s;
+}
+.vt-card:hover::before {
+    opacity: 1;
+}
+@keyframes vtRotateBorder {
+    to { transform: rotate(360deg); }
+}
+
+/* Header */
+.vt-card-header {
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--shadow);
+    font-weight: 700;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.vt-badge {
+    background: var(--accent);
+    color: white;
+    padding: 4px 10px;
+    border-radius: 8px;
+    font-size: 12px;
+}
+
+/* Body */
+.vt-card-body {
+    padding: 14px 18px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.vt-row-item {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.vt-label {
+    font-size: 11px;
+    opacity: .6;
+    text-transform: uppercase;
+    font-weight: 600;
+    letter-spacing: .5px;
+}
+
+.vt-chip {
+    background: rgba(255,255,255,.45);
+    border: 1px solid var(--accent);
+    border-radius: 10px;
+    padding: 5px 10px;
+    font-size: 12px;
+    font-weight: 600;
+    backdrop-filter: blur(6px);
+    display: inline-flex;
+    align-items: center;
+    color: var(--text);
+}
+
+.vt-chip-type {
+    background: rgba(0,160,255,.15);
+    border-color: rgba(0,160,255,.55);
+    color: var(--accent);
+}
+
+/* === SLIDE PANEL === */ */
+.vt-slide {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 360px;
+    height: 100%;
+    background: var(--card-bg);
+    border-left: 1px solid var(--shadow);
+    padding: 22px;
+    animation: slideIn .28s ease;
+    z-index: 2000;
+}
+
+@keyframes slideIn {
+    from { transform: translateX(100%); }
+    to { transform: translateX(0); }
+}
+
+.vt-slide-close {
+    float: right;
+    font-size: 20px;
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+.vt-slide-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.vt-btn-edit {
+    flex: 1;
+    padding: 8px;
+    background: var(--accent);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+/* === MODAL === */
+.vt-modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.4);
+    backdrop-filter: blur(8px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 3000;
+}
+
+.vt-modal {
+    background: var(--card-bg);
+    padding: 26px;
+    border-radius: 12px;
+    width: 420px;
+    animation: modalPop .3s ease;
+}
+
+@keyframes modalPop {
+    from { transform: scale(.92); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+
+.vt-input {
+    width: 100%;
+    padding: 8px;
+    border-radius: 8px;
+    border: 1px solid var(--shadow);
+    background: var(--card-bg);
+    margin-bottom: 12px;
+}
+
+.vt-modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.vt-btn-cancel {
+    padding: 8px 14px;
+    border-radius: 8px;
+    border: none;
+    background: rgba(0,0,0,.1);
+    cursor: pointer;
+}
+
+.vt-btn-save {
+    padding: 8px 14px;
+    border-radius: 8px;
+    border: none;
+    background: linear-gradient(135deg, var(--accent), #00b4ff);
+    color: white;
+    cursor: pointer;
+    font-weight: 600;
+}
