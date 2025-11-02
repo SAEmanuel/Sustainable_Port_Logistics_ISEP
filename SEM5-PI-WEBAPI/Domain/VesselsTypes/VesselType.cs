@@ -45,12 +45,24 @@ namespace SEM5_PI_WEBAPI.Domain.VesselsTypes
         public void ChangeDescription(string? updatedDescription) => SetDescription(updatedDescription ?? DefaultDescription);
         
         public void ChangeDimensions(int updatedMaxBays, int updatedMaxRows, int updatedMaxTiers) { SetDimensions(updatedMaxBays, updatedMaxRows, updatedMaxTiers); }
-        
-        public void ChangeMaxBays(int updatedMaxBays) => SetMaxBays(updatedMaxBays);
-        
-        public void ChangeMaxRows(int updatedMaxRows) => SetMaxRows(updatedMaxRows);
-        
-        public void ChangeMaxTiers(int updatedMaxTiers)=> SetMaxTiers(updatedMaxTiers);
+
+        public void ChangeMaxBays(int updatedMaxBays)
+        {
+            MaxBays = updatedMaxBays;
+            Capacity = CalculateMaxCapacity();
+        }
+
+        public void ChangeMaxRows(int updatedMaxRows)
+        {
+            SetMaxRows(updatedMaxRows);
+            Capacity = CalculateMaxCapacity();
+        }
+
+        public void ChangeMaxTiers(int updatedMaxTiers)
+        {
+            SetMaxTiers(updatedMaxTiers);
+            Capacity = CalculateMaxCapacity();
+        }
 
         
         

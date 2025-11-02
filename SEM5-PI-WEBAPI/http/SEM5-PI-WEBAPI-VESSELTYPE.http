@@ -67,8 +67,8 @@ Content-Type: application/json
 Accept: application/json
 
 {
-  "name": "Panamaxxassaa",
-  "description": "Medium size vessel",
+  "name": "Panamaxxassaaa",
+  "description": "",
   "maxBays": 20,
   "maxRows": 15,
   "maxTiers": 10

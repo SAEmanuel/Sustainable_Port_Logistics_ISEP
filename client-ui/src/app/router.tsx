@@ -2,8 +2,7 @@ import { createBrowserRouter } from "react-router-dom";
 import AppLayout from "../components/layout/AppLayout";
 import Home from "../pages/Home";
 import Login from "../pages/Login";
-import VesselTypeList from "../features/vesselsTypes/pages/VesselTypeList";
-import VesselTypeLCreate from "../features/vesselsTypes/pages/VesselTypeCreate";
+import VesselsTypes from "../features/vesselsTypes/pages/VesselsTypes";
 import Logout from "../pages/Logout"; 
 import NotFound from "../pages/NotFound";
 import Forbidden from "../pages/Forbidden";
@@ -20,7 +19,7 @@ export const router = createBrowserRouter([
             {
                 element: <RequireAuth />,
                 children: [
-                    { path: "vessel-types", element: <RequireRole roles={[Roles.Administrator]} />, children: [{index: true, element: <VesselTypeList />}, {path: "create", element: <VesselTypeLCreate />}] },
+                    { path: "vessel-types", element: <RequireRole roles={[Roles.Administrator]} />, children: [{index: true, element: <VesselsTypes />}]},
                     { path: "admin", element: <RequireRole roles={[Roles.Administrator]} />, children: [{ index: true, element: <div>Admin Dashboard</div> },],},
                     { path: "forbidden", element: <Forbidden/> },
                 ],

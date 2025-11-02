@@ -13,12 +13,13 @@
   "rolesTitle": "Multi-role Access",
   "rolesText": "Designed for agents, operators, and admins with role-based security.",
   "bannerText": "Connecting Sea and Technology 🌊",
-  
+
   "login": {
     "title": "Welcome to the ThPA System ⚓",
     "subtitle": "Select a profile to access the portal:",
     "devNotice": "Development mode — real authentication (OAuth/JWT) will be enabled later"
   },
+
   "roles": {
     "administrator": "Administrator",
     "officer": "Port Authority Officer",
@@ -26,25 +27,30 @@
     "agent": "Shipping Agent Representative",
     "viewer": "Viewer"
   },
+
   "auth": {
     "loading": "Authenticating...",
     "success": "Session started successfully ✅",
     "error": "Authentication failed ❌"
   },
+
   "logout": {
     "title": "Logging out...",
     "subtitle": "Please wait a moment",
     "success": "Session ended 👋"
   },
+
   "notFound": {
     "title": "404 — Page not found",
     "text": "The resource you're looking for doesn't exist."
   },
+
   "forbidden": {
     "title": "403 — Access Denied",
     "text": "You do not have permission to view this page.",
     "back": "Back to home"
   },
+
   "menu": {
     "home": "Home",
     "vvn": "VVNs",
@@ -54,10 +60,12 @@
     "login": "Login",
     "logout": "Logout"
   },
+
   "layout": {
     "light": "Light mode",
     "dark": "Dark mode"
   },
+
   "vesselTypes": {
     "title": "Vessel Types",
     "count": "{{count}} registered types",
@@ -67,6 +75,16 @@
     "loading": "Loading vessel types...",
     "loadSuccess": "Loaded {{count}} vessel types.",
     "loadError": "Failed to load vessel types.",
+    "created": "Vessel type created successfully",
+    "edit": "Edit",
+    "delete": "Delete",
+    "save": "Save",
+    "cancel": "Cancel",
+    "errors": {
+      "nameRequired": "Name is required!",
+      "invalidStructure": "Bays, rows and tiers must be greater than zero!"
+    },
+    "autoCapacity": "Capacity is calculated automatically",
     "details": {
       "name": "Name",
       "description": "Description",
@@ -74,10 +92,6 @@
       "rows": "Rows",
       "tiers": "Tiers",
       "capacity": "Capacity (TEU)"
-    },
-    "edit": "Edit",
-    "delete": "Delete"
+    }
   }
-
 }
-

@@ -106,7 +106,12 @@ namespace SEM5_PI_WEBAPI.Controllers
             catch (BusinessRuleValidationException e)
             {
                 _logger.LogWarning("API Error (404): {Message}", e.Message);
-                return BadRequest(e.Message);
+                return BadRequest(new ProblemDetails
+                {
+                    Title = "Validation Error",
+                    Detail = e.Message,
+                    Status = StatusCodes.Status400BadRequest
+                });
             }
         }
 
@@ -147,6 +152,24 @@ namespace SEM5_PI_WEBAPI.Controllers
             {
                 _logger.LogWarning("API Response (400): Update failed for Vessel Type with ID = {Id}. Reason: {Message}", id, ex.Message);
                 return BadRequest(ex.Message);
+            }
+        }
+        
+        [HttpDelete("{id:guid}")]
+        public async Task<ActionResult> Delete(Guid id)
+        {
+            _logger.LogInformation("API Request: Delete Vessel Type with ID = {Id}", id);
+
+            try
+            {
+                await _service.DeleteAsync(new VesselTypeId(id));
+                _logger.LogInformation("API Response (200): Vessel Type with ID = {Id} deleted successfully.", id);
+                return Ok($"Vessel Type with ID = {id} deleted successfully.");
+            }
+            catch (BusinessRuleValidationException ex)
+            {
+                _logger.LogWarning("API Error (404): Vessel Type with ID = {Id} -> NOT FOUND", id);
+                return NotFound(ex.Message);
             }
         }
 

@@ -11,4 +11,5 @@ public interface IVesselTypeService
     Task<List<VesselTypeDto>> GetByDescriptionAsync(string description);
     Task<List<VesselTypeDto>> FilterAsync(string? name, string? description, string? query);
     Task<VesselTypeDto> UpdateAsync(VesselTypeId id, UpdateVesselTypeDto dto);
+    Task DeleteAsync(VesselTypeId id);
 }

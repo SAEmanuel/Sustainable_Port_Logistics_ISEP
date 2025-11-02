@@ -159,6 +159,24 @@ namespace SEM5_PI_WEBAPI.Domain.VesselsTypes
             return VesselTypeMappers.CreateDtoVesselType(vesselTypeInDb);
         }
 
+        public async Task DeleteAsync(VesselTypeId id)
+        {
+            _logger.LogInformation("Business Domain: Request to delete Vessel Type with ID = {Id}", id.Value);
+
+            var vesselTypeInDb = await _vesselTypeRepository.GetByIdAsync(id);
+
+            if (vesselTypeInDb == null)
+            {
+                _logger.LogWarning("Business Domain: Vessel Type with ID = {Id} not found. Delete aborted.", id.Value);
+                throw new BusinessRuleValidationException($"No Vessel Type found with ID = {id.Value}");
+            }
+
+            _vesselTypeRepository.Remove(vesselTypeInDb);
+            await _unitOfWork.CommitAsync();
+
+            _logger.LogInformation("Business Domain: Vessel Type with ID = {Id} deleted successfully.", id.Value);
+        }
+
     }
 }
 

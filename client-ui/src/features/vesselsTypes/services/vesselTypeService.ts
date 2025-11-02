@@ -26,3 +26,7 @@ export async function updateVesselType(id: string, data: UpdateVesselTypeRequest
     const res = await api.put(`/api/VesselType/${id}`, data);
     return res.data;
 }
+
+export async function deleteVesselType(id: string): Promise<void> {
+    await api.delete(`/api/VesselType/${id}`);
+}
