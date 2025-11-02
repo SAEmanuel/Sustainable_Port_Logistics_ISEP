@@ -172,7 +172,7 @@
     "empty": "No staff members found.",
     "detailsTitle": "Details",
     "edit" : "Edit",
-    "deactivate": "Deactivate",
+    "toggle": "Toggle status",
     "details": {
       "name": "Name",
       "email": "Email",

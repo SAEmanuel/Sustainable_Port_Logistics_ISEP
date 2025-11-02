@@ -8,6 +8,9 @@ obj/
 Migrations/
 publish/
 
+#Https
+http/
+
 # Logs
 SEM5-PI-WEBAPI/Logs
 

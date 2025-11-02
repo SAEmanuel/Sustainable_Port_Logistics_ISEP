@@ -13,3 +13,7 @@ export interface UpdateQualificationRequest {
     name?: string,
     code?: string
 }
+
+export interface QualificationsList {
+    qualificationsCodes: string[]
+}
