@@ -21,7 +21,15 @@ export default function Nav() {
         ]
         : [];
 
-    const menu = [...baseMenu, ...privateMenu, ...adminMenu];
+
+    const operatorMenu = user?.roles.includes(Roles.LogisticsOperator)
+        ? [
+            { label: t("menu.dashboard"), path: "/logistics-dashboard" },
+            { label: t("menu.qualifications"), path: "/qualifications" },
+        ]
+        : [];
+
+    const menu = [...baseMenu, ...privateMenu, ...adminMenu, ...operatorMenu];
 
     return (
         <nav className="nav">

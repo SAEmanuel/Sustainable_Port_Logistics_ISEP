@@ -1,14 +1,29 @@
 import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { useAppStore } from "../app/store";
+import { Roles } from "../app/types";
 import AOS from "aos";
 import "aos/dist/aos.css";
 import { FaShip, FaWarehouse, FaTasks, FaUsersCog } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import "./css/home.css";
 
-export default function Home() {const { t } = useTranslation();
+export default function Home() {
+    const { t } = useTranslation();
+    const navigate = useNavigate();
+    const user = useAppStore((s) => s.user);
 
-    useEffect(() => {AOS.init({ duration: 1000, once: true });}, []);
+    useEffect(() => {
+        if (user?.roles.includes(Roles.LogisticsOperator)) {
+            navigate("/logistics-dashboard", { replace: true });
+        }
+    }, [user, navigate]);
+
+
+    useEffect(() => {
+        AOS.init({ duration: 1000, once: true });
+    }, []);
 
     return (
         <>
@@ -63,7 +78,6 @@ export default function Home() {const { t } = useTranslation();
                     </div>
                 </div>
             </section>
-
 
             {/* CALLOUT */}
             <section className="callout" data-aos="fade-up" data-aos-delay="400">

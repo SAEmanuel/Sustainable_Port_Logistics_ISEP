@@ -57,13 +57,24 @@
     "storage": "Áreas de Armazenamento",
     "vesselTypes": "Tipos de Navio",
     "admin": "Administração",
+    "qualifications": "Qualificações",
+    "dashboard": "Dashboard",
     "login": "Entrar",
     "logout": "Sair"
   },
-
   "layout": {
     "light": "Modo claro",
     "dark": "Modo escuro"
+  },
+  "dashboard": {
+    "welcome": "Bem-vindo, Operador Logístico",
+    "subtitle": "Selecione uma área para gerir",
+    "physicalResources": "Gerir Recursos Físicos",
+    "physicalResourcesDesc": "Gira guindastes, camiões e outros equipamentos usados nas operações portuárias.",
+    "qualifications": "Gerir Qualificações",
+    "qualificationsDesc": "Define e atualiza as qualificações necessárias para operadores e equipamentos.",
+    "staffMembers": "Gerir Membros da Equipa",
+    "staffMembersDesc": "Gere informações sobre colaboradores, suas qualificações e disponibilidade."
   },
 
   "vesselTypes": {
@@ -92,6 +103,63 @@
       "rows": "Linhas",
       "tiers": "Níveis",
       "capacity": "Capacidade (TEU)"
+    },
+    "edit": "Editar",
+    "delete": "Eliminar"
+  },
+  "qualifications": {
+    "title": "Qualificações",
+    "count": "{{count}} qualificações registadas",
+    "searchPlaceholder": "Pesquisar qualificação...",
+    "empty": "Nenhuma qualificação encontrada...",
+    "add": "Adicionar",
+    "loading": "A carregar qualificações...",
+    "loadSuccess": "{{count}} qualificações carregadas.",
+    "loadError": "Falha ao carregar qualificações.",
+    "createTitle": "Criar Qualificação",
+    "createSuccess": "Qualificação criada com sucesso!",
+    "createError": "Erro ao criar qualificação",
+    "details": {
+      "code": "Código",
+      "name": "Nome"
+    },
+    "form": {
+      "code": "Código",
+      "codePlaceholder": "ex: STS-OPR",
+      "name": "Nome",
+      "namePlaceholder": "ex: Operador de Grua STS",
+      "required": "Código e Nome são obrigatórios"
+    },
+    "edit": "Editar",
+    "showAll": "Mostrar Todos",
+    "searchByCode": "Procurar por Código",
+    "searchByName": "Procurar por Nome",
+    "search": "Procurar",
+    "searchCodePlaceholder": "Digite o código (ex: STS-OPR)",
+    "searchNamePlaceholder": "Digite o nome (ex: Operador de Grua)",
+    "searching": "A procurar...",
+    "searchSuccess": "Qualificação encontrada!",
+    "searchNotFound": "Qualificação não encontrada",
+    "searchEmpty": "Digite um valor para buscar",
+    "searchResultTitle": "Resultado da Busca",
+    "viewDetails": "Ver Detalhes",
+    "editTitle": "Editar Qualificação",
+    "currentCode": "Código Atual",
+    "currentName": "Nome Atual",
+    "newCode": "Novo Código",
+    "newCodePlaceholder": "Digite o novo código (opcional)",
+    "newName": "Novo Nome",
+    "newNamePlaceholder": "Digite o novo nome (opcional)",
+    "editOptional": "Deixe em branco para não alterar",
+    "cancel": "Cancelar",
+    "save": "Guardar",
+    "saving": "A guardar...",
+    "updating": "A atualizar...",
+    "updateSuccess": "Qualificação atualizada com sucesso!",
+    "updateError": "Erro ao atualizar qualificação",
+    "editEmptyError": "Preencha pelo menos um campo para atualizar",
+    "editRequired": "Campo obrigatório*",
+    "create" : "Criar"
     }
   }
-}
+

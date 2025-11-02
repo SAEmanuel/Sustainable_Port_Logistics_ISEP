@@ -57,6 +57,8 @@
     "storage": "Storage Areas",
     "vesselTypes": "Vessel Types",
     "admin": "Admin",
+    "qualifications": "Qualifications",
+    "dashboard": "Dashboard",
     "login": "Login",
     "logout": "Logout"
   },
@@ -64,6 +66,16 @@
   "layout": {
     "light": "Light mode",
     "dark": "Dark mode"
+  },
+  "dashboard": {
+    "welcome": "Welcome, Logistics Operator",
+    "subtitle": "Select an area to manage",
+    "physicalResources": "Manage Physical Resources",
+    "physicalResourcesDesc": "Manage cranes, trucks, and other equipment used in port operations.",
+    "qualifications": "Manage Qualifications",
+    "qualificationsDesc": "Define and update qualifications required for operators and equipment.",
+    "staffMembers": "Manage Staff Members",
+    "staffMembersDesc": "Manage information about employees, their qualifications, and availability."
   },
 
   "vesselTypes": {
@@ -92,6 +104,63 @@
       "rows": "Rows",
       "tiers": "Tiers",
       "capacity": "Capacity (TEU)"
+    },
+    "edit": "Edit",
+    "delete": "Delete"
+  },
+  "qualifications": {
+    "title": "Qualifications",
+    "count": "{{count}} qualifications registered",
+    "searchPlaceholder": "Search qualification...",
+    "empty": "No qualifications found...",
+    "add": "Add",
+    "loading": "Loading qualifications...",
+    "loadSuccess": "{{count}} qualifications loaded.",
+    "loadError": "Failed to load qualifications.",
+    "createTitle": "Create Qualification",
+    "createSuccess": "Qualification created successfully!",
+    "createError": "Failed to create qualification",
+    "details": {
+      "code": "Code",
+      "name": "Name"
+    },
+    "form": {
+      "code": "Code",
+      "codePlaceholder": "e.g., STS-OPR",
+      "name": "Name",
+      "namePlaceholder": "e.g., STS Crane Operator",
+      "required": "Code and Name are required"
+    },
+    "edit": "Edit",
+    "showAll": "Show All",
+    "searchByCode": "Search by Code",
+    "searchByName": "Search by Name",
+    "search": "Search",
+    "searchCodePlaceholder": "Enter code (e.g., STS-OPR)",
+    "searchNamePlaceholder": "Enter name (e.g., Crane Operator)",
+    "searching": "Searching...",
+    "searchSuccess": "Qualification found!",
+    "searchNotFound": "Qualification not found",
+    "searchEmpty": "Enter a value to search",
+    "searchResultTitle": "Search Result",
+    "viewDetails": "View Details",
+    "editTitle": "Edit Qualification",
+    "currentCode": "Current Code",
+    "currentName": "Current Name",
+    "newCode": "New Code",
+    "newCodePlaceholder": "Enter new code (optional)",
+    "newName": "New Name",
+    "newNamePlaceholder": "Enter new name (optional)",
+    "editOptional": "Leave blank to keep unchanged",
+    "cancel": "Cancel",
+    "save": "Save",
+    "saving": "Saving...",
+    "updating": "Updating...",
+    "updateSuccess": "Qualification updated successfully!",
+    "updateError": "Failed to update qualification",
+    "editEmptyError": "Fill in at least one field to update",
+    "editRequired": "Mandatory field*",
+    "create" : "Create"
     }
   }
-}
+
