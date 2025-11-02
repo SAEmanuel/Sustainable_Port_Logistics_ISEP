@@ -156,7 +156,7 @@ namespace SEM5_PI_WEBAPI
             
             services.AddTransient<Bootstrap>();
             
-            services.AddScoped<ResponsesToFrontend>();
+            services.AddScoped<IResponsesToFrontend, ResponsesToFrontend>();
 
         }
     }
