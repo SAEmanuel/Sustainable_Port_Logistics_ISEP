@@ -2,7 +2,7 @@ import { createBrowserRouter } from "react-router-dom";
 import AppLayout from "../components/layout/AppLayout";
 import Home from "../pages/Home";
 import Login from "../pages/Login";
-import QualificationList from "../features/qualifications/pages/QualificationList";
+import Qualification from "../features/qualifications/pages/Qualification.tsx";
 import LogisticsOperatorDashboard from "../pages/LogisticsOperatorDashboard";
 import Logout from "../pages/Logout";
 import VesselsTypes from "../features/vesselsTypes/pages/VesselsTypes";
@@ -32,7 +32,7 @@ export const router = createBrowserRouter([
                         path: "qualifications",
                         element: <RequireRole roles={[Roles.LogisticsOperator]} />,
                         children: [
-                            { index: true, element: <QualificationList /> }
+                            { index: true, element: <Qualification /> }
                         ]
                     },
 
