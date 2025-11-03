@@ -12,9 +12,14 @@ function formatPct(num: number, den: number) {
     if (!den) return "0%";
     return `${Math.round((num / den) * 100)}%`;
 }
+
+
 function classNames(...xs: (string | false | null | undefined)[]) {
     return xs.filter(Boolean).join(" ");
 }
+
+
+
 function buildOccupancySlices(area: StorageAreaDto) {
     const total = area.maxBays * area.maxRows * area.maxTiers;
     const occupied = Math.min(area.currentCapacityTeu, total);
@@ -33,22 +38,23 @@ function buildOccupancySlices(area: StorageAreaDto) {
     }
     return slices;
 }
-const GUID_RE =
-    /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$/;
+
+
+const GUID_RE = /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$/;
 
 export default function StorageAreaPage() {
     const { t } = useTranslation();
     const nav = useNavigate();
-
     /* State */
     const [items, setItems] = useState<StorageAreaDto[]>([]);
     const [loading, setLoading] = useState(true);
     const [query, setQuery] = useState("");
     const [selected, setSelected] = useState<StorageAreaDto | null>(null);
-
     // Distances popup
     const [isDistancesOpen, setIsDistancesOpen] = useState(false);
 
+    
+    
     /* Effects */
     useEffect(() => {
         (async () => {
@@ -66,6 +72,8 @@ export default function StorageAreaPage() {
         })();
     }, [t]);
 
+    
+    
     /* Derived */
     const filtered = useMemo(() => {
         if (!query.trim()) return items;
@@ -80,22 +88,35 @@ export default function StorageAreaPage() {
         });
     }, [items, query]);
 
+    
+    
     const capacityPct = useMemo(() => {
         if (!selected) return 0;
         const den = selected.maxCapacityTeu || 1;
         return Math.min(100, Math.round((selected.currentCapacityTeu / den) * 100));
     }, [selected]);
 
+    
+    
+    
     const slices = useMemo(
         () => (selected ? buildOccupancySlices(selected) : []),
         [selected]
     );
 
+    
+    
+    
     /* Handlers */
     function goToCreate() {
         nav("/storage-areas/new");
     }
 
+    
+    
+    
+    
+    
     return (
         <div className="sa-wrapper">
 

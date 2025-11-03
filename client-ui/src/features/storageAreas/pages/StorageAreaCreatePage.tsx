@@ -87,7 +87,22 @@ export default function StorageAreaCreatePage() {
             ...f,
             distancesToDocks: f.distancesToDocks.filter(d => d.dockCode !== code)
         }));
+    
+    const MIN_LOADING_TIME = 500;
 
+    async function runWithLoading<T>(promise: Promise<T>, text: string) {
+        const id = toast.loading(text);
+        const start = Date.now();
+        try {
+            return await promise;
+        } finally {
+            const elapsed = Date.now() - start;
+            if (elapsed < MIN_LOADING_TIME)
+                await new Promise(res => setTimeout(res, MIN_LOADING_TIME - elapsed));
+            toast.dismiss(id);
+        }
+    }
+    
     const submit = async (e: React.FormEvent) => {
         e.preventDefault();
 
@@ -101,15 +116,16 @@ export default function StorageAreaCreatePage() {
             return;
         }
 
-        try {
-            await storageAreaService.createStorageArea(form);
-            toast.success(t("storageAreas.create.btnCreate"));
-            nav("/storage-areas");
-        } catch {
-            toast.error("Error");
-        }
+        const created = await runWithLoading(storageAreaService.createStorageArea(form),"Creating Storage Area").catch(() => null);
+       
+        if (!created) return;
+        
+        toast.success(t("storageAreas.create.btnCreate"));
+        nav("/storage-areas");
     };
 
+    
+    
     return (
         <div className="sa-create-page">
             {/* Header */}
@@ -267,7 +283,7 @@ export default function StorageAreaCreatePage() {
                 <button className="sa-btn sa-btn-cancel" onClick={() => nav(-1)}>
                     {t("storageAreas.create.btnCancel")}
                 </button>
-                <button type="submit" className="sa-btn sa-btn-save">
+                <button type="submit" className="sa-btn sa-btn-save" onClick={(e) => submit(e)}>
                     {t("storageAreas.create.btnCreate")}
                 </button>
             </div>
