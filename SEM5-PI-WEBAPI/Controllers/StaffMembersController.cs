@@ -50,13 +50,12 @@ public class StaffMembersController : ControllerBase
     }
 
     [HttpGet("by-qualifications")]
-    public async Task<ActionResult<List<StaffMemberDto>>> GetByQualifications(CodesListDto codesListDto)
+    public async Task<ActionResult<List<StaffMemberDto>>> GetByQualifications([FromQuery(Name = "codes")] List<string> qualificationCodes)
     {
         _logger.LogInformation("API Request: Get Staff Members by Qualification Codes");
         try
         {
-            var qualificationCodes = codesListDto.QualificationsCodes;
-            if (!qualificationCodes.Any())
+            if (qualificationCodes == null || !qualificationCodes.Any())
             {
                 _logger.LogWarning("API Response (400): No qualification codes provided");
                 return BadRequest("At least one qualification code must be provided.");
@@ -73,13 +72,12 @@ public class StaffMembersController : ControllerBase
     }
 
     [HttpGet("by-exact-qualifications")]
-    public async Task<ActionResult<List<StaffMemberDto>>> GetByAllQualifications(CodesListDto codesListDto)
+    public async Task<ActionResult<List<StaffMemberDto>>> GetByAllQualifications([FromQuery(Name = "codes")] List<string> qualificationCodes)
     {
         _logger.LogInformation("API Request: Get Staff Members by Exact Qualification Codes");
         try
         {
-            var qualificationCodes = codesListDto.QualificationsCodes;
-            if (!qualificationCodes.Any())
+            if (qualificationCodes == null || !qualificationCodes.Any())
             {
                 _logger.LogWarning("API Response (400): No exact qualification codes provided");
                 return BadRequest("At least one qualification code must be provided.");

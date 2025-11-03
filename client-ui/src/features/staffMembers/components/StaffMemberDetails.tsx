@@ -11,7 +11,7 @@ interface Props {
     staffMember: StaffMember;
     onClose: () => void;
     onEdit: () => void;
-    onToggleSuccess: (updated: StaffMember) => void;  // ⭐ Callback para atualizar
+    onToggleSuccess: (updated: StaffMember) => void;
 }
 
 export default function StaffMemberDetails({
