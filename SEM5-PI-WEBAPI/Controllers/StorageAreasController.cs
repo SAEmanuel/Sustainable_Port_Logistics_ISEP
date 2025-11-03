@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using SEM5_PI_WEBAPI.Domain.Shared;
 using SEM5_PI_WEBAPI.Domain.StorageAreas;
 using SEM5_PI_WEBAPI.Domain.StorageAreas.DTOs;
+using SEM5_PI_WEBAPI.utils;
 
 namespace SEM5_PI_WEBAPI.Controllers;
 
@@ -11,11 +12,13 @@ public class StorageAreasController : ControllerBase
 {
     private readonly ILogger<StorageAreasController> _logger;
     private readonly IStorageAreaService _service;
+    private readonly IResponsesToFrontend _refrontend;
 
-    public StorageAreasController(ILogger<StorageAreasController> logger, IStorageAreaService service)
+    public StorageAreasController(ILogger<StorageAreasController> logger, IStorageAreaService service,  IResponsesToFrontend refrontend)
     {
         _logger = logger;
         _service = service;
+        _refrontend = refrontend;
     }
 
     [HttpGet]
@@ -33,7 +36,7 @@ public class StorageAreasController : ControllerBase
         catch (BusinessRuleValidationException e)
         {
             _logger.LogWarning("API Response (404): No storage areas found. {Message}", e.Message);
-            return NotFound(e.Message);
+            return _refrontend.ProblemResponse("Not Found", e.Message, 404);
         }
     }
 
@@ -52,7 +55,7 @@ public class StorageAreasController : ControllerBase
         catch (BusinessRuleValidationException e)
         {
             _logger.LogWarning("API Response (404): Storage Area with ID = {Id} not found. {Message}", id, e.Message);
-            return NotFound(e.Message);
+            return _refrontend.ProblemResponse("Not Found", e.Message, 404);
         }
     }
 
@@ -71,7 +74,7 @@ public class StorageAreasController : ControllerBase
         catch (BusinessRuleValidationException e)
         {
             _logger.LogWarning("API Response (404): Storage Area with Name = {Name} not found. {Message}", name, e.Message);
-            return NotFound(e.Message);
+            return _refrontend.ProblemResponse("Not Found", e.Message, 404);
         }
     }
 
@@ -92,7 +95,7 @@ public class StorageAreasController : ControllerBase
         catch (BusinessRuleValidationException e)
         {
             _logger.LogWarning("API Response (404): Distances not found. {Message}", e.Message);
-            return NotFound(e.Message);
+            return _refrontend.ProblemResponse("Not Found", e.Message, 404);
         }
     }
 
@@ -114,7 +117,7 @@ public class StorageAreasController : ControllerBase
         catch (BusinessRuleValidationException e)
         {
             _logger.LogWarning("API Response (404): Physical resources not found. {Message}", e.Message);
-            return NotFound(e.Message);
+            return _refrontend.ProblemResponse("Not Found", e.Message, 404);
         }
     }
 
@@ -142,12 +145,29 @@ public class StorageAreasController : ControllerBase
         catch (BusinessRuleValidationException e)
         {
             _logger.LogWarning("API Response (400): Failed to create Storage Area. {Message}", e.Message);
-            return BadRequest(e.Message);
+            return _refrontend.ProblemResponse("Validation Error", e.Message, 400);
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "API Response (500): Unexpected error while creating Storage Area with Name = {Name}", dto.Name);
-            return StatusCode(500, "An unexpected error occurred.");
+            return _refrontend.ProblemResponse("Unexpected Error", ex.Message, 500);
+        }
+    }
+
+    [HttpGet("{id:guid}/grid")]
+    public async Task<ActionResult<StorageAreaGridDto>> GetGrid(Guid id)
+    {
+        _logger.LogInformation("API Request: Get grid for Storage Area Id = {Id}", id);
+        try
+        {
+            var grid = await _service.GetGridAsync(new StorageAreaId(id));
+            _logger.LogInformation("API Response (200): Grid returned for Storage Area Id = {Id}", id);
+            return Ok(grid);
+        }
+        catch (BusinessRuleValidationException e)
+        {
+            _logger.LogWarning("API Response (404): Grid not found for {Id}. {Message}", id, e.Message);
+            return _refrontend.ProblemResponse("Not Found", e.Message, 404);
         }
     }
 }

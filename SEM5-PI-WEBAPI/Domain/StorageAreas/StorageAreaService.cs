@@ -165,4 +165,24 @@ public class StorageAreaService: IStorageAreaService
 
         }
     }
+    
+    public async Task<StorageAreaGridDto> GetGridAsync(StorageAreaId id)
+    {
+        var storageArea = await _storageAreaRepository.GetByIdAsync(id)
+                          ?? throw new BusinessRuleValidationException($"Storage Area with ID {id.Value} not found.");
+
+        var slots = new List<StorageSlotDto>();
+
+        for (int t = 0; t < storageArea.MaxTiers; t++)
+        for (int r = 0; r < storageArea.MaxRows; r++)
+        for (int b = 0; b < storageArea.MaxBays; b++)
+        {
+            var iso = storageArea.FindContainer(b, r, t)?.Value;
+            if (iso != null)
+                slots.Add(new StorageSlotDto(b, r, t, iso));
+        }
+
+        return new StorageAreaGridDto(storageArea.MaxBays, storageArea.MaxRows, storageArea.MaxTiers, slots);
+    }
+
 }

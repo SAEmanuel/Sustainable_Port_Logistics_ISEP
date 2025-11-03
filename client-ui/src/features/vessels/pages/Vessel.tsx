@@ -17,8 +17,6 @@ import type { Vessel, CreateVesselRequest, UpdateVesselRequest } from "../types/
 
 import "../style/vesselspage.css";
 import {useTranslation} from "react-i18next";
-
-// === Chart.js imports ===
 import { Bar } from "react-chartjs-2";
 import {
     Chart as ChartJS,
@@ -28,6 +26,9 @@ import {
     Tooltip,
     Legend
 } from "chart.js";
+
+// === Chart.js imports ===
+
 ChartJS.register(BarElement, CategoryScale, LinearScale, Tooltip, Legend);
 
 export default function Vessel() {

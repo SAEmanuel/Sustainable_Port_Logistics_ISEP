@@ -29,7 +29,7 @@ public class StorageArea : Entity<StorageAreaId>, IAggregateRoot
 
     public int MaxCapacityTeu => MaxBays * MaxRows * MaxTiers;
     public int CurrentCapacityTeu { get; private set; }
-
+    
     public List<PhysicalResourceCode> PhysicalResources { get; private set; }
 
     private readonly List<StorageAreaDockDistance> _distancesToDocks = new();
@@ -58,6 +58,14 @@ public class StorageArea : Entity<StorageAreaId>, IAggregateRoot
         this.Id = new StorageAreaId(Guid.NewGuid());
     }
     
+    private void EnsureGridInitialized()
+    {
+        if (_grid == null)
+        {
+            _grid = new Iso6346Code[MaxBays, MaxRows, MaxTiers];
+        }
+    }
+    
     public void ChangeDescription(string description) => SetDescription(description);
     public void AddPhysicalResources(IEnumerable<PhysicalResourceCode> physicalResources) => AggPhysicalResources(physicalResources);
     public void RemovePhysicalResources(IEnumerable<PhysicalResourceCode> physicalResources) => RmvPhysicalResources(physicalResources);
@@ -70,8 +78,8 @@ public class StorageArea : Entity<StorageAreaId>, IAggregateRoot
 
     public void PlaceContainer(Iso6346Code containerIso, int bay, int row, int tier)
     {
-        if (_grid == null) throw new InvalidOperationException("Storage grid not initialized.");
-
+        EnsureGridInitialized();
+        
         if (bay < 0 || bay >= MaxBays ||
             row < 0 || row >= MaxRows ||
             tier < 0 || tier >= MaxTiers)
@@ -89,8 +97,8 @@ public class StorageArea : Entity<StorageAreaId>, IAggregateRoot
 
     public void RemoveContainer(int bay, int row, int tier)
     {
-        if (_grid == null) throw new InvalidOperationException("Storage grid not initialized.");
-
+        EnsureGridInitialized();
+        
         if (_grid[bay, row, tier] == null)
             throw new BusinessRuleValidationException("No container found in this slot.");
 
@@ -100,7 +108,13 @@ public class StorageArea : Entity<StorageAreaId>, IAggregateRoot
 
     public Iso6346Code? FindContainer(int bay, int row, int tier)
     {
-        if (_grid == null) throw new InvalidOperationException("Storage grid not initialized.");
+        EnsureGridInitialized();
+
+        if (bay < 0 || bay >= MaxBays ||
+            row < 0 || row >= MaxRows ||
+            tier < 0 || tier >= MaxTiers)
+            throw new BusinessRuleValidationException("Invalid Bay/Row/Tier position.");
+
         return _grid[bay, row, tier];
     }
 

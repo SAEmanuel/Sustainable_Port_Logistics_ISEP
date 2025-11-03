@@ -8,6 +8,7 @@ import LogisticsOperatorDashboard from "../pages/LogisticsOperatorDashboard";
 import Logout from "../pages/Logout";
 import VesselsTypes from "../features/vesselsTypes/pages/VesselsTypes";
 import Vessels from "../features/vessels/pages/Vessel";
+import StorageArea from "../features/storageAreas/pages/storageAreaPage";
 import NotFound from "../pages/NotFound";
 import Forbidden from "../pages/Forbidden";
 import { RequireAuth, RequireRole, RequireGuest } from "../hooks/useAuthGuard";
@@ -45,6 +46,7 @@ export const router = createBrowserRouter([
                         ]
                     },
 
+                    { path: "storage-areas", element: <RequireRole roles={[Roles.Administrator]} />, children: [{index: true, element: <StorageArea />}]},
                     { path: "vessel-types", element: <RequireRole roles={[Roles.Administrator]} />, children: [{index: true, element: <VesselsTypes />}]},
                     { path: "vessels", element: <RequireRole roles={[Roles.Administrator]} />, children: [{index: true, element: <Vessels />}]},
                     { path: "admin", element: <RequireRole roles={[Roles.Administrator]} />, children: [{ index: true, element: <div>Admin Dashboard</div> },],},
