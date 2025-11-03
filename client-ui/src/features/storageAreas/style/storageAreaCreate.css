@@ -1,0 +1,184 @@
+/* PAGE WRAPPER */
+.sa-create-page {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    padding: 24px;
+    background: var(--bg);
+    color: var(--text);
+    font-family: "Poppins", sans-serif;
+    gap: 18px;
+}
+
+/* HEADER */
+.sa-create-header {
+    margin-bottom: 4px;
+}
+.sa-create-title {
+    font-size: 26px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* BODY LAYOUT */
+.sa-create-body {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    flex: 1;
+}
+
+/* SECTIONS */
+.sa-section {
+    background: var(--card-bg);
+    border: 1px solid var(--shadow);
+    border-radius: 14px;
+    padding: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    box-sizing: border-box;
+}
+
+.sa-section-title {
+    font-size: 15px;
+    font-weight: 700;
+    margin-bottom: 2px;
+    color: var(--text);
+}
+
+/* FORM FIELDS */
+.sa-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.sa-field label {
+    font-size: 13px;
+    font-weight: 600;
+    opacity: .8;
+}
+
+.sa-input, .sa-textarea, .sa-select {
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: 10px;
+    border: 1px solid var(--shadow);
+    background: var(--card-bg);
+    color: var(--text);
+    box-sizing: border-box;
+    font-size: 14px;
+}
+
+.sa-textarea {
+    min-height: 100px;
+    resize: vertical;
+}
+
+.sa-select {
+    cursor: pointer;
+}
+
+/* GRID FOR NUMBERS */
+.sa-grid-3 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+}
+
+/* INLINE ADD FIELDS + BUTTON */
+.sa-inline {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.sa-chip-btn {
+    background: var(--accent);
+    color: white;
+    border: none;
+    padding: 8px 11px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: .2s;
+}
+.sa-chip-btn:hover {
+    transform: scale(1.05);
+}
+
+/* CHIPS */
+.sa-box {
+    padding: 10px;
+    border: 1px solid var(--shadow);
+    border-radius: 10px;
+    background: rgba(0,0,0,.04);
+    min-height: 40px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    align-items: center;
+}
+
+.sa-chip {
+    background: rgba(255,255,255,.3);
+    border: 1px solid var(--accent);
+    padding: 5px 10px;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    user-select: none;
+}
+.sa-chip:hover {
+    background: var(--accent);
+    color: white;
+}
+
+/* FOOTER BUTTON BAR */
+.sa-create-actions {
+    position: sticky;
+    bottom: 0;
+    background: var(--bg);
+    padding-top: 14px;
+    border-top: 1px solid var(--shadow);
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+}
+
+.sa-btn {
+    padding: 10px 18px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: .25s;
+}
+
+.sa-btn-cancel {
+    background: rgba(0,0,0,.15);
+    color: var(--text);
+}
+.sa-btn-cancel:hover {
+    transform: translateY(-2px);
+}
+
+.sa-btn-save {
+    background: linear-gradient(135deg, var(--accent), #0099ff);
+    color: #fff;
+    box-shadow: 0 6px 12px rgba(0,0,0,.15);
+}
+.sa-btn-save:hover {
+    transform: translateY(-2px) scale(1.03);
+}
+
+/* RESPONSIVE */
+@media (max-width: 900px) {
+    .sa-create-body {
+        grid-template-columns: 1fr;
+    }
+}

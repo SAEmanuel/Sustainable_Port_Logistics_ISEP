@@ -1,14 +1,10 @@
 import { useEffect, useMemo, useState } from "react";
 import { FaShip, FaSearch, FaPlus, FaTimes } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import "../style/storageAreaStyle.css";
 import * as storageAreaService from "../service/storageAreaService";
-import type {
-    StorageAreaDto,
-    CreatingStorageArea,
-    StorageAreaDockDistance,
-    StorageAreaType,
-} from "../type/storageAreaType";
+import type { StorageAreaDto } from "../type/storageAreaType";
 
 /* Helpers */
 function formatPct(num: number, den: number) {
@@ -17,18 +13,6 @@ function formatPct(num: number, den: number) {
 }
 function classNames(...xs: (string | false | null | undefined)[]) {
     return xs.filter(Boolean).join(" ");
-}
-function emptyCreating(): CreatingStorageArea {
-    return {
-        name: "",
-        description: "",
-        type: "Yard",
-        maxBays: 1,
-        maxRows: 1,
-        maxTiers: 1,
-        physicalResources: [],
-        distancesToDocks: [],
-    };
 }
 function buildOccupancySlices(area: StorageAreaDto) {
     const total = area.maxBays * area.maxRows * area.maxTiers;
@@ -52,20 +36,15 @@ const GUID_RE =
     /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$/;
 
 export default function StorageAreaPage() {
+    const nav = useNavigate();
+
     /* State */
     const [items, setItems] = useState<StorageAreaDto[]>([]);
     const [loading, setLoading] = useState(true);
     const [query, setQuery] = useState("");
     const [selected, setSelected] = useState<StorageAreaDto | null>(null);
 
-    // Create modal
-    const [isCreateOpen, setIsCreateOpen] = useState(false);
-    const [form, setForm] = useState<CreatingStorageArea>(emptyCreating());
-    const [newResource, setNewResource] = useState("");
-    const [newDockCode, setNewDockCode] = useState("");
-    const [newDockDistance, setNewDockDistance] = useState<number>(0);
-
-    // Distances modal
+    // Distances popup
     const [isDistancesOpen, setIsDistancesOpen] = useState(false);
 
     /* Effects */
@@ -111,68 +90,8 @@ export default function StorageAreaPage() {
     );
 
     /* Handlers */
-    function openCreate() {
-        setForm(emptyCreating());
-        setNewResource("");
-        setNewDockCode("");
-        setNewDockDistance(0);
-        setIsCreateOpen(true);
-    }
-    function addResource() {
-        const v = newResource.trim();
-        if (!v) return;
-        if (form.physicalResources.includes(v)) return toast("Recurso já existe");
-        setForm((f) => ({ ...f, physicalResources: [...f.physicalResources, v] }));
-        setNewResource("");
-    }
-    function removeResource(code: string) {
-        setForm((f) => ({
-            ...f,
-            physicalResources: f.physicalResources.filter((x) => x !== code),
-        }));
-    }
-    function addDistance() {
-        const code = newDockCode.trim().toUpperCase();
-        if (!code) return toast("Dock code em falta");
-        if (form.distancesToDocks.some((d) => d.dockCode === code)) {
-            return toast("Já adicionaste esse dock");
-        }
-        if (newDockDistance < 0) return toast("Distância inválida");
-        const entry: StorageAreaDockDistance = { dockCode: code, distance: newDockDistance };
-        setForm((f) => ({ ...f, distancesToDocks: [...f.distancesToDocks, entry] }));
-        setNewDockCode("");
-        setNewDockDistance(0);
-    }
-    function removeDistance(code: string) {
-        setForm((f) => ({
-            ...f,
-            distancesToDocks: f.distancesToDocks.filter((d) => d.dockCode !== code),
-        }));
-    }
-    function updateNumber<K extends keyof CreatingStorageArea>(key: K, v: number) {
-        setForm((f) => ({ ...f, [key]: Number.isFinite(v) ? v : (f[key] as any) }));
-    }
-    async function handleCreate(e: React.FormEvent) {
-        e.preventDefault();
-        if (!form.name.trim()) return toast.error("Nome obrigatório");
-        if (form.maxBays < 1 || form.maxRows < 1 || form.maxTiers < 1) {
-            return toast.error("Bays/Rows/Tiers devem ser ≥ 1");
-        }
-        if (!["Yard", "Warehouse"].includes(form.type)) {
-            return toast.error("Tipo inválido (Yard ou Warehouse)");
-        }
-        if (form.distancesToDocks.length === 0) {
-            return toast.error("Adiciona pelo menos uma distância a dock");
-        }
-        try {
-            const created = await storageAreaService.createStorageArea(form);
-            toast.success(`Criado: ${created.name}`);
-            setItems((prev) => [created, ...prev]);
-            setSelected(created);
-            setIsCreateOpen(false);
-        } catch (e: any) {
-            toast.error(e?.response?.data ?? "Erro ao criar Storage Area");
-        }
+    function goToCreate() {
+        nav("/storage-areas/new"); // rota da página dedicada
     }
 
     return (
@@ -193,18 +112,10 @@ export default function StorageAreaPage() {
                             value={query}
                             onChange={(e) => setQuery(e.target.value)}
                             placeholder="Pesquisar…"
-                            style={{
-                                background: "transparent",
-                                border: "none",
-                                outline: "none",
-                                paddingLeft: "6px",
-                                width: "140px",
-                                color: "var(--text)",
-                            }}
                         />
                     </div>
 
-                    <button className="vt-create-btn-top" onClick={openCreate}>
+                    <button className="vt-create-btn-top" onClick={goToCreate}>
                         <FaPlus /> Nova
                     </button>
                 </div>
@@ -216,11 +127,7 @@ export default function StorageAreaPage() {
                 <div className="sa-strip">
                     <div className="sa-strip-inner">
                         {loading ? (
-                            <>
-                                {Array.from({ length: 4 }).map((_, i) => (
-                                    <div className="sa-strip-skeleton" key={i} />
-                                ))}
-                            </>
+                            Array.from({ length: 4 }).map((_, i) => <div className="sa-strip-skeleton" key={i} />)
                         ) : filtered.length === 0 ? (
                             <div className="sa-empty" style={{ padding: 10 }}>Sem resultados.</div>
                         ) : (
@@ -246,13 +153,13 @@ export default function StorageAreaPage() {
                     </div>
                 </div>
 
-                {/* Painel principal (igual) */}
+                {/* Painel principal */}
                 <main className="sa-main">
                     {!selected ? (
                         <div className="sa-empty">Seleciona uma Storage Area…</div>
                     ) : (
                         <>
-                            {/* KPI GRID — inclui Descrição e Recursos */}
+                            {/* KPI GRID */}
                             <section className="sa-kpis sa-kpis--extended">
                                 <div className="sa-card">
                                     <div className="sa-card-title">Tipo</div>
@@ -267,7 +174,9 @@ export default function StorageAreaPage() {
                                     <div className="sa-progress">
                                         <div className="sa-progress-fill" style={{ width: `${capacityPct}%` }} />
                                     </div>
-                                    <div className="sa-progress-label">{formatPct(selected.currentCapacityTeu, selected.maxCapacityTeu)}</div>
+                                    <div className="sa-progress-label">
+                                        {formatPct(selected.currentCapacityTeu, selected.maxCapacityTeu)}
+                                    </div>
                                 </div>
 
                                 <div className="sa-card">
@@ -297,13 +206,16 @@ export default function StorageAreaPage() {
 
                                 <div className="sa-card sa-card--button">
                                     <div className="sa-card-title">Docks</div>
-                                    <button className="sa-btn sa-btn-primary sa-btn-full" onClick={() => setIsDistancesOpen(true)}>
+                                    <button
+                                        className="sa-btn sa-btn-primary sa-btn-full"
+                                        onClick={() => setIsDistancesOpen(true)}
+                                    >
                                         Ver distâncias
                                     </button>
                                 </div>
                             </section>
 
-                            {/* Visualização tiers (inalterado) */}
+                            {/* Visualização tiers */}
                             <section className="sa-visual">
                                 <div className="sa-visual-header">
                                     <h2>Mapa de Ocupação (aproximação)</h2>
@@ -321,12 +233,7 @@ export default function StorageAreaPage() {
                                             <div className="sa-grid-wrap">
                                                 <div
                                                     className="sa-grid fit"
-                                                    style={
-                                                        {
-                                                            "--cols": String(selected.maxBays),
-                                                            "--gap": "4px",
-                                                        } as React.CSSProperties
-                                                    }
+                                                    style={{ ["--cols" as any]: String(selected.maxBays), ["--gap" as any]: "4px" }}
                                                 >
                                                     {grid.map((row, r) =>
                                                         row.map((cell, b) => (
@@ -353,8 +260,14 @@ export default function StorageAreaPage() {
                 <div className="sa-modal-backdrop" onClick={() => setIsDistancesOpen(false)}>
                     <div className="sa-dock-modal" onClick={(e) => e.stopPropagation()}>
                         <div className="sa-dock-head">
-                            <h3>Distâncias aos Docks — {selected.name}</h3>
-                            <button className="sa-icon-btn" onClick={() => setIsDistancesOpen(false)}>
+                            <div className="sa-dock-spacer" aria-hidden="true" />
+                            <h3 className="sa-dock-title">Distâncias aos Docks — {selected.name}</h3>
+                            <button
+                                className="sa-icon-btn sa-dock-close"
+                                onClick={() => setIsDistancesOpen(false)}
+                                aria-label="Fechar"
+                                title="Fechar"
+                            >
                                 <FaTimes />
                             </button>
                         </div>
@@ -365,10 +278,14 @@ export default function StorageAreaPage() {
                             <div className="sa-dock-body">
                                 {(() => {
                                     const max = Math.max(...selected.distancesToDocks.map((d) => d.distance || 0), 1);
-                                    return selected.distancesToDocks.map((d) => {
+                                    return selected.distancesToDocks.map((d, i) => {
                                         const pct = Math.max(8, Math.round(((d.distance || 0) / max) * 100));
                                         return (
-                                            <div className="sa-dock-row" key={d.dockCode}>
+                                            <div
+                                                className="sa-dock-row"
+                                                key={d.dockCode}
+                                                style={{ ["--delay" as any]: `${i * 60}ms` }}
+                                            >
                                                 <div className="sa-dock-label">{d.dockCode}</div>
                                                 <div className="sa-dock-bar">
                                                     <div className="sa-dock-fill" style={{ width: `${pct}%` }}>
@@ -381,177 +298,6 @@ export default function StorageAreaPage() {
                                 })()}
                             </div>
                         )}
-                    </div>
-                </div>
-            )}
-
-            {/* Modal criar (inalterado) */}
-            {isCreateOpen && (
-                <div className="sa-modal-backdrop" onClick={() => setIsCreateOpen(false)}>
-                    <div className="sa-modal" onClick={(e) => e.stopPropagation()}>
-                        <div className="sa-modal-head">
-                            <h3>
-                                <FaPlus /> Nova Storage Area
-                            </h3>
-                            <button className="sa-icon-btn" onClick={() => setIsCreateOpen(false)}>
-                                <FaTimes />
-                            </button>
-                        </div>
-
-                        <form className="sa-form" onSubmit={handleCreate}>
-                            <div className="sa-form-row">
-                                <label>Nome *</label>
-                                <input
-                                    value={form.name}
-                                    onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
-                                    placeholder="Ex.: Yard A1"
-                                    required
-                                />
-                            </div>
-
-                            <div className="sa-form-row">
-                                <label>Descrição</label>
-                                <textarea
-                                    value={form.description ?? ""}
-                                    onChange={(e) => setForm((f) => ({ ...f, description: e.target.value }))}
-                                    placeholder="Notas / observações"
-                                    maxLength={100}
-                                />
-                            </div>
-
-                            <div className="sa-form-row">
-                                <label>Tipo *</label>
-                                <select
-                                    value={form.type}
-                                    onChange={(e) => setForm((f) => ({ ...f, type: e.target.value as StorageAreaType }))}
-                                >
-                                    <option value="Yard">Yard</option>
-                                    <option value="Warehouse">Warehouse</option>
-                                </select>
-                            </div>
-
-                            <div className="sa-form-grid-3">
-                                <div className="sa-form-row">
-                                    <label>Max Bays *</label>
-                                    <input
-                                        type="number"
-                                        min={1}
-                                        value={form.maxBays}
-                                        onChange={(e) => updateNumber("maxBays", parseInt(e.target.value, 10))}
-                                        required
-                                    />
-                                </div>
-                                <div className="sa-form-row">
-                                    <label>Max Rows *</label>
-                                    <input
-                                        type="number"
-                                        min={1}
-                                        value={form.maxRows}
-                                        onChange={(e) => updateNumber("maxRows", parseInt(e.target.value, 10))}
-                                        required
-                                    />
-                                </div>
-                                <div className="sa-form-row">
-                                    <label>Max Tiers *</label>
-                                    <input
-                                        type="number"
-                                        min={1}
-                                        value={form.maxTiers}
-                                        onChange={(e) => updateNumber("maxTiers", parseInt(e.target.value, 10))}
-                                        required
-                                    />
-                                </div>
-                            </div>
-
-                            {/* Recursos */}
-                            <div className="sa-form-block">
-                                <div className="sa-form-row inline">
-                                    <label>Recursos Físicos</label>
-                                    <div className="sa-inline-add">
-                                        <input
-                                            value={newResource}
-                                            onChange={(e) => setNewResource(e.target.value)}
-                                            placeholder="Código do recurso (ex.: RTG01)"
-                                        />
-                                        <button type="button" className="sa-btn sa-btn-secondary" onClick={addResource}>
-                                            Adicionar
-                                        </button>
-                                    </div>
-                                </div>
-                                <div className="sa-chips editable">
-                                    {form.physicalResources.map((r) => (
-                                        <span className="sa-chip removable" key={r} onClick={() => removeResource(r)} title="Remover">
-                      {r} <FaTimes />
-                    </span>
-                                    ))}
-                                    {form.physicalResources.length === 0 && <span className="sa-empty">Nenhum recurso</span>}
-                                </div>
-                            </div>
-
-                            {/* Distâncias */}
-                            <div className="sa-form-block">
-                                <div className="sa-form-row inline">
-                                    <label>Distâncias aos Docks *</label>
-                                    <div className="sa-inline-add">
-                                        <input
-                                            value={newDockCode}
-                                            onChange={(e) => setNewDockCode(e.target.value)}
-                                            placeholder="Dock code (ex.: D01)"
-                                        />
-                                        <input
-                                            type="number"
-                                            min={0}
-                                            value={Number.isFinite(newDockDistance) ? newDockDistance : 0}
-                                            onChange={(e) => setNewDockDistance(parseFloat(e.target.value))}
-                                            placeholder="Distância"
-                                        />
-                                        <button type="button" className="sa-btn sa-btn-secondary" onClick={addDistance}>
-                                            Adicionar
-                                        </button>
-                                    </div>
-                                </div>
-
-                                {form.distancesToDocks.length === 0 ? (
-                                    <div className="sa-empty">Nenhuma distância adicionada</div>
-                                ) : (
-                                    <table className="sa-table compact">
-                                        <thead>
-                                        <tr>
-                                            <th>Dock</th>
-                                            <th>Distância</th>
-                                            <th></th>
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                        {form.distancesToDocks.map((d) => (
-                                            <tr key={d.dockCode}>
-                                                <td>{d.dockCode}</td>
-                                                <td>{d.distance}</td>
-                                                <td>
-                                                    <button
-                                                        type="button"
-                                                        className="sa-link danger"
-                                                        onClick={() => removeDistance(d.dockCode)}
-                                                    >
-                                                        remover
-                                                    </button>
-                                                </td>
-                                            </tr>
-                                        ))}
-                                        </tbody>
-                                    </table>
-                                )}
-                            </div>
-
-                            <div className="sa-modal-actions">
-                                <button type="button" className="sa-btn" onClick={() => setIsCreateOpen(false)}>
-                                    Cancelar
-                                </button>
-                                <button type="submit" className="sa-btn sa-btn-primary">
-                                    Criar Storage Area
-                                </button>
-                            </div>
-                        </form>
                     </div>
                 </div>
             )}
