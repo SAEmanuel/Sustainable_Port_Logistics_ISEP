@@ -7,6 +7,7 @@ using SEM5_PI_WEBAPI.Domain.ValueObjects;
 using SEM5_PI_WEBAPI.Domain.Vessels;
 using SEM5_PI_WEBAPI.Domain.Vessels.DTOs;
 using SEM5_PI_WEBAPI.Domain.VesselsTypes;
+using SEM5_PI_WEBAPI.utils;
 
 namespace SEM5_PI_WEBAPI.Tests.Controllers
 {
@@ -14,15 +15,44 @@ namespace SEM5_PI_WEBAPI.Tests.Controllers
     {
         private readonly Mock<IVesselService> _mockService;
         private readonly Mock<ILogger<VesselController>> _mockLogger;
+        private readonly Mock<IResponsesToFrontend> _mockResponsesToFrontend;
         private readonly VesselController _controller;
 
         public VesselControllerTests()
         {
             _mockService = new Mock<IVesselService>();
             _mockLogger = new Mock<ILogger<VesselController>>();
-            _controller = new VesselController(_mockService.Object, _mockLogger.Object);
+            _mockResponsesToFrontend= new Mock<IResponsesToFrontend>();
+            
+            _mockResponsesToFrontend.Setup(x => x.ProblemResponse(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>()))
+                .Returns((string title, string detail, int status) =>
+                    new ObjectResult(new ProblemDetails { Title = title, Detail = detail, Status = status })
+                    {
+                        StatusCode = status
+                    });
+            
+            _controller = new VesselController(_mockService.Object, _mockLogger.Object,_mockResponsesToFrontend.Object);
         }
 
+        private void AssertNotFound(ActionResult result, string expectedDetail)
+        {
+            var obj = Assert.IsType<ObjectResult>(result);
+            Assert.Equal(404, obj.StatusCode);
+
+            var problem = Assert.IsType<ProblemDetails>(obj.Value);
+            Assert.Equal("Not Found", problem.Title);
+            Assert.Equal(expectedDetail, problem.Detail);
+        }
+
+        private void AssertBadRequest(ActionResult result, string expectedDetail)
+        {
+            var obj = Assert.IsType<ObjectResult>(result);
+            Assert.Equal(400, obj.StatusCode);
+
+            var problem = Assert.IsType<ProblemDetails>(obj.Value);
+            Assert.Equal("Validation Error", problem.Title);
+            Assert.Equal(expectedDetail, problem.Detail);
+        }
 
         [Fact]
         public async Task GetAllAsync_ShouldReturnOk_WhenVesselsExist()
@@ -49,9 +79,8 @@ namespace SEM5_PI_WEBAPI.Tests.Controllers
 
             var result = await _controller.GetAllAsync();
 
-            Assert.IsType<NotFoundObjectResult>(result.Result);
+            AssertNotFound(result.Result, "No vessels found");
         }
-
 
         [Fact]
         public async Task GetById_ShouldReturnOk_WhenFound()
@@ -74,9 +103,8 @@ namespace SEM5_PI_WEBAPI.Tests.Controllers
 
             var result = await _controller.GetById(Guid.NewGuid());
 
-            Assert.IsType<NotFoundObjectResult>(result.Result);
+            AssertNotFound(result.Result, "Not found");
         }
-
 
         [Fact]
         public async Task CreateAsync_ShouldReturnCreated_WhenValid()
@@ -103,9 +131,8 @@ namespace SEM5_PI_WEBAPI.Tests.Controllers
                 new CreatingVesselDto("IMO 9074729", "Apollo", "Seaway", Guid.NewGuid().ToString())
             );
 
-            Assert.IsType<BadRequestObjectResult>(result.Result);
+            AssertBadRequest(result.Result, "Duplicate IMO");
         }
-
 
         [Fact]
         public async Task GetByImoAsync_ShouldReturnOk_WhenFound()
@@ -127,7 +154,7 @@ namespace SEM5_PI_WEBAPI.Tests.Controllers
 
             var result = await _controller.GetByImoAsync("IMO 9999999");
 
-            Assert.IsType<NotFoundObjectResult>(result.Result);
+            AssertNotFound(result.Result, "Not found");
         }
         
         [Fact]
@@ -154,9 +181,8 @@ namespace SEM5_PI_WEBAPI.Tests.Controllers
 
             var result = await _controller.GetByNameAsync("Unknown");
 
-            Assert.IsType<NotFoundObjectResult>(result.Result);
+            AssertNotFound(result.Result, "No vessels");
         }
-
 
         [Fact]
         public async Task GetByOwnerAsync_ShouldReturnOk_WhenFound()
@@ -182,9 +208,8 @@ namespace SEM5_PI_WEBAPI.Tests.Controllers
 
             var result = await _controller.GetByOwnerAsync("Missing");
 
-            Assert.IsType<NotFoundObjectResult>(result.Result);
+            AssertNotFound(result.Result, "Not found");
         }
-
 
         [Fact]
         public async Task GetByFilterAsync_ShouldReturnOk_WhenResultsExist()
@@ -210,7 +235,7 @@ namespace SEM5_PI_WEBAPI.Tests.Controllers
 
             var result = await _controller.GetByFilterAsync(null, null, null, null);
 
-            Assert.IsType<NotFoundObjectResult>(result.Result);
+            AssertNotFound(result.Result, "No vessels");
         }
         
         [Fact]
@@ -231,7 +256,9 @@ namespace SEM5_PI_WEBAPI.Tests.Controllers
         public async Task PatchByImoAsync_ShouldReturnBadRequest_WhenNullDto()
         {
             var result = await _controller.PatchByImoAsync("IMO7777777", null);
-            Assert.IsType<BadRequestObjectResult>(result.Result);
+            
+            var bad = Assert.IsType<BadRequestObjectResult>(result.Result);
+            Assert.Equal("No changes provided.", bad.Value);
         }
 
         [Fact]
@@ -242,7 +269,7 @@ namespace SEM5_PI_WEBAPI.Tests.Controllers
 
             var result = await _controller.PatchByImoAsync("IMO7777777", new UpdatingVesselDto("Name", "Owner"));
 
-            Assert.IsType<BadRequestObjectResult>(result.Result);
+            AssertBadRequest(result.Result, "Invalid update");
         }
     }
 }

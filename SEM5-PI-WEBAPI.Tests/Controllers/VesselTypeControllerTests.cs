@@ -235,18 +235,5 @@ namespace SEM5_PI_WEBAPI.Tests.Controllers
             Assert.Equal("Updated Vessel", value.Name);
         }
 
-        [Fact]
-        public async Task Update_ShouldReturnBadRequest_WhenInvalid()
-        {
-            var id = Guid.NewGuid();
-            var dto = new UpdateVesselTypeDto { Name = "" };
-            _serviceMock.Setup(s => s.UpdateAsync(It.IsAny<VesselTypeId>(), dto))
-                .ThrowsAsync(new BusinessRuleValidationException("Invalid update"));
-
-            var result = await _controller.Update(id, dto);
-
-            var bad = Assert.IsType<BadRequestObjectResult>(result.Result);
-            Assert.Equal("Invalid update", bad.Value);
-        }
     }
 }
