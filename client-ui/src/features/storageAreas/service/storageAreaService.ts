@@ -61,3 +61,15 @@ export async function getStorageAreaGrid(id: string): Promise<StorageAreaGridDto
     const response = await api.get(`/api/storageAreas/${id}/grid`);
     return response.data;
 }
+
+const storageAreaService = {
+    getAll: getAllStorageAreas,
+    getById: getStorageAreaById,
+    getByName: getStorageAreaByName,
+    getDistances: getStorageAreaDistances,
+    getResources: getStorageAreaResources,
+    create: createStorageArea,
+    getGrid: getStorageAreaGrid,
+};
+
+export default storageAreaService;

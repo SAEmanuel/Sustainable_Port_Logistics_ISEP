@@ -8,10 +8,9 @@ import type {
     CreatingStorageArea,
     StorageAreaDockDistance,
     StorageAreaType,
-    StorageAreaGridDto,
 } from "../type/storageAreaType";
 
-// utils
+/* Helpers */
 function formatPct(num: number, den: number) {
     if (!den) return "0%";
     return `${Math.round((num / den) * 100)}%`;
@@ -31,18 +30,33 @@ function emptyCreating(): CreatingStorageArea {
         distancesToDocks: [],
     };
 }
+function buildOccupancySlices(area: StorageAreaDto) {
+    const total = area.maxBays * area.maxRows * area.maxTiers;
+    const occupied = Math.min(area.currentCapacityTeu, total);
+    const slices: boolean[][][] = [];
+    for (let t = 0; t < area.maxTiers; t++) {
+        const grid: boolean[][] = [];
+        for (let r = 0; r < area.maxRows; r++) {
+            const row: boolean[] = [];
+            for (let b = 0; b < area.maxBays; b++) {
+                const idx = t * (area.maxBays * area.maxRows) + r * area.maxBays + b;
+                row.push(idx < occupied);
+            }
+            grid.push(row);
+        }
+        slices.push(grid);
+    }
+    return slices;
+}
 const GUID_RE =
     /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$/;
 
 export default function StorageAreaPage() {
+    /* State */
     const [items, setItems] = useState<StorageAreaDto[]>([]);
     const [loading, setLoading] = useState(true);
     const [query, setQuery] = useState("");
     const [selected, setSelected] = useState<StorageAreaDto | null>(null);
-
-    // 👇 NOVO: grid real do selecionado
-    const [grid, setGrid] = useState<StorageAreaGridDto | null>(null);
-    const [loadingGrid, setLoadingGrid] = useState(false);
 
     // Create modal
     const [isCreateOpen, setIsCreateOpen] = useState(false);
@@ -51,6 +65,10 @@ export default function StorageAreaPage() {
     const [newDockCode, setNewDockCode] = useState("");
     const [newDockDistance, setNewDockDistance] = useState<number>(0);
 
+    // Distances modal
+    const [isDistancesOpen, setIsDistancesOpen] = useState(false);
+
+    /* Effects */
     useEffect(() => {
         (async () => {
             try {
@@ -67,26 +85,7 @@ export default function StorageAreaPage() {
         })();
     }, []);
 
-    // ▶ sempre que muda o selecionado, carrega o GRID real
-    useEffect(() => {
-        (async () => {
-            if (!selected) {
-                setGrid(null);
-                return;
-            }
-            try {
-                setLoadingGrid(true);
-                const g = await storageAreaService.getStorageAreaGrid(selected.id);
-                setGrid(g);
-            } catch (e: any) {
-                setGrid(null);
-                toast.error(e?.response?.data ?? "Erro a carregar o mapa real de posições.");
-            } finally {
-                setLoadingGrid(false);
-            }
-        })();
-    }, [selected?.id]);
-
+    /* Derived */
     const filtered = useMemo(() => {
         if (!query.trim()) return items;
         const q = query.toLowerCase().trim();
@@ -106,19 +105,12 @@ export default function StorageAreaPage() {
         return Math.min(100, Math.round((selected.currentCapacityTeu / den) * 100));
     }, [selected]);
 
-    // Mapa rápido para lookup de slot ocupado -> ISO
-    const occupiedKeyToIso = useMemo(() => {
-        const map = new Map<string, string>();
-        if (grid?.slots) {
-            for (const s of grid.slots) {
-                if (s.iso) {
-                    map.set(`${s.tier}-${s.row}-${s.bay}`, s.iso);
-                }
-            }
-        }
-        return map;
-    }, [grid]);
+    const slices = useMemo(
+        () => (selected ? buildOccupancySlices(selected) : []),
+        [selected]
+    );
 
+    /* Handlers */
     function openCreate() {
         setForm(emptyCreating());
         setNewResource("");
@@ -126,14 +118,10 @@ export default function StorageAreaPage() {
         setNewDockDistance(0);
         setIsCreateOpen(true);
     }
-
     function addResource() {
         const v = newResource.trim();
         if (!v) return;
-        if (form.physicalResources.includes(v)) {
-            toast("Recurso já existe");
-            return;
-        }
+        if (form.physicalResources.includes(v)) return toast("Recurso já existe");
         setForm((f) => ({ ...f, physicalResources: [...f.physicalResources, v] }));
         setNewResource("");
     }
@@ -150,7 +138,6 @@ export default function StorageAreaPage() {
             return toast("Já adicionaste esse dock");
         }
         if (newDockDistance < 0) return toast("Distância inválida");
-
         const entry: StorageAreaDockDistance = { dockCode: code, distance: newDockDistance };
         setForm((f) => ({ ...f, distancesToDocks: [...f.distancesToDocks, entry] }));
         setNewDockCode("");
@@ -190,73 +177,88 @@ export default function StorageAreaPage() {
 
     return (
         <div className="sa-wrapper">
-            <header className="sa-header">
-                <div className="sa-title">
-                    <FaShip />
-                    <h1>Storage Areas</h1>
+            {/* HEADER */}
+            <div className="vt-title-area" style={{ marginBottom: "20px" }}>
+                <div>
+                    <h2 className="vt-title">
+                        <FaShip /> Storage Areas
+                    </h2>
+                    <p className="vt-sub">{filtered.length} áreas registadas</p>
                 </div>
 
-                <div className="sa-actions">
-                    <div className="sa-search">
-                        <FaSearch />
+                <div style={{ display: "flex", gap: "12px" }}>
+                    <div className="sa-search" style={{ background: "var(--card-bg)", padding: "6px 10px" }}>
+                        <FaSearch style={{ opacity: 0.7 }} />
                         <input
                             value={query}
                             onChange={(e) => setQuery(e.target.value)}
-                            placeholder="Pesquisar por nome, tipo, recurso ou GUID…"
+                            placeholder="Pesquisar…"
+                            style={{
+                                background: "transparent",
+                                border: "none",
+                                outline: "none",
+                                paddingLeft: "6px",
+                                width: "140px",
+                                color: "var(--text)",
+                            }}
                         />
                     </div>
 
-                    <button className="sa-btn sa-btn-primary" onClick={openCreate}>
-                        <FaPlus />
-                        <span>Nova</span>
+                    <button className="vt-create-btn-top" onClick={openCreate}>
+                        <FaPlus /> Nova
                     </button>
                 </div>
-            </header>
+            </div>
 
-            <div className="sa-content">
-                <aside className="sa-list">
-                    {loading ? (
-                        <div className="sa-skeleton-list">
-                            {Array.from({ length: 8 }).map((_, i) => (
-                                <div className="sa-skeleton-item" key={i} />
-                            ))}
-                        </div>
-                    ) : filtered.length === 0 ? (
-                        <div className="sa-empty">Sem resultados.</div>
-                    ) : (
-                        filtered.map((x) => {
-                            const active = selected?.id === x.id;
-                            return (
-                                <button
-                                    key={x.id}
-                                    className={classNames("sa-list-item", active && "active")}
-                                    onClick={() => setSelected(x)}
-                                >
-                                    <div className="sa-list-name">{x.name}</div>
-                                    <div className="sa-list-meta">
-                    <span className={classNames("sa-badge", x.type === "Yard" ? "yard" : "warehouse")}>
-                      {x.type}
-                    </span>
-                                        <span className="sa-small">
-                      {x.currentCapacityTeu}/{x.maxCapacityTeu} TEU
-                    </span>
-                                    </div>
-                                </button>
-                            );
-                        })
-                    )}
-                </aside>
+            {/* LISTA HORIZONTAL + MAIN ABAIXO */}
+            <div className="sa-content-vertical">
+                {/* Lista horizontal (scroll-snap) */}
+                <div className="sa-strip">
+                    <div className="sa-strip-inner">
+                        {loading ? (
+                            <>
+                                {Array.from({ length: 4 }).map((_, i) => (
+                                    <div className="sa-strip-skeleton" key={i} />
+                                ))}
+                            </>
+                        ) : filtered.length === 0 ? (
+                            <div className="sa-empty" style={{ padding: 10 }}>Sem resultados.</div>
+                        ) : (
+                            filtered.map((x) => {
+                                const active = selected?.id === x.id;
+                                return (
+                                    <button
+                                        key={x.id}
+                                        className={classNames("sa-card-mini", active && "active")}
+                                        onClick={() => setSelected(x)}
+                                    >
+                                        <div className="sa-card-mini-top">
+                                            <span className="sa-card-mini-name">{x.name}</span>
+                                            <span className={`sa-badge-modern ${x.type.toLowerCase()}`}>{x.type}</span>
+                                        </div>
+                                        <div className="sa-card-mini-bottom">
+                                            {x.currentCapacityTeu}/{x.maxCapacityTeu} TEU
+                                        </div>
+                                    </button>
+                                );
+                            })
+                        )}
+                    </div>
+                </div>
 
+                {/* Painel principal (igual) */}
                 <main className="sa-main">
                     {!selected ? (
                         <div className="sa-empty">Seleciona uma Storage Area…</div>
                     ) : (
                         <>
-                            <section className="sa-kpis">
+                            {/* KPI GRID — inclui Descrição e Recursos */}
+                            <section className="sa-kpis sa-kpis--extended">
                                 <div className="sa-card">
                                     <div className="sa-card-title">Tipo</div>
                                     <div className="sa-card-value">{selected.type}</div>
                                 </div>
+
                                 <div className="sa-card">
                                     <div className="sa-card-title">Capacidade</div>
                                     <div className="sa-card-value">
@@ -265,133 +267,80 @@ export default function StorageAreaPage() {
                                     <div className="sa-progress">
                                         <div className="sa-progress-fill" style={{ width: `${capacityPct}%` }} />
                                     </div>
-                                    <div className="sa-progress-label">
-                                        {formatPct(selected.currentCapacityTeu, selected.maxCapacityTeu)}
-                                    </div>
+                                    <div className="sa-progress-label">{formatPct(selected.currentCapacityTeu, selected.maxCapacityTeu)}</div>
                                 </div>
-                                <div className="sa-card sa-donut">
-                                    <svg viewBox="0 0 36 36" className="sa-donut-svg">
-                                        <path
-                                            className="sa-donut-bg"
-                                            d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-                                        />
-                                        <path
-                                            className="sa-donut-fg"
-                                            strokeDasharray={`${capacityPct}, 100`}
-                                            d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-                                        />
-                                        <text x="18" y="20.35" className="sa-donut-text">
-                                            {capacityPct}%
-                                        </text>
-                                    </svg>
-                                    <div className="sa-card-sub">Ocupação</div>
-                                </div>
+
                                 <div className="sa-card">
                                     <div className="sa-card-title">Dimensões</div>
                                     <div className="sa-card-value">
                                         {selected.maxBays} Bays · {selected.maxRows} Rows · {selected.maxTiers} Tiers
                                     </div>
                                 </div>
-                            </section>
 
-                            {/* Visualização REAL por tiers */}
-                            <section className="sa-visual">
-                                <div className="sa-visual-header">
-                                    <h2>Mapa de Ocupação (real)</h2>
-                                    <span className="sa-note">
-                    Mostra slots ocupados de acordo com o grid armazenado ({selected.name}).
-                  </span>
-                                </div>
-
-                                {loadingGrid ? (
-                                    <div className="sa-skeleton-list">
-                                        {Array.from({ length: 3 }).map((_, i) => (
-                                            <div className="sa-skeleton-item" key={i} style={{ height: 90 }} />
-                                        ))}
-                                    </div>
-                                ) : !grid ? (
-                                    <div className="sa-empty">Sem dados de grid.</div>
-                                ) : (
-                                    <div className="sa-slices">
-                                        {Array.from({ length: grid.maxTiers }).map((_, t) => (
-                                            <div className="sa-slice" key={`tier-${t}`}>
-                                                <div className="sa-slice-head">
-                                                    <span className="sa-tag">Tier {t + 1}</span>
-                                                </div>
-                                                <div
-                                                    className="sa-grid"
-                                                    style={{
-                                                        gridTemplateColumns: `repeat(${grid.maxBays}, minmax(14px, 1fr))`,
-                                                        gridTemplateRows: `repeat(${grid.maxRows}, 14px)`,
-                                                    }}
-                                                >
-                                                    {Array.from({ length: grid.maxRows }).map((_, r) =>
-                                                        Array.from({ length: grid.maxBays }).map((_, b) => {
-                                                            const key = `${t}-${r}-${b}`;
-                                                            const iso = occupiedKeyToIso.get(key);
-                                                            const filled = Boolean(iso);
-                                                            return (
-                                                                <div
-                                                                    key={key}
-                                                                    className={classNames("sa-cell", filled && "filled")}
-                                                                    title={
-                                                                        filled
-                                                                            ? `Tier ${t + 1} • Row ${r + 1} • Bay ${b + 1}\nISO: ${iso}`
-                                                                            : `Tier ${t + 1} • Row ${r + 1} • Bay ${b + 1} — livre`
-                                                                    }
-                                                                />
-                                                            );
-                                                        })
-                                                    )}
-                                                </div>
-                                            </div>
-                                        ))}
-                                    </div>
-                                )}
-                            </section>
-
-                            {/* Recursos + Distâncias + Descrição */}
-                            <section className="sa-details">
-                                <div className="sa-card">
+                                <div className="sa-card sa-card--desc">
                                     <div className="sa-card-title">Descrição</div>
                                     <p className="sa-desc">{selected.description || "Sem descrição."}</p>
                                 </div>
-                                <div className="sa-card">
+
+                                <div className="sa-card sa-card--resources">
                                     <div className="sa-card-title">Recursos Físicos</div>
                                     <div className="sa-chips">
                                         {selected.physicalResources.length === 0 ? (
                                             <span className="sa-empty">–</span>
                                         ) : (
                                             selected.physicalResources.map((r) => (
-                                                <span className="sa-chip" key={r}>
-                          {r}
-                        </span>
+                                                <span className="sa-chip" key={r}>{r}</span>
                                             ))
                                         )}
                                     </div>
                                 </div>
-                                <div className="sa-card">
-                                    <div className="sa-card-title">Distâncias aos Docks</div>
-                                    {selected.distancesToDocks.length === 0 ? (
-                                        <div className="sa-empty">Sem distâncias registadas.</div>
-                                    ) : (
-                                        <table className="sa-table">
-                                            <thead>
-                                            <tr>
-                                                <th>Dock</th>
-                                                <th>Distância</th>
-                                            </tr>
-                                            </thead>
-                                            <tbody>
-                                            {selected.distancesToDocks.map((d) => (
-                                                <tr key={d.dockCode}>
-                                                    <td>{d.dockCode}</td>
-                                                    <td>{d.distance}</td>
-                                                </tr>
-                                            ))}
-                                            </tbody>
-                                        </table>
-                                    )}
+
+                                <div className="sa-card sa-card--button">
+                                    <div className="sa-card-title">Docks</div>
+                                    <button className="sa-btn sa-btn-primary sa-btn-full" onClick={() => setIsDistancesOpen(true)}>
+                                        Ver distâncias
+                                    </button>
+                                </div>
+                            </section>
+
+                            {/* Visualização tiers (inalterado) */}
+                            <section className="sa-visual">
+                                <div className="sa-visual-header">
+                                    <h2>Mapa de Ocupação (aproximação)</h2>
+                                    <span className="sa-note">
+                    Render sequencial (bay→row→tier) com base na capacidade atual — não representa posições reais.
+                  </span>
+                                </div>
+
+                                <div className="sa-slices-grid">
+                                    {slices.map((grid, t) => (
+                                        <div className="sa-slice" key={`tier-${t}`}>
+                                            <div className="sa-slice-head">
+                                                <span className="sa-tag">Tier {t + 1}</span>
+                                            </div>
+                                            <div className="sa-grid-wrap">
+                                                <div
+                                                    className="sa-grid fit"
+                                                    style={
+                                                        {
+                                                            "--cols": String(selected.maxBays),
+                                                            "--gap": "4px",
+                                                        } as React.CSSProperties
+                                                    }
+                                                >
+                                                    {grid.map((row, r) =>
+                                                        row.map((cell, b) => (
+                                                            <div
+                                                                key={`c-${t}-${r}-${b}`}
+                                                                className={classNames("sa-cell", cell && "filled")}
+                                                                title={`Tier ${t + 1} • Row ${r + 1} • Bay ${b + 1} — ${cell ? "ocupado" : "livre"}`}
+                                                            />
+                                                        ))
+                                                    )}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ))}
                                 </div>
                             </section>
                         </>
@@ -399,7 +348,44 @@ export default function StorageAreaPage() {
                 </main>
             </div>
 
-            {/* Modal de criação */}
+            {/* POPUP Distâncias */}
+            {isDistancesOpen && selected && (
+                <div className="sa-modal-backdrop" onClick={() => setIsDistancesOpen(false)}>
+                    <div className="sa-dock-modal" onClick={(e) => e.stopPropagation()}>
+                        <div className="sa-dock-head">
+                            <h3>Distâncias aos Docks — {selected.name}</h3>
+                            <button className="sa-icon-btn" onClick={() => setIsDistancesOpen(false)}>
+                                <FaTimes />
+                            </button>
+                        </div>
+
+                        {selected.distancesToDocks.length === 0 ? (
+                            <div className="sa-empty" style={{ padding: 12 }}>Sem distâncias registadas.</div>
+                        ) : (
+                            <div className="sa-dock-body">
+                                {(() => {
+                                    const max = Math.max(...selected.distancesToDocks.map((d) => d.distance || 0), 1);
+                                    return selected.distancesToDocks.map((d) => {
+                                        const pct = Math.max(8, Math.round(((d.distance || 0) / max) * 100));
+                                        return (
+                                            <div className="sa-dock-row" key={d.dockCode}>
+                                                <div className="sa-dock-label">{d.dockCode}</div>
+                                                <div className="sa-dock-bar">
+                                                    <div className="sa-dock-fill" style={{ width: `${pct}%` }}>
+                                                        <span className="sa-dock-value">{d.distance}</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        );
+                                    });
+                                })()}
+                            </div>
+                        )}
+                    </div>
+                </div>
+            )}
+
+            {/* Modal criar (inalterado) */}
             {isCreateOpen && (
                 <div className="sa-modal-backdrop" onClick={() => setIsCreateOpen(false)}>
                     <div className="sa-modal" onClick={(e) => e.stopPropagation()}>
