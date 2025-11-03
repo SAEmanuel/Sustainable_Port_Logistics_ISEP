@@ -1,0 +1,251 @@
+.physical-resource-page-container {
+    padding: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.physical-resource-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.physical-resource-header h1 {
+    font-size: 2rem;
+    color: #333;
+}
+
+.create-pr-button {
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.create-pr-button:hover {
+    background-color: #0056b3;
+}
+
+.error-message {
+    color: #d9534f;
+}
+
+
+/* Estilos para PhysicalResourceSearch */
+
+
+.pr-search-container {
+    display: flex;
+    margin-bottom: 1.5rem;
+}
+
+.pr-search-input {
+    flex-grow: 1;
+    padding: 0.75rem;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.pr-search-button,
+.pr-clear-button {
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-left: 0.5rem;
+}
+
+.pr-search-button {
+    background-color: #007bff;
+    color: white;
+}
+
+.pr-search-button:hover {
+    background-color: #0056b3;
+}
+
+.pr-clear-button {
+    background-color: #6c757d;
+    color: white;
+}
+
+.pr-clear-button:hover {
+    background-color: #5a6268;
+}
+
+/* Estilos para PhysicalResourceTable */
+
+
+.pr-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+    font-size: 0.95rem;
+}
+
+.pr-table th,
+.pr-table td {
+    border: 1px solid #ddd;
+    padding: 0.75rem;
+    text-align: left;
+}
+
+.pr-table th {
+    background-color: #f4f4f4;
+    font-weight: 600;
+}
+
+.pr-table tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.pr-table tbody tr:hover {
+    background-color: #f1f1f1;
+}
+
+.pr-details-button {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.9rem;
+    background-color: #17a2b8;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.pr-details-button:hover {
+    background-color: #117a8b;
+}
+
+/* ... (estilos existentes da tabela e busca) ... */
+
+/* Estilos para Modais (Create e Details) */
+.pr-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.pr-modal-content {
+    background-color: white;
+    padding: 2rem;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 500px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.pr-modal-content h2 {
+    margin-top: 0;
+    margin-bottom: 1.5rem;
+}
+
+/* Estilos de Formulário (Create Modal) */
+.pr-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.pr-form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.pr-form-group label {
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+}
+
+.pr-form-group input,
+.pr-form-group select {
+    padding: 0.75rem;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.pr-error-message {
+    color: #d9534f;
+    margin-top: 0.5rem;
+}
+
+/* Estilos de Lista (Details Modal) */
+.pr-details-list {
+    font-size: 1.05rem;
+    line-height: 1.6;
+}
+
+.pr-details-list p {
+    margin: 0.5rem 0;
+}
+
+/* Ações do Modal (Comuns a ambos) */
+.pr-modal-actions {
+    margin-top: 1.5rem;
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+}
+
+.pr-modal-actions button {
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.pr-cancel-button {
+    background-color: #6c757d;
+    color: white;
+}
+.pr-cancel-button:hover {
+    background-color: #5a6268;
+}
+
+.pr-submit-button {
+    background-color: #007bff;
+    color: white;
+}
+.pr-submit-button:hover {
+    background-color: #0056b3;
+}
+
+.pr-edit-button {
+    background-color: #ffc107;
+    color: #333;
+}
+.pr-edit-button:hover {
+    background-color: #e0a800;
+}
+
+.pr-deactivate-button {
+    background-color: #dc3545;
+    color: white;
+}
+.pr-deactivate-button:hover {
+    background-color: #c82333;
+}
+
+.pr-activate-button {
+    background-color: #28a745;
+    color: white;
+}
+.pr-activate-button:hover {
+    background-color: #218838;
+}

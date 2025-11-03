@@ -1,5 +1,4 @@
 @portURL = http://10.9.23.188
-﻿@portURL = http://10.9.21.87:5008
 
 # ==========================
 #  PHYSICAL RESOURCE
@@ -82,7 +81,7 @@ Content-Type: application/json
 Accept: application/json
 
 {
-  "description": "Volvo Truck",
+  "description": "Volvo Truck 2026",
   "operationalCapacity": 25.5,
   "setupTime": 10,
   "physicalResourceType": "Truck",

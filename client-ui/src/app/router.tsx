@@ -10,6 +10,7 @@ import VesselsTypes from "../features/vesselsTypes/pages/VesselsTypes";
 import Vessels from "../features/vessels/pages/Vessel";
 import StorageArea from "../features/storageAreas/pages/storageAreaPage";
 import StorageAreaCreate from "../features/storageAreas/pages/StorageAreaCreatePage.tsx";
+import PhysicalResource from "../features/physicalResource/pages/PhysicalResource";
 import NotFound from "../pages/NotFound";
 import Forbidden from "../pages/Forbidden";
 import { RequireAuth, RequireRole, RequireGuest } from "../hooks/useAuthGuard";
@@ -46,6 +47,15 @@ export const router = createBrowserRouter([
                             { index: true, element: <StaffMember /> }
                         ]
                     },
+
+                    {
+                        path: "physical-resources",
+                        element: <RequireRole roles={[Roles.LogisticsOperator]} />,
+                        children: [
+                            { index: true, element: <PhysicalResource/> }
+                        ]
+                    },
+
 
                     { path: "storage-areas", element: <RequireRole roles={[Roles.Administrator]} />, children: [{index: true, element: <StorageArea />}, {path: "new", element: <StorageAreaCreate />}]},
                     { path: "vessel-types", element: <RequireRole roles={[Roles.Administrator]} />, children: [{index: true, element: <VesselsTypes />}]},
