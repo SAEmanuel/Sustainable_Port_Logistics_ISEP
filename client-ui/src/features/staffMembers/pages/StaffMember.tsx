@@ -9,6 +9,7 @@ import StaffMemberTable from "../components/StaffMemberTable";
 import StaffMemberDetails from "../components/StaffMemberDetails";
 import StaffMemberSearch from "../components/StaffMemberSearch";
 import StaffMemberEditModal from "../components/StaffMemberEditModal";
+import StaffMemberCreateModal from "../components/StaffMemberCreateModal"; // ⭐ IMPORT
 import "../style/staffMember.css";
 
 export default function StaffMember() {
@@ -16,7 +17,8 @@ export default function StaffMember() {
     const [loading, setLoading] = useState(true);
     const [selected, setSelected] = useState<StaffMember | null>(null);
     const [editing, setEditing] = useState(false);
-    const [searchMode, setSearchMode] = useState<"list" | "mecNumber" | "name" | "status">("list");
+    const [searchMode, setSearchMode] = useState<"list" | "mecNumber" | "name" | "status" | "qualifications">("list"); // ⭐ ADICIONAR "qualifications"
+    const [createMode, setCreateMode] = useState(false);
 
     const { t } = useTranslation();
 
@@ -69,15 +71,17 @@ export default function StaffMember() {
         setEditing(false);
     };
 
-    // ⭐ CALLBACK QUANDO TOGGLE FOR BEM-SUCEDIDO
     const handleToggleSuccess = (updated: StaffMember) => {
-        // Atualiza na lista
         setItems(items.map(sm =>
             sm.id === updated.id ? updated : sm
         ));
 
-        // Atualiza o selected
         setSelected(updated);
+    };
+
+    const handleCreateSuccess = (created: StaffMember) => {
+        setItems([created, ...items]);
+        setCreateMode(false);
     };
 
     return (
@@ -91,6 +95,14 @@ export default function StaffMember() {
                     <p className="staffMember-sub">
                         {t("staffMembers.count", { count: items.length })}
                     </p>
+                </div>
+                <div className="container-do-botao">
+                    <button
+                        className="staff-create-btn-top"
+                        onClick={() => setCreateMode(true)}
+                    >
+                        + {t("staffMembers.add")} {/* ⭐ MUDAR PARA staffMembers.add */}
+                    </button>
                 </div>
             </div>
 
@@ -128,6 +140,14 @@ export default function StaffMember() {
                     mode="edit"
                     onClose={handleCloseEditModal}
                     onUpdate={handleUpdate}
+                />
+            )}
+
+            {/* MODAL DE CRIAÇÃO */}
+            {createMode && (
+                <StaffMemberCreateModal
+                    onClose={() => setCreateMode(false)}
+                    onSuccess={handleCreateSuccess}
                 />
             )}
         </div>
