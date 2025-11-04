@@ -1,6 +1,6 @@
 import { Navigate, Outlet } from "react-router-dom";
 import { useAppStore } from "../app/store";
-import { type Role } from "../app/types";
+import { Roles, type Role } from "../app/types";
 import type {JSX} from "react";
 
 export function RequireAuth() {
@@ -19,8 +19,24 @@ export function RequireRole({ roles }: { roles: Role[] }) {
     return <Outlet />;
 }
 
+function getRouteForRole(role: Role) {
+    const map: Record<Role, string> = {
+        [Roles.Administrator]: "/vessels",
+        [Roles.LogisticsOperator]: "/logistics-dashboard",
+        [Roles.PortAuthorityOfficer]: "/vvn",
+        [Roles.ShippingAgentRepresentative]: "/vvn",
+        [Roles.Viewer]: "/",
+    };
+    return map[role] ?? "/";
+}
+
 export function RequireGuest({ children }: { children: JSX.Element }) {
     const user = useAppStore((s) => s.user);
-    if (user) return <Navigate to="/" replace />;
+
+    if (user) {
+        const redirect = getRouteForRole(user.roles[0]);
+        return <Navigate to={redirect} replace />;
+    }
+
     return children;
 }

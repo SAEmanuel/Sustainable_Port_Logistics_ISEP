@@ -1,17 +1,16 @@
-import { useNavigate } from "react-router-dom";
 import { useAppStore } from "../app/store";
 import { Roles, type Role } from "../app/types";
 import "./css/login.css";
 import { FaUserShield, FaUserTie, FaUserCog, FaUsers, FaEye } from "react-icons/fa";
 import { useTranslation } from "react-i18next";
 import toast from "react-hot-toast";
+
 interface CustomCSSProperties extends React.CSSProperties {
     "--btn-color"?: string;
 }
 
 export default function Login() {
     const { t } = useTranslation();
-    const navigate = useNavigate();
     const setUser = useAppStore((s) => s.setUser);
 
     async function loginAs(roleList: Role[]) {
@@ -30,19 +29,7 @@ export default function Login() {
             toast.dismiss(loadingId);
             toast.success(t("auth.success"));
 
-            const firstRole = roleList[0];
-
-            if (firstRole === Roles.Administrator) {
-                navigate("/vessel-types");
-            } else if (firstRole === Roles.LogisticsOperator) {
-                navigate("/logistics-dashboard");
-            } else if (firstRole === Roles.PortAuthorityOfficer) {
-                navigate("/vvn"); // quando implementares
-            } else if (firstRole === Roles.ShippingAgentRepresentative) {
-                navigate("/vvn"); // quando implementares
-            } else {
-                navigate("/"); // fallback
-            }
+            // deixamos o RequireGuest (useAithGuard class) redireccionar.
 
         } catch {
             toast.dismiss(loadingId);
