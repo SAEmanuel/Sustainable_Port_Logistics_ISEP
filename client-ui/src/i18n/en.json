@@ -444,6 +444,80 @@
     "Friday": "Friday",
     "Saturday": "Saturday",
     "Sunday": "Sunday"
+  },
+  "physicalResource": {
+    "title": "Physical Resource Management",
+    "loading": "Loading resources...",
+    "createButton": "Create New Resource",
+    "searchPlaceholder": "Search by code...",
+    "noResourcesFound": "No physical resources found.",
+    "createModalTitle": "Create New Physical Resource",
+    "editModalTitle": "Edit Resource: {{code}}",
+    "table": {
+      "code": "Code",
+      "description": "Description",
+      "type": "Type",
+      "status": "Status",
+      "actions": "Actions"
+    },
+    "form": {
+      "description": "Description",
+      "operationalCapacity": "Operational Capacity",
+      "setupTime": "Setup Time (min)",
+      "type": "Resource Type",
+      "qualification": "Qualification",
+      "selectOption": "Select an option...",
+      "selectOptionNone": "None",
+      "none": "N/A"
+    },
+    "types": {
+      "STSCrane": "Ship-to-Shore Crane (STS)",
+      "YGCrane": "Yard Gantry Crane (YG)",
+      "MCrane": "Mobile Crane",
+      "Truck": "Terminal Truck",
+      "Forklift": "Forklift",
+      "RStacker": "Reach Stacker",
+      "SCarrier": "Straddle Carrier",
+      "TugBoat": "Tugboat",
+      "Other": "Other"
+    },
+    "details": {
+      "title": "Resource Details: {{code}}"
+    },
+    "actions": {
+      "search": "Search",
+      "clear": "Clear",
+      "details": "Details",
+      "cancel": "Cancel",
+      "create": "Create",
+      "creating": "Creating...",
+      "close": "Close",
+      "edit": "Edit",
+      "deactivate": "Deactivate",
+      "activate": "Activate",
+      "save": "Save",
+      "saving": "Saving..."
+    },
+    "confirm": {
+      "deactivate": "Are you sure you want to deactivate this resource?",
+      "activate": "Are you sure you want to reactivate this resource?"
+    },
+    "success": {
+      "created": "Physical Resource created successfully!",
+      "updated": "Resource updated successfully!",
+      "deactivated": "Resource deactivated.",
+      "activated": "Resource reactivated."
+    },
+    "errors": {
+      "loadAll": "Error loading resources.",
+      "search": "Error searching for resource.",
+      "loadQualifications": "Error loading qualifications.",
+      "descriptionRequired": "Description is required.",
+      "createFailed": "Failed to create resource.",
+      "updateFailed": "Failed to update resource.",
+      "deactivateFailed": "Failed to deactivate resource.",
+      "activateFailed": "Failed to reactivate resource."
+    }
   }
-  }
+}
 
