@@ -75,6 +75,7 @@ function PhysicalResourcePage() {
     const handleCloseDetails = () => {
         setIsDetailsOpen(false);
         setSelectedPhysicalResource(null);
+        loadPhysicalResources();
     };
 
     // Handlers para o modal de Criação
