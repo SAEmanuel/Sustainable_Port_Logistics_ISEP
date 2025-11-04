@@ -1,0 +1,345 @@
+/* src/pages/css/genericDashboard.css */
+
+/* =========================
+   Layout base
+   ========================= */
+.gd-container {
+    --ring: 0 0 0 3px rgba(102,126,234,.25);
+    --elev: 0 4px 20px rgba(0,0,0,.08);
+    --elev-strong: 0 12px 40px rgba(0,0,0,.15);
+    padding: 2.5rem 1.5rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* =========================
+   Banner com micro-animação
+   ========================= */
+.gd-banner {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    background: linear-gradient(135deg, rgba(102,126,234,.12), rgba(118,75,162,.12));
+    border: 1px solid rgba(102,126,234,.25);
+    border-radius: 14px;
+    padding: 1rem 1.25rem;
+    margin-bottom: 1.25rem;
+}
+.gd-banner-icon {
+    font-size: 1.25rem;
+    line-height: 1;
+    animation: bell-pop .4s ease;
+}
+.gd-banner-body { display: flex; flex-direction: column; gap: .25rem; }
+
+@keyframes bell-pop {
+    from { transform: scale(.9); opacity: .6; }
+    to { transform: scale(1); opacity: 1; }
+}
+
+/* =========================
+   Header (perfil + stats)
+   ========================= */
+.gd-header {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+    background: var(--card-bg);
+    padding: 18px 24px;
+    border-radius: 16px;
+    border: 1px solid var(--shadow);
+    
+}
+.gd-user {
+    display: flex; 
+    gap: 1rem; }
+.gd-avatar {
+    min-width: 64px; height: 64px; border-radius: 50%;
+    display: grid; place-items: center;
+    font-weight: 800;
+    background: linear-gradient(135deg, #667eea, #764ba2); color: #fff;
+    box-shadow: var(--elev);
+}
+.gd-user-meta h1.gd-greeting {
+    margin: 0 0 .5rem 0; font-size: 1.6rem;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+}
+.gd-user-line { display: flex; gap: .5rem; align-items: center; color: #555; font-size: .95rem; }
+
+.gd-roles { display: flex; gap: .75rem; align-items: center; flex-wrap: wrap; margin-top: .5rem; }
+.gd-roles-label { display: inline-flex; gap: .5rem; align-items: center; color: #555; }
+.gd-roles-badges { display: flex; gap: .5rem; flex-wrap: wrap; }
+.gd-role-badge {
+    color: #fff; padding: .25rem .6rem; border-radius: 999px;
+    font-size: .8rem; font-weight: 700; box-shadow: var(--elev);
+}
+
+/* =========================
+   Stats com micro-interação
+   ========================= */
+.gd-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: .75rem; }
+.gd-stat-card {
+    background: #fff; border-radius: 14px; padding: 1rem;
+    display: flex; gap: .75rem; align-items: center;
+    border: 1px solid rgba(0,0,0,.06); box-shadow: var(--elev);
+    transition: transform .2s ease, box-shadow .2s ease;
+}
+.gd-stat-card:hover { transform: translateY(-4px); box-shadow: var(--elev-strong); }
+.gd-stat-icon { font-size: 1.4rem; }
+.gd-stat-meta { display: grid; }
+.gd-stat-value { font-size: 1.4rem; font-weight: 800; line-height: 1; }
+.gd-stat-label { color: #666; font-size: .9rem; }
+
+/* =========================
+   Grid de Cards (módulos)
+   ========================= */
+.gd-grid {
+    display: grid; gap: 1.25rem; margin-bottom: 2rem;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+}
+
+.gd-card {
+    --card-color: #667eea;
+    --br: 16px;          /* border-radius */
+    --bw: 2px;           /* border width  */
+    background: #fff;
+    border-radius: var(--br);
+    padding: 1.5rem;
+    position: relative;
+    cursor: pointer;
+    box-shadow: var(--elev);
+    border: var(--bw) solid transparent;
+    transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease;
+    outline: none;
+    overflow: hidden;         /* recorta o ::before nos cantos arredondados */
+    will-change: transform;   /* suaviza a animação */
+}
+
+.gd-card::before {
+    content: "";
+    position: absolute;
+    /* encaixa o top-bar por dentro da borda para não “desalinhar” */
+    left: var(--bw);
+    right: var(--bw);
+    top: var(--bw);
+    height: 5px;
+    background: var(--card-color);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform .25s ease;
+    /* arredonda só os cantos de cima, compensando a borda */
+    border-top-left-radius: calc(var(--br) - var(--bw));
+    border-top-right-radius: calc(var(--br) - var(--bw));
+}
+
+.gd-card:hover {
+    transform: translateY(-6px);
+    border-color: var(--card-color);
+    box-shadow: var(--elev-strong);
+}
+.gd-card:hover::before { transform: scaleX(1); }
+
+.gd-card:active { transform: translateY(-2px) scale(.99); }
+
+.gd-card:focus-visible {
+    box-shadow: var(--elev-strong), var(--ring);
+    border-color: var(--card-color);
+}
+
+.gd-card-icon { margin-bottom: .75rem; display: flex; transition: transform .25s ease; }
+
+.gd-card-title { margin: 0 0 .25rem 0; font-size: 1.2rem; font-weight: 800; }
+.gd-card-desc { margin: 0 0 .75rem 0; color: #666; }
+
+.gd-card-arrow {
+    position: absolute; right: 1rem; bottom: 1rem; font-size: 1.5rem;
+    color: var(--card-color); opacity: 0; transform: translateX(-8px);
+    transition: opacity .25s ease, transform .25s ease;
+}
+.gd-card:hover .gd-card-arrow { opacity: 1; transform: translateX(0); }
+
+
+/* estado vazio */
+.gd-empty {
+    padding: 2rem; text-align: center; color: #777;
+    border: 1px dashed #bbb; border-radius: 12px;
+}
+
+/* =========================
+   Recentes + Ações rápidas
+   ========================= */
+.gd-bottom { display: grid; grid-template-columns: 1.4fr 1fr; gap: 1.25rem; }
+
+.gd-recent, .gd-quick {
+    background: #fff; border-radius: 14px; padding: 1rem 1.25rem;
+    border: 1px solid rgba(0,0,0,.06); box-shadow: var(--elev);
+}
+
+.gd-recent h4, .gd-quick h4 { margin: 0 0 .75rem 0; }
+
+.gd-recent ul { list-style: none; padding: 0; margin: 0; display: grid; gap: .5rem; }
+.gd-recent li { display: grid; grid-template-columns: 10px 1fr auto; gap: .5rem; align-items: center; }
+.gd-dot { width: 8px; height: 8px; background: #667eea; border-radius: 50%; }
+.gd-recent-title { color: #333; font-weight: 600; }
+.gd-recent-time { display: inline-flex; gap: .4rem; align-items: center; color: #666; font-size: .85rem; }
+
+/* Quick buttons — animações e ripple */
+.gd-quick-grid { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: .5rem; }
+.gd-quick-btn {
+    position: relative;
+    display: flex; gap: .5rem; align-items: center; justify-content: center;
+    border: 1px solid rgba(0,0,0,.08); border-radius: 12px; padding: .8rem 1rem;
+    background: #fafafa; cursor: pointer;
+    transition: transform .15s ease, box-shadow .2s ease, background .2s ease;
+    outline: none;
+}
+.gd-quick-btn:hover { background: #fff; box-shadow: var(--elev); transform: translateY(-2px); }
+.gd-quick-btn:active { transform: translateY(0) scale(.98); }
+.gd-quick-btn:focus-visible { box-shadow: var(--elev), var(--ring); }
+
+.gd-quick-btn::after {
+    content: ""; position: absolute; inset: 0; border-radius: 12px;
+    background: radial-gradient(circle at var(--x,50%) var(--y,50%), rgba(102,126,234,.25), transparent 40%);
+    opacity: 0; transition: opacity .35s ease;
+}
+.gd-quick-btn:hover::after { opacity: 1; }
+
+.gd-quick-icon { font-size: 1rem; }
+
+/* =========================
+   Dark mode
+   ========================= */
+[data-theme="dark"] .gd-stat-card,
+[data-theme="dark"] .gd-card,
+[data-theme="dark"] .gd-recent,
+[data-theme="dark"] .gd-quick {
+    background: #2d2d2d; border-color: rgba(255,255,255,.08);
+    box-shadow: 0 4px 20px rgba(0,0,0,.30);
+}
+[data-theme="dark"] .gd-user-line,
+[data-theme="dark"] .gd-stat-label,
+[data-theme="dark"] .gd-card-desc,
+[data-theme="dark"] .gd-recent-time { color: #bdbdbd; }
+[data-theme="dark"] .gd-recent-title,
+[data-theme="dark"] .gd-card-title { color: #eee; }
+[data-theme="dark"] .gd-dot { background: #8894ff; }
+
+/* =========================
+   Responsivo
+   ========================= */
+@media (max-width: 1024px) {
+    .gd-header { grid-template-columns: 1fr; }
+}
+@media (max-width: 760px) {
+    .gd-bottom { grid-template-columns: 1fr; }
+    .gd-stats { grid-template-columns: repeat(2, 1fr); }
+}
+
+/* =========================
+   Motion safe (respeita prefer-reduced-motion)
+   ========================= */
+@media (prefers-reduced-motion: reduce) {
+    .gd-card, .gd-stat-card, .gd-quick-btn, .gd-banner-icon,
+    .gd-card::before, .gd-card-arrow, .gd-card-icon {
+        transition: none !important;
+        animation: none !important;
+    }
+}
+/* Header como cartão com 2 colunas: esquerda (avatar/nome) + direita (tiles) */
+.gd-header {
+    display: grid;
+    grid-template-columns: 1.1fr 1.4fr; /* mais espaço para tiles à direita */
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+    background: var(--card-bg, #1f1f1f); /* fallback dark */
+    padding: 18px 24px;
+    border-radius: 16px;
+    border: 1px solid var(--shadow, rgba(255,255,255,.08));
+}
+
+/* Esquerda */
+.gd-user-left {
+    display: grid;
+    grid-template-columns: 80px 1fr;
+    gap: 1rem 1.25rem;
+    align-items: center;
+}
+.gd-avatar {
+    width: 80px; height: 80px; min-width: 80px;
+    border-radius: 50%;
+    display: grid; place-items: center;
+    font-weight: 800;
+    background: linear-gradient(135deg, var(--accent), #0099ff);
+    color: #fff;
+    box-shadow: var(--elev);
+}
+.gd-greeting {
+    margin: 0 0 .25rem 0; font-size: 1.8rem; line-height: 1.2;
+    background: linear-gradient(135deg, var(--accent), #0099ff);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+}
+.gd-sub { margin: 0; color: #9aa0a6; font-size: .95rem; }
+
+/* Direita – grelha de tiles */
+.gd-info-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: .9rem;
+    align-content: start;
+}
+.gd-info {
+    background: var(--tile-bg, #111); /* adapta ao tema */
+    border: 1px solid var(--tile-border, rgba(255,255,255,.08));
+    border-radius: 12px;
+    padding: .75rem .9rem;
+    box-shadow: var(--elev);
+    transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+}
+.gd-info:hover { transform: translateY(-2px); box-shadow: var(--elev-strong); }
+.gd-info:active { transform: translateY(0) scale(.99); }
+
+.gd-info-label {
+    display: inline-flex; gap: .5rem; align-items: center;
+    opacity: .85; font-size: .85rem;
+}
+.gd-info-value {
+    margin-top: .35rem;
+    font-weight: 700;
+    font-size: 1rem;
+    word-break: break-word;
+}
+.gd-info-roles .gd-roles-badges {
+    margin-top: .35rem;
+    display: flex; gap: .5rem; flex-wrap: wrap;
+}
+.gd-role-badge {
+    color: #fff; padding: .28rem .7rem; border-radius: 999px;
+    font-size: .8rem; font-weight: 700; box-shadow: var(--elev);
+}
+
+/* Dark/Light tokens (opcionais) */
+:root {
+    --card-bg: #ffffff;
+    --shadow: rgba(0,0,0,.08);
+    --tile-bg: #ffffff;
+    --tile-border: rgba(0,0,0,.06);
+}
+[data-theme="dark"] {
+    --card-bg: #1f1f1f;
+    --shadow: rgba(255,255,255,.08);
+    --tile-bg: #2a2a2a;
+    --tile-border: rgba(255,255,255,.08);
+}
+
+/* Responsivo */
+@media (max-width: 1024px) {
+    .gd-header { grid-template-columns: 1fr; }
+    .gd-info-grid { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 640px) {
+    .gd-user-left { grid-template-columns: 64px 1fr; }
+    .gd-avatar { width: 64px; height: 64px; min-width: 64px; }
+    .gd-info-grid { grid-template-columns: 1fr; }
+}

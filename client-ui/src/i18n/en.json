@@ -68,15 +68,54 @@
     "light": "Light mode",
     "dark": "Dark mode"
   },
+  
   "dashboard": {
     "welcome": "Welcome, Logistics Operator",
     "subtitle": "Select an area to manage",
+
+    "welcomeUser": "Welcome, {{name}}",
+    "user": "User",
+    "userId": "ID",
+    "lastLogin": "Last login",
+    "justNow": "just now",
+    "roles": "Roles",
+
     "physicalResources": "Manage Physical Resources",
     "physicalResourcesDesc": "Manage cranes, trucks, and other equipment used in port operations.",
     "qualifications": "Manage Qualifications",
     "qualificationsDesc": "Define and update qualifications required for operators and equipment.",
     "staffMembers": "Manage Staff Members",
-    "staffMembersDesc": "Manage information about employees, their qualifications, and availability."
+    "staffMembersDesc": "Manage information about employees, their qualifications, and availability.",
+
+    "clickToOpen": "Click to open",
+    "noModules": "No modules available for your profile yet.",
+
+    "recentActivity": "Recent activity",
+    "quickActions": "Quick actions",
+
+    "announcement": {
+      "title": "System notices",
+      "body": "Scheduled maintenance today at 23:00 — some modules may be unavailable."
+    },
+
+    "quick": {
+      "addStaff": "New staff member",
+      "createQualification": "New qualification",
+      "addResource": "New resource",
+      "openVVN": "Open VVN"
+    },
+
+    "stats": {
+      "staff": "Staff",
+      "qualificationsExpiring": "Expiring qualifications",
+      "resourcesActive": "Active resources",
+      "vesselsToday": "Vessels today"
+    },
+    "recent": {
+      "updatedQualification": "Qualification updated",
+      "newStaffMember": "New staff member created",
+      "resourceMaintenance": "Resource sent to maintenance"
+    }
   },
 
   "vesselTypes": {

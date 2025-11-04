@@ -19,24 +19,16 @@ export function RequireRole({ roles }: { roles: Role[] }) {
     return <Outlet />;
 }
 
-function getRouteForRole(role: Role) {
-    const map: Record<Role, string> = {
-        [Roles.Administrator]: "/vessels",
-        [Roles.LogisticsOperator]: "/logistics-dashboard",
-        [Roles.PortAuthorityOfficer]: "/vvn",
-        [Roles.ShippingAgentRepresentative]: "/vvn",
-        [Roles.Viewer]: "/",
-    };
-    return map[role] ?? "/";
+
+function getRedirectForRole(role: Role) {
+    if (role === Roles.Administrator) return "/admin"; 
+    if (role === Roles.Viewer) return "/";
+    return "/dashboard";
 }
 
 export function RequireGuest({ children }: { children: JSX.Element }) {
     const user = useAppStore((s) => s.user);
-
-    if (user) {
-        const redirect = getRouteForRole(user.roles[0]);
-        return <Navigate to={redirect} replace />;
-    }
-
+    if (user) return <Navigate to={getRedirectForRole(user.roles[0])} replace />;
     return children;
 }
+

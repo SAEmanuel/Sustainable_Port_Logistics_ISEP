@@ -4,13 +4,14 @@ import Home from "../pages/Home";
 import Login from "../pages/Login";
 import Qualification from "../features/qualifications/pages/Qualification.tsx";
 import StaffMember from "../features/staffMembers/pages/StaffMember.tsx";
-import LogisticsOperatorDashboard from "../pages/LogisticsOperatorDashboard";
+//import LogisticsOperatorDashboard from "../pages/LogisticsOperatorDashboard";
 import Logout from "../pages/Logout";
 import VesselsTypes from "../features/vesselsTypes/pages/VesselsTypes";
 import Vessels from "../features/vessels/pages/Vessel";
 import StorageArea from "../features/storageAreas/pages/storageAreaPage";
 import StorageAreaCreate from "../features/storageAreas/pages/StorageAreaCreatePage.tsx";
 import PhysicalResource from "../features/physicalResource/pages/PhysicalResource";
+import GenericDashboard from "../pages/GenericDashboard"
 import NotFound from "../pages/NotFound";
 import Forbidden from "../pages/Forbidden";
 import { RequireAuth, RequireRole, RequireGuest } from "../hooks/useAuthGuard";
@@ -26,7 +27,8 @@ export const router = createBrowserRouter([
             {
                 element: <RequireAuth />,
                 children: [
-                    {path: "logistics-dashboard", element: <RequireRole roles={[Roles.LogisticsOperator]} />, children: [{ index: true, element: <LogisticsOperatorDashboard /> }]},
+                    { path: "dashboard", element: <RequireAuth />, children: [{ index: true, element: <GenericDashboard /> }]},
+                    //{ path: "logistics-dashboard", element: <RequireRole roles={[Roles.LogisticsOperator]} />, children: [{ index: true, element: <LogisticsOperatorDashboard /> }]},
                     { path: "qualifications", element: <RequireRole roles={[Roles.LogisticsOperator]} />, children: [{ index: true, element: <Qualification /> }]},
                     { path: "staff-members", element: <RequireRole roles={[Roles.LogisticsOperator]} />, children: [{ index: true, element: <StaffMember /> }]},
                     { path: "physical-resources", element: <RequireRole roles={[Roles.LogisticsOperator]} />, children: [{ index: true, element: <PhysicalResource/> }]},

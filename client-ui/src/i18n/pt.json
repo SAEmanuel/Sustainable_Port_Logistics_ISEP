@@ -70,12 +70,53 @@
   "dashboard": {
     "welcome": "Bem-vindo, Operador Logístico",
     "subtitle": "Selecione uma área para gerir",
+
+    "welcomeUser": "Bem-vindo, {{name}}",
+    "user": "Utilizador",
+    "userId": "ID",
+    "lastLogin": "Último acesso",
+    "justNow": "agora mesmo",
+    "roles": "Perfis",
+
     "physicalResources": "Gerir Recursos Físicos",
     "physicalResourcesDesc": "Gira guindastes, camiões e outros equipamentos usados nas operações portuárias.",
     "qualifications": "Gerir Qualificações",
     "qualificationsDesc": "Define e atualiza as qualificações necessárias para operadores e equipamentos.",
     "staffMembers": "Gerir Membros da Equipa",
-    "staffMembersDesc": "Gere informações sobre colaboradores, suas qualificações e disponibilidade."
+    "staffMembersDesc": "Gere informações sobre colaboradores, suas qualificações e disponibilidade.",
+
+    "clickToOpen": "Clique para abrir",
+    "noModules": "Ainda não há módulos disponíveis para o seu perfil.",
+
+    "recentActivity": "Atividade recente",
+    "quickActions": "Ações rápidas",
+
+    "announcement": {
+      "title": "Avisos do sistema",
+      "body": "Manutenção agendada hoje às 23:00 — alguns módulos poderão ficar indisponíveis."
+    },
+
+    "quick": {
+      "addStaff": "Novo colaborador",
+      "createQualification": "Nova qualificação",
+      "addResource": "Novo recurso",
+      "openVVN": "Abrir VVN"
+    },
+
+    "stats": {
+      "staff": "Colaboradores",
+      "qualificationsExpiring": "Qualificações a expirar",
+      "resourcesActive": "Recursos ativos",
+      "vesselsToday": "Navios hoje"
+    },
+    "dashboard": {
+      "recent": {
+        "updatedQualification": "Qualificação atualizada",
+        "newStaffMember": "Novo colaborador criado",
+        "resourceMaintenance": "Recurso enviado para manutenção"
+      }
+    }
+
   },
 
   "vesselTypes": {
