@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
 using SEM5_PI_WEBAPI.Domain.PhysicalResources;
 using SEM5_PI_WEBAPI.Domain.PhysicalResources.DTOs;
@@ -8,6 +9,7 @@ using SEM5_PI_WEBAPI.Domain.ValueObjects;
 
 namespace SEM5_PI_WEBAPI.Controllers;
 
+[Authorize(Roles = "LogisticsOperator")]
 [ApiController]
 [Route("api/[controller]")]
 public class PhysicalResourceController : ControllerBase

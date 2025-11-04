@@ -1,3 +1,5 @@
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SEM5_PI_WEBAPI.Domain.Qualifications;
 using SEM5_PI_WEBAPI.Domain.Qualifications.DTOs;
@@ -6,6 +8,7 @@ using SEM5_PI_WEBAPI.utils;
 
 namespace SEM5_PI_WEBAPI.Controllers;
 
+[Authorize(Roles = "LogisticsOperator")]
 [Route("api/[controller]")]
 [ApiController]
 public class QualificationsController : ControllerBase
@@ -129,6 +132,35 @@ public class QualificationsController : ControllerBase
             _logger.LogWarning("API Error (400): Failed to update Qualification with ID = {Id}. Reason: {Message}", id, e.Message);
             return _refrontend.ProblemResponse("Validation Error", e.Message, 400);
         }
+    }
+    
+    [Authorize(Roles = "LogisticsOperator")]
+    [HttpGet("test-role")]
+    public IActionResult TestRole()
+    {
+        var userName = User.Identity?.Name ?? "Unknown";
+        var userId = User.FindFirst("sub")?.Value;
+        var email = User.FindFirst("email")?.Value;
+    
+        // ✅ Buscar roles corretamente
+        var userRoles = User.Claims
+            .Where(c => c.Type == ClaimTypes.Role || c.Type == "roles")
+            .Select(c => c.Value)
+            .ToList();
+
+        Console.WriteLine($"👤 User authenticated: {userName}");
+        Console.WriteLine($"📧 Email: {email}");
+        Console.WriteLine($"🎭 Roles: {string.Join(", ", userRoles)}");
+
+        return Ok(new
+        {
+            Message = "Access granted to LogisticsOperator role!",
+            UserName = userName,
+            UserId = userId,
+            Email = email,
+            Roles = userRoles,
+            AllClaims = User.Claims.Select(c => new { c.Type, c.Value })
+        });
     }
     
 }

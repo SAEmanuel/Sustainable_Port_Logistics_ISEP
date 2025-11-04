@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SEM5_PI_WEBAPI.Domain.Containers.DTOs;
 using SEM5_PI_WEBAPI.Domain.Shared;
@@ -7,6 +8,7 @@ using SEM5_PI_WEBAPI.utils;
 
 namespace SEM5_PI_WEBAPI.Controllers;
 
+[Authorize(Roles = "PortAuthorityOfficer")]
 [ApiController]
 [Route("api/[controller]")]
 public class StorageAreasController : ControllerBase

@@ -1,5 +1,8 @@
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json.Converters;
 using SEM5_PI_WEBAPI.Controllers;
 using SEM5_PI_WEBAPI.Domain.CargoManifests;
@@ -55,6 +58,50 @@ namespace SEM5_PI_WEBAPI
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddAuthentication(options =>
+                {
+                    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                })
+                .AddJwtBearer(options =>
+                {
+                    var authority = Configuration["Keycloak:Authority"] ?? "http://localhost:8080/realms/PortLogistics";
+            
+                    options.Authority = authority;
+                    options.RequireHttpsMetadata = false;
+                    options.MetadataAddress = $"{authority}/.well-known/openid-configuration";
+
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuer = true,
+                        ValidIssuer = authority,
+                
+                        ValidateAudience = false,
+                
+                        ValidateLifetime = true,
+                        ClockSkew = TimeSpan.FromMinutes(5),
+                
+                        ValidateIssuerSigningKey = true,
+                
+                        NameClaimType = "preferred_username",
+                        RoleClaimType = ClaimTypes.Role
+                    };
+                });
+
+            services.AddAuthorization();
+
+            // CORS
+            services.AddCors(options =>
+            {
+                options.AddPolicy("AllowSPA", builder =>
+                {
+                    builder.WithOrigins("http://localhost:4200")
+                        .AllowAnyMethod()
+                        .AllowAnyHeader()
+                        .AllowCredentials();
+                });
+            });
+
             services.AddDbContext<DddSample1DbContext>(opt =>
                 opt.UseNpgsql(Configuration.GetConnectionString("DefaultConnection"))
                     .ReplaceService<IValueConverterSelector, StronglyEntityIdValueConverterSelector>());
@@ -86,6 +133,8 @@ namespace SEM5_PI_WEBAPI
             app.UseCors("AllowSPA");
 
             app.UseMiddleware<RequestLogsMiddleware>();
+
+            app.UseAuthentication();
 
             app.UseAuthorization();
 

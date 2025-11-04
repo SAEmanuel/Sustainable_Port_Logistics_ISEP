@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SEM5_PI_WEBAPI.Domain.Shared;
 using SEM5_PI_WEBAPI.Domain.StaffMembers;
@@ -5,6 +6,7 @@ using SEM5_PI_WEBAPI.Domain.StaffMembers.DTOs;
 
 namespace SEM5_PI_WEBAPI.Controllers;
 
+[Authorize(Roles = "LogisticsOperator")]
 [Route("api/[controller]")]
 [ApiController]
 public class StaffMembersController : ControllerBase

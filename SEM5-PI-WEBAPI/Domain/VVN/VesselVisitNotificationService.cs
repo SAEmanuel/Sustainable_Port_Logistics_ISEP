@@ -916,7 +916,7 @@ public class VesselVisitNotificationService : IVesselVisitNotificationService
 
     private async Task<StorageAreaId> GetStorageAreaId(string entryDtoStorageAreaName)
     {
-        if (entryDtoStorageAreaName.IsNullOrEmpty())
+        if (string.IsNullOrEmpty(entryDtoStorageAreaName))
             throw new BusinessRuleValidationException("Storage area Id cannot be empty.");
 
         var storageArea = await _storageAreaRepository.GetByNameAsync(entryDtoStorageAreaName);
@@ -966,7 +966,7 @@ public class VesselVisitNotificationService : IVesselVisitNotificationService
         var possibleDocks = await _dockRepository.GetAllDocksForVesselType(vessel.VesselTypeId);
 
         var availableDocks = possibleDocks.Where(d => d.Status.Equals(DockStatus.Available)).ToList();
-        if (availableDocks.IsNullOrEmpty())
+        if (!availableDocks.Any())
             throw new BusinessRuleValidationException(
                 "Unable to find available docks suitable for the requested vessel type. Please review the docking requirements or try again later");
         int dockCount = availableDocks.Count;
@@ -991,13 +991,13 @@ public class VesselVisitNotificationService : IVesselVisitNotificationService
             }
         }
 
-        if (hasHazmat && crewManifest.CrewMembers.IsNullOrEmpty())
+        if (hasHazmat && !crewManifest.CrewMembers.Any())
         {
             throw new BusinessRuleValidationException(
                 "Hazmat cargo! Make sure a the Crew Manifest has a Safety Officer associated!");
         }
 
-        if (hasHazmat && !crewManifest.CrewMembers.IsNullOrEmpty())
+        if (hasHazmat && crewManifest.CrewMembers.Any())
         {
             bool securityFound = false;
             foreach (var crewMember in crewManifest.CrewMembers)

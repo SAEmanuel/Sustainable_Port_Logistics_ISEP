@@ -14,7 +14,7 @@ public class Qualification : Entity<QualificationId>, IAggregateRoot
 
     public Qualification(string name)
     {
-        if (name.IsNullOrEmpty())
+        if (string.IsNullOrEmpty(name))
             throw new BusinessRuleValidationException("Name cannot be empty!");
         Name = name;
         Code = "";

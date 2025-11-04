@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using SEM5_PI_WEBAPI.Domain.Dock;
 using SEM5_PI_WEBAPI.Domain.Dock.DTOs;
 using SEM5_PI_WEBAPI.Domain.Shared;
 
 namespace SEM5_PI_WEBAPI.Controllers;
 
+[Authorize(Roles = "PortAuthorityOfficer")]
 [ApiController]
 [Route("api/[controller]")]
 public class DockController : ControllerBase
