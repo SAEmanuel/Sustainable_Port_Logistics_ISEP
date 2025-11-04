@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
 import type { PhysicalResource } from "../types/physicalResource";
-import "../style/physicalResource.css"; // Usaremos o mesmo CSS
+import "../style/physicalResource.css";
 
 interface PhysicalResourceTableProps {
     resources: PhysicalResource[];

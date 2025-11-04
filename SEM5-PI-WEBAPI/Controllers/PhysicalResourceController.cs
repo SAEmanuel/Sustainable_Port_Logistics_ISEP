@@ -9,7 +9,7 @@ using SEM5_PI_WEBAPI.Domain.ValueObjects;
 
 namespace SEM5_PI_WEBAPI.Controllers;
 
-[Authorize(Roles = "LogisticsOperator")]
+//[Authorize(Roles = "LogisticsOperator")]
 [ApiController]
 [Route("api/[controller]")]
 public class PhysicalResourceController : ControllerBase

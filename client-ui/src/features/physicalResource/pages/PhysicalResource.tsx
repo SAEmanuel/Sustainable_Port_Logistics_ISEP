@@ -15,19 +15,14 @@ import type { PhysicalResource } from "../types/physicalResource";
 import PhysicalResourceSearch from "../components/PhysicalResourceSearch.tsx";
 import PhysicalResourceTable from "../components/PhysicalResourceTable.tsx";
 import PhysicalResourceCreateModal from "../components/PhysicalResourceCreateModal.tsx";
+import PhysicalResourceDetails from "../components/PhysicalResourceDetails";
 
-// Importar os componentes (que ainda vamos criar, por agora isto dará erro)
-
-// import PhysicalResourceTable from "../components/PhysicalResourceTable";
-// import PhysicalResourceSearch.tsx from "../components/PhysicalResourceSearch.tsx";
-// import PhysicalResourceDetails from "../components/PhysicalResourceDetails";
-// import PhysicalResourceCreateModal from "../components/PhysicalResourceCreateModal";
 
 function PhysicalResourcePage() {
     const { t } = useTranslation();
     const [physicalResources, setPhysicalResources] = useState<PhysicalResource[]>([]);
-    //const [selectedPhysicalResource, setSelectedPhysicalResource] = useState<PhysicalResource | null>(null);
-    //const [isDetailsOpen, setIsDetailsOpen] = useState(false);
+    const [selectedPhysicalResource, setSelectedPhysicalResource] = useState<PhysicalResource | null>(null);
+    const [isDetailsOpen, setIsDetailsOpen] = useState(false);
     const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<Error | null>(null);
@@ -73,16 +68,14 @@ function PhysicalResourcePage() {
 
     // // Handlers para o modal de Detalhes
     const handleShowDetails = (resource: PhysicalResource) => {
-        //setSelectedPhysicalResource(resource);
-        //setIsDetailsOpen(true);
-        // @ts-ignore
-        setPhysicalResources(resource);
+        setSelectedPhysicalResource(resource);
+        setIsDetailsOpen(true);
     };
 
-    // const handleCloseDetails = () => {
-    //     setIsDetailsOpen(false);
-    //     setSelectedPhysicalResource(null);
-    // };
+    const handleCloseDetails = () => {
+        setIsDetailsOpen(false);
+        setSelectedPhysicalResource(null);
+    };
 
     // Handlers para o modal de Criação
     const handleOpenCreateModal = () => {
@@ -121,13 +114,13 @@ function PhysicalResourcePage() {
                 onDetails={handleShowDetails}
             />
 
-            {/*{selectedPhysicalResource && (*/}
-            {/*    <PhysicalResourceDetails*/}
-            {/*        resource={selectedPhysicalResource}*/}
-            {/*        isOpen={isDetailsOpen}*/}
-            {/*        onClose={handleCloseDetails}*/}
-            {/*    />*/}
-            {/*)}*/}
+            {selectedPhysicalResource && (
+                <PhysicalResourceDetails
+                    resource={selectedPhysicalResource}
+                    isOpen={isDetailsOpen}
+                    onClose={handleCloseDetails}
+                />
+            )}
 
             <PhysicalResourceCreateModal
                 isOpen={isCreateModalOpen}

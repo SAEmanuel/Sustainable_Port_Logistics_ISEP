@@ -55,13 +55,15 @@ export async function updatePhysicalResource(id: string, dto: UpdatePhysicalReso
     return res.data;
 }
 
-// export async function deactivatePhysicalResource(id: string): Promise<PhysicalResource> {
-//     const res = await api.patch(`/api/PhysicalResource/deactivate/${id}`);
-//     return res.data;
-// }
-//
-// export async function activatePhysicalResource(id: string): Promise<PhysicalResource> {
-//     const res = await api.patch(`/api/PhysicalResource/reactivate/${id}`);
-//     return res.data;
-// }
+// --- Funções do Serviço (ATIVAR e DESATIVAR) ---
+
+export async function deactivatePhysicalResource(id: string): Promise<PhysicalResource> {
+    const res = await api.patch(`/api/PhysicalResource/deactivate/${id}`);
+    return res.data;
+}
+
+export async function activatePhysicalResource(id: string): Promise<PhysicalResource> {
+    const res = await api.patch(`/api/PhysicalResource/reactivate/${id}`);
+    return res.data;
+}
 
