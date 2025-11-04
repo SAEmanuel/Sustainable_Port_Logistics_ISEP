@@ -9,10 +9,10 @@ public class User : Entity<UserId>, IAggregateRoot
     public string Email { get; private set; }
     public string Name { get; private set; }
     public bool IsActive { get; set; }
-    public Roles Role { get; set; }
+    public Roles? Role { get; set; }
 
 
-    public User(string iamId, string email, string name, bool isActive, Roles role)
+    public User(string iamId, string email, string name, bool isActive, Roles? role)
     {
         IamId = iamId;
         Email = email;
@@ -23,6 +23,9 @@ public class User : Entity<UserId>, IAggregateRoot
 
     public void UpdateRole(Roles newRole)
     {
+        if (newRole == Role)
+            throw new BusinessRuleValidationException("Cannot update Role to the same Role");
+        
         Role = newRole;
     }
 

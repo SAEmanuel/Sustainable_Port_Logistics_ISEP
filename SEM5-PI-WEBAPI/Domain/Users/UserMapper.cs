@@ -10,9 +10,9 @@ public class UserDto
     public string Email { get; set; }
     public string Name { get; set; }
     public bool IsActive { get; set; }
-    public Roles Role { get; set; }
+    public Roles? Role { get; set; }
 
-    public UserDto(Guid id, string iamId, string email, string name, bool isActive, Roles role)
+    public UserDto(Guid id, string iamId, string email, string name, bool isActive, Roles? role)
     {
         Id = id;
         IamId = iamId;
