@@ -63,14 +63,14 @@
     &lt;TestId&gt;xUnit::25307884-991E-499B-A1E8-31E90F954FB9::net9.0::SEM5_PI_WEBAPI.Tests.Controllers.StorageAreasControllerTests&lt;/TestId&gt;
   &lt;/TestAncestor&gt;
 &lt;/SessionState&gt;</s:String>
-	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=8c012ee1_002Dc14b_002D40cb_002D83dd_002D3bc96aa91dbf/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="QualificationControllerServiceTests" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
-  &lt;TestAncestor&gt;&#xD;
-    &lt;TestId&gt;xUnit::25307884-991E-499B-A1E8-31E90F954FB9::net9.0::SEM5_PI_WEBAPI.Tests.Integration.QualificationControllerServiceTests&lt;/TestId&gt;&#xD;
-    &lt;TestId&gt;xUnit::25307884-991E-499B-A1E8-31E90F954FB9::net9.0::SEM5_PI_WEBAPI.Tests.Integration.PhysicalResourceServiceControllerTests.GetById_ShouldReturnNotFound_WhenResourceMissing&lt;/TestId&gt;&#xD;
-    &lt;TestId&gt;xUnit::25307884-991E-499B-A1E8-31E90F954FB9::net9.0::SEM5_PI_WEBAPI.Tests.Integration.PhysicalResourceServiceControllerTests.GetById_ShouldReturnBadRequest_WhenResourceMissing&lt;/TestId&gt;&#xD;
-    &lt;TestId&gt;xUnit::25307884-991E-499B-A1E8-31E90F954FB9::net9.0::SEM5_PI_WEBAPI.Tests.Domain.EntityPhysicalResourceTests&lt;/TestId&gt;&#xD;
-    &lt;TestId&gt;xUnit::25307884-991E-499B-A1E8-31E90F954FB9::net9.0::SEM5_PI_WEBAPI.Tests.Controllers.PhysicalResourceControllerTests&lt;/TestId&gt;&#xD;
-  &lt;/TestAncestor&gt;&#xD;
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=8c012ee1_002Dc14b_002D40cb_002D83dd_002D3bc96aa91dbf/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="QualificationControllerServiceTests" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;
+  &lt;TestAncestor&gt;
+    &lt;TestId&gt;xUnit::25307884-991E-499B-A1E8-31E90F954FB9::net9.0::SEM5_PI_WEBAPI.Tests.Integration.QualificationControllerServiceTests&lt;/TestId&gt;
+    &lt;TestId&gt;xUnit::25307884-991E-499B-A1E8-31E90F954FB9::net9.0::SEM5_PI_WEBAPI.Tests.Integration.PhysicalResourceServiceControllerTests.GetById_ShouldReturnNotFound_WhenResourceMissing&lt;/TestId&gt;
+    &lt;TestId&gt;xUnit::25307884-991E-499B-A1E8-31E90F954FB9::net9.0::SEM5_PI_WEBAPI.Tests.Integration.PhysicalResourceServiceControllerTests.GetById_ShouldReturnBadRequest_WhenResourceMissing&lt;/TestId&gt;
+    &lt;TestId&gt;xUnit::25307884-991E-499B-A1E8-31E90F954FB9::net9.0::SEM5_PI_WEBAPI.Tests.Domain.EntityPhysicalResourceTests&lt;/TestId&gt;
+    &lt;TestId&gt;xUnit::25307884-991E-499B-A1E8-31E90F954FB9::net9.0::SEM5_PI_WEBAPI.Tests.Controllers.PhysicalResourceControllerTests&lt;/TestId&gt;
+  &lt;/TestAncestor&gt;
 &lt;/SessionState&gt;</s:String>
 	
 	

@@ -18,6 +18,7 @@ using SEM5_PI_WEBAPI.Domain.ShippingAgentOrganizations;
 using SEM5_PI_WEBAPI.Domain.ShippingAgentRepresentatives;
 using SEM5_PI_WEBAPI.Domain.StorageAreas;
 using SEM5_PI_WEBAPI.Domain.Tasks;
+using SEM5_PI_WEBAPI.Domain.Users;
 using SEM5_PI_WEBAPI.Domain.VVN;
 using SEM5_PI_WEBAPI.Infraestructure;
 using SEM5_PI_WEBAPI.Infraestructure.CargoManifestEntries;
@@ -36,6 +37,7 @@ using SEM5_PI_WEBAPI.Infraestructure.ShippingAgentOrganizations;
 using SEM5_PI_WEBAPI.Infraestructure.ShippingAgentRepresentatives;
 using SEM5_PI_WEBAPI.Infraestructure.StorageAreas;
 using SEM5_PI_WEBAPI.Infraestructure.Tasks;
+using SEM5_PI_WEBAPI.Infraestructure.Users;
 using SEM5_PI_WEBAPI.Infraestructure.VVN;
 using SEM5_PI_WEBAPI.Seed;
 using SEM5_PI_WEBAPI.utils;
@@ -80,7 +82,7 @@ namespace SEM5_PI_WEBAPI
             app.UseHttpsRedirection();
 
             app.UseRouting();
-            
+
             app.UseCors("AllowSPA");
 
             app.UseMiddleware<RequestLogsMiddleware>();
@@ -97,10 +99,10 @@ namespace SEM5_PI_WEBAPI
                 options.AddPolicy("AllowSPA", builder =>
                     builder
                         .WithOrigins(
-                            "http://localhost:5173",     // Vite local
-                            "http://localhost:3000",     // React default
-                            "http://10.9.23.188",        // IP VM
-                            "http://10.9.23.188:5173"    // IP VM + Vite
+                            "http://localhost:5173", // Vite local
+                            "http://localhost:3000", // React default
+                            "http://10.9.23.188", // IP VM
+                            "http://10.9.23.188:5173" // IP VM + Vite
                         )
                         .AllowAnyHeader()
                         .AllowAnyMethod()
@@ -114,50 +116,52 @@ namespace SEM5_PI_WEBAPI
             services.AddScoped<IQualificationService, QualificationService>();
 
             services.AddTransient<IVesselTypeRepository, VesselTypeRepository>();
-            services.AddScoped<IVesselTypeService,VesselTypeService>();
+            services.AddScoped<IVesselTypeService, VesselTypeService>();
 
             services.AddTransient<IStaffMemberRepository, StaffMemberRepository>();
             services.AddScoped<IStaffMemberService, StaffMemberService>();
 
             services.AddTransient<IVesselRepository, VesselRepository>();
-            services.AddScoped<IVesselService,VesselService>();
+            services.AddScoped<IVesselService, VesselService>();
 
             services.AddTransient<IShippingAgentOrganizationRepository, ShippingAgentOrganizationRepository>();
-            services.AddScoped<IShippingAgentOrganizationService,ShippingAgentOrganizationService>();
+            services.AddScoped<IShippingAgentOrganizationService, ShippingAgentOrganizationService>();
 
             services.AddTransient<IShippingAgentRepresentativeRepository, ShippingAgentRepresentativeRepository>();
-            services.AddScoped<IShippingAgentRepresentativeService,ShippingAgentRepresentativeService>();
+            services.AddScoped<IShippingAgentRepresentativeService, ShippingAgentRepresentativeService>();
 
 
             services.AddTransient<IStorageAreaRepository, StorageAreaRepository>();
             services.AddScoped<IStorageAreaService, StorageAreaService>();
 
             services.AddTransient<IDockRepository, DockRepository>();
-            services.AddScoped<IDockService,DockService>();
+            services.AddScoped<IDockService, DockService>();
 
             services.AddTransient<ICargoManifestRepository, CargoManifestRepository>();
-            
+
             services.AddTransient<IContainerRepository, ContainerRepository>();
             services.AddScoped<IContainerService, ContainerService>();
-            
+
             services.AddTransient<ICargoManifestEntryRepository, CargoManifestEntryRepository>();
-            
+
             services.AddTransient<IPhysicalResourceRepository, PhysicalResourceRepository>();
             services.AddScoped<IPhysicalResourceService, PhysicalResourceService>();
-            
+
             services.AddTransient<IVesselVisitNotificationRepository, VesselVisitNotificationRepository>();
-            services.AddScoped<IVesselVisitNotificationService,VesselVisitNotificationService>();
-            
-            services.AddTransient<ICrewMemberRepository,CrewMemberRepository>();
+            services.AddScoped<IVesselVisitNotificationService, VesselVisitNotificationService>();
+
+            services.AddTransient<ICrewMemberRepository, CrewMemberRepository>();
 
             services.AddTransient<ICrewManifestRepository, CrewManifestRepository>();
 
-            services.AddTransient<ITaskRepository,TaskRepository>();
-            
+            services.AddTransient<ITaskRepository, TaskRepository>();
+
             services.AddTransient<Bootstrap>();
-            
+
             services.AddScoped<IResponsesToFrontend, ResponsesToFrontend>();
 
+            services.AddTransient<IUserRepository, UserRepository>();
+            services.AddScoped<IUserService, UserService>();
         }
     }
 }

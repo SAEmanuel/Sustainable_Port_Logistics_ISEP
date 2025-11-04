@@ -12,6 +12,7 @@ using SEM5_PI_WEBAPI.Domain.ShippingAgentRepresentatives;
 using SEM5_PI_WEBAPI.Domain.StaffMembers;
 using SEM5_PI_WEBAPI.Domain.StorageAreas;
 using SEM5_PI_WEBAPI.Domain.Tasks;
+using SEM5_PI_WEBAPI.Domain.Users;
 using SEM5_PI_WEBAPI.Domain.Vessels;
 using SEM5_PI_WEBAPI.Domain.VesselsTypes;
 using SEM5_PI_WEBAPI.Domain.VVN;
@@ -30,6 +31,7 @@ using SEM5_PI_WEBAPI.Infraestructure.VesselsTypes;
 using SEM5_PI_WEBAPI.Infraestructure.ShippingAgentOrganizations;
 using SEM5_PI_WEBAPI.Infraestructure.ShippingAgentRepresentatives;
 using SEM5_PI_WEBAPI.Infraestructure.Tasks;
+using SEM5_PI_WEBAPI.Infraestructure.Users;
 using SEM5_PI_WEBAPI.Infraestructure.VVN;
 
 namespace SEM5_PI_WEBAPI.Infraestructure
@@ -52,6 +54,7 @@ namespace SEM5_PI_WEBAPI.Infraestructure
         public DbSet<CrewMember> CrewMembers { get; set; }
         public DbSet<EntityTask> Tasks { get; set; }
         public DbSet<VesselVisitNotification> VesselVisitNotification { get; set; }
+        public DbSet<User> Users { get; set; }
 
 
         public DddSample1DbContext(DbContextOptions options) : base(options)
@@ -76,6 +79,7 @@ namespace SEM5_PI_WEBAPI.Infraestructure
             modelBuilder.ApplyConfiguration(new CrewMemberEntityTypeConfiguration());
             modelBuilder.ApplyConfiguration(new VesselVisitNotificationEntityTypeConfiguration());
             modelBuilder.ApplyConfiguration(new TaskEntityTypeConfiguration());
+            modelBuilder.ApplyConfiguration(new UserEntityTypeConfiguration());
         }
     }
 }
