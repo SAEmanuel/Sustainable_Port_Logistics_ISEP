@@ -37,7 +37,7 @@ function PhysicalResourceTable({ resources, onDetails }: PhysicalResourceTablePr
                             onClick={() => onDetails(resource)}
                             className="pr-details-button"
                         >
-                            {t("common.details")}
+                            {t("physicalResource.actions.details")}
                         </button>
                     </td>
                 </tr>

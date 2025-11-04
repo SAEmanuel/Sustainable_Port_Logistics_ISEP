@@ -144,8 +144,8 @@ function PhysicalResourceCreateModal({ isOpen, onClose, onCreated }: PhysicalRes
                             value={formData.physicalResourceType ?? ""}
                             onChange={handleChange}
                         >
-                            <option value="">{t("common.selectOption")}</option>
-                            {/* Mapeia os valores do nosso tipo (string literal) */}
+                            <option value="">{t("physicalResource.form.selectOption")}</option>
+                            {}
                             {(Object.keys(PhysicalResourceType) as Array<keyof typeof PhysicalResourceType>).map((key) => (
                                 <option key={key} value={PhysicalResourceType[key]}>
                                     {t(`physicalResource.types.${key}`)}
@@ -163,7 +163,7 @@ function PhysicalResourceCreateModal({ isOpen, onClose, onCreated }: PhysicalRes
                             value={formData.qualificationCode ?? ""}
                             onChange={handleChange}
                         >
-                            <option value="">{t("common.selectOptionNone")}</option>
+                            <option value="">{t("physicalResource.form.selectOptionNone")}</option>
                             {qualifications.map((q) => (
                                 <option key={q.id} value={q.code}>
                                     {q.name} ({q.code})
@@ -176,10 +176,10 @@ function PhysicalResourceCreateModal({ isOpen, onClose, onCreated }: PhysicalRes
 
                     <div className="pr-modal-actions">
                         <button type="button" onClick={onClose} className="pr-cancel-button" disabled={isLoading}>
-                            {t("common.cancel")}
+                            {t("physicalResource.actions.cancel")}
                         </button>
                         <button type="submit" className="pr-submit-button" disabled={isLoading}>
-                            {isLoading ? t("common.creating") : t("common.create")}
+                            {isLoading ? t("physicalResource.actions.creating") : t("physicalResource.actions.create")}
                         </button>
                     </div>
                 </form>

@@ -87,7 +87,7 @@ function PhysicalResourceDetails({ resource, isOpen, onClose }: PhysicalResource
 
                     <div className="pr-modal-actions">
                         <button onClick={onClose} className="pr-cancel-button" disabled={isLoading}>
-                            {t("common.close")}
+                            {t("physicalResource.actions.close")}
                         </button>
 
                         {}
@@ -96,17 +96,17 @@ function PhysicalResourceDetails({ resource, isOpen, onClose }: PhysicalResource
                             disabled={isLoading}
                             onClick={() => setIsEditModalOpen(true)} // Abre o modal de edição
                         >
-                            {t("common.edit")}
+                            {t("physicalResource.actions.edit")}
                         </button>
 
                         {}
                         {isAvailable ? (
                             <button onClick={handleDeactivate} className="pr-deactivate-button" disabled={isLoading}>
-                                {t("common.deactivate")}
+                                {t("physicalResource.actions.deactivate")}
                             </button>
                         ) : (
                             <button onClick={handleActivate} className="pr-activate-button" disabled={isLoading}>
-                                {t("common.activate")}
+                                {t("physicalResource.actions.activate")}
                             </button>
                         )}
                     </div>

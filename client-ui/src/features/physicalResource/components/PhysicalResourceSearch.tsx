@@ -31,14 +31,14 @@ function PhysicalResourceSearch({ onSearch }: PhysicalResourceSearchProps) {
                 className="pr-search-input"
             />
             <button type="submit" className="pr-search-button">
-                {t("common.search")}
+                {t("physicalResource.actions.search")}
             </button>
             <button
                 type="button"
                 onClick={handleClear}
                 className="pr-clear-button"
             >
-                {t("common.clear")}
+                {t("physicalResource.actions.clear")}
             </button>
         </form>
     );

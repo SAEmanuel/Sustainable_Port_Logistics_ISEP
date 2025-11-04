@@ -141,7 +141,7 @@ function PhysicalResourceEditModal({ isOpen, onClose, onUpdated, resource }: Phy
                             value={formData.qualificationId ?? ""}
                             onChange={handleChange}
                         >
-                            <option value="">{t("common.selectOptionNone")}</option>
+                            <option value="">{t("physicalResource.form.selectOptionNone")}</option>
                             {qualifications.map((q) => (
                                 // No update, enviamos o ID (Guid) da qualificação
                                 <option key={q.id} value={q.id}>
@@ -155,10 +155,10 @@ function PhysicalResourceEditModal({ isOpen, onClose, onUpdated, resource }: Phy
 
                     <div className="pr-modal-actions">
                         <button type="button" onClick={onClose} className="pr-cancel-button" disabled={isLoading}>
-                            {t("common.cancel")}
+                            {t("physicalResource.actions.cancel")}
                         </button>
                         <button type="submit" className="pr-submit-button" disabled={isLoading}>
-                            {isLoading ? t("common.saving") : t("common.save")}
+                            {isLoading ? t("physicalResource.actions.saving") : t("physicalResource.actions.save")}
                         </button>
                     </div>
                 </form>

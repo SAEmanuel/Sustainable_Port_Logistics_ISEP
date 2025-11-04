@@ -8,7 +8,7 @@ using SEM5_PI_WEBAPI.utils;
 
 namespace SEM5_PI_WEBAPI.Controllers;
 
-[Authorize(Roles = "LogisticsOperator")]
+//[Authorize(Roles = "LogisticsOperator")]
 [Route("api/[controller]")]
 [ApiController]
 public class QualificationsController : ControllerBase
