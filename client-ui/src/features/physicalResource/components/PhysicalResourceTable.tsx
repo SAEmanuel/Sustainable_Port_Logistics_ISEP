@@ -25,7 +25,7 @@ function PhysicalResourceTable({ resources, onDetails }: PhysicalResourceTablePr
     const { t } = useTranslation();
 
     if (resources.length === 0) {
-        return <p>{t("noResourcesFound")}</p>;
+        return <p>{t("physicalResource.noResourcesFound")}</p>;
     }
 
     return (

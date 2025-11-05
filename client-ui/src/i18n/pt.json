@@ -525,7 +525,8 @@
       "save": "Guardar",
       "saving": "A guardar...",
       "next": "Seguinte",
-      "back": "Anterior"
+      "back": "Anterior",
+      "backToDashboard": "Voltar ao Dashboard"
     },
     "confirm": {
       "deactivate": "Tem a certeza que deseja desativar este recurso?",

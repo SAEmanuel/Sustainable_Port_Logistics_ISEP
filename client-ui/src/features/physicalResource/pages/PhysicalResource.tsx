@@ -2,6 +2,8 @@ import { useState, useEffect, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import toast from "react-hot-toast";
 import "../style/physicalResource.css";
+import {FaCogs} from "react-icons/fa";
+import { Link } from "react-router-dom";
 
 import {
     getAllPhysicalResources,
@@ -125,7 +127,16 @@ function PhysicalResourcePage() {
         <div className="physical-resource-page-container">
             {}
             <div className="physical-resource-header">
-                <h1>{t("physicalResource.title")}</h1>
+
+                {}
+                <Link to="/dashboard" className="pr-back-button" title={t("physicalResource.actions.backToDashboard")}>
+                    ‹
+                </Link>
+
+                {}
+                <h1>
+                    <FaCogs className="pr-icon" /> {t("physicalResource.title")}
+                </h1>
             </div>
 
             {}

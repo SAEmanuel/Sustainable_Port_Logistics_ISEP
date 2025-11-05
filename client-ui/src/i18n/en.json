@@ -522,7 +522,8 @@
       "save": "Save",
       "saving": "Saving...",
       "next": "Next",
-      "back": "Back"
+      "back": "Back",
+      "backToDashboard": "Back to Dashboard"
     },
     "confirm": {
       "deactivate": "Are you sure you want to deactivate this resource?",
