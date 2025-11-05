@@ -20,7 +20,9 @@ using SEM5_PI_WEBAPI.Domain.ShippingAgentRepresentatives;
 using SEM5_PI_WEBAPI.Domain.StaffMembers;
 using SEM5_PI_WEBAPI.Domain.Vessels;
 using SEM5_PI_WEBAPI.Domain.VesselsTypes;
+using SEM5_PI_WEBAPI.utils;
 using Status = SEM5_PI_WEBAPI.Domain.ShippingAgentRepresentatives.Status;
+using Xunit;
 
 namespace SEM5_PI_WEBAPI.Tests.Integration
 {
@@ -42,6 +44,7 @@ namespace SEM5_PI_WEBAPI.Tests.Integration
 
         private readonly Mock<ILogger<VesselVisitNotificationService>> _serviceLogger = new();
         private readonly Mock<ILogger<VesselVisitNotificationController>> _controllerLogger = new();
+        private readonly Mock<IResponsesToFrontend> _frontendMock = new();
 
         private readonly VesselVisitNotificationService _service;
         private readonly VesselVisitNotificationController _controller;
@@ -65,16 +68,22 @@ namespace SEM5_PI_WEBAPI.Tests.Integration
                 _serviceLogger.Object
             );
 
-            _controller = new VesselVisitNotificationController(_service, _controllerLogger.Object);
+            // mock genérico do ProblemResponse => devolve ObjectResult com o status pedido
+            _frontendMock
+                .Setup(f => f.ProblemResponse(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>()))
+                .Returns((string title, string detail, int status) =>
+                    new ObjectResult(detail) { StatusCode = status });
+
+            _controller = new VesselVisitNotificationController(_service, _controllerLogger.Object, _frontendMock.Object);
         }
 
-
         [Fact]
-        public async Task Create_ShouldReturnCreated_WhenValid()
+        public async Task Create_ShouldReturnOk_WhenValid()
         {
             var vesselTypeId = new VesselTypeId(Guid.NewGuid());
             var vessel = new Vessel("IMO 1234567", "Ever Given", "Evergreen Marine", vesselTypeId);
             var phone = new PhoneNumber("+351912345678");
+
             _sarRepoMock.Setup(r => r.GetByEmailAsync(It.Is<EmailAddress>(e =>
                     e.Equals(new EmailAddress("agent@example.com")))))
                 .ReturnsAsync(new ShippingAgentRepresentative(
@@ -116,13 +125,11 @@ namespace SEM5_PI_WEBAPI.Tests.Integration
 
             var result = await _controller.CreateAsync(dto);
 
-            var created = Assert.IsType<CreatedAtActionResult>(result.Result);
-            var value = Assert.IsType<VesselVisitNotificationDto>(created.Value);
-            Assert.Equal("1234567", value.VesselImo); 
+            var ok = Assert.IsType<OkObjectResult>(result.Result);
+            var value = Assert.IsType<VesselVisitNotificationDto>(ok.Value);
+            Assert.Equal("1234567", value.VesselImo);
             Assert.Equal(1500, value.Volume);
         }
-
-
 
         [Fact]
         public async Task Create_ShouldReturnBadRequest_WhenInvalidImo()
@@ -146,10 +153,10 @@ namespace SEM5_PI_WEBAPI.Tests.Integration
             );
 
             var result = await _controller.CreateAsync(dto);
-            var bad = Assert.IsType<BadRequestObjectResult>(result.Result);
+            var bad = Assert.IsType<ObjectResult>(result.Result);
+            Assert.Equal(400, bad.StatusCode);
             Assert.Contains("Vessel", bad.Value!.ToString());
         }
-
 
         [Fact]
         public async Task GetById_ShouldReturnOk_WhenExists()
@@ -171,10 +178,10 @@ namespace SEM5_PI_WEBAPI.Tests.Integration
                 .ReturnsAsync((VesselVisitNotification?)null);
 
             var result = await _controller.GetById(Guid.NewGuid());
-            Assert.IsType<NotFoundObjectResult>(result.Result);
+            var obj = Assert.IsType<ObjectResult>(result.Result);
+            Assert.Equal(404, obj.StatusCode);
         }
-        
-        
+
         [Fact]
         public async Task Update_ShouldReturnOk_WhenEditable()
         {
@@ -183,10 +190,7 @@ namespace SEM5_PI_WEBAPI.Tests.Integration
                 .ReturnsAsync(vvn);
             _uowMock.Setup(u => u.CommitAsync()).ReturnsAsync(1);
 
-            var dto = new UpdateVesselVisitNotificationDto
-            {
-                Volume = 2500
-            };
+            var dto = new UpdateVesselVisitNotificationDto { Volume = 2500 };
 
             var result = await _controller.UpdateAsync(vvn.Id.AsGuid(), dto);
             var ok = Assert.IsType<OkObjectResult>(result.Result);
@@ -205,9 +209,9 @@ namespace SEM5_PI_WEBAPI.Tests.Integration
             var dto = new UpdateVesselVisitNotificationDto { Volume = 999 };
             var result = await _controller.UpdateAsync(vvn.Id.AsGuid(), dto);
 
-            Assert.IsType<BadRequestObjectResult>(result.Result);
+            var bad = Assert.IsType<ObjectResult>(result.Result);
+            Assert.Equal(400, bad.StatusCode);
         }
-
 
         private static VesselVisitNotification BuildSampleVvn()
         {

@@ -9,6 +9,8 @@ using SEM5_PI_WEBAPI.Domain.VVN.DTOs;
 using SEM5_PI_WEBAPI.Domain.VVN.DTOs.GetByStatus;
 using SEM5_PI_WEBAPI.Domain.VVN.Docs;
 using SEM5_PI_WEBAPI.Domain.Tasks;
+using SEM5_PI_WEBAPI.utils;
+using Xunit;
 
 namespace SEM5_PI_WEBAPI.Tests.Controllers
 {
@@ -16,17 +18,26 @@ namespace SEM5_PI_WEBAPI.Tests.Controllers
     {
         private readonly Mock<IVesselVisitNotificationService> _serviceMock;
         private readonly Mock<ILogger<VesselVisitNotificationController>> _loggerMock;
+        private readonly Mock<IResponsesToFrontend> _frontendMock;
         private readonly VesselVisitNotificationController _controller;
 
         public VesselVisitNotificationControllerTests()
         {
             _serviceMock = new Mock<IVesselVisitNotificationService>();
             _loggerMock = new Mock<ILogger<VesselVisitNotificationController>>();
-            _controller = new VesselVisitNotificationController(_serviceMock.Object, _loggerMock.Object);
+            _frontendMock = new Mock<IResponsesToFrontend>();
+
+            // mock genérico do ProblemResponse -> devolve ObjectResult com o status que pedires
+            _frontendMock
+                .Setup(f => f.ProblemResponse(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>()))
+                .Returns((string title, string detail, int status) =>
+                    new ObjectResult(detail) { StatusCode = status });
+
+            _controller = new VesselVisitNotificationController(_serviceMock.Object, _loggerMock.Object, _frontendMock.Object);
         }
 
         [Fact]
-        public async Task CreateAsync_ShouldReturnCreated_WhenValid()
+        public async Task CreateAsync_ShouldReturnOk_WhenValid()
         {
             var createDto = new CreatingVesselVisitNotificationDto(
                 DateTime.Now.AddDays(1).ToString("O"),
@@ -47,8 +58,8 @@ namespace SEM5_PI_WEBAPI.Tests.Controllers
 
             var result = await _controller.CreateAsync(createDto);
 
-            var createdResult = Assert.IsType<CreatedAtActionResult>(result.Result);
-            var value = Assert.IsType<VesselVisitNotificationDto>(createdResult.Value);
+            var ok = Assert.IsType<OkObjectResult>(result.Result);
+            var value = Assert.IsType<VesselVisitNotificationDto>(ok.Value);
             Assert.Equal("2025-THPA-000001", value.Code);
             Assert.Equal(1200, value.Volume);
         }
@@ -72,8 +83,9 @@ namespace SEM5_PI_WEBAPI.Tests.Controllers
                 .ThrowsAsync(new BusinessRuleValidationException("Invalid ETA/ETD"));
 
             var result = await _controller.CreateAsync(dto);
-            var bad = Assert.IsType<BadRequestObjectResult>(result.Result);
-            Assert.Equal("Invalid ETA/ETD", bad.Value);
+            var obj = Assert.IsType<ObjectResult>(result.Result);
+            Assert.Equal(400, obj.StatusCode);
+            Assert.Equal("Invalid ETA/ETD", obj.Value);
         }
 
         [Fact]
@@ -95,7 +107,8 @@ namespace SEM5_PI_WEBAPI.Tests.Controllers
                 .ThrowsAsync(new BusinessRuleValidationException("Not found"));
 
             var result = await _controller.GetById(Guid.NewGuid());
-            Assert.IsType<NotFoundObjectResult>(result.Result);
+            var obj = Assert.IsType<ObjectResult>(result.Result);
+            Assert.Equal(404, obj.StatusCode);
         }
 
         [Fact]
@@ -115,7 +128,20 @@ namespace SEM5_PI_WEBAPI.Tests.Controllers
                 .ThrowsAsync(new BusinessRuleValidationException("Cannot withdraw"));
 
             var result = await _controller.WithdrawByIdAsync(Guid.NewGuid());
-            Assert.IsType<BadRequestObjectResult>(result.Result);
+            var obj = Assert.IsType<ObjectResult>(result.Result);
+            Assert.Equal(400, obj.StatusCode);
+            Assert.Equal("Cannot withdraw", obj.Value);
+        }
+
+        [Fact]
+        public async Task WithdrawById_ShouldReturnServerError_WhenUnexpected()
+        {
+            _serviceMock.Setup(s => s.WithdrawByIdAsync(It.IsAny<VesselVisitNotificationId>()))
+                .ThrowsAsync(new Exception("boom"));
+
+            var result = await _controller.WithdrawByIdAsync(Guid.NewGuid());
+            var obj = Assert.IsType<ObjectResult>(result.Result);
+            Assert.Equal(500, obj.StatusCode);
         }
 
         [Fact]
@@ -135,7 +161,20 @@ namespace SEM5_PI_WEBAPI.Tests.Controllers
                 .ThrowsAsync(new BusinessRuleValidationException("Invalid code"));
 
             var result = await _controller.WithdrawByCodeAsync("invalid");
-            Assert.IsType<BadRequestObjectResult>(result.Result);
+            var obj = Assert.IsType<ObjectResult>(result.Result);
+            Assert.Equal(400, obj.StatusCode);
+            Assert.Equal("Invalid VVN code format: invalid. Expected format: yyyy-PORTCODE-nnnnnn.", obj.Value);
+        }
+
+        [Fact]
+        public async Task WithdrawByCode_ShouldReturnServerError_WhenUnexpected()
+        {
+            _serviceMock.Setup(s => s.WithdrawByCodeAsync(It.IsAny<VvnCode>()))
+                .ThrowsAsync(new Exception("x"));
+
+            var result = await _controller.WithdrawByCodeAsync("X");
+            var obj = Assert.IsType<ObjectResult>(result.Result);
+            Assert.Equal(400, obj.StatusCode);
         }
 
         [Fact]
@@ -149,13 +188,26 @@ namespace SEM5_PI_WEBAPI.Tests.Controllers
         }
 
         [Fact]
+        public async Task SubmitById_ShouldReturnOk_WhenSuccess()
+        {
+            var dto = BuildDto(Guid.NewGuid().ToString(), "C", VvnStatus.Submitted.ToString());
+            _serviceMock.Setup(s => s.SubmitByIdAsync(It.IsAny<VesselVisitNotificationId>()))
+                .ReturnsAsync(dto);
+
+            var result = await _controller.SubmitByIdAsync(Guid.NewGuid());
+            Assert.IsType<OkObjectResult>(result.Result);
+        }
+
+        [Fact]
         public async Task SubmitById_ShouldReturnBadRequest_WhenInvalid()
         {
             _serviceMock.Setup(s => s.SubmitByIdAsync(It.IsAny<VesselVisitNotificationId>()))
                 .ThrowsAsync(new BusinessRuleValidationException("Invalid state"));
 
             var result = await _controller.SubmitByIdAsync(Guid.NewGuid());
-            Assert.IsType<BadRequestObjectResult>(result.Result);
+            var obj = Assert.IsType<ObjectResult>(result.Result);
+            Assert.Equal(400, obj.StatusCode);
+            Assert.Equal("Invalid state", obj.Value);
         }
 
         [Fact]
@@ -180,7 +232,21 @@ namespace SEM5_PI_WEBAPI.Tests.Controllers
                 .ThrowsAsync(new BusinessRuleValidationException("Cannot update"));
 
             var result = await _controller.UpdateAsync(Guid.NewGuid(), dto);
-            Assert.IsType<BadRequestObjectResult>(result.Result);
+            var obj = Assert.IsType<ObjectResult>(result.Result);
+            Assert.Equal(400, obj.StatusCode);
+            Assert.Equal("Cannot update", obj.Value);
+        }
+
+        [Fact]
+        public async Task UpdateAsync_ShouldReturnServerError_WhenUnexpected()
+        {
+            var dto = new UpdateVesselVisitNotificationDto();
+            _serviceMock.Setup(s => s.UpdateAsync(It.IsAny<VesselVisitNotificationId>(), dto))
+                .ThrowsAsync(new Exception("crash"));
+
+            var result = await _controller.UpdateAsync(Guid.NewGuid(), dto);
+            var obj = Assert.IsType<ObjectResult>(result.Result);
+            Assert.Equal(500, obj.StatusCode);
         }
 
         [Fact]
@@ -201,7 +267,20 @@ namespace SEM5_PI_WEBAPI.Tests.Controllers
                 .ThrowsAsync(new BusinessRuleValidationException("Invalid"));
 
             var result = await _controller.AcceptVvn(Guid.NewGuid());
-            Assert.IsType<BadRequestObjectResult>(result.Result);
+            var obj = Assert.IsType<ObjectResult>(result.Result);
+            Assert.Equal(400, obj.StatusCode);
+            Assert.Equal("Invalid", obj.Value);
+        }
+
+        [Fact]
+        public async Task AcceptVvn_ShouldReturnServerError_WhenUnexpected()
+        {
+            _serviceMock.Setup(s => s.GetByIdAsync(It.IsAny<VesselVisitNotificationId>()))
+                .ThrowsAsync(new Exception("kaput"));
+
+            var result = await _controller.AcceptVvn(Guid.NewGuid());
+            var obj = Assert.IsType<ObjectResult>(result.Result);
+            Assert.Equal(500, obj.StatusCode);
         }
 
         [Fact]
@@ -223,7 +302,9 @@ namespace SEM5_PI_WEBAPI.Tests.Controllers
                 .ThrowsAsync(new BusinessRuleValidationException("Invalid"));
 
             var result = await _controller.RejectVvn(dto);
-            Assert.IsType<BadRequestObjectResult>(result.Result);
+            var obj = Assert.IsType<ObjectResult>(result.Result);
+            Assert.Equal(400, obj.StatusCode);
+            Assert.Equal("Invalid", obj.Value);
         }
 
         [Fact]
@@ -237,6 +318,19 @@ namespace SEM5_PI_WEBAPI.Tests.Controllers
 
             var result = await _controller.GetInProgressOrPendingVvnsByFiltersAsync(Guid.NewGuid(), null, null, null, null);
             Assert.IsType<OkObjectResult>(result.Result);
+        }
+
+        [Fact]
+        public async Task GetInProgressOrPending_ShouldReturnNotFound_WhenRuleFails()
+        {
+            _serviceMock.Setup(s =>
+                    s.GetInProgressPendingInformationVvnsByShippingAgentRepresentativeIdFiltersAsync(
+                        It.IsAny<Guid>(), It.IsAny<FilterInProgressPendingVvnStatusDto>()))
+                .ThrowsAsync(new BusinessRuleValidationException("Not Found"));
+
+            var result = await _controller.GetInProgressOrPendingVvnsByFiltersAsync(Guid.NewGuid(), null, null, null, null);
+            var obj = Assert.IsType<ObjectResult>(result.Result);
+            Assert.Equal(404, obj.StatusCode);
         }
 
         [Fact]
@@ -275,6 +369,48 @@ namespace SEM5_PI_WEBAPI.Tests.Controllers
                 .ReturnsAsync(vvns);
 
             var result = await _controller.GetAcceptedVvnsByFiltersAsync(Guid.NewGuid(), null, null, null, null, null, null);
+            Assert.IsType<OkObjectResult>(result.Result);
+        }
+
+        // ===== ADMIN (ALL) =====
+
+        [Fact]
+        public async Task GetAllInProgressPending_ShouldReturnOk_WhenSuccess()
+        {
+            _serviceMock.Setup(s => s.GetInProgressPendingInformationVvnsByFiltersAsync(It.IsAny<FilterInProgressPendingVvnStatusDto>()))
+                .ReturnsAsync(new List<VesselVisitNotificationDto> { BuildDto(Guid.NewGuid().ToString(), "C", "InProgress") });
+
+            var result = await _controller.GetAllInProgressPendingAsync(null, null, null, null);
+            Assert.IsType<OkObjectResult>(result.Result);
+        }
+
+        [Fact]
+        public async Task GetAllWithdrawn_ShouldReturnOk_WhenSuccess()
+        {
+            _serviceMock.Setup(s => s.GetWithdrawnVvnsByFiltersAsync(It.IsAny<FilterWithdrawnVvnStatusDto>()))
+                .ReturnsAsync(new List<VesselVisitNotificationDto> { BuildDto(Guid.NewGuid().ToString(), "C", "Withdrawn") });
+
+            var result = await _controller.GetAllWithdrawnAsync(null, null, null, null);
+            Assert.IsType<OkObjectResult>(result.Result);
+        }
+
+        [Fact]
+        public async Task GetAllSubmitted_ShouldReturnOk_WhenSuccess()
+        {
+            _serviceMock.Setup(s => s.GetSubmittedVvnsByFiltersAsync(It.IsAny<FilterSubmittedVvnStatusDto>()))
+                .ReturnsAsync(new List<VesselVisitNotificationDto> { BuildDto(Guid.NewGuid().ToString(), "C", "Submitted") });
+
+            var result = await _controller.GetAllSubmittedAsync(null, null, null, null, null);
+            Assert.IsType<OkObjectResult>(result.Result);
+        }
+
+        [Fact]
+        public async Task GetAllAccepted_ShouldReturnOk_WhenSuccess()
+        {
+            _serviceMock.Setup(s => s.GetAcceptedVvnsByFiltersAsync(It.IsAny<FilterAcceptedVvnStatusDto>()))
+                .ReturnsAsync(new List<VesselVisitNotificationDto> { BuildDto(Guid.NewGuid().ToString(), "C", "Accepted") });
+
+            var result = await _controller.GetAllAcceptedAsync(null, null, null, null, null, null);
             Assert.IsType<OkObjectResult>(result.Result);
         }
 

@@ -59,6 +59,8 @@
     "admin": "Admin",
     "storageArea": "Storage Areas",
     "qualifications": "Qualifications",
+    "staffMembers": "Staff Members",
+    "physicalResource": "Physical Resources",
     "dashboard": "Dashboard",
     "login": "Login",
     "logout": "Logout"
@@ -68,43 +70,36 @@
     "light": "Light mode",
     "dark": "Dark mode"
   },
-  
+
   "dashboard": {
     "welcome": "Welcome, Logistics Operator",
     "subtitle": "Select an area to manage",
-
     "welcomeUser": "Welcome, {{name}}",
     "user": "User",
     "userId": "ID",
     "lastLogin": "Last login",
     "justNow": "just now",
     "roles": "Roles",
-
     "physicalResources": "Manage Physical Resources",
     "physicalResourcesDesc": "Manage cranes, trucks, and other equipment used in port operations.",
     "qualifications": "Manage Qualifications",
     "qualificationsDesc": "Define and update qualifications required for operators and equipment.",
     "staffMembers": "Manage Staff Members",
     "staffMembersDesc": "Manage information about employees, their qualifications, and availability.",
-
     "clickToOpen": "Click to open",
     "noModules": "No modules available for your profile yet.",
-
     "recentActivity": "Recent activity",
     "quickActions": "Quick actions",
-
     "announcement": {
       "title": "System notices",
       "body": "Scheduled maintenance today at 23:00 — some modules may be unavailable."
     },
-
     "quick": {
       "addStaff": "New staff member",
       "createQualification": "New qualification",
       "addResource": "New resource",
       "openVVN": "Open VVN"
     },
-
     "stats": {
       "staff": "Staff",
       "qualificationsExpiring": "Expiring qualifications",
@@ -134,7 +129,6 @@
       "nameRequired": "Name is required!",
       "invalidStructure": "Bays, rows and tiers must be greater than zero!"
     },
-    "autoCapacity": "Capacity is calculated automatically",
     "details": {
       "name": "Name",
       "description": "Description",
@@ -146,21 +140,17 @@
     "edit": "Edit",
     "delete": "Delete"
   },
-  
-  
+
   "Vessel": {
     "title": "Vessel Management",
     "count": "{{count}} registered vessels.",
-
     "searchPlaceholder": "Search vessels...",
-
     "modes": {
       "local": "LOCAL",
       "imo": "IMO",
       "id": "ID",
       "owner": "OWNER"
     },
-
     "fields": {
       "imo": "IMO Number *",
       "name": "Vessel Name *",
@@ -168,7 +158,6 @@
       "type": "Vessel Type *",
       "selectType": "Select Vessel Type"
     },
-
     "buttons": {
       "add": "Add Vessel",
       "search": "Search",
@@ -180,12 +169,10 @@
       "stats": "Statistics",
       "close": "Close"
     },
-    
     "analytics": {
       "title": "Vessel Statistics",
       "types": "Count"
     },
-
     "messages": {
       "invalidIMO": "Invalid IMO number (must be 7 digits)",
       "fillAll": "Fill all fields",
@@ -195,18 +182,16 @@
       "searchSuccess": "Loaded {{count}} vessels.",
       "noResults": "No vessel found."
     },
-
     "modal": {
       "addTitle": "Add Vessel",
       "editTitle": "Edit Vessel"
     },
-
     "details": {
       "owner": "Owner",
       "type": "Type"
     }
   },
-  
+
   "storageAreas": {
     "create": {
       "title": "New Storage Area",
@@ -332,10 +317,7 @@
     }
   },
 
-
-
-
-"qualifications": {
+  "qualifications": {
     "title": "Qualifications",
     "count": "{{count}} qualifications registered",
     "searchPlaceholder": "Search qualification...",
@@ -387,8 +369,8 @@
     "updateError": "Failed to update qualification",
     "editEmptyError": "Fill in at least one field to update",
     "editRequired": "Mandatory field*",
-    "create" : "Create"
-    },
+    "create": "Create"
+  },
 
   "staffMembers": {
     "title": "Staff Members",
@@ -398,28 +380,55 @@
     "loadSuccess": "Successfully loaded {{count}} staff members.",
     "empty": "No staff members found.",
     "detailsTitle": "Details",
-    "edit" : "Edit",
+    "edit": "Edit",
     "toggle": "Toggle status",
     "showAll": "Show all",
     "searchByMecNumber": "Mecanographic Number",
     "searchByName": "Name",
     "searchByStatus": "Status",
     "searchByQualifications": "Qualifications",
-    "statusInactive" : "Inactive",
-    "statusActive" : "Active",
-    "viewDetails" : "Details",
+    "statusInactive": "Inactive",
+    "statusActive": "Active",
+    "viewDetails": "Details",
     "searchMecNumberPlaceholder": "Search by Mecanographic Number",
     "searchNamePlaceholder": "Search by Name",
-    "searchPartialQualifications" : "Partial filter",
-    "searchExactQualifications" : "Total filter",
-    "selectQualificationsTitle" : "Select qualifications",
-    "selectQualificationsDescription1" : "Partial filter - all staff with at least one of the selected qualifications",
-    "selectQualificationsDescription2" : "Total filter - staff with the exact selected qualifications",
-    "searchResultTitle" : "Results",
-    "selectedQualifications" : "Selected qualifications",
-    "toggling" : "Updating...",
-    "search" : "Search",
-
+    "searchPartialQualifications": "Partial filter",
+    "searchExactQualifications": "Total filter",
+    "selectQualificationsTitle": "Select qualifications",
+    "selectQualificationsDescription1": "Partial filter - all staff with at least one of the selected qualifications",
+    "selectQualificationsDescription2": "Total filter - staff with the exact selected qualifications",
+    "searchResultTitle": "Results",
+    "selectedQualifications": "Selected qualifications",
+    "toggling": "Updating...",
+    "search": "Search",
+    "createTitle": "Create Staff Member",
+    "editTitle": "Edit Staff Member",
+    "currentInfo": "Fixed information:",
+    "basicInfo": "Information to register:",
+    "scheduleInfo": "Schedule",
+    "qualificationsInfo": "Qualifications",
+    "qualificationsOptional": "This selection is optional",
+    "create": "Create",
+    "cancel": "Cancel",
+    "save": "Save",
+    "form": {
+      "name": "Name",
+      "email": "Email",
+      "phone": "Phone",
+      "shift": "Shift",
+      "workDays": "Work days",
+      "namePlaceholder": "Enter a name (less than 20 chars)",
+      "emailPlaceholder": "Enter an email (like xxx@yyy.zz)",
+      "phonePlaceholder": "Enter a phone number (like +xxxyyyyyy)",
+      "isActive": "Activate?",
+      "changeSchedule": "Modify schedule",
+      "currentSchedule": "Current schedule",
+      "addQualifications": "Add Qualifications",
+      "changeQualifications": "Change qualifications completely",
+      "currentQualifications": "Current qualifications",
+      "changeQualificationsDescription": "Add all staff qualifications",
+      "addQualificationsDescription": "Add all staff qualifications to current ones"
+    },
     "details": {
       "name": "Name",
       "email": "Email",
@@ -429,6 +438,7 @@
       "qualifications": "Qualifications"
     }
   },
+
   "shiftType": {
     "Morning": "Morning",
     "Evening": "Afternoon",
@@ -436,6 +446,7 @@
     "Night": "Night",
     "NonStop": "Non Stop"
   },
+
   "weekDay": {
     "Monday": "Monday",
     "Tuesday": "Tuesday",
@@ -445,6 +456,7 @@
     "Saturday": "Saturday",
     "Sunday": "Sunday"
   },
+
   "physicalResource": {
     "title": "Physical Resource Management",
     "loading": "Loading resources...",
@@ -481,9 +493,9 @@
       "UnderMaintenance": "Under Maintenance"
     },
     "stats": {
-      "total": "Total Resources",
+      "total": "Total Resources",
       "available": "Available",
-      "maintenance": "Under Maintenance"
+      "maintenance": "Under Maintenance"
     },
     "types": {
       "STSCrane": "Ship-to-Shore Crane (STS)",
@@ -547,8 +559,9 @@
       "loadQualificationDetails": "Qualif. name unavailable"
     }
   },
-  
+
   "common": {
+    "optional": "optional",
     "cancel": "Cancel",
     "save": "Save",
     "confirm": "Confirm",
@@ -558,21 +571,21 @@
     "selectOne": "Select a VVN",
     "reasonPlaceholder": "Write the reason...",
     "updateTitle": "Update VVN",
+    "update": "Update",
     "volume": "Volume",
-    "dock": "Dock"
+    "dock": "Dock",
+    "downloadTemplate": "Download template"
   },
 
   "vvn": {
     "title": "Vessel Visit Notifications",
-    "new": "New VVN",
-
+    "new": "VVN",
     "tabs": {
       "inProgressPending": "In-Progress/Pending",
       "submitted": "Submitted",
       "accepted": "Accepted",
       "withdrawn": "Withdrawn"
     },
-
     "filters": {
       "specificRepGuid": "Specific Rep (Guid)",
       "imo": "IMO",
@@ -581,18 +594,15 @@
       "submitted": "Submitted",
       "accepted": "Accepted"
     },
-
     "header": {
       "inprogress": "🛠️ In-Progress/Pending: {{count}}",
       "submitted": "📤 Submitted: {{count}}",
       "accepted": "✅ Accepted: {{count}}",
       "withdrawn": "🗂️ Withdrawn: {{count}}"
     },
-
     "list": {
       "empty": "No results."
     },
-
     "details": {
       "status": "Status",
       "eta": "ETA",
@@ -600,13 +610,11 @@
       "volume": "Volume",
       "dock": "Dock"
     },
-
     "actions": {
       "submit": "Submit",
       "withdraw": "Withdraw",
       "noActionsForState": "No actions for this state."
     },
-
     "modals": {
       "reject": {
         "title": "Provide reason (Pending Information)",
@@ -650,7 +658,6 @@
         "empty": "No tasks"
       }
     },
-
     "entriesTable": {
       "storageArea": "Storage Area",
       "position": "Position",
@@ -659,7 +666,6 @@
       "status": "Status",
       "weight": "Weight (kg)"
     },
-
     "toast": {
       "loaded": "VVNs loaded successfully.",
       "loadError": "Failed to load VVNs.",
@@ -670,4 +676,3 @@
     }
   }
 }
-

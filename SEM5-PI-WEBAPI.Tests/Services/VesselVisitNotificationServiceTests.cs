@@ -19,6 +19,7 @@ using SEM5_PI_WEBAPI.Domain.VesselsTypes;
 using SEM5_PI_WEBAPI.Domain.VVN.DTOs.GetByStatus;
 using SEM5_PI_WEBAPI.Domain.VVN.Docs;
 using Status = SEM5_PI_WEBAPI.Domain.ShippingAgentRepresentatives.Status;
+using Xunit;
 
 namespace SEM5_PI_WEBAPI.Tests.Services
 {
@@ -61,12 +62,12 @@ namespace SEM5_PI_WEBAPI.Tests.Services
             );
         }
 
-
         [Fact]
         public async Task AddAsync_ShouldCreate_WhenValid()
         {
             var vessel = new Vessel("IMO 1234567", "Ever Given", "Evergreen", new VesselTypeId(Guid.NewGuid()));
             var phone = new PhoneNumber("+351912345678");
+
             _sarRepo.Setup(r => r.GetByEmailAsync(It.IsAny<EmailAddress>()))
                 .ReturnsAsync(new ShippingAgentRepresentative(
                     "João Silva",
@@ -111,7 +112,6 @@ namespace SEM5_PI_WEBAPI.Tests.Services
             Assert.Equal("1234567", result.VesselImo);
         }
 
-
         [Fact]
         public async Task AddAsync_ShouldThrow_WhenVesselNotFound()
         {
@@ -131,24 +131,23 @@ namespace SEM5_PI_WEBAPI.Tests.Services
 
             await Assert.ThrowsAsync<BusinessRuleValidationException>(() => _service.AddAsync(dto));
         }
-        
-
 
         [Fact]
         public async Task AcceptVvnAsync_ShouldThrow_WhenNoDockAvailable()
         {
             var vvn = BuildSample();
             var vtId = new VesselTypeId(Guid.NewGuid());
+            var vessel = new Vessel(vvn.VesselImo.Value, "AnyVessel", "Owner", vtId);
 
             _vvnRepo.Setup(r => r.GetByCodeAsync(It.IsAny<VvnCode>())).ReturnsAsync(vvn);
             _vvnRepo.Setup(r => r.GetCompleteByIdAsync(It.IsAny<VesselVisitNotificationId>())).ReturnsAsync(vvn);
+            _vesselRepo.Setup(r => r.GetByImoNumberAsync(It.IsAny<ImoNumber>())).ReturnsAsync(vessel);
             _dockRepo.Setup(r => r.GetAllDocksForVesselType(It.IsAny<VesselTypeId>()))
-                .ReturnsAsync(new List<EntityDock>()); // empty
+                .ReturnsAsync(new List<EntityDock>()); // vazio => sem docks disponíveis
 
             await Assert.ThrowsAsync<BusinessRuleValidationException>(() =>
                 _service.AcceptVvnAsync(new VvnCode("2025", "9999")));
         }
-
 
         [Fact]
         public async Task UpdateAsync_ShouldUpdate_WhenEditable()
@@ -174,7 +173,7 @@ namespace SEM5_PI_WEBAPI.Tests.Services
             await Assert.ThrowsAsync<BusinessRuleValidationException>(() =>
                 _service.UpdateAsync(vvn.Id, new UpdateVesselVisitNotificationDto { Volume = 2500 }));
         }
-        
+
         [Fact]
         public async Task SubmitByCodeAsync_ShouldSubmit_WhenValid()
         {
@@ -196,7 +195,30 @@ namespace SEM5_PI_WEBAPI.Tests.Services
             await Assert.ThrowsAsync<BusinessRuleValidationException>(() =>
                 _service.SubmitByCodeAsync(new VvnCode("2025", "9999")));
         }
-        
+
+        [Fact]
+        public async Task SubmitByIdAsync_ShouldSubmit_WhenValid()
+        {
+            var vvn = BuildSample();
+            _vvnRepo.Setup(r => r.GetCompleteByIdAsync(It.IsAny<VesselVisitNotificationId>())).ReturnsAsync(vvn);
+            _uow.Setup(u => u.CommitAsync()).ReturnsAsync(1);
+
+            var result = await _service.SubmitByIdAsync(vvn.Id);
+
+            Assert.NotNull(result);
+            _uow.Verify(u => u.CommitAsync(), Times.Once);
+        }
+
+        [Fact]
+        public async Task SubmitByIdAsync_ShouldThrow_WhenNotFound()
+        {
+            _vvnRepo.Setup(r => r.GetCompleteByIdAsync(It.IsAny<VesselVisitNotificationId>()))
+                .ReturnsAsync((VesselVisitNotification)null);
+
+            await Assert.ThrowsAsync<BusinessRuleValidationException>(() =>
+                _service.SubmitByIdAsync(new VesselVisitNotificationId(Guid.NewGuid())));
+        }
+
         [Fact]
         public async Task WithdrawByIdAsync_ShouldWithdraw_WhenExists()
         {
@@ -219,22 +241,50 @@ namespace SEM5_PI_WEBAPI.Tests.Services
                 _service.WithdrawByIdAsync(new VesselVisitNotificationId(Guid.NewGuid())));
         }
 
+        [Fact]
+        public async Task WithdrawByCodeAsync_ShouldWithdraw_WhenExists()
+        {
+            var vvn = BuildSample();
+            _vvnRepo.Setup(r => r.GetCompleteByCodeAsync(It.IsAny<VvnCode>())).ReturnsAsync(vvn);
+            _uow.Setup(u => u.CommitAsync()).ReturnsAsync(1);
+
+            var result = await _service.WithdrawByCodeAsync(new VvnCode("2025", "000001"));
+
+            Assert.NotNull(result);
+            _uow.Verify(u => u.CommitAsync(), Times.Once);
+        }
 
         [Fact]
-        public async Task GetInProgressPendingInformationVvnsByShippingAgentRepresentativeIdFiltersAsync_ShouldReturnEmpty_WhenNone()
+        public async Task WithdrawByCodeAsync_ShouldThrow_WhenNotFound()
+        {
+            _vvnRepo.Setup(r => r.GetCompleteByCodeAsync(It.IsAny<VvnCode>()))
+                .ReturnsAsync((VesselVisitNotification)null);
+
+            await Assert.ThrowsAsync<BusinessRuleValidationException>(() =>
+                _service.WithdrawByCodeAsync(new VvnCode("2025", "X")));
+        }
+        
+
+        [Fact]
+        public async Task MarkAsPendingAsync_ShouldThrow_WhenCodeNotFound()
+        {
+            var dto = new RejectVesselVisitNotificationDto("NOPE", "reason");
+            _vvnRepo.Setup(r => r.GetByCodeAsync(It.IsAny<VvnCode>())).ReturnsAsync((VesselVisitNotification)null);
+
+            await Assert.ThrowsAsync<BusinessRuleValidationException>(() => _service.MarkAsPendingAsync(dto));
+        }
+
+        [Fact]
+        public async Task GetInProgressPending_BySAR_ShouldReturnEmpty_WhenNone()
         {
             var saoCode = new ShippingOrganizationCode("1234567890");
             var phone = new PhoneNumber("+351912345678");
             var sar = new ShippingAgentRepresentative(
                 "John", new CitizenId("AB123456"), Nationality.Portugal, new EmailAddress("john@example.com"), phone, Status.activated, saoCode);
 
-            _sarRepo.Setup(r => r.GetByIdAsync(It.IsAny<ShippingAgentRepresentativeId>()))
-                .ReturnsAsync(sar);
-
+            _sarRepo.Setup(r => r.GetByIdAsync(It.IsAny<ShippingAgentRepresentativeId>())).ReturnsAsync(sar);
             _saoRepo.Setup(r => r.GetByCodeAsync(It.IsAny<ShippingOrganizationCode>()))
-                .ReturnsAsync(new ShippingAgentOrganization(
-                    saoCode, "Org", "Alt", "Addr", new TaxNumber("PT123456789")));
-
+                .ReturnsAsync(new ShippingAgentOrganization(saoCode, "Org", "Alt", "Addr", new TaxNumber("PT123456789")));
             _sarRepo.Setup(r => r.GetAllSarBySaoAsync(It.IsAny<ShippingOrganizationCode>()))
                 .ReturnsAsync(new List<ShippingAgentRepresentative> { sar });
 
@@ -245,7 +295,75 @@ namespace SEM5_PI_WEBAPI.Tests.Services
             Assert.Empty(result);
         }
 
-        
+
+
+        [Fact]
+        public async Task GetAll_Withdrawn_ShouldFilter()
+        {
+            var list = new List<VesselVisitNotification>
+            {
+                BuildWithStatus(VvnStatus.Withdrawn),
+                BuildWithStatus(VvnStatus.Withdrawn),
+                BuildWithStatus(VvnStatus.Accepted)
+            };
+            _vvnRepo.Setup(r => r.GetAllAsync()).ReturnsAsync(list);
+
+            var res = await _service.GetWithdrawnVvnsByFiltersAsync(new FilterWithdrawnVvnStatusDto());
+            Assert.Equal(2, res.Count);
+        }
+
+        [Fact]
+        public async Task GetAll_Submitted_ShouldFilterAndThrowOnMissingVessel_WhenImoProvided()
+        {
+            var submitted = BuildWithStatus(VvnStatus.Submitted);
+            _vvnRepo.Setup(r => r.GetAllAsync()).ReturnsAsync(new List<VesselVisitNotification> { submitted });
+
+            // vessel não existe para o IMO => deve lançar
+            _vesselRepo.Setup(r => r.GetByImoNumberAsync(It.IsAny<ImoNumber>())).ReturnsAsync((Vessel)null);
+
+            await Assert.ThrowsAsync<BusinessRuleValidationException>(() =>
+                _service.GetSubmittedVvnsByFiltersAsync(new FilterSubmittedVvnStatusDto { VesselImoNumber = "NO-IMO" }));
+        }
+
+        [Fact]
+        public async Task GetAll_Accepted_ShouldFilter()
+        {
+            var list = new List<VesselVisitNotification>
+            {
+                BuildWithStatus(VvnStatus.Accepted),
+                BuildWithStatus(VvnStatus.Accepted),
+                BuildWithStatus(VvnStatus.Submitted)
+            };
+            _vvnRepo.Setup(r => r.GetAllAsync()).ReturnsAsync(list);
+
+            var res = await _service.GetAcceptedVvnsByFiltersAsync(new FilterAcceptedVvnStatusDto());
+            Assert.Equal(2, res.Count);
+        }
+
+        // ===== Date parsing guards =====
+
+        [Fact]
+        public async Task GetAll_Submitted_ShouldThrow_OnBadSubmittedDate()
+        {
+            var list = new List<VesselVisitNotification> { BuildWithStatus(VvnStatus.Submitted) };
+            _vvnRepo.Setup(r => r.GetAllAsync()).ReturnsAsync(list);
+
+            await Assert.ThrowsAsync<BusinessRuleValidationException>(() =>
+                _service.GetSubmittedVvnsByFiltersAsync(new FilterSubmittedVvnStatusDto { SubmittedDate = "not-a-date" }));
+        }
+
+        [Fact]
+        public async Task GetAll_Accepted_ShouldThrow_OnBadAcceptedDate()
+        {
+            var list = new List<VesselVisitNotification> { BuildWithStatus(VvnStatus.Accepted) };
+            _vvnRepo.Setup(r => r.GetAllAsync()).ReturnsAsync(list);
+
+            await Assert.ThrowsAsync<BusinessRuleValidationException>(() =>
+                _service.GetAcceptedVvnsByFiltersAsync(new FilterAcceptedVvnStatusDto { AcceptedDate = "31/02/2025 25:61" }));
+        }
+
+        // ===== helpers =====
+
         private static VesselVisitNotification BuildSample()
         {
             return new VesselVisitNotification(
@@ -259,6 +377,24 @@ namespace SEM5_PI_WEBAPI.Tests.Services
                 null,
                 new ImoNumber("IMO 1234567")
             );
+        }
+
+        private static VesselVisitNotification BuildWithStatus(VvnStatus status)
+        {
+            var v = BuildSample();
+            switch (status)
+            {
+                case VvnStatus.InProgress: break;
+                case VvnStatus.PendingInformation: v.MarkPending("reason"); break;
+                case VvnStatus.Submitted: v.Submit(); break;
+                case VvnStatus.Withdrawn: v.Withdraw(); break;
+                case VvnStatus.Accepted:
+                    // aceitar sem manifests cria 0 tasks, mas é válido desde que dock attribution passe
+                    v.Submit(); // normalmente vem após submit; não é obrigatório para o objeto de teste
+                    v.Accept(); // força estado
+                    break;
+            }
+            return v;
         }
     }
 }

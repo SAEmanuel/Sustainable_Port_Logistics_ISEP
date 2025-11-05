@@ -287,14 +287,7 @@
 .vvn-item-top {
     display: flex; align-items: center; justify-content: space-between;
 }
-.vvn-status {
-    font-size: 12px;
-    padding: 3px 8px;
-    border-radius: 999px;
-    font-weight: 800;
-    border: 1px solid var(--shadow);
-    text-transform: capitalize;
-}
+
 .v-inprogress { background: rgba(59,130,246,.16); color:#2563eb; }
 .v-pendinginformation { background: rgba(245,158,11,.18); color:#d97706; }
 .v-submitted { background: rgba(99,102,241,.16); color:#6366f1; }
@@ -338,7 +331,8 @@
     padding: 18px;
     animation: saZoomIn .2s ease;
 }
-.vvn-modal-body { display: flex; flex-direction: column; gap: 10px; }
+.vvn-modal-body { display: flex; flex-direction: column; gap: 10px; 
+padding: 18px;}
 .vvn-modal-body.grid2 {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -544,11 +538,13 @@
    (mantém as que já tinhas — aqui vai o conjunto)
 ================================ */
 .vvn-status {
+    background: rgba(0,172,255,.15); color:#00aaff;
     font-size: 12px;
     padding: 3px 8px;
     border-radius: 999px;
     font-weight: 700;
     border: 1px solid var(--shadow);
+    
 }
 .v-inprogress           { background: rgba(59,130,246,.16);  color:#2563eb; }
 .v-pendinginformation   { background: rgba(245,158,11,.18);  color:#d97706; }
