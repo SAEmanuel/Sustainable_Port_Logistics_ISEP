@@ -264,4 +264,33 @@ public class PhysicalResourceController : ControllerBase
             return BadRequest(new { error = e.Message });
         }
     }
+
+    [HttpGet("search/code/{partialCode}")]
+    public async Task<ActionResult<IEnumerable<PhysicalResourceDTO>>> SearchByPartialCode(string partialCode)
+    {
+        _logger.LogInformation("API Request: Search Physical Resource by partial Code = {Code}", partialCode);
+        var list = await _service.GetByPartialCodeAsync(partialCode);
+        if (list == null || list.Count == 0)
+        {
+            _logger.LogWarning("API Response (404): No Physical Resources found with partial Code = {Code}", partialCode);
+            return NotFound();
+        }
+        _logger.LogInformation("API Response (200): Returning {Count} matches.", list.Count);
+        return Ok(list);
+    }
+
+    [HttpGet("search/description/{partialDescription}")]
+    public async Task<ActionResult<IEnumerable<PhysicalResourceDTO>>> SearchByPartialDescription(string partialDescription)
+    {
+        _logger.LogInformation("API Request: Search Physical Resource by partial Description = {Desc}", partialDescription);
+        var list = await _service.GetByPartialDescriptionAsync(partialDescription);
+        if (list == null || list.Count == 0)
+        {
+            _logger.LogWarning("API Response (404): No Physical Resources found with partial Description = {Desc}", partialDescription);
+            return NotFound();
+        }
+        _logger.LogInformation("API Response (200): Returning {Count} matches.", list.Count);
+        return Ok(list);
+    }
+
 }

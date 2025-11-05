@@ -67,3 +67,16 @@ export async function activatePhysicalResource(id: string): Promise<PhysicalReso
     return res.data;
 }
 
+// --- Funções do Serviço (Pesquisa Parcial) ---
+
+export async function searchPhysicalResourcesByCode(partialCode: string): Promise<PhysicalResource[]> {
+    const res = await api.get(`/api/PhysicalResource/search/code/${partialCode}`);
+    return res.data;
+}
+
+
+export async function searchPhysicalResourcesByDescription(partialDesc: string): Promise<PhysicalResource[]> {
+    const res = await api.get(`/api/PhysicalResource/search/description/${partialDesc}`);
+    return res.data;
+}
+

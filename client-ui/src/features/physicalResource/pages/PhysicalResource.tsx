@@ -7,10 +7,12 @@ import { Link } from "react-router-dom";
 
 import {
     getAllPhysicalResources,
-    getPhysicalResourceByCode,
-    getPhysicalResourcesByDescription,
+    //getPhysicalResourceByCode,
+    //getPhysicalResourcesByDescription,
     getPhysicalResourcesByStatus,
-    getPhysicalResourcesByType
+    getPhysicalResourcesByType,
+    searchPhysicalResourcesByCode,
+    searchPhysicalResourcesByDescription
 } from "../services/physicalResourceService";
 
 import { PhysicalResourceStatus, PhysicalResourceType } from "../types/physicalResource";
@@ -58,11 +60,10 @@ function PhysicalResourcePage() {
 
             switch (type) {
                 case "code":
-                    const singleResource = await getPhysicalResourceByCode(value as string);
-                    data = singleResource ? [singleResource] : [];
+                    data = await searchPhysicalResourcesByCode(value as string);
                     break;
                 case "description":
-                    data = await getPhysicalResourcesByDescription(value as string);
+                    data = await searchPhysicalResourcesByDescription(value as string);
                     break;
                 case "type":
                     data = await getPhysicalResourcesByType(value as PhysicalResourceType);
@@ -80,8 +81,8 @@ function PhysicalResourcePage() {
 
         } catch (err) {
             setError(err as Error);
-            setPhysicalResources([]); // Limpa a tabela se der 404
-            toast.error(t("errors.search"));
+            setPhysicalResources([]);
+            toast.error(t("physicalResource.errors.search"));
         } finally {
             setIsLoading(false);
         }

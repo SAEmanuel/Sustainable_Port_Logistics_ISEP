@@ -66,5 +66,23 @@ namespace SEM5_PI_WEBAPI.Infraestructure.PhysicalResources
         {
             return await _context.CountAsync(r => r.Type == type);
         }
+
+        public async Task<List<EntityPhysicalResource>> SearchByPartialCodeAsync(string partialCode)
+        {
+                    var searchTerm = partialCode.ToLower();
+
+                    return await _context
+                        .Where(r => r.Code.Value.ToLower().Contains(searchTerm))
+                        .ToListAsync();
+        }
+
+        public async Task<List<EntityPhysicalResource>> SearchByPartialDescriptionAsync(string partialDescription)
+        {
+                    var searchTerm = partialDescription.ToLower();
+
+                    return await _context
+                        .Where(r => r.Description.ToLower().Contains(searchTerm))
+                        .ToListAsync();
+        }
     }
 }

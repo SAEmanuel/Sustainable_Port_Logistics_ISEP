@@ -13,4 +13,7 @@ public interface IPhysicalResourceRepository : IRepository<EntityPhysicalResourc
     Task<List<EntityPhysicalResource>> GetByQualificationAsync(QualificationId qualification);
     Task<int> CountByTypeAsync(PhysicalResourceType type);
     Task<EntityPhysicalResource?> GetByCodeAsync(PhysicalResourceCode code);
+    Task<List<EntityPhysicalResource>> SearchByPartialCodeAsync(string partialCode);
+    Task<List<EntityPhysicalResource>> SearchByPartialDescriptionAsync(string partialDescription);
+
 }

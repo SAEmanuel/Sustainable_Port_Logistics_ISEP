@@ -114,6 +114,30 @@ public class PhysicalResourceService : IPhysicalResourceService
         return PhysicalResourceMapper.ToDtoList(resources);
     }
 
+    public async Task<List<PhysicalResourceDTO>> GetByPartialCodeAsync(string partialCode)
+            {
+                var list = await _repo.SearchByPartialCodeAsync(partialCode);
+
+                if (list == null || list.Count == 0)
+                {
+                    return new List<PhysicalResourceDTO>();
+                }
+
+                return PhysicalResourceMapper.ToDtoList(list);
+            }
+
+            public async Task<List<PhysicalResourceDTO>> GetByPartialDescriptionAsync(string partialDescription)
+            {
+                var list = await _repo.SearchByPartialDescriptionAsync(partialDescription);
+
+                if (list == null || list.Count == 0)
+                {
+                    return new List<PhysicalResourceDTO>();
+                }
+
+                return PhysicalResourceMapper.ToDtoList(list);
+            }
+
     // =========================================================
     // CREATE
     // =========================================================
