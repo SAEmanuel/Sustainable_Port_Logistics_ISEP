@@ -12,6 +12,7 @@ import StorageAreaCreate from "../features/storageAreas/pages/StorageAreaCreateP
 import PhysicalResource from "../features/physicalResource/pages/PhysicalResource";
 import GenericDashboard from "../pages/GenericDashboard"
 import VvnPage from "../features/vesselVisitNotification/pages/VvnListPage"
+import Viewer3DPage from "../features/viewer3d/pages/Viewer3DPage";
 import NotFound from "../pages/NotFound";
 import Forbidden from "../pages/Forbidden";
 import { RequireAuth, RequireRole, RequireGuest } from "../hooks/useAuthGuard";
@@ -29,6 +30,7 @@ export const router = createBrowserRouter([
                 element: <RequireAuth />,
                 children: [
                     { path: "dashboard", element: <RequireRole roles={[Roles.LogisticsOperator,Roles.ShippingAgentRepresentative,Roles.PortAuthorityOfficer]} />, children: [{ index: true, element: <GenericDashboard /> }]},
+                    {path: "viewer", element: (<RequireRole roles={[Roles.Administrator, Roles.PortAuthorityOfficer, Roles.LogisticsOperator]} />), children: [{ index: true, element: <Viewer3DPage /> }],},
                     { path: "vvn", element: <RequireRole roles={[Roles.Administrator, Roles.ShippingAgentRepresentative]} />, children: [{ index: true, element: <VvnPage /> }]},
                     { path: "qualifications", element: <RequireRole roles={[Roles.LogisticsOperator]} />, children: [{ index: true, element: <Qualification /> }]},
                     { path: "staff-members", element: <RequireRole roles={[Roles.LogisticsOperator]} />, children: [{ index: true, element: <StaffMember /> }]},
