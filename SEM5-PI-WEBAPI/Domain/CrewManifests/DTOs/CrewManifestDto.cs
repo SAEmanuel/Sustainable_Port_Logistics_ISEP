@@ -1,6 +1,6 @@
 using SEM5_PI_WEBAPI.Domain.CrewMembers;
 
-namespace SEM5_PI_WEBAPI.Domain.CrewManifests;
+namespace SEM5_PI_WEBAPI.Domain.CrewManifests.DTOs;
 
 public class CrewManifestDto
 {

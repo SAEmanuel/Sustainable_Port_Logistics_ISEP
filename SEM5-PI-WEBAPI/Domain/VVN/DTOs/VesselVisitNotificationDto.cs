@@ -1,5 +1,7 @@
 using SEM5_PI_WEBAPI.Domain.CargoManifests;
+using SEM5_PI_WEBAPI.Domain.CargoManifests.DTOs;
 using SEM5_PI_WEBAPI.Domain.CrewManifests;
+using SEM5_PI_WEBAPI.Domain.CrewManifests.DTOs;
 using SEM5_PI_WEBAPI.Domain.Dock;
 using SEM5_PI_WEBAPI.Domain.Tasks;
 using SEM5_PI_WEBAPI.Domain.VVN.Docs;

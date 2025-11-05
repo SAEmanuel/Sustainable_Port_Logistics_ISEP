@@ -10,12 +10,13 @@ export default function Nav() {
     const baseMenu = [{ label: t("menu.home"), path: "/" }];
 
     const privateMenu = user ? [
-        { label: t("menu.vvn"), path: "/vvn" },
+        //{ label: t("menu.vvn"), path: "/vvn" },
     ] : [];
 
     const adminMenu = user?.roles.includes(Roles.Administrator)
         ? [
             { label: t("menu.storageArea"), path: "/storage-areas" },
+            { label: t("menu.vvn"), path: "/vvn" },
             { label: t("menu.vesselTypes"), path: "/vessel-types" },
             { label: t("menu.vessels"), path: "/vessels" },
             { label: t("menu.admin"), path: "/admin" },
@@ -29,8 +30,14 @@ export default function Nav() {
             { label: t("menu.qualifications"), path: "/qualifications" },
         ]
         : [];
-
-    const menu = [...baseMenu, ...privateMenu, ...adminMenu, ...operatorMenu];
+    
+    const sarMenu = user?.roles.includes(Roles.ShippingAgentRepresentative)
+        ? [
+            { label: t("menu.vvn"), path: "/vvn" },
+        ]
+        : [];
+    
+    const menu = [...baseMenu, ...privateMenu, ...adminMenu, ...operatorMenu,...sarMenu];
 
     return (
         <nav className="nav">

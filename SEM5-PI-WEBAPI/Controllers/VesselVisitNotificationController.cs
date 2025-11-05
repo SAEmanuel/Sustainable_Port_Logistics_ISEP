@@ -15,14 +15,15 @@ public class VesselVisitNotificationController : ControllerBase
     private readonly IVesselVisitNotificationService _service;
     private readonly ILogger<VesselVisitNotificationController> _logger;
 
-    public VesselVisitNotificationController(IVesselVisitNotificationService service,
+    public VesselVisitNotificationController(
+        IVesselVisitNotificationService service,
         ILogger<VesselVisitNotificationController> logger)
     {
         _service = service;
         _logger = logger;
     }
 
-    [Authorize(Roles = "ShippingAgentRepresentative")]
+    //[Authorize(Roles = "ShippingAgentRepresentative")]
     [HttpPost]
     public async Task<ActionResult<VesselVisitNotificationDto>> CreateAsync(
         [FromBody] CreatingVesselVisitNotificationDto dto)
@@ -37,48 +38,41 @@ public class VesselVisitNotificationController : ControllerBase
         }
         catch (BusinessRuleValidationException e)
         {
-            _logger.LogWarning("API Error (404): {Message}", e.Message);
+            _logger.LogWarning("API Error (400): {Message}", e.Message);
             return BadRequest(e.Message);
         }
     }
 
-    [Authorize(Roles = "PortAuthorityOfficer,LogisticsOperator,ShippingAgentRepresentative")]
+    //[Authorize(Roles = "PortAuthorityOfficer,LogisticsOperator,ShippingAgentRepresentative")]
     [HttpGet("id/{id:guid}")]
     public async Task<ActionResult<VesselVisitNotificationDto>> GetById(Guid id)
     {
         _logger.LogInformation("API Request: Fetching VVN with ID = {Id}", id);
-
         try
         {
             var vvnDto = await _service.GetByIdAsync(new VesselVisitNotificationId(id));
-            _logger.LogWarning("API Response (200): VVN with ID = {Id} -> FOUND", id);
+            _logger.LogInformation("API Response (200): VVN with ID = {Id} -> FOUND", id);
             return Ok(vvnDto);
         }
         catch (BusinessRuleValidationException ex)
         {
-            _logger.LogWarning("API Error (404): VVN with ID = {Id} -> NOT FOUND", id);
+            _logger.LogWarning("API Error (404): VVN with ID = {Id} -> NOT FOUND. {Msg}", id, ex.Message);
             return NotFound(ex.Message);
         }
     }
 
-    [Authorize(Roles = "PortAuthorityOfficer")]
+    // ===== Actions by ID/Code =====
+   // [Authorize(Roles = "PortAuthorityOfficer")]
     [HttpPut("{id:guid}/withdraw")]
     public async Task<ActionResult<VesselVisitNotificationDto>> WithdrawByIdAsync(Guid id)
     {
         _logger.LogInformation("API Request: PUT withdraw VVN with ID = {Id}", id);
-
         try
         {
             var vvnDto = await _service.WithdrawByIdAsync(new VesselVisitNotificationId(id));
-            _logger.LogInformation("API Response (200): VVN with ID = {Id} successfully withdrawn", id);
             return Ok(vvnDto);
         }
-        catch (BusinessRuleValidationException ex)
-        {
-            _logger.LogWarning("API Error (400): Could not withdraw VVN with ID = {Id}. Reason: {Message}", id,
-                ex.Message);
-            return BadRequest(ex.Message);
-        }
+        catch (BusinessRuleValidationException ex) { return BadRequest(ex.Message); }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Unexpected error withdrawing VVN with ID = {Id}", id);
@@ -86,24 +80,17 @@ public class VesselVisitNotificationController : ControllerBase
         }
     }
 
-    [Authorize(Roles = "PortAuthorityOfficer")]
+    //[Authorize(Roles = "PortAuthorityOfficer")]
     [HttpPut("{code}/withdraw")]
     public async Task<ActionResult<VesselVisitNotificationDto>> WithdrawByCodeAsync(string code)
     {
         _logger.LogInformation("API Request: PUT withdraw VVN with Code = {code}", code);
-
         try
         {
             var vvnDto = await _service.WithdrawByCodeAsync(new VvnCode(code));
-            _logger.LogInformation("API Response (200): VVN with Code = {code} successfully withdrawn", code);
             return Ok(vvnDto);
         }
-        catch (BusinessRuleValidationException ex)
-        {
-            _logger.LogWarning("API Error (400): Could not withdraw VVN with Code = {code}. Reason: {Message}", code,
-                ex.Message);
-            return BadRequest(ex.Message);
-        }
+        catch (BusinessRuleValidationException ex) { return BadRequest(ex.Message); }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Unexpected error withdrawing VVN with Code = {code}", code);
@@ -111,24 +98,17 @@ public class VesselVisitNotificationController : ControllerBase
         }
     }
 
-    [Authorize(Roles = "ShippingAgentRepresentative")]
+    //[Authorize(Roles = "ShippingAgentRepresentative")]
     [HttpPut("{code}/submit")]
     public async Task<ActionResult<VesselVisitNotificationDto>> SubmitByCodeAsync(string code)
     {
         _logger.LogInformation("API Request: PUT submit VVN with Code = {code}", code);
-
         try
         {
             var vvnDto = await _service.SubmitByCodeAsync(new VvnCode(code));
-            _logger.LogInformation("API Response (200): VVN with Code = {code} successfully submitted", code);
             return Ok(vvnDto);
         }
-        catch (BusinessRuleValidationException ex)
-        {
-            _logger.LogWarning("API Error (400): Could not submit VVN with Code = {code}. Reason: {Message}", code,
-                ex.Message);
-            return BadRequest(ex.Message);
-        }
+        catch (BusinessRuleValidationException ex) { return BadRequest(ex.Message); }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Unexpected error submitting VVN with Code = {code}", code);
@@ -136,24 +116,17 @@ public class VesselVisitNotificationController : ControllerBase
         }
     }
 
-    [Authorize(Roles = "ShippingAgentRepresentative")]
+    //[Authorize(Roles = "ShippingAgentRepresentative")]
     [HttpPut("{id:guid}/submit")]
     public async Task<ActionResult<VesselVisitNotificationDto>> SubmitByIdAsync(Guid id)
     {
         _logger.LogInformation("API Request: PUT submit VVN with id = {id}", id);
-
         try
         {
             var vvnDto = await _service.SubmitByIdAsync(new VesselVisitNotificationId(id));
-            _logger.LogInformation("API Response (200): VVN with id = {id} successfully submitted", id);
             return Ok(vvnDto);
         }
-        catch (BusinessRuleValidationException ex)
-        {
-            _logger.LogWarning("API Error (400): Could not submit VVN with id = {id}. Reason: {Message}", id,
-                ex.Message);
-            return BadRequest(ex.Message);
-        }
+        catch (BusinessRuleValidationException ex) { return BadRequest(ex.Message); }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Unexpected error submitting VVN with id = {id}", id);
@@ -161,25 +134,19 @@ public class VesselVisitNotificationController : ControllerBase
         }
     }
 
-    [Authorize(Roles = "ShippingAgentRepresentative")]
+    //[Authorize(Roles = "ShippingAgentRepresentative")]
     [HttpPut("{id:guid}/update")]
-    public async Task<ActionResult<VesselVisitNotificationDto>> UpdateAsync(Guid id,
+    public async Task<ActionResult<VesselVisitNotificationDto>> UpdateAsync(
+        Guid id,
         [FromBody] UpdateVesselVisitNotificationDto dto)
     {
         _logger.LogInformation("API Request: PUT update VVN with ID = {Id}", id);
-
         try
         {
             var updatedVvn = await _service.UpdateAsync(new VesselVisitNotificationId(id), dto);
-            _logger.LogInformation("API Response (200): VVN with ID = {Id} updated successfully", id);
             return Ok(updatedVvn);
         }
-        catch (BusinessRuleValidationException ex)
-        {
-            _logger.LogWarning("API Error (400): Could not update VVN with ID = {Id}. Reason: {Message}", id,
-                ex.Message);
-            return BadRequest(ex.Message);
-        }
+        catch (BusinessRuleValidationException ex) { return BadRequest(ex.Message); }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Unexpected error updating VVN with ID = {Id}", id);
@@ -187,58 +154,46 @@ public class VesselVisitNotificationController : ControllerBase
         }
     }
 
-    [Authorize(Roles = "PortAuthorityOfficer")]
-    [HttpPut("accept/id/{id}")]
+    //[Authorize(Roles = "PortAuthorityOfficer")]
+    [HttpPut("accept/id/{id:guid}")]
     public async Task<ActionResult<VesselVisitNotificationDto>> AcceptVvn(Guid id)
     {
         _logger.LogInformation("API Request: PUT accept VVN with id = {id}", id);
-
         try
         {
             var vvn = await _service.GetByIdAsync(new VesselVisitNotificationId(id));
             var vvnDto = await _service.AcceptVvnAsync(new VvnCode(vvn.Code));
-            _logger.LogInformation("API Response (200): VVN with id = {id} successfully accepted", id);
             return Ok(vvnDto);
         }
-        catch (BusinessRuleValidationException ex)
-        {
-            _logger.LogWarning("API Error (400): Could not accept VVN with id = {id}. Reason: {Message}", id,
-                ex.Message);
-            return BadRequest(ex.Message);
-        }
+        catch (BusinessRuleValidationException ex) { return BadRequest(ex.Message); }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Unexpected error accepting VVN with id = {id}", id);
             return StatusCode(500, "An unexpected error occurred while accepting the VVN.");
         }
     }
+
     
-    [Authorize(Roles = "PortAuthorityOfficer")]
+    //[Authorize(Roles = "PortAuthorityOfficer")]
     [HttpPut("reject/")]
     public async Task<ActionResult<VesselVisitNotificationDto>> RejectVvn(RejectVesselVisitNotificationDto dto)
     {
         _logger.LogInformation("API Request: PUT reject VVN with code = {code}", dto.VvnCode);
-
         try
         {
             var vvnDto = await _service.MarkAsPendingAsync(dto);
-            _logger.LogInformation("API Response (200): VVN with code = {code} successfully rejected", dto.VvnCode);
             return Ok(vvnDto);
         }
-        catch (BusinessRuleValidationException ex)
-        {
-            _logger.LogWarning("API Error (400): Could not reject VVN with code = {code}. Reason: {Message}", dto.VvnCode,
-                ex.Message);
-            return BadRequest(ex.Message);
-        }
+        catch (BusinessRuleValidationException ex) { return BadRequest(ex.Message); }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Unexpected error rejecting VVN with code = {id}", dto.VvnCode);
+            _logger.LogError(ex, "Unexpected error rejecting VVN with code = {code}", dto.VvnCode);
             return StatusCode(500, "An unexpected error occurred while rejecting the VVN.");
         }
     }
 
-    [Authorize(Roles = "ShippingAgentRepresentative")]
+    // ===== Queries by SAR =====
+    //[Authorize(Roles = "ShippingAgentRepresentative")]
     [HttpGet("shippingAgentRepresentative/inProgress-pendingInformation/{id:guid}")]
     public async Task<ActionResult<List<VesselVisitNotificationDto>>> GetInProgressOrPendingVvnsByFiltersAsync(
         [FromRoute(Name = "id")] Guid idSarWhoImAm,
@@ -249,10 +204,6 @@ public class VesselVisitNotificationController : ControllerBase
     {
         try
         {
-            _logger.LogInformation(
-                "API Request: Fetching VVNs (InProgress & PendingInformation) for SAR {SAR_ID} with filters: rep={Rep}, IMO={IMO}, ETA={ETA}, ETD={ETD}",
-                idSarWhoImAm, specificRepresentative, vesselImoNumber, estimatedTimeArrival, estimatedTimeDeparture);
-
             var dto = new FilterInProgressPendingVvnStatusDto
             {
                 SpecificRepresentative = specificRepresentative,
@@ -260,27 +211,16 @@ public class VesselVisitNotificationController : ControllerBase
                 EstimatedTimeArrival = estimatedTimeArrival,
                 EstimatedTimeDeparture = estimatedTimeDeparture
             };
-
-            var vvDtoList = await _service.GetInProgressPendingInformationVvnsByShippingAgentRepresentativeIdFiltersAsync(idSarWhoImAm, dto);
-
-            _logger.LogInformation("API Response (200): Found {Count} VVNs for SAR {SAR_ID}", vvDtoList.Count, idSarWhoImAm);
-
+            var vvDtoList = await _service
+                .GetInProgressPendingInformationVvnsByShippingAgentRepresentativeIdFiltersAsync(idSarWhoImAm, dto);
             return Ok(vvDtoList);
         }
-        catch (BusinessRuleValidationException ex)
-        {
-            _logger.LogWarning("API Error (404): {Message}", ex.Message);
-            return NotFound(ex.Message);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Unexpected error fetching VVNs for SAR {SAR_ID}", idSarWhoImAm);
-            return StatusCode(500, "An unexpected error occurred while fetching VVNs.");
-        }
+        catch (BusinessRuleValidationException ex) { return NotFound(ex.Message); }
+        catch (Exception) { return StatusCode(500, "An unexpected error occurred while fetching VVNs."); }
     }
 
     
-    [Authorize(Roles = "ShippingAgentRepresentative")]
+    //[Authorize(Roles = "ShippingAgentRepresentative")]
     [HttpGet("shippingAgentRepresentative/withDrawn/{id:guid}")]
     public async Task<ActionResult<List<VesselVisitNotificationDto>>> GetWithdrawnVvnsByFiltersAsync(
         [FromRoute(Name = "id")] Guid idSarWhoImAm,
@@ -291,10 +231,6 @@ public class VesselVisitNotificationController : ControllerBase
     {
         try
         {
-            _logger.LogInformation(
-                "API Request: Fetching Withdrawn VVNs for SAR {SAR_ID} with filters: rep={Rep}, IMO={IMO}, ETA={ETA}, ETD={ETD}",
-                idSarWhoImAm, specificRepresentative, vesselImoNumber, estimatedTimeArrival, estimatedTimeDeparture);
-
             var dto = new FilterWithdrawnVvnStatusDto
             {
                 SpecificRepresentative = specificRepresentative,
@@ -302,26 +238,17 @@ public class VesselVisitNotificationController : ControllerBase
                 EstimatedTimeArrival = estimatedTimeArrival,
                 EstimatedTimeDeparture = estimatedTimeDeparture
             };
-
-            var vvns = await _service.GetWithdrawnVvnsByShippingAgentRepresentativeIdFiltersAsync(idSarWhoImAm, dto);
-
-            _logger.LogInformation("API Response (200): Found {Count} withdrawn VVNs for SAR {SAR_ID}.", vvns.Count, idSarWhoImAm);
+            var vvns = await _service
+                .GetWithdrawnVvnsByShippingAgentRepresentativeIdFiltersAsync(idSarWhoImAm, dto);
             return Ok(vvns);
         }
-        catch (BusinessRuleValidationException ex)
-        {
-            _logger.LogWarning("API Response (404): No withdrawn VVNs found for SAR {SAR_ID}. Reason: {Msg}", idSarWhoImAm, ex.Message);
-            return NotFound(ex.Message);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Unexpected error fetching withdrawn VVNs for SAR {SAR_ID}", idSarWhoImAm);
-            return StatusCode(500, "An unexpected error occurred while retrieving withdrawn VVNs.");
-        }
+        catch (BusinessRuleValidationException ex) { return NotFound(ex.Message); }
+        catch (Exception) { return StatusCode(500, "An unexpected error occurred while retrieving withdrawn VVNs."); }
     }
 
 
-    [Authorize(Roles = "ShippingAgentRepresentative")]
+
+    //[Authorize(Roles = "ShippingAgentRepresentative")]
     [HttpGet("shippingAgentRepresentative/submitted/{id:guid}")]
     public async Task<ActionResult<List<VesselVisitNotificationDto>>> GetSubmittedVvnsByFiltersAsync(
         [FromRoute(Name = "id")] Guid idSarWhoImAm,
@@ -333,11 +260,7 @@ public class VesselVisitNotificationController : ControllerBase
     {
         try
         {
-            _logger.LogInformation(
-                "API Request: Fetching Submitted VVNs for SAR {SAR_ID} with filters: rep={Rep}, IMO={IMO}, ETA={ETA}, ETD={ETD}, SubmittedDate={SubmittedDate}",
-                idSarWhoImAm, specificRepresentative, vesselImoNumber, estimatedTimeArrival, estimatedTimeDeparture,submittedDate);
-
-            var dto = new FilterSubmittedVvnStatusDto()
+            var dto = new FilterSubmittedVvnStatusDto
             {
                 SpecificRepresentative = specificRepresentative,
                 VesselImoNumber = vesselImoNumber,
@@ -345,26 +268,17 @@ public class VesselVisitNotificationController : ControllerBase
                 EstimatedTimeDeparture = estimatedTimeDeparture,
                 SubmittedDate = submittedDate
             };
-
-            var vvns = await _service.GetSubmittedVvnsByShippingAgentRepresentativeIdFiltersAsync(idSarWhoImAm, dto);
-
-            _logger.LogInformation("API Response (200): Found {Count} submitted VVNs for SAR {SAR_ID}.", vvns.Count, idSarWhoImAm);
+            var vvns = await _service
+                .GetSubmittedVvnsByShippingAgentRepresentativeIdFiltersAsync(idSarWhoImAm, dto);
             return Ok(vvns);
         }
-        catch (BusinessRuleValidationException ex)
-        {
-            _logger.LogWarning("API Response (404): No submitted VVNs found for SAR {SAR_ID}. Reason: {Msg}", idSarWhoImAm, ex.Message);
-            return NotFound(ex.Message);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Unexpected error fetching submitted VVNs for SAR {SAR_ID}", idSarWhoImAm);
-            return StatusCode(500, "An unexpected error occurred while retrieving submitted VVNs.");
-        }
+        catch (BusinessRuleValidationException ex) { return NotFound(ex.Message); }
+        catch (Exception) { return StatusCode(500, "An unexpected error occurred while retrieving submitted VVNs."); }
     }
 
 
-    [Authorize(Roles = "ShippingAgentRepresentative")]
+
+    //[Authorize(Roles = "ShippingAgentRepresentative")]
     [HttpGet("shippingAgentRepresentative/accepted/{id:guid}")]
     public async Task<ActionResult<List<VesselVisitNotificationDto>>> GetAcceptedVvnsByFiltersAsync(
         [FromRoute(Name = "id")] Guid idSarWhoImAm,
@@ -377,11 +291,7 @@ public class VesselVisitNotificationController : ControllerBase
     {
         try
         {
-            _logger.LogInformation(
-                "API Request: Fetching Accepted VVNs for SAR {SAR_ID} with filters: rep={Rep}, IMO={IMO}, ETA={ETA}, ETD={ETD}, SubmittedDate={SubmittedDate}, AcceptedDate={AcceptedDate}",
-                idSarWhoImAm, specificRepresentative, vesselImoNumber, estimatedTimeArrival, estimatedTimeDeparture,submittedDate,acceptedDate);
-
-            var dto = new FilterAcceptedVvnStatusDto()
+            var dto = new FilterAcceptedVvnStatusDto
             {
                 SpecificRepresentative = specificRepresentative,
                 VesselImoNumber = vesselImoNumber,
@@ -390,21 +300,96 @@ public class VesselVisitNotificationController : ControllerBase
                 SubmittedDate = submittedDate,
                 AcceptedDate = acceptedDate
             };
-
-            var vvns = await _service.GetAcceptedVvnsByShippingAgentRepresentativeIdFiltersAsync(idSarWhoImAm, dto);
-
-            _logger.LogInformation("API Response (200): Found {Count} accepted VVNs for SAR {SAR_ID}.", vvns.Count, idSarWhoImAm);
+            var vvns = await _service
+                .GetAcceptedVvnsByShippingAgentRepresentativeIdFiltersAsync(idSarWhoImAm, dto);
             return Ok(vvns);
         }
-        catch (BusinessRuleValidationException ex)
+        catch (BusinessRuleValidationException ex) { return NotFound(ex.Message); }
+        catch (Exception) { return StatusCode(500, "An unexpected error occurred while retrieving accepted VVNs."); }
+    }
+
+    // ===== ADMIN (ALL) =====
+    // Estes 4 endpoints correspondem exatamente ao que o teu FE chama:
+    // /api/VesselVisitNotification/all/inProgress-pendingInformation
+    // /api/VesselVisitNotification/all/withDrawn
+    // /api/VesselVisitNotification/all/submitted
+    // /api/VesselVisitNotification/all/accepted
+
+    [HttpGet("all/inProgress-pendingInformation")]
+    public async Task<ActionResult<List<VesselVisitNotificationDto>>> GetAllInProgressPendingAsync(
+        [FromQuery] Guid? specificRepresentative,
+        [FromQuery] string? vesselImoNumber,
+        [FromQuery] string? estimatedTimeArrival,
+        [FromQuery] string? estimatedTimeDeparture)
+    {
+        var dto = new FilterInProgressPendingVvnStatusDto
         {
-            _logger.LogWarning("API Response (404): No accepted VVNs found for SAR {SAR_ID}. Reason: {Msg}", idSarWhoImAm, ex.Message);
-            return NotFound(ex.Message);
-        }
-        catch (Exception ex)
+            SpecificRepresentative = specificRepresentative,
+            VesselImoNumber = vesselImoNumber,
+            EstimatedTimeArrival = estimatedTimeArrival,
+            EstimatedTimeDeparture = estimatedTimeDeparture
+        };
+        var res = await _service.GetInProgressPendingInformationVvnsByFiltersAsync(dto);
+        return Ok(res);
+    }
+
+    [HttpGet("all/withDrawn")]
+    public async Task<ActionResult<List<VesselVisitNotificationDto>>> GetAllWithdrawnAsync(
+        [FromQuery] Guid? specificRepresentative,
+        [FromQuery] string? vesselImoNumber,
+        [FromQuery] string? estimatedTimeArrival,
+        [FromQuery] string? estimatedTimeDeparture)
+    {
+        var dto = new FilterWithdrawnVvnStatusDto
         {
-            _logger.LogError(ex, "Unexpected error fetching accepted VVNs for SAR {SAR_ID}", idSarWhoImAm);
-            return StatusCode(500, "An unexpected error occurred while retrieving accepted VVNs.");
-        }
+            SpecificRepresentative = specificRepresentative,
+            VesselImoNumber = vesselImoNumber,
+            EstimatedTimeArrival = estimatedTimeArrival,
+            EstimatedTimeDeparture = estimatedTimeDeparture
+        };
+        var res = await _service.GetWithdrawnVvnsByFiltersAsync(dto);
+        return Ok(res);
+    }
+
+    [HttpGet("all/submitted")]
+    public async Task<ActionResult<List<VesselVisitNotificationDto>>> GetAllSubmittedAsync(
+        [FromQuery] Guid? specificRepresentative,
+        [FromQuery] string? vesselImoNumber,
+        [FromQuery] string? estimatedTimeArrival,
+        [FromQuery] string? estimatedTimeDeparture,
+        [FromQuery] string? submittedDate)
+    {
+        var dto = new FilterSubmittedVvnStatusDto
+        {
+            SpecificRepresentative = specificRepresentative,
+            VesselImoNumber = vesselImoNumber,
+            EstimatedTimeArrival = estimatedTimeArrival,
+            EstimatedTimeDeparture = estimatedTimeDeparture,
+            SubmittedDate = submittedDate
+        };
+        var res = await _service.GetSubmittedVvnsByFiltersAsync(dto);
+        return Ok(res);
+    }
+
+    [HttpGet("all/accepted")]
+    public async Task<ActionResult<List<VesselVisitNotificationDto>>> GetAllAcceptedAsync(
+        [FromQuery] Guid? specificRepresentative,
+        [FromQuery] string? vesselImoNumber,
+        [FromQuery] string? estimatedTimeArrival,
+        [FromQuery] string? estimatedTimeDeparture,
+        [FromQuery] string? submittedDate,
+        [FromQuery] string? acceptedDate)
+    {
+        var dto = new FilterAcceptedVvnStatusDto
+        {
+            SpecificRepresentative = specificRepresentative,
+            VesselImoNumber = vesselImoNumber,
+            EstimatedTimeArrival = estimatedTimeArrival,
+            EstimatedTimeDeparture = estimatedTimeDeparture,
+            SubmittedDate = submittedDate,
+            AcceptedDate = acceptedDate
+        };
+        var res = await _service.GetAcceptedVvnsByFiltersAsync(dto);
+        return Ok(res);
     }
 }

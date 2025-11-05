@@ -1,4 +1,5 @@
 using SEM5_PI_WEBAPI.Domain.CargoManifestEntries;
+using SEM5_PI_WEBAPI.Domain.CargoManifests.DTOs;
 
 namespace SEM5_PI_WEBAPI.Domain.CargoManifests;
 

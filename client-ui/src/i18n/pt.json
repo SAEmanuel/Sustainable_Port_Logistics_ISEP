@@ -549,6 +549,128 @@
       "activateFailed": "Falha ao reativar recurso.",
       "loadQualificationDetails": "Nome da qualif. indisponível"
     }
+  },
+  
+  "common": {
+    "cancel": "Cancelar",
+    "save": "Guardar",
+    "confirm": "Confirmar",
+    "close": "Fechar",
+    "loading": "A carregar...",
+    "noResults": "Sem resultados.",
+    "selectOne": "Seleciona uma VVN",
+    "reasonPlaceholder": "Escreve o motivo...",
+    "updateTitle": "Atualizar VVN",
+    "volume": "Volume",
+    "dock": "Dock"
+  },
+
+  "vvn": {
+    "title": "Vessel Visit Notifications",
+    "new": "Nova VVN",
+
+    "tabs": {
+      "inProgressPending": "Em-Progresso/Pendentes",
+      "submitted": "Submetidos",
+      "accepted": "Aceites",
+      "withdrawn": "Congelados"
+    },
+
+    "filters": {
+      "specificRepGuid": "Rep Specifico (Guid)",
+      "imo": "IMO",
+      "eta": "ETA",
+      "etd": "ETD",
+      "submitted": "Submetido",
+      "accepted": "Aceites"
+    },
+
+    "header": {
+      "inprogress": "🛠️ Em-Progresso/Pendentes: {{count}}",
+      "submitted": "📤 Submetidos: {{count}}",
+      "accepted": "✅ Aceitados: {{count}}",
+      "withdrawn": "🗂️ Congelados: {{count}}"
+    },
+
+    "list": {
+      "empty": "Sem resultados."
+    },
+
+    "details": {
+      "status": "Estado",
+      "eta": "ETA",
+      "etd": "ETD",
+      "volume": "Volume",
+      "dock": "Dock"
+    },
+
+    "actions": {
+      "submit": "Submeter",
+      "withdraw": "Congelar",
+      "noActionsForState": "Sem ações para este estado."
+    },
+
+    "modals": {
+      "reject": {
+        "title": "Indicar motivo (Pending Information)",
+        "placeholder": "Escreve o motivo..."
+      },
+      "update": {
+        "title": "Atualizar VVN",
+        "volume": "Volume",
+        "dock": "Dock"
+      },
+      "crew": {
+        "title": "Crew Manifest",
+        "empty": "Sem crew manifest.",
+        "captain": "Captain",
+        "total": "Total Crew",
+        "table": {
+          "name": "Nome",
+          "role": "Função",
+          "nationality": "Nacionalidade",
+          "citizenId": "Citizen ID"
+        }
+      },
+      "loading": {
+        "title": "Loading Cargo Manifest",
+        "empty": "Sem loading manifest.",
+        "code": "Code",
+        "type": "Type",
+        "created": "Created",
+        "createdBy": "By"
+      },
+      "unloading": {
+        "title": "Unloading Cargo Manifest",
+        "empty": "Sem unloading manifest.",
+        "code": "Code",
+        "type": "Type",
+        "created": "Created",
+        "createdBy": "By"
+      },
+      "tasks": {
+        "title": "Tarefas",
+        "empty": "Sem tarefas"
+      }
+    },
+
+    "entriesTable": {
+      "storageArea": "Storage Area",
+      "position": "Posição",
+      "iso": "ISO",
+      "type": "Tipo",
+      "status": "Status",
+      "weight": "Peso (kg)"
+    },
+
+    "toast": {
+      "loaded": "VVNs carregadas com sucesso.",
+      "loadError": "Erro ao carregar VVNs.",
+      "submitSuccess": "VVN submetida.",
+      "withdrawSuccess": "VVN retirada.",
+      "rejectSuccess": "VVN marcada como Pending Information.",
+      "updateSuccess": "VVN atualizada."
+    }
   }
 }
 

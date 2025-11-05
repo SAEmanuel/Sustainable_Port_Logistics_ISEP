@@ -65,6 +65,21 @@ export default function AppLayout() {
                             )}
                         </button>
 
+                        {user && user.roles?.length > 0 && (
+                            <span
+                                className={`role-badge ${(() => {
+                                    const r = user.roles[0];
+                                    if (r === "Administrator") return "role-badge--admin";
+                                    if (r === "Port Authority Officer") return "role-badge--officer";
+                                    if (r === "Logistics Operator") return "role-badge--logistics";
+                                    if (r === "Shipping Agent Representative") return "role-badge--agent";
+                                    return "role-badge--viewer";
+                                })()}`}
+                                title={user.roles.join(" • ")}>
+                                {user.roles[0]}
+                              </span>
+                        )}
+
                         {/* Login / Logout Icon */}
                         <Link to={user ? "/logout" : "/login"} title={user ? t("menu.logout") : t("menu.login")}>
                             {user ? (

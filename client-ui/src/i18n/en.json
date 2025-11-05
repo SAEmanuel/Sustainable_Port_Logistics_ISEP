@@ -546,6 +546,128 @@
       "activateFailed": "Failed to reactivate resource.",
       "loadQualificationDetails": "Qualif. name unavailable"
     }
+  },
+  
+  "common": {
+    "cancel": "Cancel",
+    "save": "Save",
+    "confirm": "Confirm",
+    "close": "Close",
+    "loading": "Loading...",
+    "noResults": "No results.",
+    "selectOne": "Select a VVN",
+    "reasonPlaceholder": "Write the reason...",
+    "updateTitle": "Update VVN",
+    "volume": "Volume",
+    "dock": "Dock"
+  },
+
+  "vvn": {
+    "title": "Vessel Visit Notifications",
+    "new": "New VVN",
+
+    "tabs": {
+      "inProgressPending": "In-Progress/Pending",
+      "submitted": "Submitted",
+      "accepted": "Accepted",
+      "withdrawn": "Withdrawn"
+    },
+
+    "filters": {
+      "specificRepGuid": "Specific Rep (Guid)",
+      "imo": "IMO",
+      "eta": "ETA",
+      "etd": "ETD",
+      "submitted": "Submitted",
+      "accepted": "Accepted"
+    },
+
+    "header": {
+      "inprogress": "🛠️ In-Progress/Pending: {{count}}",
+      "submitted": "📤 Submitted: {{count}}",
+      "accepted": "✅ Accepted: {{count}}",
+      "withdrawn": "🗂️ Withdrawn: {{count}}"
+    },
+
+    "list": {
+      "empty": "No results."
+    },
+
+    "details": {
+      "status": "Status",
+      "eta": "ETA",
+      "etd": "ETD",
+      "volume": "Volume",
+      "dock": "Dock"
+    },
+
+    "actions": {
+      "submit": "Submit",
+      "withdraw": "Withdraw",
+      "noActionsForState": "No actions for this state."
+    },
+
+    "modals": {
+      "reject": {
+        "title": "Provide reason (Pending Information)",
+        "placeholder": "Write the reason..."
+      },
+      "update": {
+        "title": "Update VVN",
+        "volume": "Volume",
+        "dock": "Dock"
+      },
+      "crew": {
+        "title": "Crew Manifest",
+        "empty": "No crew manifest.",
+        "captain": "Captain",
+        "total": "Total Crew",
+        "table": {
+          "name": "Name",
+          "role": "Role",
+          "nationality": "Nationality",
+          "citizenId": "Citizen ID"
+        }
+      },
+      "loading": {
+        "title": "Loading Cargo Manifest",
+        "empty": "No loading manifest.",
+        "code": "Code",
+        "type": "Type",
+        "created": "Created",
+        "createdBy": "By"
+      },
+      "unloading": {
+        "title": "Unloading Cargo Manifest",
+        "empty": "No unloading manifest.",
+        "code": "Code",
+        "type": "Type",
+        "created": "Created",
+        "createdBy": "By"
+      },
+      "tasks": {
+        "title": "Tasks",
+        "empty": "No tasks"
+      }
+    },
+
+    "entriesTable": {
+      "storageArea": "Storage Area",
+      "position": "Position",
+      "iso": "ISO",
+      "type": "Type",
+      "status": "Status",
+      "weight": "Weight (kg)"
+    },
+
+    "toast": {
+      "loaded": "VVNs loaded successfully.",
+      "loadError": "Failed to load VVNs.",
+      "submitSuccess": "VVN submitted.",
+      "withdrawSuccess": "VVN withdrawn.",
+      "rejectSuccess": "VVN marked as Pending Information.",
+      "updateSuccess": "VVN updated."
+    }
   }
 }
 

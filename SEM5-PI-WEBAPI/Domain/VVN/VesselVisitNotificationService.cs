@@ -742,6 +742,7 @@ public class VesselVisitNotificationService : IVesselVisitNotificationService
                 {
                     if (!listVvnCodes.Any(v => v.Code == notif.Code))
                     {
+                        
                         listVvnCodes.Add(notif);
                         _logger.LogDebug("Added notification {Code}.", notif.Code);
                     }
@@ -767,7 +768,7 @@ public class VesselVisitNotificationService : IVesselVisitNotificationService
 
         foreach (var code in listVvnCodes)
         {
-            var notif = await _repo.GetByCodeAsync(code);
+            var notif = await _repo.GetCompleteByCodeAsync(code);
             if (notif == null)
             {
                 _logger.LogWarning("VVN {Code} is associated to a SAR but not found in DB.", code.Code);
@@ -1015,5 +1016,115 @@ public class VesselVisitNotificationService : IVesselVisitNotificationService
                     "Hazmat cargo! Make sure a the Crew Manifest has a Safety Officer associated!");
             }
         }
+    }
+    
+        public async Task<List<VesselVisitNotificationDto>> GetInProgressPendingInformationVvnsByFiltersAsync(
+        FilterInProgressPendingVvnStatusDto dto)
+    {
+        _logger.LogInformation("ALL - Query InProgress/Pending with filters: {@Filters}", dto);
+
+        var listVvnFiltered = await _repo.GetAllAsync();
+
+        listVvnFiltered = listVvnFiltered
+            .Where(v => v.Status.StatusValue == VvnStatus.InProgress ||
+                        v.Status.StatusValue == VvnStatus.PendingInformation)
+            .ToList();
+
+        if (!string.IsNullOrWhiteSpace(dto.VesselImoNumber))
+            listVvnFiltered = await GetVvnsFilterByImoNumber(listVvnFiltered, dto.VesselImoNumber);
+
+        if (!string.IsNullOrWhiteSpace(dto.EstimatedTimeArrival))
+            listVvnFiltered = GetVvnsFilterByEstimatedTimeArrival(listVvnFiltered, dto.EstimatedTimeArrival);
+
+        if (!string.IsNullOrWhiteSpace(dto.EstimatedTimeDeparture))
+            listVvnFiltered = GetVvnsFilterByEstimatedTimeDeparture(listVvnFiltered, dto.EstimatedTimeDeparture);
+
+        var result = VesselVisitNotificationMapper.ToDtoList(listVvnFiltered);
+        _logger.LogInformation("ALL - InProgress/Pending returned {Count} VVNs.", result.Count);
+        return result;
+    }
+
+    public async Task<List<VesselVisitNotificationDto>> GetWithdrawnVvnsByFiltersAsync(
+        FilterWithdrawnVvnStatusDto dto)
+    {
+        _logger.LogInformation("ALL - Query Withdrawn with filters: {@Filters}", dto);
+
+        var listVvnFiltered = await _repo.GetAllAsync();
+
+        listVvnFiltered = listVvnFiltered
+            .Where(v => v.Status.StatusValue == VvnStatus.Withdrawn)
+            .ToList();
+
+        if (!string.IsNullOrWhiteSpace(dto.VesselImoNumber))
+            listVvnFiltered = await GetVvnsFilterByImoNumber(listVvnFiltered, dto.VesselImoNumber);
+
+        if (!string.IsNullOrWhiteSpace(dto.EstimatedTimeArrival))
+            listVvnFiltered = GetVvnsFilterByEstimatedTimeArrival(listVvnFiltered, dto.EstimatedTimeArrival);
+
+        if (!string.IsNullOrWhiteSpace(dto.EstimatedTimeDeparture))
+            listVvnFiltered = GetVvnsFilterByEstimatedTimeDeparture(listVvnFiltered, dto.EstimatedTimeDeparture);
+
+        var result = VesselVisitNotificationMapper.ToDtoList(listVvnFiltered);
+        _logger.LogInformation("ALL - Withdrawn returned {Count} VVNs.", result.Count);
+        return result;
+    }
+
+    public async Task<List<VesselVisitNotificationDto>> GetSubmittedVvnsByFiltersAsync(
+        FilterSubmittedVvnStatusDto dto)
+    {
+        _logger.LogInformation("ALL - Query Submitted with filters: {@Filters}", dto);
+
+        var listVvnFiltered = await _repo.GetAllAsync();
+
+        listVvnFiltered = listVvnFiltered
+            .Where(v => v.Status.StatusValue == VvnStatus.Submitted)
+            .ToList();
+
+        if (!string.IsNullOrWhiteSpace(dto.VesselImoNumber))
+            listVvnFiltered = await GetVvnsFilterByImoNumber(listVvnFiltered, dto.VesselImoNumber);
+
+        if (!string.IsNullOrWhiteSpace(dto.EstimatedTimeArrival))
+            listVvnFiltered = GetVvnsFilterByEstimatedTimeArrival(listVvnFiltered, dto.EstimatedTimeArrival);
+
+        if (!string.IsNullOrWhiteSpace(dto.EstimatedTimeDeparture))
+            listVvnFiltered = GetVvnsFilterByEstimatedTimeDeparture(listVvnFiltered, dto.EstimatedTimeDeparture);
+
+        if (!string.IsNullOrWhiteSpace(dto.SubmittedDate))
+            listVvnFiltered = GetVvnsFilterBySubmittedDate(listVvnFiltered, dto.SubmittedDate);
+
+        var result = VesselVisitNotificationMapper.ToDtoList(listVvnFiltered);
+        _logger.LogInformation("ALL - Submitted returned {Count} VVNs.", result.Count);
+        return result;
+    }
+
+    public async Task<List<VesselVisitNotificationDto>> GetAcceptedVvnsByFiltersAsync(
+        FilterAcceptedVvnStatusDto dto)
+    {
+        _logger.LogInformation("ALL - Query Accepted with filters: {@Filters}", dto);
+
+        var listVvnFiltered = await _repo.GetAllAsync();
+
+        listVvnFiltered = listVvnFiltered
+            .Where(v => v.Status.StatusValue == VvnStatus.Accepted)
+            .ToList();
+
+        if (!string.IsNullOrWhiteSpace(dto.VesselImoNumber))
+            listVvnFiltered = await GetVvnsFilterByImoNumber(listVvnFiltered, dto.VesselImoNumber);
+
+        if (!string.IsNullOrWhiteSpace(dto.EstimatedTimeArrival))
+            listVvnFiltered = GetVvnsFilterByEstimatedTimeArrival(listVvnFiltered, dto.EstimatedTimeArrival);
+
+        if (!string.IsNullOrWhiteSpace(dto.EstimatedTimeDeparture))
+            listVvnFiltered = GetVvnsFilterByEstimatedTimeDeparture(listVvnFiltered, dto.EstimatedTimeDeparture);
+
+        if (!string.IsNullOrWhiteSpace(dto.SubmittedDate))
+            listVvnFiltered = GetVvnsFilterBySubmittedDate(listVvnFiltered, dto.SubmittedDate);
+
+        if (!string.IsNullOrWhiteSpace(dto.AcceptedDate))
+            listVvnFiltered = GetVvnsFilterByAcceptedDate(listVvnFiltered, dto.AcceptedDate);
+
+        var result = VesselVisitNotificationMapper.ToDtoList(listVvnFiltered);
+        _logger.LogInformation("ALL - Accepted returned {Count} VVNs.", result.Count);
+        return result;
     }
 }

@@ -1,6 +1,6 @@
 using SEM5_PI_WEBAPI.Domain.CargoManifestEntries;
 
-namespace SEM5_PI_WEBAPI.Domain.CargoManifests;
+namespace SEM5_PI_WEBAPI.Domain.CargoManifests.DTOs;
 
 public class CargoManifestDto
 {

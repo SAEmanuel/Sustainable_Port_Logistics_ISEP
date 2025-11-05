@@ -1,3 +1,4 @@
+using SEM5_PI_WEBAPI.Domain.CrewManifests.DTOs;
 using SEM5_PI_WEBAPI.Domain.CrewMembers;
 
 namespace SEM5_PI_WEBAPI.Domain.CrewManifests;
