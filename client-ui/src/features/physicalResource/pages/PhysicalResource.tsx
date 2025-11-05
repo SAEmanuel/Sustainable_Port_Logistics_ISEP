@@ -1,22 +1,25 @@
-import { useEffect, useState } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useTranslation } from "react-i18next";
-//import { notifyLoading, notifySuccess, notifyError } from "../../../utils/notify";
 import toast from "react-hot-toast";
-//import { FaUsers } from "react-icons/fa";
 import "../style/physicalResource.css";
 
 import {
     getAllPhysicalResources,
-    getPhysicalResourceByCode
+    getPhysicalResourceByCode,
+    getPhysicalResourcesByDescription,
+    getPhysicalResourcesByStatus,
+    getPhysicalResourcesByType
 } from "../services/physicalResourceService";
 
-
+import { PhysicalResourceStatus, PhysicalResourceType } from "../types/physicalResource";
 import type { PhysicalResource } from "../types/physicalResource";
-import PhysicalResourceSearch from "../components/PhysicalResourceSearch.tsx";
-import PhysicalResourceTable from "../components/PhysicalResourceTable.tsx";
-import PhysicalResourceCreateModal from "../components/PhysicalResourceCreateModal.tsx";
-import PhysicalResourceDetails from "../components/PhysicalResourceDetails";
 
+import PhysicalResourceTable from "../components/PhysicalResourceTable";
+import PhysicalResourceSearch from "../components/PhysicalResourceSearch";
+import PhysicalResourceDetails from "../components/PhysicalResourceDetails";
+import PhysicalResourceCreateModal from "../components/PhysicalResourceCreateModal";
+
+type FilterType = "all" | "code" | "description" | "type" | "status";
 
 function PhysicalResourcePage() {
     const { t } = useTranslation();
@@ -39,34 +42,61 @@ function PhysicalResourcePage() {
             setPhysicalResources(data);
         } catch (err) {
             setError(err as Error);
-            toast.error(t("physicalResource.errors.loadAll"));
+            toast.error(t("errors.loadAll"));
         } finally {
             setIsLoading(false);
         }
     };
 
-    // Handler para a busca (vamos buscar por 'code')
-    const handleSearch = async (code: string) => {
+    const handleSearch = async (type: FilterType, value: string | number) => {
         setIsLoading(true);
         setError(null);
         try {
-            // Se a busca for limpa, recarrega todos
-            if (code === "") {
-                await loadPhysicalResources();
-            } else {
-                const data = await getPhysicalResourceByCode(code);
-                setPhysicalResources([data]);
+            let data: PhysicalResource[] = [];
+
+            switch (type) {
+                case "code":
+                    const singleResource = await getPhysicalResourceByCode(value as string);
+                    data = singleResource ? [singleResource] : [];
+                    break;
+                case "description":
+                    data = await getPhysicalResourcesByDescription(value as string);
+                    break;
+                case "type":
+                    data = await getPhysicalResourcesByType(value as PhysicalResourceType);
+                    break;
+                case "status":
+                    data = await getPhysicalResourcesByStatus(value as PhysicalResourceStatus);
+                    break;
+                case "all":
+                default:
+                    await loadPhysicalResources(); // Recarrega tudo
+                    return;
             }
+
+            setPhysicalResources(data);
+
         } catch (err) {
             setError(err as Error);
-            setPhysicalResources([]); // Limpa a tabela se der erro (ex: 404)
-            toast.error(t("physicalResource.errors.search"));
+            setPhysicalResources([]); // Limpa a tabela se der 404
+            toast.error(t("errors.search"));
         } finally {
             setIsLoading(false);
         }
     };
 
-    // // Handlers para o modal de Detalhes
+    const resourceStats = useMemo(() => {
+        const total = physicalResources.length;
+        const available = physicalResources.filter(
+            r => r.physicalResourceStatus === PhysicalResourceStatus.Available
+        ).length;
+        const maintenance = physicalResources.filter(
+            r => r.physicalResourceStatus === PhysicalResourceStatus.UnderMaintenance
+        ).length;
+        return { total, available, maintenance };
+    }, [physicalResources]);
+
+
     const handleShowDetails = (resource: PhysicalResource) => {
         setSelectedPhysicalResource(resource);
         setIsDetailsOpen(true);
@@ -78,7 +108,6 @@ function PhysicalResourcePage() {
         loadPhysicalResources();
     };
 
-    // Handlers para o modal de Criação
     const handleOpenCreateModal = () => {
         setIsCreateModalOpen(true);
     };
@@ -87,27 +116,53 @@ function PhysicalResourcePage() {
         setIsCreateModalOpen(false);
     };
 
-    // Handler para recarregar a lista após uma criação bem-sucedida
     const handlePhysicalResourceCreated = () => {
-        loadPhysicalResources(); // Recarrega a lista
+        loadPhysicalResources();
         handleCloseCreateModal();
     };
 
     return (
         <div className="physical-resource-page-container">
+            {}
             <div className="physical-resource-header">
                 <h1>{t("physicalResource.title")}</h1>
-                <button
-                    onClick={handleOpenCreateModal}
-                    className="create-pr-button"
-                >
-                    {t("physicalResource.createButton")}
-                </button>
             </div>
 
-            <PhysicalResourceSearch onSearch={handleSearch} />
+            {}
+            <div className="pr-controls-container">
+                {}
+                <div className="pr-stats-grid">
+                    <div className="pr-stat-card total">
+                        <span className="stat-icon">📦</span>
+                        <span className="stat-value">{resourceStats.total}</span>
+                        <span className="stat-title">{t("physicalResource.stats.total")}</span>
+                    </div>
+                    <div className="pr-stat-card available">
+                        <span className="stat-icon">✅</span>
+                        <span className="stat-value">{resourceStats.available}</span>
+                        <span className="stat-title">{t("physicalResource.stats.available")}</span>
+                    </div>
+                    <div className="pr-stat-card maintenance">
+                        <span className="stat-icon">🔧</span>
+                        <span className="stat-value">{resourceStats.maintenance}</span>
+                        <span className="stat-title">{t("physicalResource.stats.maintenance")}</span>
+                    </div>
+                </div>
 
-            {isLoading && <p>{t("common.loading")}</p>}
+                {}
+                <div className="pr-action-box">
+                    <PhysicalResourceSearch onSearch={handleSearch} />
+                    <button
+                        onClick={handleOpenCreateModal}
+                        className="create-pr-button"
+                    >
+                        {t("physicalResource.createButton")}
+                    </button>
+                </div>
+            </div>
+            {}
+
+            {isLoading && <p>{t("physicalResource.loading")}</p>}
             {error && <p className="error-message">{error.message}</p>}
 
             <PhysicalResourceTable
