@@ -1,4 +1,3 @@
-// src/features/viewer3d/pages/Viewer3DPage.tsx
 import { useEffect, useMemo, useState } from "react";
 import ThreeScene from "../components/ThreeScene";
 import { loadSceneData } from "../services/viewer3dService";
@@ -10,20 +9,46 @@ type Layers = { docks: boolean; storage: boolean; vessels: boolean; containers: 
 export default function Viewer3DPage() {
     const [loading, setLoading] = useState(true);
     const [err, setErr] = useState<string | null>(null);
-    const [data, setData] = useState<SceneData>({ docks: [], storageAreas: [], vessels: [], containers: [], resources: [] });
-    const [layers, setLayers] = useState<Layers>({ docks: true, storage: true, vessels: true, containers: false, resources: true });
-    const [picked, setPicked] = useState<{ type: string; id: string; label: string } | null>(null);
+    const [data, setData] = useState<SceneData>({
+        docks: [],
+        storageAreas: [],
+        vessels: [],
+        containers: [],
+        resources: [],
+    });
 
+    // containers agora ON por defeito
+    const [layers, setLayers] = useState<Layers>({
+        docks: true,
+        storage: true,
+        vessels: true,
+        containers: true,
+        resources: true,
+    });
+
+    const [picked, setPicked] = useState<{ type: string; id: string; label: string } | null>(null);
     const canShow = useMemo(() => !loading && !err, [loading, err]);
 
     useEffect(() => {
         let alive = true;
         setLoading(true);
         loadSceneData()
-            .then((d) => { if (alive) { setData(d); setErr(null); } })
-            .catch((e) => { if (alive) setErr(e?.message ?? "Failed to load 3D data."); })
-            .finally(() => { if (alive) setLoading(false); });
-        return () => { alive = false; };
+            .then((d) => {
+                if (!alive) return;
+                setData(d);
+                setErr(null);
+            })
+            .catch((e) => {
+                if (!alive) return;
+                setErr(e?.message ?? "Failed to load 3D data.");
+            })
+            .finally(() => {
+                if (!alive) return;
+                setLoading(false);
+            });
+        return () => {
+            alive = false;
+        };
     }, []);
 
     const toggle = (k: keyof Layers) => setLayers((s) => ({ ...s, [k]: !s[k] }));
