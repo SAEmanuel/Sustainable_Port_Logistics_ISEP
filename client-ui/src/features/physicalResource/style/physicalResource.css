@@ -1090,4 +1090,288 @@
     animation: slideUp 0.3s ease-out forwards;
 }
 
+/* --- 14. DARK MODE OVERRIDES --- */
+
+/* --- Página Principal e Cabeçalho --- */
+[data-theme="dark"] .physical-resource-page-container {
+    background-color: #121212;
+}
+
+[data-theme="dark"] .physical-resource-header h1 {
+    color: #f0f0f0;
+}
+
+[data-theme="dark"] .pr-back-button {
+    background-color: #1e1e1e;
+    border-color: #333;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    color: #ddd;
+}
+
+[data-theme="dark"] .pr-back-button:hover {
+    background-color: #2a2a2a;
+    border-color: #444;
+    color: #009bff;
+}
+
+[data-theme="dark"] .pr-icon {
+    color: #f3722c;
+}
+
+/* --- Centro de Controlo (Stats e Ações) --- */
+[data-theme="dark"] .pr-stat-card {
+    background: #1e1e1e;
+    border-color: #333;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+}
+
+[data-theme="dark"] .pr-action-box {
+    background: #1e1e1e;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+}
+
+[data-theme="dark"] .stat-value {
+    color: #ffffff;
+}
+
+[data-theme="dark"] .stat-title {
+    color: #aaa;
+}
+
+/* Cores dos Stats em Dark Mode  */
+[data-theme="dark"] .pr-stat-card.available .stat-value,
+[data-theme="dark"] .pr-stat-card.available .stat-icon {
+    color: #33c059;
+}
+
+[data-theme="dark"] .pr-stat-card.maintenance .stat-value,
+[data-theme="dark"] .pr-stat-card.maintenance .stat-icon {
+    color: #ff983b;
+}
+
+[data-theme="dark"] .pr-stat-card.total .stat-value,
+[data-theme="dark"] .pr-stat-card.total .stat-icon {
+    color: #009bff;
+}
+
+/* --- Filtro de Pesquisa --- */
+[data-theme="dark"] .pr-search-type-select {
+    border-color: #444;
+    background-color: #2a2a2a;
+    color: #eee;
+}
+
+[data-theme="dark"] .pr-search-input,
+[data-theme="dark"] .pr-search-select-input {
+    border-color: #444;
+    background-color: #2a2a2a;
+    color: #eee;
+}
+
+/* Efeito Focus em Dark Mode */
+[data-theme="dark"] .pr-search-type-select:focus,
+[data-theme="dark"] .pr-search-input:focus,
+[data-theme="dark"] .pr-search-select-input:focus {
+    border-color: #009bff;
+    background-color: #333;
+    box-shadow: 0 0 0 4px rgba(0, 155, 255, 0.15);
+}
+
+/* Botões de Limpar / Cancelar */
+[data-theme="dark"] .pr-clear-button,
+[data-theme="dark"] .pr-cancel-button {
+    background-color: #3a3a3a;
+    color: #eee;
+    border-color: #555;
+}
+[data-theme="dark"] .pr-clear-button:hover,
+[data-theme="dark"] .pr-cancel-button:hover {
+    background-color: #444;
+}
+
+/* Botão (Criar) */
+[data-theme="dark"] .create-pr-button:hover {
+    /* A sombra colorida precisa de ser ajustada para o escuro */
+    box-shadow: 0 10px 20px rgba(118, 75, 162, 0.2);
+}
+
+/* --- Tabela --- */
+[data-theme="dark"] .pr-table {
+    background: #1e1e1e;
+    box-shadow: 0 4px 25px rgba(0, 0, 0, 0.2);
+}
+
+[data-theme="dark"] .pr-table th {
+    background-color: #2a2a2a;
+    color: #f0f0f0;
+    border-bottom-color: #444;
+}
+
+[data-theme="dark"] .pr-table td {
+    border-bottom-color: #333;
+    color: #bbb;
+}
+
+[data-theme="dark"] .pr-table tbody tr:hover {
+    background-color: #252525;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Pílulas de Status em Dark Mode */
+[data-theme="dark"] .status-pill.status-available {
+    background-color: rgba(40, 167, 69, 0.25);
+    color: #33c059;
+}
+
+[data-theme="dark"] .status-pill.status-unavailable {
+    background-color: rgba(108, 117, 125, 0.2);
+    color: #999;
+}
+
+[data-theme="dark"] .status-pill.status-undermaintenance {
+    background-color: rgba(253, 126, 20, 0.2);
+    color: #ff983b;
+}
+
+/* --- Modais (Geral) --- */
+[data-theme="dark"] .pr-modal-content {
+    background-color: #2d2d2d;
+}
+
+[data-theme="dark"] .pr-modal-content h2 {
+    color: #eee;
+}
+
+/* --- Modal de Criação --- */
+[data-theme="dark"] .pr-wizard-progress {
+    border-bottom-color: #444;
+}
+
+[data-theme="dark"] .pr-wizard-step {
+    color: #666;
+}
+
+[data-theme="dark"] .step-dot {
+    background-color: #3a3a3a;
+    border-color: #555;
+    color: #888;
+}
+
+[data-theme="dark"] .step-connector {
+    background-color: #3a3a3a;
+}
+
+[data-theme="dark"] .pr-wizard-step.active .step-dot {
+    background-color: #2d2d2d;
+    border-color: #009bff;
+    color: #009bff;
+}
+
+[data-theme="dark"] .pr-wizard-step.active .step-label {
+    color: #009bff;
+}
+
+[data-theme="dark"] .pr-wizard-prompt {
+    color: #eee;
+}
+
+[data-theme="dark"] .pr-type-card {
+    border-color: #444;
+    background-color: #3a3a3a;
+}
+
+[data-theme="dark"] .pr-type-card:hover {
+    border-color: #009bff;
+}
+
+[data-theme="dark"] .type-card-label {
+    color: #eee;
+}
+
+[data-theme="dark"] .pr-form-group label {
+    color: #eee;
+}
+
+/* Inputs do formulário  */
+[data-theme="dark"] .pr-form-group input,
+[data-theme="dark"] .pr-form-group select {
+    border-color: #555;
+    background-color: #3a3a3a;
+    color: #eee;
+}
+
+[data-theme="dark"] .pr-form-group input::placeholder {
+    color: #777;
+}
+
+[data-theme="dark"] .pr-form-group input:focus,
+[data-theme="dark"] .pr-form-group select:focus {
+    border-color: #009bff;
+    background-color: #333;
+    box-shadow: 0 0 0 4px rgba(0, 155, 255, 0.15);
+}
+
+[data-theme="dark"] .pr-modal-actions-wizard {
+    border-top-color: #444;
+}
+
+/* --- Modais de Detalhes e Edição --- */
+[data-theme="dark"] .pr-details-modal-content {
+    background-color: #2d2d2d;
+}
+
+[data-theme="dark"] .pr-details-hero {
+    background-color: #1e1e1e;
+    border-bottom-color: #444;
+}
+
+[data-theme="dark"] .hero-icon-wrapper {
+    background-color: #2a2a2a;
+    border-color: #444;
+}
+
+[data-theme="dark"] .hero-text h2 {
+    color: #eee;
+}
+
+[data-theme="dark"] .details-description {
+    color: #bbb;
+}
+
+[data-theme="dark"] .info-card {
+    background-color: #3a3a3a;
+    border-color: #444;
+}
+
+[data-theme="dark"] .info-card-header {
+    color: #ccc;
+    border-bottom-color: #444;
+}
+
+[data-theme="dark"] .info-card-main-text {
+    color: #eee;
+}
+
+[data-theme="dark"] .pr-details-modal-content .pr-modal-actions {
+    background-color: #1e1e1e;
+    border-top-color: #444;
+}
+
+/* Inputs do Modal de Edição */
+[data-theme="dark"] .info-card-input {
+    border-color: #555;
+    background-color: #3a3a3a;
+    color: #eee;
+}
+
+[data-theme="dark"] .info-card-input:focus {
+    border-color: #009bff;
+    background-color: #333;
+    box-shadow: 0 0 0 4px rgba(0, 155, 255, 0.15);
+}
+
+[data-theme="dark"] .info-card-input::placeholder {
+    color: #777;
+}
+
 
