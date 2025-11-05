@@ -23,7 +23,8 @@ import { Roles } from "../../../app/types";
 
 type TabKey = "inprogress" | "submitted" | "accepted" | "withdrawn";
 
-const GUID_RE = /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$/;
+const GUID_RE =
+    /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$/;
 
 /* ========== Helpers ========== */
 function shortDT(s?: string | null) {
@@ -50,9 +51,6 @@ function isoString(x: Iso6346Code | string | undefined | null) {
     return (x as any).value || (x as any).Value || "-";
 }
 
-
-
-
 /* ====== AUTH PLACEHOLDERS ====== */
 function isAdminLocalStorage(): boolean {
     const r = localStorage.getItem("role");
@@ -75,20 +73,15 @@ function getCurrentSarId(): string {
 }
 /* ================================== */
 
-
-
-
-
 export default function VvnListPage() {
     const { t } = useTranslation();
 
     // ler do store; se não houver user/roles no store, usar fallback do localStorage
     const user = useAppStore((s) => s.user);
-    const admin =
-        !!user?.roles?.includes(Roles.Administrator) || isAdminLocalStorage();
+    const admin = !!user?.roles?.includes(Roles.Administrator) || isAdminLocalStorage();
 
     // filtros base
-    const [sarId, setSarId] = useState<string>(""); // usado internamente para SAR
+    const [sarId, setSarId] = useState<string>("");
     const [tab, setTab] = useState<TabKey>("inprogress");
     const [loading, setLoading] = useState(false);
 
@@ -132,8 +125,8 @@ export default function VvnListPage() {
     }, [admin]);
 
     const MIN_LOADING_TIME = 500;
-    async function runWithLoading<T>(promise: Promise<T>, text: string) {
-        const id = toast.loading(text);
+    async function runWithLoading<T>(promise: Promise<T>) {
+        const id = toast.loading(t("common.loading") as string);
         const start = Date.now();
         try {
             return await promise;
@@ -218,9 +211,9 @@ export default function VvnListPage() {
 
             setVvns(data);
             setSelected(data[0] ?? null);
-            toast.success((t("vvn.toast.loaded") as string) || `Carregado: ${data.length}`);
+            toast.success((t("vvn.toast.loaded") as string));
         } catch (e: any) {
-            toast.error(e?.response?.data ?? (t("vvn.toast.loadError") as string) ?? "Erro ao carregar VVNs");
+            toast.error(e?.response?.data ?? (t("vvn.toast.loadError") as string));
         } finally {
             setLoading(false);
         }
@@ -272,14 +265,14 @@ export default function VvnListPage() {
 
     // === AÇÕES ===
     async function doSubmit(v: VesselVisitNotificationDto) {
-        await runWithLoading(vvnService.submitById(v.id), "Submitting VVN...");
-        toast.success("VVN submetida.");
+        await runWithLoading(vvnService.submitById(v.id));
+        toast.success(t("vvn.toast.submitSuccess") as string);
         load();
         loadCounts();
     }
     async function doWithdraw(v: VesselVisitNotificationDto) {
-        await runWithLoading(vvnService.withdrawById(v.id), "Withdrawing VVN...");
-        toast.success("VVN retirada.");
+        await runWithLoading(vvnService.withdrawById(v.id));
+        toast.success(t("vvn.toast.withdrawSuccess") as string);
         load();
         loadCounts();
     }
@@ -287,14 +280,14 @@ export default function VvnListPage() {
     async function doReject() {
         if (!selected) return;
         if (!rejectMsg.trim()) {
-            toast.error("Indica o motivo do rejeite.");
+            toast.error(t("vvn.modals.reject.placeholder") as string);
             return;
         }
         const dto: RejectVesselVisitNotificationDto = { vvnCode: selected.code, reason: rejectMsg.trim() };
-        await runWithLoading(vvnService.rejectByCode(dto), "Marcando como Pending Information...");
+        await runWithLoading(vvnService.rejectByCode(dto));
         setRejectOpen(false);
         setRejectMsg("");
-        toast.success("VVN marcada como Pending Information.");
+        toast.success(t("vvn.toast.rejectSuccess") as string);
         load();
         loadCounts();
     }
@@ -305,32 +298,12 @@ export default function VvnListPage() {
             volume: updVolume === "" ? undefined : Number(updVolume),
             dock: updDock.trim() || undefined,
         };
-        await runWithLoading(vvnService.updateVvn(selected.id, dto), "A atualizar VVN...");
+        await runWithLoading(vvnService.updateVvn(selected.id, dto));
         setUpdOpen(false);
-        toast.success("VVN atualizada.");
+        toast.success(t("vvn.toast.updateSuccess") as string);
         load();
     }
 
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
     /* RENDER */
     return (
         <div className="sa-wrapper">
@@ -341,14 +314,14 @@ export default function VvnListPage() {
                         <FaShip /> {t("vvn.title") || "Vessel Visit Notifications"}
                     </h2>
                     <div className="vvn-counters">
-                        <span className="vvn-chip vvn-chip-inp">🛠️ In-Progress/Pending: {counts.inprogress}</span>
-                        <span className="vvn-chip vvn-chip-sub">📤 Submitted: {counts.submitted}</span>
-                        <span className="vvn-chip vvn-chip-acc">✅ Accepted: {counts.accepted}</span>
-                        <span className="vvn-chip vvn-chip-wdr">🗂️ Withdrawn: {counts.withdrawn}</span>
+                        <span className="vvn-chip vvn-chip-inp">{t("vvn.header.inprogress", { count: counts.inprogress })}</span>
+                        <span className="vvn-chip vvn-chip-sub">{t("vvn.header.submitted", { count: counts.submitted })}</span>
+                        <span className="vvn-chip vvn-chip-acc">{t("vvn.header.accepted", { count: counts.accepted })}</span>
+                        <span className="vvn-chip vvn-chip-wdr">{t("vvn.header.withdrawn", { count: counts.withdrawn })}</span>
                     </div>
                 </div>
                 <div className="vvn-header-right">
-                    <button className="vt-create-btn-top" onClick={() => toast("Criar VVN — em breve!")}>
+                    <button className="vt-create-btn-top" onClick={() => toast(t("vvn.new") as string)}>
                         <FaPlus /> {t("vvn.new") || "Nova VVN"}
                     </button>
                 </div>
@@ -363,44 +336,34 @@ export default function VvnListPage() {
                 ))}
             </div>
 
-            {/* FILTROS (sem campo SAR ID) */}
+            {/* FILTROS */}
             <div className="vvn-filters">
                 <div className="sa-field small">
-                    <label>Specific Rep (Guid)</label>
+                    <label>{t("vvn.filters.specificRepGuid")}</label>
                     <input className="sa-input" value={specificRep} onChange={(e) => setSpecificRep(e.target.value)} />
                 </div>
                 <div className="sa-field small">
-                    <label>IMO</label>
+                    <label>{t("vvn.filters.imo")}</label>
                     <input className="sa-input" value={imo} onChange={(e) => setImo(e.target.value)} />
                 </div>
                 <div className="sa-field small">
-                    <label>ETA</label>
+                    <label>{t("vvn.filters.eta")}</label>
                     <input type="date" className="sa-input" value={eta} onChange={(e) => setEta(e.target.value)} />
                 </div>
                 <div className="sa-field small">
-                    <label>ETD</label>
+                    <label>{t("vvn.filters.etd")}</label>
                     <input type="date" className="sa-input" value={etd} onChange={(e) => setEtd(e.target.value)} />
                 </div>
                 {tab !== "inprogress" && tab !== "withdrawn" && (
                     <div className="sa-field small">
-                        <label>Submitted</label>
-                        <input
-                            type="date"
-                            className="sa-input"
-                            value={submittedDate}
-                            onChange={(e) => setSubmittedDate(e.target.value)}
-                        />
+                        <label>{t("vvn.filters.submitted")}</label>
+                        <input type="date" className="sa-input" value={submittedDate} onChange={(e) => setSubmittedDate(e.target.value)} />
                     </div>
                 )}
                 {tab === "accepted" && (
                     <div className="sa-field small">
-                        <label>Accepted</label>
-                        <input
-                            type="date"
-                            className="sa-input"
-                            value={acceptedDate}
-                            onChange={(e) => setAcceptedDate(e.target.value)}
-                        />
+                        <label>{t("vvn.filters.accepted")}</label>
+                        <input type="date" className="sa-input" value={acceptedDate} onChange={(e) => setAcceptedDate(e.target.value)} />
                     </div>
                 )}
             </div>
@@ -411,7 +374,7 @@ export default function VvnListPage() {
                     {loading ? (
                         Array.from({ length: 6 }).map((_, i) => <div className="vvn-skel" key={i} />)
                     ) : filtered.length === 0 ? (
-                        <div className="sa-empty">Sem resultados.</div>
+                        <div className="sa-empty">{t("vvn.list.empty")}</div>
                     ) : (
                         filtered.map((v) => {
                             const active = v.id === selected?.id;
@@ -433,14 +396,14 @@ export default function VvnListPage() {
 
                 <main className="vvn-main">
                     {!selected ? (
-                        <div className="sa-empty">Seleciona uma VVN</div>
+                        <div className="sa-empty">{t("common.selectOne")}</div>
                     ) : (
                         <>
                             <div className="vvn-head">
                                 <div>
                                     <h3 className="vvn-title">{selected.code}</h3>
                                     <div className="vvn-sub">
-                                        IMO {selected.vesselImo} • Status: <b>{selected.status}</b>
+                                        IMO {selected.vesselImo} • {t("vvn.details.status")}: <b>{selected.status}</b>
                                     </div>
                                 </div>
 
@@ -451,23 +414,15 @@ export default function VvnListPage() {
                                         const canSubmitOrWithdraw = s.includes("inprogress") || s.includes("pending");
                                         return canSubmitOrWithdraw ? (
                                             <>
-                                                <button
-                                                    className="sa-btn sa-btn-primary"
-                                                    onClick={() => doSubmit(selected)}
-                                                    title="Mudar para Submitted"
-                                                >
-                                                    <FaPaperPlane /> Submit
+                                                <button className="sa-btn sa-btn-primary" onClick={() => doSubmit(selected)} title={t("vvn.actions.submit") as string}>
+                                                    <FaPaperPlane /> {t("vvn.actions.submit")}
                                                 </button>
-                                                <button
-                                                    className="sa-btn sa-btn-danger"
-                                                    onClick={() => doWithdraw(selected)}
-                                                    title="Withdraw"
-                                                >
-                                                    <FaArrowRotateLeft /> Withdraw
+                                                <button className="sa-btn sa-btn-danger" onClick={() => doWithdraw(selected)} title={t("vvn.actions.withdraw") as string}>
+                                                    <FaArrowRotateLeft /> {t("vvn.actions.withdraw")}
                                                 </button>
                                             </>
                                         ) : (
-                                            <span className="sa-note">Sem ações para este estado.</span>
+                                            <span className="sa-note">{t("vvn.actions.noActionsForState")}</span>
                                         );
                                     })()}
                                 </div>
@@ -476,19 +431,19 @@ export default function VvnListPage() {
                             {/* KPIs */}
                             <section className="vvn-kpis">
                                 <div className="sa-card">
-                                    <div className="sa-card-title">ETA</div>
+                                    <div className="sa-card-title">{t("vvn.details.eta")}</div>
                                     <div className="sa-card-value">{fmtDT(selected.estimatedTimeArrival)}</div>
                                 </div>
                                 <div className="sa-card">
-                                    <div className="sa-card-title">ETD</div>
+                                    <div className="sa-card-title">{t("vvn.details.etd")}</div>
                                     <div className="sa-card-value">{fmtDT(selected.estimatedTimeDeparture)}</div>
                                 </div>
                                 <div className="sa-card">
-                                    <div className="sa-card-title">Volume</div>
+                                    <div className="sa-card-title">{t("vvn.details.volume")}</div>
                                     <div className="sa-card-value">{selected.volume}</div>
                                 </div>
                                 <div className="sa-card">
-                                    <div className="sa-card-title">Dock</div>
+                                    <div className="sa-card-title">{t("vvn.details.dock")}</div>
                                     <div className="sa-card-value">{selected.dock || "-"}</div>
                                 </div>
                             </section>
@@ -498,32 +453,32 @@ export default function VvnListPage() {
                                 <button className="vvn-tile is-crew" onClick={() => setCrewOpen(true)}>
                                     <span className="vvn-ico">🧑‍✈️</span>
                                     <span className="vvn-text">
-                    <b>Crew Manifest</b>
-                    <span>ver tripulação</span>
+                    <b>{t("vvn.modals.crew.title")}</b>
+                    <span> {t("vvn.modals.crew.title").toString().includes("Crew") ? "view crew" : "ver tripulação"}</span>
                   </span>
                                 </button>
 
                                 <button className="vvn-tile is-loading" onClick={() => setLoadOpen(true)}>
                                     <span className="vvn-ico">📦</span>
                                     <span className="vvn-text">
-                    <b>Loading</b>
-                    <span>containers de embarque</span>
+                    <b>{t("vvn.modals.loading.title")}</b>
+                    <span> {t("vvn.modals.loading.empty").toString().includes("No") ? "loading containers" : "containers de embarque"}</span>
                   </span>
                                 </button>
 
                                 <button className="vvn-tile is-unloading" onClick={() => setUnloadOpen(true)}>
                                     <span className="vvn-ico">📤</span>
                                     <span className="vvn-text">
-                    <b>Unloading</b>
-                    <span>desembarque</span>
+                    <b>{t("vvn.modals.unloading.title")}</b>
+                    <span> {t("vvn.modals.unloading.empty").toString().includes("No") ? "unloading" : "desembarque"}</span>
                   </span>
                                 </button>
 
                                 <button className="vvn-tile is-tasks" onClick={() => setTasksOpen(true)}>
                                     <span className="vvn-ico">✅</span>
                                     <span className="vvn-text">
-                    <b>Tarefas</b>
-                    <span>em aberto</span>
+                    <b>{t("vvn.modals.tasks.title")}</b>
+                    <span> {t("vvn.modals.tasks.empty").toString().includes("No") ? "open" : "em aberto"}</span>
                   </span>
                                 </button>
                             </div>
@@ -540,22 +495,22 @@ export default function VvnListPage() {
                     <div className="vvn-pop-modal" onClick={(e) => e.stopPropagation()}>
                         <div className="sa-dock-head">
                             <div className="sa-dock-spacer" />
-                            <h3 className="sa-dock-title">👨‍✈️ Crew Manifest</h3>
+                            <h3 className="sa-dock-title">{t("vvn.modals.crew.title")}</h3>
                             <button className="sa-icon-btn sa-dock-close" onClick={() => setCrewOpen(false)}>
                                 ✖
                             </button>
                         </div>
                         {!selected.crewManifest ? (
-                            <div className="sa-empty">Sem crew manifest.</div>
+                            <div className="sa-empty">{t("vvn.modals.crew.empty")}</div>
                         ) : (
                             <>
                                 <div className="vvn-def">
                                     <div>
-                                        <span>Captain</span>
+                                        <span>{t("vvn.modals.crew.captain")}</span>
                                         <strong>{selected.crewManifest.captainName}</strong>
                                     </div>
                                     <div>
-                                        <span>Total Crew</span>
+                                        <span>{t("vvn.modals.crew.total")}</span>
                                         <strong>{selected.crewManifest.totalCrew}</strong>
                                     </div>
                                 </div>
@@ -563,10 +518,10 @@ export default function VvnListPage() {
                                     <table className="vvn-table">
                                         <thead>
                                         <tr>
-                                            <th>Nome</th>
-                                            <th>Função</th>
-                                            <th>Nacionalidade</th>
-                                            <th>Citizen ID</th>
+                                            <th>{t("vvn.modals.crew.table.name")}</th>
+                                            <th>{t("vvn.modals.crew.table.role")}</th>
+                                            <th>{t("vvn.modals.crew.table.nationality")}</th>
+                                            <th>{t("vvn.modals.crew.table.citizenId")}</th>
                                         </tr>
                                         </thead>
                                         <tbody>
@@ -593,30 +548,30 @@ export default function VvnListPage() {
                     <div className="vvn-pop-modal" onClick={(e) => e.stopPropagation()}>
                         <div className="sa-dock-head">
                             <div className="sa-dock-spacer" />
-                            <h3 className="sa-dock-title">📥 Loading Cargo Manifest</h3>
+                            <h3 className="sa-dock-title">{t("vvn.modals.loading.title")}</h3>
                             <button className="sa-icon-btn sa-dock-close" onClick={() => setLoadOpen(false)}>
                                 ✖
                             </button>
                         </div>
                         {!selected.loadingCargoManifest ? (
-                            <div className="sa-empty">Sem loading manifest.</div>
+                            <div className="sa-empty">{t("vvn.modals.loading.empty")}</div>
                         ) : (
                             <>
                                 <div className="vvn-def">
                                     <div>
-                                        <span>Code</span>
+                                        <span>{t("vvn.modals.loading.code")}</span>
                                         <strong>{selected.loadingCargoManifest.code}</strong>
                                     </div>
                                     <div>
-                                        <span>Type</span>
+                                        <span>{t("vvn.modals.loading.type")}</span>
                                         <strong>{selected.loadingCargoManifest.type}</strong>
                                     </div>
                                     <div>
-                                        <span>Created</span>
+                                        <span>{t("vvn.modals.loading.created")}</span>
                                         <strong>{fmtDT(selected.loadingCargoManifest.createdAt)}</strong>
                                     </div>
                                     <div>
-                                        <span>By</span>
+                                        <span>{t("vvn.modals.loading.createdBy")}</span>
                                         <strong>{selected.loadingCargoManifest.createdBy}</strong>
                                     </div>
                                 </div>
@@ -633,30 +588,30 @@ export default function VvnListPage() {
                     <div className="vvn-pop-modal" onClick={(e) => e.stopPropagation()}>
                         <div className="sa-dock-head">
                             <div className="sa-dock-spacer" />
-                            <h3 className="sa-dock-title">📤 Unloading Cargo Manifest</h3>
+                            <h3 className="sa-dock-title">{t("vvn.modals.unloading.title")}</h3>
                             <button className="sa-icon-btn sa-dock-close" onClick={() => setUnloadOpen(false)}>
                                 ✖
                             </button>
                         </div>
                         {!selected.unloadingCargoManifest ? (
-                            <div className="sa-empty">Sem unloading manifest.</div>
+                            <div className="sa-empty">{t("vvn.modals.unloading.empty")}</div>
                         ) : (
                             <>
                                 <div className="vvn-def">
                                     <div>
-                                        <span>Code</span>
+                                        <span>{t("vvn.modals.unloading.code")}</span>
                                         <strong>{selected.unloadingCargoManifest.code}</strong>
                                     </div>
                                     <div>
-                                        <span>Type</span>
+                                        <span>{t("vvn.modals.unloading.type")}</span>
                                         <strong>{selected.unloadingCargoManifest.type}</strong>
                                     </div>
                                     <div>
-                                        <span>Created</span>
+                                        <span>{t("vvn.modals.unloading.created")}</span>
                                         <strong>{fmtDT(selected.unloadingCargoManifest.createdAt)}</strong>
                                     </div>
                                     <div>
-                                        <span>By</span>
+                                        <span>{t("vvn.modals.unloading.createdBy")}</span>
                                         <strong>{selected.unloadingCargoManifest.createdBy}</strong>
                                     </div>
                                 </div>
@@ -673,13 +628,13 @@ export default function VvnListPage() {
                     <div className="vvn-pop-modal" onClick={(e) => e.stopPropagation()}>
                         <div className="sa-dock-head">
                             <div className="sa-dock-spacer" />
-                            <h3 className="sa-dock-title">✅ Tarefas</h3>
+                            <h3 className="sa-dock-title">{t("vvn.modals.tasks.title")}</h3>
                             <button className="sa-icon-btn sa-dock-close" onClick={() => setTasksOpen(false)}>
                                 ✖
                             </button>
                         </div>
                         {!selected.tasks || selected.tasks.length === 0 ? (
-                            <div className="sa-empty">Sem tarefas</div>
+                            <div className="sa-empty">{t("vvn.modals.tasks.empty")}</div>
                         ) : (
                             <ul className="vvn-task-list">
                                 {selected.tasks.map((tk) => (
@@ -701,7 +656,7 @@ export default function VvnListPage() {
                     <div className="vvn-modal" onClick={(e) => e.stopPropagation()}>
                         <div className="sa-dock-head">
                             <div className="sa-dock-spacer" />
-                            <h3 className="sa-dock-title">Indicar motivo (Pending Information)</h3>
+                            <h3 className="sa-dock-title">{t("vvn.modals.reject.title")}</h3>
                             <button className="sa-icon-btn sa-dock-close" onClick={() => setRejectOpen(false)}>
                                 ✖
                             </button>
@@ -709,17 +664,17 @@ export default function VvnListPage() {
                         <div className="vvn-modal-body">
               <textarea
                   className="sa-textarea"
-                  placeholder="Escreve o motivo..."
+                  placeholder={t("vvn.modals.reject.placeholder") as string}
                   value={rejectMsg}
                   onChange={(e) => setRejectMsg(e.target.value)}
               />
                         </div>
                         <div className="vvn-modal-actions">
                             <button className="sa-btn sa-btn-cancel" onClick={() => setRejectOpen(false)}>
-                                Cancelar
+                                {t("common.cancel")}
                             </button>
                             <button className="sa-btn sa-btn-danger" onClick={doReject}>
-                                Confirmar
+                                {t("common.confirm")}
                             </button>
                         </div>
                     </div>
@@ -731,14 +686,14 @@ export default function VvnListPage() {
                     <div className="vvn-modal" onClick={(e) => e.stopPropagation()}>
                         <div className="sa-dock-head">
                             <div className="sa-dock-spacer" />
-                            <h3 className="sa-dock-title">Atualizar VVN</h3>
+                            <h3 className="sa-dock-title">{t("vvn.modals.update.title")}</h3>
                             <button className="sa-icon-btn sa-dock-close" onClick={() => setUpdOpen(false)}>
                                 ✖
                             </button>
                         </div>
                         <div className="vvn-modal-body grid2">
                             <div className="sa-field">
-                                <label>Volume</label>
+                                <label>{t("vvn.modals.update.volume")}</label>
                                 <input
                                     className="sa-input"
                                     type="number"
@@ -748,20 +703,16 @@ export default function VvnListPage() {
                                 />
                             </div>
                             <div className="sa-field">
-                                <label>Dock</label>
-                                <input
-                                    className="sa-input"
-                                    value={updDock}
-                                    onChange={(e) => setUpdDock(e.target.value.toUpperCase())}
-                                />
+                                <label>{t("vvn.modals.update.dock")}</label>
+                                <input className="sa-input" value={updDock} onChange={(e) => setUpdDock(e.target.value.toUpperCase())} />
                             </div>
                         </div>
                         <div className="vvn-modal-actions">
                             <button className="sa-btn sa-btn-cancel" onClick={() => setUpdOpen(false)}>
-                                Cancelar
+                                {t("common.cancel")}
                             </button>
                             <button className="sa-btn sa-btn-primary" onClick={doUpdate}>
-                                Guardar
+                                {t("common.save")}
                             </button>
                         </div>
                     </div>
@@ -773,18 +724,19 @@ export default function VvnListPage() {
 
 /* Tabela de entries de cargo manifest */
 function EntriesTable({ entries }: { entries: CargoManifestEntryDto[] }) {
-    if (!entries || entries.length === 0) return <div className="sa-empty">Sem entries.</div>;
+    const { t } = useTranslation();
+    if (!entries || entries.length === 0) return <div className="sa-empty">{t("vvn.modals.loading.empty")}</div>;
     return (
         <div className="vvn-table-wrap">
             <table className="vvn-table">
                 <thead>
                 <tr>
-                    <th>Storage Area</th>
-                    <th>Posição</th>
-                    <th>ISO</th>
-                    <th>Tipo</th>
-                    <th>Status</th>
-                    <th>Peso (kg)</th>
+                    <th>{t("vvn.entriesTable.storageArea")}</th>
+                    <th>{t("vvn.entriesTable.position")}</th>
+                    <th>{t("vvn.entriesTable.iso")}</th>
+                    <th>{t("vvn.entriesTable.type")}</th>
+                    <th>{t("vvn.entriesTable.status")}</th>
+                    <th>{t("vvn.entriesTable.weight")}</th>
                 </tr>
                 </thead>
                 <tbody>
