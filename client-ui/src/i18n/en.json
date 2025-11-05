@@ -493,9 +493,9 @@
       "UnderMaintenance": "Under Maintenance"
     },
     "stats": {
-      "total": "Total Resources",
+      "total": "Total Resources",
       "available": "Available",
-      "maintenance": "Under Maintenance"
+      "maintenance": "Under Maintenance"
     },
     "types": {
       "STSCrane": "Ship-to-Shore Crane (STS)",

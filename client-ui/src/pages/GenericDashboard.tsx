@@ -83,7 +83,7 @@ function useAccessibleLinksByRole(t: (k: string) => string, roles: Role[]): Link
                     icon: routeIcon["/qualifications"] ?? <FaCertificate size={48} />,
                 },
                 {
-                    label: t("menu.storageArea") || t("dashboard.physicalResources"),
+                    label: t("dashboard.physicalResources") || t("dashboard.physicalResources"),
                     path: "/physical-resources",
                     color: "#f3722c",
                     icon: routeIcon["/physical-resources"] ?? <FaCogs size={48} />,

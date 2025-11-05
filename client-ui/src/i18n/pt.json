@@ -472,6 +472,12 @@
       "status": "Estado",
       "actions": "Ações"
     },
+    "steps": {
+      "type": "Etapa 1: Tipo de Recurso",
+      "details": "Etapa 2: Detalhes",
+      "assignment": "Etapa 3: Atribuição",
+      "selectTypePrompt": "Que tipo de recurso pretende criar?"
+    },
     "form": {
       "description": "Descrição",
       "operationalCapacity": "Capacidade Operacional",
