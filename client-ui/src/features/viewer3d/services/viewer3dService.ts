@@ -106,7 +106,7 @@ export async function fetchVessels(): Promise<VesselDto[]> {
             owner: str(v.owner),
             vesselTypeId: str(v.vesselTypeId),
             // sem dimensões → defaults razoáveis
-            lengthMeters: num(v.lengthMeters, 140),
+            lengthMeters: num(v.lengthMeters, 30),
             widthMeters:  num(v.widthMeters,  22),
             draftMeters:  num(v.draftMeters,  7),
             positionX: pos(v.positionX,  100 + (i % 4) * 140),

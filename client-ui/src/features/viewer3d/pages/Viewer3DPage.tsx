@@ -32,8 +32,7 @@ export default function Viewer3DPage() {
     useEffect(() => {
         let alive = true;
         setLoading(true);
-        loadSceneData()
-            .then((d) => {
+        loadSceneData().then((d) => {
                 if (!alive) return;
                 setData(d);
                 setErr(null);
