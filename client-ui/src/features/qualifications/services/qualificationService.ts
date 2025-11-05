@@ -17,6 +17,10 @@ export async function getQualificationByCode(code: string): Promise<Qualificatio
     return res.data;
 }
 
+export async function getQualificationById(id: string): Promise<Qualification> {
+    const res = await api.get(`/api/Qualifications/id/${id}`);
+    return res.data;
+}
 
 export async function createQualification(data: CreateQualificationRequest): Promise<Qualification> {
     const res = await api.post("/api/Qualifications", data);
