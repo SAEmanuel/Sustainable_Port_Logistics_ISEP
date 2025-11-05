@@ -50,9 +50,11 @@ function PhysicalResourceDetails({ resource, isOpen, onClose }: PhysicalResource
 
     const [qualificationName, setQualificationName] = useState<string | null>(null);
     const [isQualifLoading, setIsQualifLoading] = useState(false);
+    const [isAnimatingOut, setIsAnimatingOut] = useState(false);
 
     useEffect(() => {
         if (isOpen && resource) {
+            setIsAnimatingOut(false);
             setCurrentResource(resource);
             setQualificationName(null);
 
@@ -114,7 +116,15 @@ function PhysicalResourceDetails({ resource, isOpen, onClose }: PhysicalResource
         }
     };
 
-    if (!isOpen) {
+    const handleClose = () => {
+        setIsAnimatingOut(true);
+        setTimeout(() => {
+            onClose();
+            setIsAnimatingOut(false);
+        }, 300);
+    };
+
+    if (!isOpen && !isAnimatingOut) {
         return null;
     }
 
@@ -122,9 +132,9 @@ function PhysicalResourceDetails({ resource, isOpen, onClose }: PhysicalResource
 
     return (
         <>
-            <div className="pr-modal-overlay">
+            <div className={`pr-modal-overlay ${isAnimatingOut ? 'anim-out' : ''}`}>
                 {}
-                <div className="pr-details-modal-content">
+                <div className={`pr-details-modal-content ${isAnimatingOut ? 'anim-out' : ''}`}>
 
                     {}
                     <div className="pr-details-hero">
@@ -207,7 +217,7 @@ function PhysicalResourceDetails({ resource, isOpen, onClose }: PhysicalResource
                             </button>
                         )}
 
-                        <button onClick={onClose} className="pr-cancel-button" disabled={isLoading}>
+                        <button onClick={handleClose} className="pr-cancel-button" disabled={isLoading}>
                             {t("physicalResource.actions.close")}
                         </button>
 

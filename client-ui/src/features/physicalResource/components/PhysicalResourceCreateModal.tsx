@@ -44,9 +44,11 @@ function PhysicalResourceCreateModal({ isOpen, onClose, onCreated }: PhysicalRes
     const [qualifications, setQualifications] = useState<Qualification[]>([]);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<Error | null>(null);
+    const [isAnimatingOut, setIsAnimatingOut] = useState(false);
 
     useEffect(() => {
         if (isOpen) {
+            setIsAnimatingOut(false);
             const fetchQualifications = async () => {
                 try {
                     const data = await getQualifications();
@@ -95,6 +97,14 @@ function PhysicalResourceCreateModal({ isOpen, onClose, onCreated }: PhysicalRes
         setStep(step - 1);
     };
 
+    const handleClose = () => {
+        setIsAnimatingOut(true);
+        setTimeout(() => {
+            onClose();
+            setIsAnimatingOut(false);
+        }, 300);
+    };
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setIsLoading(true);
@@ -113,13 +123,13 @@ function PhysicalResourceCreateModal({ isOpen, onClose, onCreated }: PhysicalRes
         }
     };
 
-    if (!isOpen) {
+    if (!isOpen && !isAnimatingOut) {
         return null;
     }
 
     return (
-        <div className="pr-modal-overlay">
-            <div className="pr-modal-content">
+        <div className={`pr-modal-overlay ${isAnimatingOut ? 'anim-out' : ''}`}>
+            <div className={`pr-modal-content ${isAnimatingOut ? 'anim-out' : ''}`}>
 
                 {}
                 <div className="pr-wizard-progress">
@@ -231,7 +241,7 @@ function PhysicalResourceCreateModal({ isOpen, onClose, onCreated }: PhysicalRes
                     {}
                     <div className="pr-modal-actions-wizard">
                         {step === 1 && (
-                            <button type="button" onClick={onClose} className="pr-cancel-button">
+                            <button type="button" onClick={handleClose} className="pr-cancel-button">
                                 {t("physicalResource.actions.cancel")}
                             </button>
                         )}

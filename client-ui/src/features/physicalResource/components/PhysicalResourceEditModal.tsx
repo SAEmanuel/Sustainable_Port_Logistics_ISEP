@@ -35,9 +35,11 @@ function PhysicalResourceEditModal({ isOpen, onClose, onUpdated, resource }: Phy
     const [qualifications, setQualifications] = useState<Qualification[]>([]);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<Error | null>(null);
+    const [isAnimatingOut, setIsAnimatingOut] = useState(false);
 
     useEffect(() => {
         if (isOpen && resource) {
+            setIsAnimatingOut(false);
             setFormData({
                 description: resource.description,
                 operationalCapacity: resource.operationalCapacity,
@@ -100,14 +102,22 @@ function PhysicalResourceEditModal({ isOpen, onClose, onUpdated, resource }: Phy
         }
     };
 
-    if (!isOpen) {
+    const handleClose = () => {
+        setIsAnimatingOut(true);
+        setTimeout(() => {
+            onClose();
+            setIsAnimatingOut(false);
+        }, 300);
+    };
+
+    if (!isOpen && !isAnimatingOut) {
         return null;
     }
 
     return (
-        <div className="pr-modal-overlay">
+        <div className={`pr-modal-overlay ${isAnimatingOut ? 'anim-out' : ''}`}>
             {}
-            <form onSubmit={handleSubmit} className="pr-details-modal-content">
+            <form onSubmit={handleSubmit} className={`pr-details-modal-content ${isAnimatingOut ? 'anim-out' : ''}`}>
 
                 {}
                 <div className="pr-details-hero">
@@ -213,7 +223,7 @@ function PhysicalResourceEditModal({ isOpen, onClose, onUpdated, resource }: Phy
 
                 {}
                 <div className="pr-modal-actions">
-                    <button type="button" onClick={onClose} className="pr-cancel-button" disabled={isLoading}>
+                    <button type="button" onClick={handleClose} className="pr-cancel-button" disabled={isLoading}>
                         {t("physicalResource.actions.cancel")}
                     </button>
                     <button type="submit" className="pr-submit-button" disabled={isLoading}>
