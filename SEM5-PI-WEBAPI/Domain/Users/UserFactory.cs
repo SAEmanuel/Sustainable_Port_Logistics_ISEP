@@ -1,23 +1,24 @@
-using SEM5_PI_WEBAPI.Domain.Users;
-using SEM5_PI_WEBAPI.Domain.ValueObjects;
-
 namespace SEM5_PI_WEBAPI.Domain.Users;
 
 public class UserFactory
 {
-    public static User CreateUser(
-        string iamId,
-        string email,
-        string name,
-        bool isActive,
-        Roles role)
+    public static async Task<User> CreateUser(string auth0UserId, string email, string name , string? pictureUrl = null)
     {
-        return new User(
-            iamId,
-            email,
-            name,
-            isActive,
-            role
-        );
+        byte[]? pictureBytes = null;
+
+        if (!string.IsNullOrWhiteSpace(pictureUrl))
+        {
+            try
+            {
+                using var httpClient = new HttpClient();
+                pictureBytes = await httpClient.GetByteArrayAsync(pictureUrl);
+            }
+            catch
+            {
+                pictureBytes = null;
+            }
+        }
+
+        return new User(auth0UserId, email, name, pictureBytes);
     }
 }
