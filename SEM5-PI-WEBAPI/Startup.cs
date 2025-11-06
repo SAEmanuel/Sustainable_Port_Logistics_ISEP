@@ -44,6 +44,12 @@ using SEM5_PI_WEBAPI.Infraestructure.Users;
 using SEM5_PI_WEBAPI.Infraestructure.VVN;
 using SEM5_PI_WEBAPI.Seed;
 using SEM5_PI_WEBAPI.utils;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using SEM5_PI_WEBAPI.Domain.Users;
+using SEM5_PI_WEBAPI.Domain.ValueObjects;
+
 
 namespace SEM5_PI_WEBAPI
 {
@@ -58,61 +64,67 @@ namespace SEM5_PI_WEBAPI
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddAuthentication(options =>
+            var domain = $"https://{Configuration["Auth0:Domain"]}";
+            var audience = Configuration["Auth0:Audience"];
+
+            services
+                .AddAuthentication(options =>
                 {
                     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                     options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
                 })
                 .AddJwtBearer(options =>
                 {
-                    var authority = Configuration["Keycloak:Authority"] ?? "http://localhost:8080/realms/PortLogistics";
-            
-                    options.Authority = authority;
-                    options.RequireHttpsMetadata = false;
-                    options.MetadataAddress = $"{authority}/.well-known/openid-configuration";
-
+                    options.Authority = domain;
+                    options.Audience = audience;
+                    options.RequireHttpsMetadata = false; 
                     options.TokenValidationParameters = new TokenValidationParameters
                     {
-                        ValidateIssuer = true,
-                        ValidIssuer = authority,
-                
-                        ValidateAudience = false,
-                
-                        ValidateLifetime = true,
-                        ClockSkew = TimeSpan.FromMinutes(5),
-                
-                        ValidateIssuerSigningKey = true,
-                
-                        NameClaimType = "preferred_username",
+                        NameClaimType = ClaimTypes.NameIdentifier,
                         RoleClaimType = ClaimTypes.Role
                     };
                 });
 
-            services.AddAuthorization();
-
-            // CORS
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("AdminOnly", policy => policy.RequireRole(Roles.Administrator.ToString()));
+            });
+            
             services.AddCors(options =>
             {
                 options.AddPolicy("AllowSPA", builder =>
                 {
-                    builder.WithOrigins("http://localhost:4200")
-                        .AllowAnyMethod()
+                    builder
+                        .WithOrigins(
+                            "http://localhost:5173",
+                            "http://localhost:3000",
+                            "http://10.9.23.188",
+                            "http://10.9.23.188:5173"
+                        )
                         .AllowAnyHeader()
+                        .AllowAnyMethod()
                         .AllowCredentials();
                 });
             });
 
+            
             services.AddDbContext<DddSample1DbContext>(opt =>
                 opt.UseNpgsql(Configuration.GetConnectionString("DefaultConnection"))
                     .ReplaceService<IValueConverterSelector, StronglyEntityIdValueConverterSelector>());
 
+            
             ConfigureMyServices(services);
 
+           
             services.AddControllers()
                 .AddNewtonsoftJson(options =>
                 {
                     options.SerializerSettings.Converters.Add(new StringEnumConverter());
-                });
+                })
+                .AddJsonOptions(o =>
+            {
+                o.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
+            });
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -126,20 +138,23 @@ namespace SEM5_PI_WEBAPI
                 app.UseHsts();
             }
 
-            app.UseHttpsRedirection();
-
+            //app.UseHttpsRedirection();
             app.UseRouting();
 
+            // ⚙️ CORS antes da autenticação
             app.UseCors("AllowSPA");
 
             app.UseMiddleware<RequestLogsMiddleware>();
 
             app.UseAuthentication();
-
             app.UseAuthorization();
 
-            app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers();
+            });
         }
+
 
         private void ConfigureMyServices(IServiceCollection services)
         {
