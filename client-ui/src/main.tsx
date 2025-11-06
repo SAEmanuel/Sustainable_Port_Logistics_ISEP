@@ -1,24 +1,23 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App";
-import { Toaster } from "react-hot-toast";
-import "./styles/globals.css";
-import "./i18n";
+import {Auth0Provider} from "@auth0/auth0-react";
+import './i18n';
 
-ReactDOM.createRoot(document.getElementById("root")!).render(
+const domain = import.meta.env.VITE_AUTH0_DOMAIN!;
+const clientId = import.meta.env.VITE_AUTH0_CLIENT_ID!;
+
+const root = ReactDOM.createRoot(document.getElementById("root") as HTMLElement);
+root.render(
     <React.StrictMode>
-        {/* O App */}
-        <App />
-
-        {/* O Toaster global — fica por cima da UI toda */}
-        <Toaster
-            position="top-right"
-            toastOptions={{
-                duration: 3000,
-                style: { fontSize: "14px" },
-                success: { iconTheme: { primary: "#22c55e", secondary: "white" } },
-                error:   { iconTheme: { primary: "#ef4444", secondary: "white" } },
+        <Auth0Provider
+            domain={domain}
+            clientId={clientId}
+            authorizationParams={{
+                redirect_uri: `${window.location.origin}`,
             }}
-        />
+        >
+            <App />
+        </Auth0Provider>
     </React.StrictMode>
 );

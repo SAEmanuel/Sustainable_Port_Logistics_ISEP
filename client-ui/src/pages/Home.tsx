@@ -6,7 +6,6 @@ import { Roles } from "../app/types";
 import AOS from "aos";
 import "aos/dist/aos.css";
 import { FaShip, FaWarehouse, FaTasks, FaUsersCog } from "react-icons/fa";
-import { Link } from "react-router-dom";
 import "./css/home.css";
 
 export default function Home() {
@@ -15,26 +14,45 @@ export default function Home() {
     const user = useAppStore((s) => s.user);
 
     useEffect(() => {
-        if (user?.roles.includes(Roles.LogisticsOperator)) {
-            navigate("/logistics-dashboard", { replace: true });
-        }
-    }, [user, navigate]);
-
-
-    useEffect(() => {
         AOS.init({ duration: 1000, once: true });
     }, []);
 
+    const handleAccess = () => {
+        if (!user) {
+            navigate("/login");
+            return;
+        }
+
+        switch (user.role) {
+            case Roles.Administrator:
+                navigate("/dashboard");
+                break;
+            case Roles.PortAuthorityOfficer:
+                navigate("/dashboard");
+                break;
+            case Roles.LogisticsOperator:
+                navigate("/dashboard");
+                break;
+            case Roles.ShippingAgentRepresentative:
+                navigate("/dashboard");
+                break;
+            default:
+                navigate("/pending-approval");
+                break;
+        }
+    };
+
     return (
         <>
-            {/* HERO */}
+
             <section className="hero" data-aos="fade-up">
                 <div className="hero-content">
                     <h2>{t("welcomeTitle")}</h2>
                     <p>{t("welcomeText")}</p>
-                    <Link to="/login">
-                        <button>{t("accessButton")}</button>
-                    </Link>
+
+                    <button onClick={handleAccess}>
+                        {t("accessButton")}
+                    </button>
                 </div>
             </section>
 
