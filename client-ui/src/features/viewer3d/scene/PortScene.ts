@@ -40,6 +40,13 @@ export class PortScene {
         this.camera = new THREE.PerspectiveCamera(60, container.clientWidth / container.clientHeight, 0.1, 8000);
         this.camera.position.set(120, 120, 220);
 
+        const w = 3000, h = 10, d = 3000;          // largura, altura, profundidade
+        const water = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), new THREE.MeshBasicMaterial({color: 0x0000ff}));
+        this.scene.add(water);
+        water.position.set(0, -10, 0);
+
+
+        
         // lights
         this.scene.add(new THREE.HemisphereLight(0xffffff, 0x444444, 0.85));
         const dir = new THREE.DirectionalLight(0xffffff, 0.8);

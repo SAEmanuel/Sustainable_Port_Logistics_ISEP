@@ -3,7 +3,7 @@ import type { PhysicalResourceDTO } from "../../types";
 import { Materials } from "../Materials";
 
 export function makePhysicalResource(r: PhysicalResourceDTO): THREE.Mesh {
-    const geom = new THREE.SphereGeometry(2, 16, 16);
+    const geom = new THREE.SphereGeometry(30, 16, 16);
     const mesh = new THREE.Mesh(geom, Materials.resource);
     
     const x = Number(r.positionX) || 0;
