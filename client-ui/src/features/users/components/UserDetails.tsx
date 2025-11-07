@@ -146,7 +146,7 @@ export default function UserDetails({ user, isOpen, onClose }: UserDetailsProps)
                             onChange={(e) => setSelectedRole(e.target.value)}
                             disabled={isLoading || isSelf}
                         >
-                            <option value="">{t("users.roles.none")}</option>
+                            <option value="">{t("roles.none")}</option>
                             <option value="Administrator">{t("roles.administrator")}</option>
                             <option value="LogisticsOperator">{t("roles.operator")}</option>
                             <option value="PortAuthorityOfficer">{t("roles.officer")}</option>

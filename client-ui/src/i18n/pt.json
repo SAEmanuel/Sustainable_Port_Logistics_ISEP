@@ -25,7 +25,8 @@
     "officer": "Oficial Portuário",
     "operator": "Operador Logístico",
     "agent": "Representante de Agência Marítima",
-    "viewer": "Visualizador"
+    "projectManager" : "Gestor de projeto",
+    "none" : "Sem função"
   },
 
   "auth": {

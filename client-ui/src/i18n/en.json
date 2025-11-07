@@ -25,7 +25,8 @@
     "officer": "Port Authority Officer",
     "operator": "Logistics Operator",
     "agent": "Shipping Agent Representative",
-    "viewer": "Viewer"
+    "projectManager" : "Project Manager",
+    "none" : "No Role"
   },
 
   "auth": {

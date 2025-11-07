@@ -84,20 +84,20 @@ public class UserController : ControllerBase
         }
     }
 
-    [HttpPut("toggle/{email}")]
+    [HttpPut("toggle/{id}")]
     public async Task<ActionResult<UserDto>> ToggleStatus(Guid id)
     {
-        _logger.LogInformation("API Request: Toggle status of User with email = {Id}", id);
+        _logger.LogInformation("API Request: Toggle status of User with id = {Id}", id);
         try
         {
             var updatedUser = await _service.ToggleAsync(new UserId(id));
             if (updatedUser == null)
             {
-                _logger.LogWarning("API Response (404): User to toggle status not found with email = {Id}", id);
+                _logger.LogWarning("API Response (404): User to toggle status not found with id = {Id}", id);
                 return NotFound();
             }
 
-            _logger.LogInformation("API Response (200): Status toggled for User with email = {Id}", id);
+            _logger.LogInformation("API Response (200): Status toggled for User with id = {Id}", id);
             return Ok(updatedUser);
         }
         catch (BusinessRuleValidationException ex)

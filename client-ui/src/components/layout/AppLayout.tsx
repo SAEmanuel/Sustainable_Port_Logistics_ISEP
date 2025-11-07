@@ -91,8 +91,8 @@ export default function AppLayout() {
                                 }`}
                                 title={user?.role ?? "Non Authorized"}
                             >
-  {user?.role ?? "Non Authorized"}
-</span>
+                        {user?.role ?? "Non Authorized"}
+                        </span>
                         )}
 
                         <RoleLauncher/>
