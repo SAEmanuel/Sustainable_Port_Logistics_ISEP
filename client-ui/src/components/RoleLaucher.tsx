@@ -30,14 +30,8 @@ export default function RoleLauncher() {
     const goToRoleHome = (role: string) => {
         switch (role) {
             case Roles.Administrator:
-                navigate("/dashboard");
-                break;
             case Roles.LogisticsOperator:
-                navigate("/dashboard");
-                break;
             case Roles.ShippingAgentRepresentative:
-                navigate("/dashboard");
-                break;
             case Roles.PortAuthorityOfficer:
                 navigate("/dashboard");
                 break;
@@ -48,11 +42,17 @@ export default function RoleLauncher() {
     };
 
     const onClick = () => {
+        if (user && user.isActive === false) {
+            navigate("/inactive");
+            return;
+        }
+
         if (user?.role) {
             goToRoleHome(user.role);
-        } else {
-            setOpen((v) => !v);
+            return;
         }
+
+        setOpen((v) => !v);
     };
 
     return (
@@ -67,13 +67,22 @@ export default function RoleLauncher() {
                 }
             >
                 {avatar ? (
-                    <img src={avatar} alt={displayName} referrerPolicy="no-referrer" />
+                    <img
+                        src={avatar}
+                        alt={displayName}
+                        referrerPolicy="no-referrer"
+                        style={{
+                            width: 32,
+                            height: 32,
+                            borderRadius: "50%",
+                            border: user?.isActive === false ? "2px solid #e63946" : "2px solid transparent",
+                        }}
+                    />
                 ) : (
-                    <FaUserCircle size={22} className="login-icon" />
+                    <FaUserCircle size={24} className="login-icon" />
                 )}
             </button>
 
-            {/* Dropdown visível apenas se não tiver role */}
             {open && !user?.role && (
                 <div
                     className="role-waiting-dropdown"
@@ -98,8 +107,8 @@ export default function RoleLauncher() {
                         {t("roleLauncher.awaitingHeader")}
                     </strong>
                     <span style={{ opacity: 0.85, fontWeight: 400 }}>
-            {t("roleLauncher.awaitingMessage")}
-          </span>
+                        {t("roleLauncher.awaitingMessage")}
+                    </span>
                 </div>
             )}
         </div>

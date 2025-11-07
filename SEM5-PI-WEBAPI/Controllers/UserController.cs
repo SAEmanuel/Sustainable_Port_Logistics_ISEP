@@ -27,6 +27,15 @@ public class UserController : ControllerBase
         _logger.LogInformation("API Response (200): Returning {Count} Users", list.Count);
         return Ok(list);
     }
+    
+    [HttpGet("NotEliminated")]
+    public async Task<ActionResult<IEnumerable<UserDto>>> GetAllNotEliminated()
+    {
+        _logger.LogInformation("API Request: Get not eliminated all Users");
+        var list = await _service.GetAllNonAuthorizedAsync();
+        _logger.LogInformation("API Response (200): Returning {Count} Users", list.Count);
+        return Ok(list);
+    }
 
     [HttpGet("NonAuthorized")]
     public async Task<ActionResult<IEnumerable<UserDto>>> GetAllNonAuthorized()

@@ -272,33 +272,27 @@ html, body {
     box-shadow: 0 8px 24px var(--shadow);
 }
 
-/* variantes por role (cores subtis, compatíveis com light/dark) */
+
 .role-badge--admin {
     background: linear-gradient(135deg, rgba(232, 0, 0, 0.2), rgba(232, 0, 0, 0.08));
     border-color: rgba(232, 0, 0, 0.35);
 }
 
 .role-badge--officer {
-    background: linear-gradient(135deg, rgba(45, 127, 249, 0.25), rgba(45, 127, 249, 0.08));
-    border-color: rgba(45, 127, 249, 0.35);
+    background: linear-gradient(135deg, #0f675b, #2a9d8f);
+    border-color: #06342c;
 }
 
 .role-badge--logistics {
-    background: linear-gradient(135deg, rgba(68, 223, 57, 0.22), rgba(68, 223, 57, 0.08));
-    border-color: rgba(68, 223, 57, 0.35);
+    background: linear-gradient(135deg, #4361ae, #4361ef);
+    border-color: #16287e;
 }
 
 .role-badge--agent {
-    background: linear-gradient(135deg, rgba(255, 165, 0, 0.22), rgba(255, 165, 0, 0.08));
+    background: linear-gradient(#8f3707, #f3722c);
     border-color: rgba(255, 165, 0, 0.35);
 }
 
-.role-badge--viewer {
-    background: linear-gradient(135deg, rgba(160, 160, 160, 0.22), rgba(160, 160, 160, 0.08));
-    border-color: rgba(160, 160, 160, 0.35);
-}
-
-/* dark/light integração suave */
 [data-theme="dark"] .role-badge {
     color: var(--brand-color);
 }

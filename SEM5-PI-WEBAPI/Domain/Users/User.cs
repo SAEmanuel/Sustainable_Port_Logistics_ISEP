@@ -9,6 +9,7 @@ public class User : Entity<UserId>, IAggregateRoot
     public string Name { get; private set; }
     public string Email { get; private set; }
     public bool IsActive { get; set; }
+    public bool Eliminated { get; set; }
     public Roles? Role { get; set; }
     public byte[]? Picture { get; set; }
 
@@ -23,6 +24,7 @@ public class User : Entity<UserId>, IAggregateRoot
         Picture = picture;
         Role = null;
         IsActive = false;
+        Eliminated = false;
     }
 
     public void UpdateRole(Roles newRole)

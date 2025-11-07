@@ -23,6 +23,11 @@ public class UserRepository : BaseRepository<User, UserId>, IUserRepository
             .ToListAsync();
     }
 
+    public async Task<List<User>> GetAllNotEliminatedAsync()
+    {
+        return await _users.Where(user => !user.Eliminated).ToListAsync();
+    }
+
     public async Task<User?> GetByEmailAsync(string email)
     {
         return await _users

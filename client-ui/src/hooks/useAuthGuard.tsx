@@ -51,3 +51,11 @@ export function RequireApproved() {
     if (!user.role) return <Navigate to="/pending-approval" replace />;
     return <Outlet />;
 }
+
+export function RequireActive() {
+    const user = useAppStore((s) => s.user);
+    if (user && user.isActive === false) {
+        return <Navigate to="/inactive" replace />;
+    }
+    return <Outlet />;
+}

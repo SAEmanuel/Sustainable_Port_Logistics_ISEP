@@ -9,10 +9,11 @@ public class UserDto
     public string Name { get; private set; }
     public string Email { get; private set; }
     public bool IsActive { get; private set; }
+    public bool Eliminated { get; private set; }
     public Roles? Role { get; private set; }
     public string? Picture { get; private set; } 
 
-    public UserDto(Guid id, string auth0UserId, string email, string name, bool isActive, Roles? role, byte[]? pictureBytes)
+    public UserDto(Guid id, string auth0UserId, string email, string name, bool isActive, bool eliminated, Roles? role, byte[]? pictureBytes)
     {
         Id = id;
         Auth0UserId = auth0UserId;
@@ -20,6 +21,7 @@ public class UserDto
         Email = email;
         IsActive = isActive;
         Role = role;
+        Eliminated = eliminated; 
         
         Picture = pictureBytes != null 
             ? $"data:image/jpeg;base64,{Convert.ToBase64String(pictureBytes)}"

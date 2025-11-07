@@ -19,9 +19,8 @@ export default function SyncUser() {
                     Auth0UserId: user.sub,
                     Email: user.email,
                     Name: user.name,
-                    Picture: user.picture,
-                    IsActive: false,
                     Role: null,
+                    Picture: user.picture,
                 };
 
                 const response = await fetch("http://localhost:5008/api/user/sync", {

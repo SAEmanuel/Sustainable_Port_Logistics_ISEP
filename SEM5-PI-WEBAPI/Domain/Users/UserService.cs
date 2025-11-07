@@ -104,6 +104,15 @@ public class UserService : IUserService
         _logger.LogInformation("Returning {Count} Users.", dtos.Count);
         return dtos;
     }
+    
+    public async Task<List<UserDto>> GetAllNotEliminatedAsync()
+    {
+        _logger.LogInformation("Fetching all Users.");
+        var list = await _repo.GetAllNotEliminatedAsync();
+        var dtos = UserMapper.ToDtoList(list);
+        _logger.LogInformation("Returning {Count} Users.", dtos.Count);
+        return dtos;
+    }
 
     public async Task<UserDto> AddAsync(CreatingUserDto userDto)
     {

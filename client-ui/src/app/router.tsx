@@ -13,6 +13,7 @@ import VvnPage from "../features/vesselVisitNotification/pages/VvnListPage";
 import NotFound from "../pages/NotFound";
 import Forbidden from "../pages/Forbidden";
 import PendingApproval from "../pages/PendingApproval.tsx";
+import InactiveAccount from "../pages/InactiveAccount.tsx";
 import { RequireAuth, RequireRole, RequireApproved } from "../hooks/useAuthGuard";
 import { Roles } from "../app/types";
 import User from "../features/users/pages/User.tsx";
@@ -28,8 +29,9 @@ export const router = createBrowserRouter([
                 element: <RequireAuth />,
                 children: [
 
-                    { path: "pending-approval", element: <PendingApproval /> },
+                    { path: "inactive", element: <InactiveAccount /> },
 
+                    { path: "pending-approval", element: <PendingApproval /> },
 
                     {
                         element: <RequireApproved />,
@@ -38,7 +40,11 @@ export const router = createBrowserRouter([
 
                             {
                                 path: "vvn",
-                                element: <RequireRole roles={[Roles.Administrator, Roles.ShippingAgentRepresentative]} />,
+                                element: (
+                                    <RequireRole
+                                        roles={[Roles.Administrator, Roles.ShippingAgentRepresentative]}
+                                    />
+                                ),
                                 children: [{ index: true, element: <VvnPage /> }],
                             },
                             {
@@ -79,7 +85,6 @@ export const router = createBrowserRouter([
                                 element: <RequireRole roles={[Roles.Administrator]} />,
                                 children: [{ index: true, element: <User /> }],
                             },
-
                             { path: "forbidden", element: <Forbidden /> },
                         ],
                     },

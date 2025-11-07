@@ -12,6 +12,7 @@ public static class UserMapper
             user.Email,
             user.Name,
             user.IsActive,
+            user.Eliminated,
             user.Role,
             user.Picture
         );

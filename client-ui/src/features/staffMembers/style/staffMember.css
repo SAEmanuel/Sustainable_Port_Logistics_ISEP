@@ -22,7 +22,7 @@
 }
 
 .staffMember-icon {
-    color: #4fa3ff;
+    color: #1976d2;
 }
 
 .staffMember-sub {
@@ -380,9 +380,6 @@
     margin: 0;
 }
 
-.staffMember-icon {
-    color: #4fa3ff;
-}
 
 .staffMember-sub {
     margin: 0.5rem 0 0 0;

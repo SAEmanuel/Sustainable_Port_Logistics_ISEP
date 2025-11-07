@@ -23,17 +23,23 @@ export default function Home() {
             return;
         }
 
+        if (user.isActive === false) {
+            navigate("/inactive");
+            return;
+        }
+
+        if (!user.role) {
+            navigate("/pending-approval");
+            return;
+        }
+
+
         switch (user.role) {
             case Roles.Administrator:
-                navigate("/dashboard");
-                break;
             case Roles.PortAuthorityOfficer:
-                navigate("/dashboard");
-                break;
             case Roles.LogisticsOperator:
-                navigate("/dashboard");
-                break;
             case Roles.ShippingAgentRepresentative:
+            case Roles.ProjectManager:
                 navigate("/dashboard");
                 break;
             default:
@@ -44,15 +50,11 @@ export default function Home() {
 
     return (
         <>
-
             <section className="hero" data-aos="fade-up">
                 <div className="hero-content">
                     <h2>{t("welcomeTitle")}</h2>
                     <p>{t("welcomeText")}</p>
-
-                    <button onClick={handleAccess}>
-                        {t("accessButton")}
-                    </button>
+                    <button onClick={handleAccess}>{t("accessButton")}</button>
                 </div>
             </section>
 

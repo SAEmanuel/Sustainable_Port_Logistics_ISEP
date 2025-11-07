@@ -6,6 +6,11 @@ export async function getUsers(): Promise<User[]> {
     return res.data;
 }
 
+export async function getNotEliminatedUsers(): Promise<User[]> {
+    const res = await api.get("/api/User/NotEliminated");
+    return res.data;
+}
+
 export async function getNonAuthorizedUsers(): Promise<User[]> {
     const res = await api.get("/api/User/NonAuthorized");
     return res.data;

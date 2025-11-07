@@ -1,11 +1,17 @@
-import {JSX, useMemo} from "react";
+import { JSX, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAppStore } from "../app/store";
 import { Roles, type Role } from "../app/types";
 import { useTranslation } from "react-i18next";
 import { useAuth0 } from "@auth0/auth0-react";
 import {
-    FaUsers, FaCogs, FaCertificate, FaUniversity, FaShip, FaProjectDiagram, FaRoute,
+    FaUsers,
+    FaCogs,
+    FaCertificate,
+    FaUniversity,
+    FaShip,
+    FaProjectDiagram,
+    FaRoute,
 } from "react-icons/fa";
 import "./css/genericDashboard.css";
 
@@ -13,24 +19,20 @@ type LinkItem = { label: string; path: string; color: string; icon: JSX.Element 
 
 const roleColor: Record<Role, string> = {
     [Roles.Administrator]: "#e63946",
-    [Roles.PortAuthorityOfficer]: "#4361ee",
+    [Roles.LogisticsOperator]: "#4361ee",
     [Roles.ShippingAgentRepresentative]: "#f3722c",
-    [Roles.LogisticsOperator]: "#2a9d8f",
+    [Roles.PortAuthorityOfficer]: "#2a9d8f",
     [Roles.ProjectManager]: "#9b59b6",
 };
 
 const routeIcon: Record<string, JSX.Element> = {
-    "/vvn": <FaUniversity size={56} />,
-    "/qualifications": <FaCertificate size={56} />,
-    "/staff-members": <FaUsers size={56} />,
-    "/physical-resources": <FaCogs size={56} />,
-    "/vessels": <FaShip size={56} />,
-    "/projects": <FaProjectDiagram size={56} />,
+    "/vvn": <FaUniversity size={44} />,
+    "/qualifications": <FaCertificate size={44} />,
+    "/staff-members": <FaUsers size={44} />,
+    "/physical-resources": <FaCogs size={44} />,
+    "/vessels": <FaShip size={44} />,
+    "/projects": <FaProjectDiagram size={44} />,
 };
-
-function getModuleKey(path: string) {
-    return path.split("?")[0].replace(/^\/|\/$/g, "") || "root";
-}
 
 function useAccessibleLinksByRole(t: (k: string) => string, role?: Role) {
     return useMemo<LinkItem[]>(() => {
@@ -55,7 +57,7 @@ function useAccessibleLinksByRole(t: (k: string) => string, role?: Role) {
                 L.push({ label: t("dashboard.projects"), path: "/projects", color, icon: routeIcon["/projects"] });
                 break;
             case Roles.Administrator:
-                L.push({ label: t("dashboard.adminPanel"), path: "/users", color, icon: <FaCogs size={56} /> });
+                L.push({ label: t("dashboard.adminPanel"), path: "/users", color, icon: <FaCogs size={44} /> });
                 break;
         }
         return L;
@@ -76,14 +78,13 @@ export default function GenericDashboard() {
     const picture = authUser?.picture ?? "";
 
     return (
-        <div className="gd-container">
-            {/* HEADER com data-role */}
-            <header className="gd-header-modern" data-role={role ?? "none"}>
+        <div className="gd-container fade-in">
+            <header className="gd-header-light" data-role={role ?? "none"}>
                 <div className="gd-profile">
                     {picture ? (
-                        <img src={picture} alt={displayName || "avatar"} className="gd-avatar gd-avatar--img" />
+                        <img src={picture} alt={displayName || "avatar"} className="gd-avatar-img" />
                     ) : (
-                        <div className="gd-avatar">
+                        <div className="gd-avatar-placeholder">
                             {(displayName || "U")
                                 .split(" ")
                                 .map((s) => s[0])
@@ -92,53 +93,41 @@ export default function GenericDashboard() {
                                 .toUpperCase()}
                         </div>
                     )}
-                    <div>
-                        <h1 className="gd-username">{displayName}</h1>
-                        {email && <p className="gd-role" style={{ color: role ? roleColor[role] : "inherit" }}>{email}</p>}
+                    <div className="gd-user-info">
+                        <h1 className="gd-user-name">{displayName}</h1>
+                        <p className="gd-user-email">{email}</p>
                     </div>
                 </div>
             </header>
 
-            {/* LINKS com data-module para cores por módulo */}
             <section className="gd-links-section">
                 <h2 className="gd-section-title">{t("dashboard.accessModules")}</h2>
-                <div className="gd-links-grid">
-                    {links.map((link) => {
-                        const moduleKey = getModuleKey(link.path);
-                        return (
-                            <div
-                                key={link.path}
-                                className="gd-link-card"
-                                data-module={moduleKey}
-                                tabIndex={0}
-                                role="button"
-                                aria-label={`${link.label}. ${t("dashboard.clickToOpen")}`}
-                                onClick={() => navigate(link.path)}
-                                onKeyDown={(e) => {
-                                    if (e.key === "Enter" || e.key === " ") {
-                                        e.preventDefault();
-                                        navigate(link.path);
-                                    }
-                                }}
-                            >
-                                <div
-                                    className="gd-link-icon"
-                                    style={{
-                                        background: `${link.color}22`,
-                                        border: `1px solid ${link.color}55`,
-                                        color: link.color,
-                                    }}
-                                >
-                                    {link.icon ?? <FaRoute size={56} />}
-                                </div>
-                                <div className="gd-link-body">
-                                    <h3>{link.label}</h3>
-                                    <p>{t("dashboard.clickToOpen")}</p>
-                                </div>
+                <div className="gd-links-list">
+                    {links.map((link, idx) => (
+                        <div
+                            key={link.path}
+                            className="gd-link-item slide-in"
+                            style={{
+                                animationDelay: `${idx * 0.15}s`,
+                                borderTop: `5px solid ${link.color}`,
+                            }}
+                            onClick={() => navigate(link.path)}
+                        >
+                            <div className="gd-link-icon" style={{ color: link.color }}>
+                                {link.icon ?? <FaRoute size={44} />}
                             </div>
-                        );
-                    })}
-                    {links.length === 0 && <div className="gd-empty">{t("dashboard.noModules")}</div>}
+                            <div className="gd-link-body">
+                                <h3>{link.label}</h3>
+                                <p>{t("dashboard.clickToOpen")}</p>
+                            </div>
+                        </div>
+                    ))}
+
+                    {links.length === 0 && (
+                        <div className="gd-empty fade-in" style={{ animationDelay: "0.3s" }}>
+                            {t("dashboard.noModules")}
+                        </div>
+                    )}
                 </div>
             </section>
         </div>
