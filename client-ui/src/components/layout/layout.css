@@ -310,3 +310,62 @@ html, body {
         padding: 5px 8px;
     }
 }
+
+.user-launcher-btn img {
+    border: 2px solid var(--accent-light);
+}
+
+.user-launcher-btn {
+    background: transparent;
+    border: none;
+    color: #e0e0e0;
+    cursor: pointer;
+    padding: 8px 5px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+
+.user-launcher-btn:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: var(--accent-light);
+    transform: scale(1.07);
+}
+
+
+.user-launcher-btn .login-icon {
+    color: inherit;
+    transition: color 0.3s ease, transform 0.2s ease;
+}
+
+
+.user-launcher-btn img {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: none;
+    outline: none;
+    background: transparent;
+    transition: transform 0.2s ease;
+}
+
+.user-launcher-btn:hover img {
+    transform: scale(1.07);
+}
+
+.user-launcher-btn:focus {
+    outline: none;
+    box-shadow: none;
+}
+
+.role-badge--none {
+    background: #aaa;
+    color: white;
+    font-weight: 500;
+    border-radius: 6px;
+    padding: 4px 10px;
+}

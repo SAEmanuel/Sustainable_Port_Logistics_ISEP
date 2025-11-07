@@ -31,7 +31,9 @@
   "auth": {
     "loading": "A autenticar...",
     "success": "Sessão iniciada com sucesso ✅",
-    "error": "Falha ao autenticar ❌"
+    "error": "Falha ao autenticar ❌",
+    "signIn": "Entrar",
+    "signOut": "Sair"
   },
 
   "logout": {
@@ -63,7 +65,8 @@
     "physicalResource": "Recursos Físicos",
     "dashboard": "Dashboard",
     "login": "Entrar",
-    "logout": "Sair"
+    "logout": "Sair",
+    "adminPanel": "Gestão de Utilizadores"
   },
 
   "layout": {
@@ -90,6 +93,8 @@
     "noModules": "Ainda não há módulos disponíveis para o seu perfil.",
     "recentActivity": "Atividade recente",
     "quickActions": "Ações rápidas",
+    "adminPanel" : "Administração de Utilizadores",
+    "accessModules" : "Módulos de acesso",
     "announcement": {
       "title": "Avisos do sistema",
       "body": "Manutenção agendada hoje às 23:00 — alguns módulos poderão ficar indisponíveis."
@@ -679,6 +684,114 @@
       "withdrawSuccess": "VVN retirada.",
       "rejectSuccess": "VVN marcada como Pending Information.",
       "updateSuccess": "VVN atualizada."
+    }
+  },
+
+  "roleLauncher": {
+    "titleAuthorized": "Ir para {{role}}",
+    "awaitingTitle": "A aguardar autorização",
+    "awaitingHeader": "A aguardar autorização",
+    "awaitingMessage": "A sua conta foi registada e aguarda atribuição de perfil por parte de um Administrador."
+  },
+
+  "pending": {
+    "title": "A aguardar autorização",
+    "subtitle": "A sua conta foi registada com sucesso.",
+    "userInfo": "Dados do utilizador",
+    "name": "Nome",
+    "email": "Email",
+    "currentRole": "Perfil atual",
+    "none": "Nenhum",
+    "body": "Um Administrador irá atribuir-lhe um perfil interno em breve. Assim que o perfil for atribuído, o acesso às funcionalidades ficará disponível automaticamente.",
+    "actions": {
+      "refresh": "Tentar novamente",
+      "goHome": "Voltar ao início"
+    },
+    "contactHelp": "Se acha que isto é um engano, contacte o Administrador do sistema."
+  },
+
+  "users": {
+    "title": "Gestão de Utilizadores",
+    "loading" : "A carregar...",
+    "empty" : "Nenhum utilizador encontrado para o filtro inserido",
+    "search": {
+      "byEmail": "Email",
+      "noRole": "Unauthorized Users",
+      "all": "All",
+      "emailPlaceolder" : "Introduza o Email"
+    },
+    "actions": {
+      "search": "Pesquisar",
+      "clear": "Limpar",
+      "changeRole": "Alterar Função",
+      "activate": "Ativar",
+      "deactivate": "Desativar",
+      "close": "Fechar",
+      "backToDashboard": "Voltar ao Dashboard",
+      "view" : "Ver",
+      "saveRole" : "Salvar Função"
+    },
+    "table": {
+      "name": "Nome",
+      "email": "Email",
+      "role": "Função",
+      "status": "Estado",
+      "actions": "Ações",
+      "active": "Ativo",
+      "inactive": "Inativo"
+    },
+    "details": {
+      "title": "Detalhes do Utilizador",
+      "id": "ID do Utilizador",
+      "email": "Email",
+      "role": "Função",
+      "isActive": "Ativo",
+      "noRole": "Sem função atribuída"
+    },
+    "form": {
+      "selectRole": "Selecionar função",
+      "currentRole": "Função atual"
+    },
+    "success": {
+      "roleChanged": "Função alterada com sucesso!",
+      "activated": "Utilizador ativado com sucesso!",
+      "deactivated": "Utilizador desativado com sucesso!"
+    },
+    "errors": {
+      "load": "Erro ao carregar utilizadores.",
+      "search": "Erro na pesquisa de utilizadores.",
+      "changeRole": "Erro ao alterar a função do utilizador.",
+      "activate": "Erro ao ativar utilizador.",
+      "deactivate": "Erro ao desativar utilizador.",
+      "noResults": "Nenhum utilizador encontrado.",
+      "cannotEditSelf": "Não é possível alterar a sua própria função ou estado.",
+      "noRoleSelected": "Selecione uma função antes de guardar.",
+      "roleChangeFailed": "Falha ao alterar a função do utilizador.",
+      "toggleFailed": "Falha ao alterar o estado do utilizador."
+    },
+    "confirm": {
+      "activate": "Tens a certeza que queres ativar este utilizador?",
+      "deactivate": "Tens a certeza que queres desativar este utilizador?",
+      "changeRole": "Tens a certeza que queres alterar a função deste utilizador?"
+    },
+    "stats": {
+      "total": "Total",
+      "active": "Ativos",
+      "withoutRole": "Sem Função",
+      "withRole": "Com Função"
+    },
+    "status": {
+      "inactive": "Inativo",
+      "active": "Ativo"
+    },
+    "fields": {
+      "email": "Email",
+      "name": "Nome",
+      "role": "Função",
+      "status": "Estado",
+      "actions": "Ações",
+      "id" : "Id",
+      "auth0UserId" : "Auth0_Id"
     }
   }
 }

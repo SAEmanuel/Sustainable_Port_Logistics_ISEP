@@ -1,4 +1,5 @@
 using SEM5_PI_WEBAPI.Domain.Shared;
+using SEM5_PI_WEBAPI.Domain.Users.DTOs;
 using SEM5_PI_WEBAPI.Domain.ValueObjects;
 
 namespace SEM5_PI_WEBAPI.Domain.Users;
@@ -31,7 +32,7 @@ public class UserService : IUserService
         user.ToggleStatus();
         await _unitOfWork.CommitAsync();
         _logger.LogInformation("User with ID: {Id} toggled.", id.Value);
-        
+
         return UserMapper.ToDto(user);
     }
 
@@ -50,7 +51,7 @@ public class UserService : IUserService
         user.UpdateRole(newRole);
         await _unitOfWork.CommitAsync();
         _logger.LogInformation("User with ID: {Id} role changed.", id.Value);
-        
+
         return UserMapper.ToDto(user);
     }
 
@@ -65,11 +66,11 @@ public class UserService : IUserService
             throw new BusinessRuleValidationException($"User with ID: {id.Value} not found");
         }
 
-        var dto = UserMapper.ToDto(user); 
+        var dto = UserMapper.ToDto(user);
         _logger.LogInformation("User with ID: {Id} found.", id.Value);
         return dto;
     }
-    
+
     public async Task<UserDto> GetByEmailAsync(string email)
     {
         _logger.LogInformation("Fetching user with Email: {Email}", email);
@@ -81,7 +82,7 @@ public class UserService : IUserService
             throw new BusinessRuleValidationException($"User with Email: {email} not found");
         }
 
-        var dto = UserMapper.ToDto(user); 
+        var dto = UserMapper.ToDto(user);
         _logger.LogInformation("User with ID: {Email} found.", email);
         return dto;
     }
@@ -90,7 +91,7 @@ public class UserService : IUserService
     {
         _logger.LogInformation("Fetching all Non Authorized Users.");
         var list = await _repo.GetAllNonAuthorizedAsync();
-        var dtos = UserMapper.ToDtoList(list); 
+        var dtos = UserMapper.ToDtoList(list);
         _logger.LogInformation("Returning {Count} Non Authorized Users.", dtos.Count);
         return dtos;
     }
@@ -99,8 +100,35 @@ public class UserService : IUserService
     {
         _logger.LogInformation("Fetching all Users.");
         var list = await _repo.GetAllAsync();
-        var dtos = UserMapper.ToDtoList(list); 
+        var dtos = UserMapper.ToDtoList(list);
         _logger.LogInformation("Returning {Count} Users.", dtos.Count);
         return dtos;
+    }
+
+    public async Task<UserDto> AddAsync(CreatingUserDto userDto)
+    {
+        _logger.LogInformation("Adding user status with email: {Email}", userDto.Email);
+        await EnsureNotRepeatedEmail(userDto.Email);
+        var user = await UserFactory.CreateUser(userDto.Auth0UserId, userDto.Email, userDto.Name, userDto.Picture);
+        await _repo.AddAsync(user);
+        await _unitOfWork.CommitAsync();
+        var resultDto = UserMapper.ToDto(user);
+        _logger.LogInformation("User created with ID: {Id}", resultDto.Id);
+        return resultDto;
+    }
+
+    public async Task<UserDto?> TryGetByEmailAsync(string email)
+    {
+        _logger.LogInformation("Fetching user (try) with Email: {Email}", email);
+        var user = await _repo.GetByEmailAsync(email);
+        return user == null ? null : UserMapper.ToDto(user);
+    }
+
+    private async Task EnsureNotRepeatedEmail(string email)
+    {
+        _logger.LogInformation("Ensuring {Email} is not already stored in database", email);
+        var present = await _repo.GetByEmailAsync(email);
+        if (present != null)
+            throw new BusinessRuleValidationException("User already stored in database");
     }
 }

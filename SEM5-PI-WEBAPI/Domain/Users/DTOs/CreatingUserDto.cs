@@ -1,21 +1,25 @@
+using System.Text.Json.Serialization;
 using SEM5_PI_WEBAPI.Domain.ValueObjects;
 
 namespace SEM5_PI_WEBAPI.Domain.Users.DTOs;
 
 public class CreatingUserDto
 {
-    public string IamId { get; set; }
-    public string Email { get; set; }
+    public string Auth0UserId { get; set; }
     public string Name { get; set; }
+    public string Email { get; set; }
     public bool IsActive { get; set; }
-    public Roles Role { get; set; }
+    public Roles? Role { get; set; }
+    public string? Picture { get; set; }
 
-    public CreatingUserDto(string iamId, string email, string name, bool isActive, Roles role)
+    [JsonConstructor]
+    public CreatingUserDto(string auth0UserId, string name, string email, bool isActive, Roles? role, string? picture)
     {
-        IamId = iamId;
-        Email = email;
+        Auth0UserId = auth0UserId;
         Name = name;
+        Email = email;
         IsActive = isActive;
         Role = role;
+        Picture = picture;
     }
 }

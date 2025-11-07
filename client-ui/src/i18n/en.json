@@ -31,7 +31,9 @@
   "auth": {
     "loading": "Authenticating...",
     "success": "Session started successfully ✅",
-    "error": "Authentication failed ❌"
+    "error": "Authentication failed ❌",
+    "signIn": "Sign In",
+    "signOut": "Sign Out"
   },
 
   "logout": {
@@ -62,6 +64,7 @@
     "staffMembers": "Staff Members",
     "physicalResource": "Physical Resources",
     "dashboard": "Dashboard",
+    "adminPanel": "User Management",
     "login": "Login",
     "logout": "Logout"
   },
@@ -90,6 +93,8 @@
     "noModules": "No modules available for your profile yet.",
     "recentActivity": "Recent activity",
     "quickActions": "Quick actions",
+    "adminPanel" : "Users administration",
+    "accessModules" : "Access Modules",
     "announcement": {
       "title": "System notices",
       "body": "Scheduled maintenance today at 23:00 — some modules may be unavailable."
@@ -673,6 +678,115 @@
       "withdrawSuccess": "VVN withdrawn.",
       "rejectSuccess": "VVN marked as Pending Information.",
       "updateSuccess": "VVN updated."
+    }
+  },
+
+  "roleLauncher": {
+    "titleAuthorized": "Go to {{role}}",
+    "awaitingTitle": "Awaiting authorization",
+    "awaitingHeader": "Waiting for approval",
+    "awaitingMessage": "Your account has been registered and is awaiting role assignment by an Administrator."
+  },
+
+  "pending": {
+    "title": "Waiting for approval",
+    "subtitle": "Your account has been successfully registered.",
+    "userInfo": "User details",
+    "name": "Name",
+    "email": "Email",
+    "currentRole": "Current role",
+    "none": "None",
+    "body": "An Administrator will assign your internal role soon. Once assigned, you will automatically gain access to the allowed features.",
+    "actions": {
+      "refresh": "Try again",
+      "goHome": "Back to Home"
+    },
+    "contactHelp": "If you believe this is a mistake, please contact a system Administrator."
+  },
+
+  "users": {
+    "title": "User Management",
+    "loading" : "Loading...",
+    "empty" : "No users found for the selected filter",
+    "search": {
+      "byEmail": "Email",
+      "noRole": "Unauthorized Users",
+      "all": "All",
+      "emailPlaceholder" : "Enter Email"
+    },
+    "actions": {
+      "search": "Search",
+      "clear": "Clear",
+      "changeRole": "Change Role",
+      "activate": "Activate",
+      "deactivate": "Deactivate",
+      "close": "Close",
+      "backToDashboard": "Back to Dashboard",
+      "view" : "View",
+      "saveRole" : "Save Role"
+    },
+    "table": {
+      "name": "Name",
+      "email": "Email",
+      "role": "Role",
+      "status": "Status",
+      "actions": "Actions",
+      "active": "Active",
+      "inactive": "Inactive"
+    },
+    "details": {
+      "title": "User Details",
+      "id": "User ID",
+      "email": "Email",
+      "role": "Role",
+      "isActive": "Active",
+      "noRole": "No role assigned"
+    },
+    "form": {
+      "selectRole": "Select Role",
+      "currentRole": "Current Role"
+    },
+    "success": {
+      "roleChanged": "User role changed successfully!",
+      "activated": "User activated successfully!",
+      "deactivated": "User deactivated successfully!"
+    },
+    "errors": {
+      "load": "Error loading users.",
+      "search": "Error searching users.",
+      "changeRole": "Error changing user role.",
+      "activate": "Error activating user.",
+      "deactivate": "Error deactivating user.",
+      "noResults": "No users found.",
+      "cannotEditSelf": "You cannot change your own role or status.",
+      "noRoleSelected": "Select a role before saving.",
+      "roleChangeFailed": "Failed to change user role.",
+      "toggleFailed": "Failed to change user status."
+    },
+    "confirm": {
+      "activate": "Are you sure you want to activate this user?",
+      "deactivate": "Are you sure you want to deactivate this user?",
+      "changeRole": "Are you sure you want to change this user's role?"
+    },
+    "stats": {
+      "total": "Total",
+      "active": "Active",
+      "inactive": "Inactive",
+      "withoutRole": "No Role",
+      "withRole": "W/ Role"
+    },
+    "status": {
+      "inactive": "Inactive",
+      "active": "Active"
+    },
+    "fields": {
+      "email": "Email",
+      "name": "Name",
+      "role": "Role",
+      "status": "Status",
+      "actions": "Actions",
+      "id" : "Id",
+      "auth0UserId" : "Auth0_Id"
     }
   }
 }

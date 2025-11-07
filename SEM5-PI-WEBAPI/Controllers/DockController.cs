@@ -6,7 +6,7 @@ using SEM5_PI_WEBAPI.Domain.Shared;
 
 namespace SEM5_PI_WEBAPI.Controllers;
 
-[Authorize(Roles = "PortAuthorityOfficer")]
+//[Authorize(Roles = "PortAuthorityOfficer")]
 [ApiController]
 [Route("api/[controller]")]
 public class DockController : ControllerBase

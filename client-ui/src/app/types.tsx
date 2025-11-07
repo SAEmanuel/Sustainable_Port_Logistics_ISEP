@@ -1,15 +1,19 @@
 export const Roles = {
     Administrator: "Administrator",
-    PortAuthorityOfficer: "Port Authority Officer",
-    LogisticsOperator: "Logistics Operator",
-    ShippingAgentRepresentative: "Shipping Agent Representative",
-    Viewer: "Viewer",
+    PortAuthorityOfficer: "PortAuthorityOfficer",
+    LogisticsOperator: "LogisticsOperator",
+    ShippingAgentRepresentative: "ShippingAgentRepresentative",
+    ProjectManager: "ProjectManager",
 } as const;
 
 export type Role = typeof Roles[keyof typeof Roles];
 
 export interface User {
-    id: string;
-    name: string;
-    roles: Role[];
+    id?: string;
+    auth0UserId?: string;
+    email: string;
+    name?: string;
+    picture?: string;
+    role?: Role | null;
+    isActive?: boolean;
 }

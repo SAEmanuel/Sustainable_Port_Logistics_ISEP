@@ -1,258 +1,144 @@
-// src/pages/GenericDashboard.tsx
-import {type JSX, useEffect, useMemo} from "react";
-import {useNavigate} from "react-router-dom";
-import {useAppStore} from "../app/store";
-import {Roles, type Role} from "../app/types";
-import {useTranslation} from "react-i18next";
+import {JSX, useMemo} from "react";
+import { useNavigate } from "react-router-dom";
+import { useAppStore } from "../app/store";
+import { Roles, type Role } from "../app/types";
+import { useTranslation } from "react-i18next";
+import { useAuth0 } from "@auth0/auth0-react";
 import {
-    FaUserAlt, FaIdBadge, FaEnvelope, FaSignInAlt, FaClock,
-    FaUsers, FaCogs, FaCertificate, FaUniversity, FaShip,
-    // FaBell,
-    FaPlus, FaLink, FaRoute
+    FaUsers, FaCogs, FaCertificate, FaUniversity, FaShip, FaProjectDiagram, FaRoute,
 } from "react-icons/fa";
 import "./css/genericDashboard.css";
 
-/* ================================
- * Constantes & Utilitários
- * ================================ */
+type LinkItem = { label: string; path: string; color: string; icon: JSX.Element };
 
 const roleColor: Record<Role, string> = {
     [Roles.Administrator]: "#e63946",
     [Roles.PortAuthorityOfficer]: "#4361ee",
-    [Roles.LogisticsOperator]: "#f3722c",
-    [Roles.ShippingAgentRepresentative]: "#2a9d8f",
-    [Roles.Viewer]: "#6c757d",
+    [Roles.ShippingAgentRepresentative]: "#f3722c",
+    [Roles.LogisticsOperator]: "#2a9d8f",
+    [Roles.ProjectManager]: "#9b59b6",
 };
 
 const routeIcon: Record<string, JSX.Element> = {
-    "/vvn": <FaUniversity size={48} />,
-    "/qualifications": <FaCertificate size={48} />,
-    "/staff-members": <FaUsers size={48} />,
-    "/physical-resources": <FaCogs size={48} />,
-    "/vessels": <FaShip size={48} />,
+    "/vvn": <FaUniversity size={56} />,
+    "/qualifications": <FaCertificate size={56} />,
+    "/staff-members": <FaUsers size={56} />,
+    "/physical-resources": <FaCogs size={56} />,
+    "/vessels": <FaShip size={56} />,
+    "/projects": <FaProjectDiagram size={56} />,
 };
 
-type LinkItem = { label: string; path: string; color?: string; icon?: JSX.Element };
-
-function roleLabel(t: (k: string) => string, role: Role) {
-    const map: Partial<Record<Role, string>> = {
-        [Roles.Administrator]: t("roles.administrator"),
-        [Roles.PortAuthorityOfficer]: t("roles.officer"),
-        [Roles.LogisticsOperator]: t("roles.operator"),
-        [Roles.ShippingAgentRepresentative]: t("roles.agent"),
-        [Roles.Viewer]: t("roles.viewer"),
-    };
-    return map[role] ?? role;
+function getModuleKey(path: string) {
+    return path.split("?")[0].replace(/^\/|\/$/g, "") || "root";
 }
 
-/** enter key para cards “clicáveis” */
-function onKeyActivate(e: React.KeyboardEvent, fn: () => void) {
-    if (e.key === "Enter" || e.key === " ") {
-        e.preventDefault();
-        fn();
-    }
-}
-
-/* ================================
- * Mapeamento dinâmico de links por role
- * ================================ */
-function useAccessibleLinksByRole(t: (k: string) => string, roles: Role[]): LinkItem[] {
-    return useMemo(() => {
-        if (!roles?.length) return [];
-
-        const isAdmin = roles.includes(Roles.Administrator);
-        if (isAdmin) return []; // admin terá dashboard próprio
-
-        const isOp = roles.includes(Roles.LogisticsOperator);
-
-        const links: LinkItem[] = [
-            {
-                label: t("menu.vvn"),
-                path: "/vvn",
-                color: "#764ba2",
-                icon: routeIcon["/vvn"] ?? <FaRoute size={48} />,
-            },
-        ];
-
-        if (isOp) {
-            links.push(
-                {
-                    label: t("menu.qualifications"),
-                    path: "/qualifications",
-                    color: "#4361ee",
-                    icon: routeIcon["/qualifications"] ?? <FaCertificate size={48} />,
-                },
-                {
-                    label: t("dashboard.physicalResources") || t("dashboard.physicalResources"),
-                    path: "/physical-resources",
-                    color: "#f3722c",
-                    icon: routeIcon["/physical-resources"] ?? <FaCogs size={48} />,
-                },
-                {
-                    label: t("menu.staffMembers") || t("dashboard.staffMembers"),
-                    path: "/staff-members",
-                    color: "#2a9d8f",
-                    icon: routeIcon["/staff-members"] ?? <FaUsers size={48} />,
-                },
-            );
+function useAccessibleLinksByRole(t: (k: string) => string, role?: Role) {
+    return useMemo<LinkItem[]>(() => {
+        if (!role) return [];
+        const color = roleColor[role];
+        const L: LinkItem[] = [];
+        switch (role) {
+            case Roles.LogisticsOperator:
+                L.push(
+                    { label: t("dashboard.qualifications"), path: "/qualifications", color, icon: routeIcon["/qualifications"] },
+                    { label: t("dashboard.physicalResources"), path: "/physical-resources", color, icon: routeIcon["/physical-resources"] },
+                    { label: t("dashboard.staffMembers"), path: "/staff-members", color, icon: routeIcon["/staff-members"] },
+                );
+                break;
+            case Roles.ShippingAgentRepresentative:
+                L.push({ label: t("dashboard.vvn"), path: "/vvn", color, icon: routeIcon["/vvn"] });
+                break;
+            case Roles.PortAuthorityOfficer:
+                L.push({ label: t("dashboard.vessels"), path: "/vessels", color, icon: routeIcon["/vessels"] });
+                break;
+            case Roles.ProjectManager:
+                L.push({ label: t("dashboard.projects"), path: "/projects", color, icon: routeIcon["/projects"] });
+                break;
+            case Roles.Administrator:
+                L.push({ label: t("dashboard.adminPanel"), path: "/users", color, icon: <FaCogs size={56} /> });
+                break;
         }
-
-        // remove duplicados por path
-        const dedup = new Map(links.map(l => [l.path, l]));
-        return Array.from(dedup.values());
-    }, [roles, t]);
+        return L;
+    }, [role, t]);
 }
 
-/* ================================
- * Componente
- * ================================ */
 export default function GenericDashboard() {
     const navigate = useNavigate();
     const { t } = useTranslation();
-    const user = useAppStore((s) => s.user);
+    const storeUser = useAppStore((s) => s.user);
+    const { user: authUser } = useAuth0();
 
-    const email = (user as any)?.email ?? `${user?.id ?? "user"}@example.com`;
+    const role = storeUser?.role;
+    const links = useAccessibleLinksByRole(t, role);
 
-    // persiste "last_login_at" uma única vez por sessão
-    useEffect(() => {
-        const last = localStorage.getItem("last_login_at");
-        if (!last) localStorage.setItem("last_login_at", new Date().toISOString());
-    }, []);
-    const lastLogin = localStorage.getItem("last_login_at");
-
-    const links = useAccessibleLinksByRole(t, user?.roles ?? []);
-    
-
-    const recent = [
-        { id: "a1", title: t("dashboard.recent.updatedQualification"), time: "10m" },
-        { id: "a2", title: t("dashboard.recent.newStaffMember"), time: "2h" },
-        { id: "a3", title: t("dashboard.recent.resourceMaintenance"), time: t("dashboard.time.yesterday", "yesterday") },
-    ];
-
-    const quick = [
-        { label: t("dashboard.quick.addStaff"), icon: <FaPlus />, to: "/staff-members?new=1" },
-        { label: t("dashboard.quick.createQualification"), icon: <FaPlus />, to: "/qualifications?new=1" },
-        { label: t("dashboard.quick.addResource"), icon: <FaPlus />, to: "/physical-resources?new=1" },
-        { label: t("dashboard.quick.openVVN"), icon: <FaLink />, to: "/vvn" },
-    ];
+    const displayName = authUser?.name ?? storeUser?.name ?? "";
+    const email = authUser?.email ?? storeUser?.email ?? "";
+    const picture = authUser?.picture ?? "";
 
     return (
         <div className="gd-container">
-            {/* Banner / Avisos */}
-            {/*<div className="gd-banner" role="status" aria-live="polite">*/}
-            {/*    <div className="gd-banner-icon" aria-hidden><FaBell /></div>*/}
-            {/*    <div className="gd-banner-body">*/}
-            {/*        <strong>{t("dashboard.announcement.title")}</strong>*/}
-            {/*        <span>{t("dashboard.announcement.body")}</span>*/}
-            {/*    </div>*/}
-            {/*</div>*/}
-
-            {/* Cabeçalho do utilizador */}
-            <header className="gd-header">
-                {/* ESQUERDA: avatar + nome */}
-                <div className="gd-user-left">
-                    <div className="gd-avatar" aria-hidden>
-                        {(user?.name ?? "U").split(" ").map(s => s[0]).slice(0,2).join("").toUpperCase()}
-                    </div>
+            {/* HEADER com data-role */}
+            <header className="gd-header-modern" data-role={role ?? "none"}>
+                <div className="gd-profile">
+                    {picture ? (
+                        <img src={picture} alt={displayName || "avatar"} className="gd-avatar gd-avatar--img" />
+                    ) : (
+                        <div className="gd-avatar">
+                            {(displayName || "U")
+                                .split(" ")
+                                .map((s) => s[0])
+                                .slice(0, 2)
+                                .join("")
+                                .toUpperCase()}
+                        </div>
+                    )}
                     <div>
-                        <h1 className="gd-greeting">
-                            {t("dashboard.welcomeUser", { name: user?.name ?? t("dashboard.user") })}
-                        </h1>
-                        <p className="gd-sub">{t("dashboard.subtitle")}</p>
-                    </div>
-                </div>
-
-                {/* DIREITA: tiles de informação */}
-                <div className="gd-info-grid">
-                    <div className="gd-info">
-                        <div className="gd-info-label"><FaEnvelope aria-hidden /> Email</div>
-                        <div className="gd-info-value">{email}</div>
-                    </div>
-
-                    <div className="gd-info">
-                        <div className="gd-info-label"><FaIdBadge aria-hidden /> {t("dashboard.userId")}</div>
-                        <div className="gd-info-value">{user?.id}</div>
-                    </div>
-
-                    <div className="gd-info">
-                        <div className="gd-info-label"><FaSignInAlt aria-hidden /> {t("dashboard.lastLogin")}</div>
-                        <div className="gd-info-value">
-                            {lastLogin ? new Date(lastLogin).toLocaleString() : t("dashboard.justNow")}
-                        </div>
-                    </div>
-
-                    <div className="gd-info gd-info-roles">
-                        <div className="gd-info-label"><FaUserAlt aria-hidden /> {t("dashboard.roles")}</div>
-                        <div className="gd-roles-badges">
-                            {(user?.roles ?? []).map((r) => (
-                                <span key={r} className="gd-role-badge" style={{ backgroundColor: roleColor[r] }}>
-            {roleLabel(t, r)}
-          </span>
-                            ))}
-                        </div>
+                        <h1 className="gd-username">{displayName}</h1>
+                        {email && <p className="gd-role" style={{ color: role ? roleColor[role] : "inherit" }}>{email}</p>}
                     </div>
                 </div>
             </header>
 
-
-            {/* Cards dinâmicos (baseados nos roles) */}
-            <section className="gd-grid" aria-label="Available modules">
-                {links.map(link => (
-                    <div
-                        key={link.path}
-                        className="gd-card"
-                        tabIndex={0}
-                        role="button"
-                        aria-label={`${link.label}. ${t("dashboard.clickToOpen")}`}
-                        onClick={() => navigate(link.path)}
-                        onKeyDown={(e) => onKeyActivate(e, () => navigate(link.path))}
-                        style={{ "--card-color": link.color ?? "#667eea" } as React.CSSProperties}
-                    >
-                        <div className="gd-card-icon" style={{ color: link.color ?? "#667eea" }}>
-                            {link.icon ?? <FaRoute size={48} />}
-                        </div>
-                        <h3 className="gd-card-title">{link.label}</h3>
-                        <p className="gd-card-desc">{t("dashboard.clickToOpen")}</p>
-                        <div className="gd-card-arrow" aria-hidden>→</div>
-                    </div>
-                ))}
-                {links.length === 0 && (
-                    <div className="gd-empty" role="note">
-                        {t("dashboard.noModules")}
-                    </div>
-                )}
-            </section>
-
-            {/* Recentes + Ações rápidas */}
-            <section className="gd-bottom">
-                <div className="gd-recent">
-                    <h4>{t("dashboard.recentActivity")}</h4>
-                    <ul>
-                        {recent.map((r) => (
-                            <li key={r.id}>
-                                <span className="gd-dot" />
-                                <span className="gd-recent-title">{r.title}</span>
-                                <span className="gd-recent-time"><FaClock aria-hidden /> {r.time}</span>
-                            </li>
-                        ))}
-                    </ul>
-                </div>
-
-                <div className="gd-quick">
-                    <h4>{t("dashboard.quickActions")}</h4>
-                    <div className="gd-quick-grid">
-                        {quick.map((q) => (
-                            <button
-                                key={q.label}
-                                className="gd-quick-btn"
-                                onClick={() => navigate(q.to)}
-                                type="button"
+            {/* LINKS com data-module para cores por módulo */}
+            <section className="gd-links-section">
+                <h2 className="gd-section-title">{t("dashboard.accessModules")}</h2>
+                <div className="gd-links-grid">
+                    {links.map((link) => {
+                        const moduleKey = getModuleKey(link.path);
+                        return (
+                            <div
+                                key={link.path}
+                                className="gd-link-card"
+                                data-module={moduleKey}
+                                tabIndex={0}
+                                role="button"
+                                aria-label={`${link.label}. ${t("dashboard.clickToOpen")}`}
+                                onClick={() => navigate(link.path)}
+                                onKeyDown={(e) => {
+                                    if (e.key === "Enter" || e.key === " ") {
+                                        e.preventDefault();
+                                        navigate(link.path);
+                                    }
+                                }}
                             >
-                                <span className="gd-quick-icon">{q.icon}</span>
-                                {q.label}
-                            </button>
-                        ))}
-                    </div>
+                                <div
+                                    className="gd-link-icon"
+                                    style={{
+                                        background: `${link.color}22`,
+                                        border: `1px solid ${link.color}55`,
+                                        color: link.color,
+                                    }}
+                                >
+                                    {link.icon ?? <FaRoute size={56} />}
+                                </div>
+                                <div className="gd-link-body">
+                                    <h3>{link.label}</h3>
+                                    <p>{t("dashboard.clickToOpen")}</p>
+                                </div>
+                            </div>
+                        );
+                    })}
+                    {links.length === 0 && <div className="gd-empty">{t("dashboard.noModules")}</div>}
                 </div>
             </section>
         </div>
