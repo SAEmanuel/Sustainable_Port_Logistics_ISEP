@@ -16,5 +16,5 @@ export interface User {
     picture?: string;
     role?: Role | null;
     isActive?: boolean;
-    Eliminated?: boolean;
+    eliminated?: boolean;
 }

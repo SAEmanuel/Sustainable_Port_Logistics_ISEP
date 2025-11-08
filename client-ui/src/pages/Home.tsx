@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useAppStore } from "../app/store";
+import { useAuth0 } from "@auth0/auth0-react";
 import { Roles } from "../app/types";
 import AOS from "aos";
 import "aos/dist/aos.css";
@@ -11,15 +12,38 @@ import "./css/home.css";
 export default function Home() {
     const { t } = useTranslation();
     const navigate = useNavigate();
-    const user = useAppStore((s) => s.user);
+    const { user: authUser, getAccessTokenSilently, isAuthenticated } = useAuth0();
+    const { user, setUser } = useAppStore();
 
     useEffect(() => {
-        const hasRefreshed = localStorage.getItem("hasRefreshedHome");
-        if (!hasRefreshed) {
-            localStorage.setItem("hasRefreshedHome", "true");
-            window.location.reload();
-        }
-    }, []);
+        const fetchUserFromBackend = async () => {
+            if (!isAuthenticated || !authUser?.email) return;
+
+            try {
+                const token = await getAccessTokenSilently();
+                const res = await fetch(
+                    `http://localhost:5008/api/user/email/${encodeURIComponent(authUser.email)}`,
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                        },
+                    }
+                );
+
+                if (!res.ok) {
+                    console.warn("Utilizador não encontrado no backend");
+                    return;
+                }
+
+                const freshUser = await res.json();
+                setUser(freshUser);
+            } catch (err) {
+                console.error("Erro ao sincronizar utilizador:", err);
+            }
+        };
+
+        fetchUserFromBackend();
+    }, [isAuthenticated, authUser, getAccessTokenSilently, setUser]);
 
     useEffect(() => {
         AOS.init({ duration: 1000, once: true });
@@ -28,6 +52,11 @@ export default function Home() {
     const handleAccess = () => {
         if (!user) {
             navigate("/login");
+            return;
+        }
+
+        if (user.eliminated === true) {
+            navigate("/deleted");
             return;
         }
 
@@ -57,6 +86,7 @@ export default function Home() {
 
     return (
         <>
+            {/* HERO */}
             <section className="hero" data-aos="fade-up">
                 <div className="hero-content">
                     <h2>{t("welcomeTitle")}</h2>

@@ -19,6 +19,7 @@ import { RequireAuth, RequireRole, RequireApproved } from "../hooks/useAuthGuard
 import { Roles } from "../app/types";
 import User from "../features/users/pages/User.tsx";
 import ActivateAccount from "../pages/ActivateAccount.tsx";
+import DeletedAccount from "../pages/DeletedAccount.tsx";
 
 export const router = createBrowserRouter([
     {
@@ -33,6 +34,8 @@ export const router = createBrowserRouter([
                     { path: "activate", element: <ActivateAccount /> },
 
                     { path: "inactive", element: <InactiveAccount /> },
+
+                    { path: "deleted", element: <DeletedAccount /> },
 
                     { path: "pending-approval", element: <PendingApproval /> },
 

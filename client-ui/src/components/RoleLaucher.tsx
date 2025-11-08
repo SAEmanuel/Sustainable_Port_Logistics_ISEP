@@ -8,9 +8,10 @@ import { useTranslation } from "react-i18next";
 
 export default function RoleLauncher() {
     const { t } = useTranslation();
-    const { user: authUser } = useAuth0();
-    const user = useAppStore((s) => s.user);
+    const { user: authUser, getAccessTokenSilently, isAuthenticated } = useAuth0();
+    const { user, setUser } = useAppStore();
     const [open, setOpen] = useState(false);
+    const [loading, setLoading] = useState(false);
     const menuRef = useRef<HTMLDivElement>(null);
     const navigate = useNavigate();
 
@@ -27,12 +28,44 @@ export default function RoleLauncher() {
         return () => document.removeEventListener("mousedown", handleClickOutside);
     }, []);
 
+    const fetchUserFromBackend = async () => {
+        if (!isAuthenticated || !authUser?.email) return;
+        setLoading(true);
+        try {
+            const token = await getAccessTokenSilently();
+            const res = await fetch(
+                `http://localhost:5008/api/user/email/${encodeURIComponent(authUser.email)}`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
+
+
+            if (!res.ok) {
+                console.warn("Utilizador não encontrado no backend.");
+                setLoading(false);
+                return;
+            }
+
+            const freshUser = await res.json();
+            setUser(freshUser);
+            setLoading(false);
+            return freshUser;
+        } catch (err) {
+            console.error("Erro ao sincronizar utilizador:", err);
+            setLoading(false);
+        }
+    };
+
     const goToRoleHome = (role: string) => {
         switch (role) {
             case Roles.Administrator:
             case Roles.LogisticsOperator:
             case Roles.ShippingAgentRepresentative:
             case Roles.PortAuthorityOfficer:
+            case Roles.ProjectManager:
                 navigate("/dashboard");
                 break;
             default:
@@ -41,14 +74,26 @@ export default function RoleLauncher() {
         }
     };
 
-    const onClick = () => {
-        if (user && user.isActive === false) {
+    const onClick = async () => {
+        const freshUser = await fetchUserFromBackend();
+        console.log(freshUser);
+        if (!freshUser) {
+            navigate("/login");
+            return;
+        }
+
+        if (freshUser.eliminated === true) {
+            navigate("/deleted");
+            return;
+        }
+
+        if (freshUser.isActive === false) {
             navigate("/inactive");
             return;
         }
 
-        if (user?.role) {
-            goToRoleHome(user.role);
+        if (freshUser.role) {
+            goToRoleHome(freshUser.role);
             return;
         }
 
@@ -65,6 +110,7 @@ export default function RoleLauncher() {
                         ? t("roleLauncher.titleAuthorized", { role: user.role })
                         : t("roleLauncher.awaitingTitle")
                 }
+                disabled={loading}
             >
                 {avatar ? (
                     <img
@@ -75,7 +121,12 @@ export default function RoleLauncher() {
                             width: 32,
                             height: 32,
                             borderRadius: "50%",
-                            border: user?.isActive === false ? "2px solid #e63946" : "2px solid transparent",
+                            opacity: loading ? 0.6 : 1,
+                            cursor: loading ? "not-allowed" : "pointer",
+                            border:
+                                user?.isActive === false
+                                    ? "2px solid #e63946"
+                                    : "2px solid transparent",
                         }}
                     />
                 ) : (
@@ -100,7 +151,7 @@ export default function RoleLauncher() {
                         zIndex: 60,
                         fontSize: 14,
                         backdropFilter: "blur(10px)",
-                        animation: "fadeSlideDown 0.25s ease"
+                        animation: "fadeSlideDown 0.25s ease",
                     }}
                 >
                     <strong style={{ display: "block", marginBottom: 6 }}>

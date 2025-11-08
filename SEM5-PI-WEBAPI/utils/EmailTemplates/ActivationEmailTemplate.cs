@@ -7,59 +7,54 @@ public static class ActivationEmailTemplate
         var activationLink = $"http://localhost:5173/activate?email={Uri.EscapeDataString(email)}";
 
         return $@"
-        <html lang='pt'>
-        <body style='font-family: Arial, sans-serif; background-color: #f9fafc; padding: 2rem;'>
-            <div style='max-width: 600px; margin: auto; background: #fff; border-radius: 10px; padding: 2rem; box-shadow: 0 5px 20px rgba(0,0,0,0.1);'>
+<html lang='pt'>
+  <body style='font-family: Arial, sans-serif; background-color: #f4f6f8; margin: 0; padding: 0;'>
+    <div style='max-width:600px; margin:40px auto; background:#ffffff; border-radius:8px; padding:24px; border:1px solid #e0e0e0;'>
+      
+      <!-- Portuguese section -->
+      <h2 style='color:#1d3557;'>Bem-vindo à Gestão Portuária da ThPA</h2>
+      <p style='color:#333;'>Olá <strong>{name}</strong>,</p>
+      <p style='color:#333;'>
+        Para ativar a sua conta, aceda ao link abaixo:
+      </p>
 
-                
-                <h2 style='color: #1d3557;'>Bem-vindo à Gestão Portuária da ThPA</h2>
+      <p style='margin:16px 0; word-break:break-all;'>
+        <a href='{activationLink}' target='_blank' style='color:#1a73e8; text-decoration:none;'>
+          {activationLink}
+        </a>
+      </p>
 
-                <p>Olá <strong>{name}</strong>,</p>
+      <p style='color:#333;'>
+        Após a ativação, deverá aguardar que o administrador do sistema atribua a sua função (role) antes de poder aceder à plataforma.
+      </p>
 
-                <p>Para ativar a sua conta, clique no botão abaixo:</p>
+      <hr style='margin:32px 0; border:none; border-top:2px solid #ddd;' />
 
-                <a href='{activationLink}' 
-                   style='display: inline-block; background: #1d3557; color: #fff; text-decoration: none; 
-                          padding: 12px 24px; border-radius: 8px; font-weight: bold; margin-top: 1rem;'>
-                    Ativar conta
-                </a>
+      <!-- English section -->
+      <h2 style='color:#1d3557;'>Welcome to ThPA Port Management System</h2>
+      <p style='color:#333;'>Hello <strong>{name}</strong>,</p>
+      <p style='color:#333;'>
+        To activate your account, please open the following link:
+      </p>
 
-                <p style='margin-top: 1.5rem; color: #333;'>
-                    Se o botão não funcionar, copie e cole este link no seu navegador:
-                </p>
+      <p style='margin:16px 0; word-break:break-all;'>
+        <a href='{activationLink}' target='_blank' style='color:#1a73e8; text-decoration:none;'>
+          {activationLink}
+        </a>
+      </p>
 
-                <p style='word-break: break-all; color: #457b9d;'>{activationLink}</p>
+      <p style='color:#333;'>
+        After activation, please wait for the system administrator to assign your role before accessing the platform.
+      </p>
 
-                <hr style='margin: 2.5rem 0; border: none; border-top: 2px solid #ddd;' />
+      <hr style='margin:32px 0; border:none; border-top:1px solid #eee;' />
 
-                
-                <h2 style='color: #1d3557;'>Welcome to ThPA Port Management System</h2>
-
-                <p>Hello <strong>{name}</strong>,</p>
-
-                <p>To activate your account, please click the button below:</p>
-
-                <a href='{activationLink}' 
-                   style='display: inline-block; background: #1d3557; color: #fff; text-decoration: none; 
-                          padding: 12px 24px; border-radius: 8px; font-weight: bold; margin-top: 1rem;'>
-                    Activate account
-                </a>
-
-                <p style='margin-top: 1.5rem; color: #333;'>
-                    If the button doesn’t work, please copy and paste this link into your browser:
-                </p>
-
-                <p style='word-break: break-all; color: #457b9d;'>{activationLink}</p>
-
-                <hr style='margin: 2.5rem 0; border: none; border-top: 1px solid #eee;' />
-
-                <p style='font-size: 0.9rem; color: #666;'>
-                    Atenciosamente / Best regards,<br/>
-                    <strong>Equipa de Gestão Portuária da ThPA / ThPA Port Management Team</strong>
-                </p>
-            </div>
-        </body>
-        </html>
-        ";
+      <p style='font-size:0.9rem; color:#666; text-align:center;'>
+        Atenciosamente / Best regards,<br/>
+        <strong>Equipa de Gestão Portuária da ThPA / ThPA Port Management Team</strong>
+      </p>
+    </div>
+  </body>
+</html>";
     }
 }
