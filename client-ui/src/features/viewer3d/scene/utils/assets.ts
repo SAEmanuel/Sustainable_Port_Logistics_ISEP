@@ -32,10 +32,27 @@ export const ASSETS_MODELS = {
     storageArea:{
         wareHouser: `${MODELS}/storageAreas/WareHouse.glb`,
     },
+    docks: {
+        straight: `${MODELS}/Dock.glb`,
+        Lshape:   `${MODELS}/Dock_Complex.glb`,
+    },
     props: {},
 } as const;
 
+
 export const ASSETS_TEXTURES = {
+    port: {
+        paving: {
+            paving:     `${TEX}/paving.jpg`,
+        },
+        water: {
+            water:     `${TEX}/water.jpg`,
+        },
+        road: {
+            road:     `${TEX}/road.jpg`,
+            roadhorizontal:     `${TEX}/road_horizontal.jpg`,
+        }
+    },
     vessels: {
         containerShip: `${TEX}/ships/colormap.png`,
     },

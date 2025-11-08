@@ -28,11 +28,24 @@ export default function Nav() {
         ]
         : [];
 
-    const sarMenu = user?.role?.includes(Roles.ShippingAgentRepresentative)
-        ? [{ label: t("menu.vvn"), path: "/vvn" }]
+    const portAuthorityOfficerMenu = user?.role?.includes(Roles.PortAuthorityOfficer)
+        ? [
+            { label: t("menu.dashboard"), path: "/dashboard" },
+            { label: t("menu.3dView"), path: "/3dSecene" },
+            { label: t("menu.storageArea"), path: "/storage-areas" },
+            { label: t("menu.vesselTypes"), path: "/vessel-types" },
+            { label: t("menu.vessels"), path: "/vessels" },
+            { label: t("menu.vvn"), path: "/vvn" },
+        ]
         : [];
 
-    const menu = [...baseMenu, ...adminMenu, ...operatorMenu, ...sarMenu];
+    const sarMenu = user?.role?.includes(Roles.ShippingAgentRepresentative)
+        ? [
+            { label: t("menu.vvn"), path: "/vvn" },
+        ]
+        : [];
+
+    const menu = [...baseMenu, ...adminMenu, ...operatorMenu, ...sarMenu, ...portAuthorityOfficerMenu];
 
     return (
         <nav>
