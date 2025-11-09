@@ -1,11 +1,9 @@
-/* PÁGINA */
 .qual-page {
     padding: 2rem;
     max-width: 1200px;
     margin: 0 auto;
 }
 
-/* CABEÇALHO */
 .qual-title-area {
     display: flex;
     justify-content: space-between;
@@ -46,7 +44,6 @@
     background: #3a8fd9;
 }
 
-/* TABELA */
 .qual-table-wrapper {
     overflow-x: auto;
     border-radius: 12px;
@@ -73,13 +70,13 @@
     letter-spacing: 0.5px;
 }
 
+.qual-row {
+    cursor: pointer;
+}
+
 .qual-table tbody tr {
     border-bottom: 1px solid #eee;
     transition: background 0.2s;
-}
-
-.qual-row {
-    cursor: pointer;
 }
 
 .qual-row:hover {
@@ -99,7 +96,6 @@
     font-weight: 600;
 }
 
-/* ESTADOS */
 .qual-loading,
 .qual-empty {
     text-align: center;
@@ -108,13 +104,10 @@
     font-size: 1.1rem;
 }
 
-/* SLIDE-IN DE DETALHES */
+
 .qual-overlay {
     position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
+    inset: 0;
     background: rgba(0, 0, 0, 0.5);
     z-index: 999;
 }
@@ -210,34 +203,6 @@
     color: white;
 }
 
-/* DARK MODE */
-[data-theme="dark"] .qual-table {
-    background: #2d2d2d;
-}
-
-[data-theme="dark"] .qual-table tbody tr {
-    border-bottom-color: #444;
-}
-
-[data-theme="dark"] .qual-row:hover {
-    background: #3a3a3a;
-}
-
-[data-theme="dark"] .qual-slide {
-    background: #2d2d2d;
-    color: #eee;
-}
-
-[data-theme="dark"] .qual-slide h3 {
-    color: #eee;
-}
-
-[data-theme="dark"] .qual-badge {
-    background: #1e3a5f;
-    color: #64b5f6;
-}
-
-/* BOTÕES DE BUSCA */
 .qual-search-buttons {
     display: flex;
     gap: 1rem;
@@ -265,7 +230,6 @@
     border-color: #4361ee;
 }
 
-/* ÁREA DE BUSCA */
 .qual-search-box {
     display: flex;
     gap: 1rem;
@@ -312,7 +276,7 @@
     cursor: not-allowed;
 }
 
-/* RESULTADO DA BUSCA */
+
 .qual-search-result {
     margin-bottom: 2rem;
 }
@@ -346,35 +310,6 @@
     margin-top: 1.5rem;
     padding-top: 1.5rem;
     border-top: 1px solid #eee;
-}
-
-/* DARK MODE */
-[data-theme="dark"] .qual-search-buttons button {
-    background: #3a3a3a;
-    color: #eee;
-}
-
-[data-theme="dark"] .qual-search-buttons button.active {
-    background: #4361ee;
-}
-
-[data-theme="dark"] .qual-search-box {
-    background: #2d2d2d;
-}
-
-[data-theme="dark"] .qual-search-input {
-    background: #3a3a3a;
-    border-color: #555;
-    color: #eee;
-}
-
-[data-theme="dark"] .qual-result-card {
-    background: #2d2d2d;
-    border-color: #4361ee;
-}
-
-[data-theme="dark"] .qual-search-result h3 {
-    color: #eee;
 }
 
 
@@ -455,10 +390,6 @@
     margin-bottom: 1.5rem;
 }
 
-.qual-form-group:last-child {
-    margin-bottom: 0;
-}
-
 .qual-form-group label {
     display: block;
     font-weight: 600;
@@ -529,30 +460,65 @@
     cursor: not-allowed;
 }
 
-/* DARK MODE */
-[data-theme="dark"] .qual-edit-modal {
+/* ========================== */
+/* DARK MODE                  */
+/* ========================== */
+[data-theme="dark"] .qual-table {
     background: #2d2d2d;
 }
 
-[data-theme="dark"] .qual-edit-header {
+[data-theme="dark"] .qual-table tbody tr {
     border-bottom-color: #444;
 }
 
-[data-theme="dark"] .qual-edit-header h3 {
+[data-theme="dark"] .qual-row:hover {
+    background: #3a3a3a;
+}
+
+[data-theme="dark"] .qual-slide,
+[data-theme="dark"] .qual-edit-modal,
+[data-theme="dark"] .qual-result-card {
+    background: #2d2d2d;
+    color: #eee;
+}
+
+
+
+[data-theme="dark"] .qual-search-buttons button {
+    background: #3a3a3a;
+    color: #eee;
+}
+
+[data-theme="dark"] .qual-search-buttons button.active {
+    background: #4361ee;
+}
+
+[data-theme="dark"] .qual-search-box {
+    background: #2d2d2d;
+}
+
+[data-theme="dark"] .qual-search-input {
+    background: #3a3a3a;
+    border-color: #555;
+    color: #eee;
+}
+
+[data-theme="dark"] .qual-edit-header,
+[data-theme="dark"] .qual-edit-actions {
+    border-color: #444;
+}
+
+[data-theme="dark"] .qual-edit-header h3,
+[data-theme="dark"] .qual-edit-current strong {
     color: #eee;
 }
 
 [data-theme="dark"] .qual-edit-current {
     background: #3a3a3a;
-    border-bottom-color: #444;
 }
 
 [data-theme="dark"] .qual-edit-current p {
     color: #bbb;
-}
-
-[data-theme="dark"] .qual-edit-current strong {
-    color: #eee;
 }
 
 [data-theme="dark"] .qual-form-group label {
@@ -565,11 +531,13 @@
     color: #eee;
 }
 
-[data-theme="dark"] .qual-edit-actions {
-    border-top-color: #444;
-}
-
 [data-theme="dark"] .qual-btn-cancel {
     background: #3a3a3a;
     color: #eee;
+}
+
+.qual-header-left {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
 }

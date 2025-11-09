@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import { notifyLoading, notifySuccess } from "../../../utils/notify";
 import toast from "react-hot-toast";
 import { FaCertificate } from "react-icons/fa";
+import { Link } from "react-router-dom";
 import type { Qualification } from "../types/qualification";
 import { getQualifications } from "../services/qualificationService";
 import QualificationTable from "../components/QualificationTable";
@@ -10,7 +11,7 @@ import QualificationSearch from "../components/QualificationSearch";
 import QualificationDetails from "../components/QualificationDetails";
 import QualificationEditModal from "../components/QualificationEditModal";
 import QualificationCreateModal from "../components/QualificationCreateModal";
-import "../style/qualificationList.css";
+import "../style/qualification.css";
 
 export default function Qualification() {
     const [items, setItems] = useState<Qualification[]>([]);
@@ -65,15 +66,27 @@ export default function Qualification() {
         <div className="qual-page">
             {/* HEADER */}
             <div className="qual-title-area">
-                <div className="qual-title-box">
-                    <h2 className="qual-title">
-                        <FaCertificate className="qual-icon" /> {t("qualifications.title")}
-                    </h2>
-                    <p className="qual-sub">
-                        {t("qualifications.count", { count: items.length })}
-                    </p>
+                {/* BOTÃO DE VOLTAR + TÍTULO */}
+                <div className="qual-header-left">
+                    <Link
+                        to="/dashboard"
+                        className="pr-back-button"
+                        title={t("physicalResource.actions.backToDashboard")}
+                    >
+                        ‹
+                    </Link>
+
+                    <div className="qual-title-box">
+                        <h2 className="qual-title">
+                            <FaCertificate className="qual-icon" /> {t("qualifications.title")}
+                        </h2>
+                        <p className="qual-sub">
+                            {t("qualifications.count", { count: items.length })}
+                        </p>
+                    </div>
                 </div>
 
+                {/* BOTÃO DE CRIAR */}
                 <button
                     className="qual-create-btn-top"
                     onClick={() => setCreateMode(true)}
