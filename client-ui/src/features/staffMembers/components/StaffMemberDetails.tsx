@@ -99,7 +99,6 @@ export default function StaffMemberDetails({
                     <FaCalendarAlt style={{ marginLeft: 6, color: "#667eea" }} />
                 </p>
 
-                {/* Qualifications */}
                 {staffMember.qualificationCodes?.length > 0 && (
                     <div className="staffMember-qualifications">
                         <strong>{t("staffMembers.details.qualifications")}:</strong>
@@ -111,7 +110,6 @@ export default function StaffMemberDetails({
                     </div>
                 )}
 
-                {/*  DOIS BOTÕES */}
                 <div className="staffMember-slide-actions" style={{ marginTop: "2rem" }}>
                     <button
                         className="staffMember-btn-toggle"

@@ -1,4 +1,4 @@
-import { JSX, useMemo } from "react";
+import {type JSX, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAppStore } from "../app/store";
 import { Roles, type Role } from "../app/types";
@@ -34,7 +34,7 @@ const routeIcon: Record<string, JSX.Element> = {
     "/projects": <FaProjectDiagram size={44} />,
 };
 
-function useAccessibleLinksByRole(t: (k: string) => string, role?: Role) {
+function useAccessibleLinksByRole(t: (k: string) => string, role?: "Administrator" | "PortAuthorityOfficer" | "LogisticsOperator" | "ShippingAgentRepresentative" | "ProjectManager" | null | undefined) {
     return useMemo<LinkItem[]>(() => {
         if (!role) return [];
         const color = roleColor[role];

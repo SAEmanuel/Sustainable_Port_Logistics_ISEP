@@ -63,6 +63,7 @@
     "storageArea": "Storage Areas",
     "qualifications": "Qualifications",
     "staffMembers": "Staff Members",
+    "3dView": "3D Port",
     "physicalResource": "Physical Resources",
     "dashboard": "Dashboard",
     "adminPanel": "User Management",
@@ -566,6 +567,10 @@
     }
   },
 
+  "navExit": {
+    "logout" : "Sair"
+  },
+
   "common": {
     "optional": "optional",
     "cancel": "Cancel",
@@ -789,5 +794,32 @@
       "id" : "Id",
       "auth0UserId" : "Auth0_Id"
     }
+  },
+
+  "activation": {
+    "titleLoading": "⏳ Please wait",
+    "titleSuccess": "✅ Account Activated",
+    "titleError": "❌ Activation Failed",
+
+    "loading": "🔄 Activating your account...",
+    "missingLink": "⚠️ Invalid or missing activation link.",
+    "invalidLink": "⚠️ This activation link is invalid or expired (user not found).",
+    "removedAccount": "❌ This account has been removed. The activation link is no longer valid.",
+    "successMessage": "✅ Account activated successfully!",
+    "failedMessage": "⚠️ Activation failed. Please contact support.",
+    "unexpectedError": "❌ An unexpected error occurred while activating your account.",
+    "goHome": "Go to Home"
+  },
+
+  "deleted": {
+    "title": "❌ Account Deleted",
+    "message": "Your account has been permanently deleted and you no longer have access to the system.",
+    "details": "Account Details:",
+    "emailText": "This account was associated with the email address:",
+    "actions": {
+      "back": "Return to Home"
+    },
+    "contact": "If you believe this was a mistake, please contact the system administrator.",
+    "unknownEmail": "unknown email address"
   }
 }

@@ -7,6 +7,7 @@ import VesselsTypes from "../features/vesselsTypes/pages/VesselsTypes";
 import Vessels from "../features/vessels/pages/Vessel";
 import StorageArea from "../features/storageAreas/pages/storageAreaPage";
 import StorageAreaCreate from "../features/storageAreas/pages/StorageAreaCreatePage.tsx";
+import PortScene from "../features/viewer3d/pages/Viewer3DPage";
 import PhysicalResource from "../features/physicalResource/pages/PhysicalResource";
 import GenericDashboard from "../pages/GenericDashboard";
 import VvnPage from "../features/vesselVisitNotification/pages/VvnListPage";
@@ -17,6 +18,8 @@ import InactiveAccount from "../pages/InactiveAccount.tsx";
 import { RequireAuth, RequireRole, RequireApproved } from "../hooks/useAuthGuard";
 import { Roles } from "../app/types";
 import User from "../features/users/pages/User.tsx";
+import ActivateAccount from "../pages/ActivateAccount.tsx";
+import DeletedAccount from "../pages/DeletedAccount.tsx";
 
 export const router = createBrowserRouter([
     {
@@ -28,8 +31,11 @@ export const router = createBrowserRouter([
             {
                 element: <RequireAuth />,
                 children: [
+                    { path: "activate", element: <ActivateAccount /> },
 
                     { path: "inactive", element: <InactiveAccount /> },
+
+                    { path: "deleted", element: <DeletedAccount /> },
 
                     { path: "pending-approval", element: <PendingApproval /> },
 
@@ -37,12 +43,16 @@ export const router = createBrowserRouter([
                         element: <RequireApproved />,
                         children: [
                             { path: "dashboard", element: <GenericDashboard /> },
-
+                            {
+                                path: "3dSecene",
+                                element: (<RequireRole roles={[Roles.Administrator, Roles.PortAuthorityOfficer]}/>),
+                                children: [{ index: true, element: <PortScene /> }],
+                            },
                             {
                                 path: "vvn",
                                 element: (
                                     <RequireRole
-                                        roles={[Roles.Administrator, Roles.ShippingAgentRepresentative]}
+                                        roles={[Roles.Administrator, Roles.ShippingAgentRepresentative, Roles.PortAuthorityOfficer]}
                                     />
                                 ),
                                 children: [{ index: true, element: <VvnPage /> }],
@@ -64,7 +74,7 @@ export const router = createBrowserRouter([
                             },
                             {
                                 path: "storage-areas",
-                                element: <RequireRole roles={[Roles.Administrator]} />,
+                                element: <RequireRole roles={[Roles.Administrator,Roles.PortAuthorityOfficer]} />,
                                 children: [
                                     { index: true, element: <StorageArea /> },
                                     { path: "new", element: <StorageAreaCreate /> },
@@ -72,12 +82,12 @@ export const router = createBrowserRouter([
                             },
                             {
                                 path: "vessel-types",
-                                element: <RequireRole roles={[Roles.Administrator]} />,
+                                element: <RequireRole roles={[Roles.Administrator, Roles.PortAuthorityOfficer]} />,
                                 children: [{ index: true, element: <VesselsTypes /> }],
                             },
                             {
                                 path: "vessels",
-                                element: <RequireRole roles={[Roles.Administrator]} />,
+                                element: <RequireRole roles={[Roles.Administrator, Roles.PortAuthorityOfficer]} />,
                                 children: [{ index: true, element: <Vessels /> }],
                             },
                             {

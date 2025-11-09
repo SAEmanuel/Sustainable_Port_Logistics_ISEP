@@ -1,67 +1,125 @@
 // src/features/viewer3d/scene/objects/StorageArea.ts
 import * as THREE from "three";
 import type { StorageAreaDto } from "../../types";
-import { Materials } from "../Materials";
+import { ASSETS_MODELS } from "../utils/assets";
 import { loadGLB } from "../utils/loader";
+import { Materials } from "../Materials";
 
-function scaleToFit(obj: THREE.Object3D, W: number, H: number, D: number) {
+/* ===================== Tunables (corredores / altura) ===================== */
+/** Quanto menor, mais corredor entre armazéns (aplica-se a X e Z). */
+const FOOTPRINT_SCALE = 0.65;
+/** Escala vertical para aumentar pé-direito do modelo. */
+const HEIGHT_SCALE = 3;
+/** Elevação mínima para evitar z-fighting com o pavimento. */
+const LIFT_EPS = 0.01; // 1 cm
+
+/* ========================== BBox helpers ========================== */
+function getSize(obj: THREE.Object3D) {
     const box = new THREE.Box3().setFromObject(obj);
-    const size = new THREE.Vector3(); box.getSize(size);
-    const sx = W / (size.x || 1);
-    const sy = H / (size.y || 1);
-    const sz = D / (size.z || 1);
-    const k = Math.min(sx, sy, sz);         // escala uniforme p/ caber
-    if (Number.isFinite(k) && k > 0) obj.scale.multiplyScalar(k);
+    const size = box.getSize(new THREE.Vector3());
+    return { box, size };
 }
 
-// PLACEHOLDER (igual ao teu)
-export function makeStorageAreaPlaceholder(sa: StorageAreaDto): THREE.Object3D {
-    const W = Math.max(2, Number(sa.widthM)  || 10);
-    const H = Math.max(1, Number(sa.heightM) ||  3);
-    const D = Math.max(2, Number(sa.depthM)  || 10);
+/** Coloca o pivot no centro da base (base a y=0). */
+function centerOnBottom(obj: THREE.Object3D) {
+    const { box } = getSize(obj);
+    const center = box.getCenter(new THREE.Vector3());
+    const pivot = new THREE.Vector3(center.x, box.min.y, center.z);
+    obj.position.sub(pivot);
+}
 
-    const mesh = new THREE.Mesh(new THREE.BoxGeometry(W, H, D), Materials.storage);
-    mesh.castShadow = false; mesh.receiveShadow = true;
+/** Escala o objeto para caber exactamente em W×H×D. */
+function fitToSize(obj: THREE.Object3D, W: number, H: number, D: number) {
+    const { size } = getSize(obj);
+    const sx = W / Math.max(size.x, 1e-6);
+    const sy = H / Math.max(size.y, 1e-6);
+    const sz = D / Math.max(size.z, 1e-6);
+    obj.scale.set(sx, sy, sz);
+}
 
-    const x = Number(sa.positionX) || 0;
-    const y = (Number(sa.positionY) || 0); // já vem H/2 do mapper
-    const z = Number(sa.positionZ) || 0;
-    mesh.position.set(x, y, z);
-
-    mesh.userData = { type: "StorageArea", id: sa.id, label: sa.name };
+/* ========================== Placeholder =========================== */
+function makeSAPlaceholderBox(W: number, H: number, D: number) {
+    const geom = new THREE.BoxGeometry(W, H, D);
+    const mesh = new THREE.Mesh(geom, Materials.storage);
+    mesh.castShadow = false;
+    mesh.receiveShadow = true;
+    mesh.name = "StorageArea:placeholder";
+    // base do placeholder em y=0
+    mesh.position.y = H / 2;
     return mesh;
 }
 
-// NODE PURO: pode ser procedural ou GLB (com fit)
-export async function makeStorageAreaNode(sa: StorageAreaDto, assetPath?: string): Promise<THREE.Object3D> {
-    const W = Math.max(2, Number(sa.widthM)  || 10);
-    const H = Math.max(1, Number(sa.heightM) ||  3);
-    const D = Math.max(2, Number(sa.depthM)  || 10);
+/* ========== Normalização do GLB (pivot base + escala) ========== */
+function normalizeWarehouseModel(raw: THREE.Object3D, W: number, H: number, D: number) {
+    const core = new THREE.Group();
+    core.name = "StorageArea:core";
+    core.add(raw);
 
-    if (assetPath) {
-        const obj = await loadGLB(assetPath);
-        scaleToFit(obj, W, H, D);
-        return obj; // puro (sem pose/userData)
-    }
+    core.traverse((o: any) => {
+        if (o.isMesh) {
+            o.castShadow = true;
+            o.receiveShadow = true;
+            const m = o.material;
+            if (Array.isArray(m)) m.forEach(mm => { if (mm?.map) mm.map.colorSpace = THREE.SRGBColorSpace; });
+            else if (m?.map) m.map.colorSpace = THREE.SRGBColorSpace;
+        }
+    });
 
-    // Procedural “bonito”
-    const group = new THREE.Group();
+    centerOnBottom(core);
+    fitToSize(core, W, H, D);
+    centerOnBottom(core); // recentra após escala
 
-    const floor = new THREE.Mesh(new THREE.BoxGeometry(W, 0.15, D),
-        new THREE.MeshStandardMaterial({ color: 0xdee3ea, metalness: 0.1, roughness: 0.9 }));
-    floor.position.set(0, -(H/2) + 0.075, 0);
-    floor.receiveShadow = true;
-    group.add(floor);
+    return core;
+}
 
-    const edges = new THREE.LineSegments(
-        new THREE.EdgesGeometry(new THREE.BoxGeometry(W, H, D)),
-        new THREE.LineBasicMaterial({})
-    );
-    group.add(edges);
+/* ============================ API ============================ */
+/**
+ * Cria uma Storage Area:
+ * - coloca placeholder de imediato (não bloqueia render);
+ * - carrega Warehouse GLB e substitui quando terminar;
+ * - mantém posição/rotação; assenta no chão (sem flutuar).
+ */
+export function makeStorageArea(sa: StorageAreaDto): THREE.Group {
+    // Tamanhos base definidos pelo layout
+    const baseW = Math.max(2, Number(sa.widthM)  || 10); // X
+    const baseH = Math.max(1, Number(sa.heightM) ||  3); // Y
+    const baseD = Math.max(2, Number(sa.depthM)  || 10); // Z
 
-    const grid = new THREE.GridHelper(Math.max(W, D), Math.max(Math.round(W/2), Math.round(D/2)));
-    grid.rotation.x = Math.PI / 2;
-    group.add(grid);
+    // Aplicar fatores (corredores + altura)
+    const W = baseW * FOOTPRINT_SCALE;
+    const H = baseH * HEIGHT_SCALE;
+    const D = baseD * FOOTPRINT_SCALE;
 
-    return group;
+    // Grupo externo (mantém API/posicionamento)
+    const g = new THREE.Group();
+    g.name = `StorageArea:${sa.name ?? sa.id ?? "?"}`;
+    g.userData = { type: "StorageArea", id: sa.id, label: sa.name };
+
+    // Placeholder imediato
+    const ph = makeSAPlaceholderBox(W, H, D);
+    g.add(ph);
+
+    // Posicionamento/rotação — força base ao chão (y=0) + lift anti z-fighting
+    const x = Number(sa.positionX) || 0;
+    const z = Number(sa.positionZ) || 0;
+    const rotY = Number((sa as any).rotationY) || 0;
+
+    g.position.set(x, LIFT_EPS, z);
+    g.rotation.y = rotY;
+
+    // Carregar o GLB e substituir o placeholder
+    (async () => {
+        try {
+            const raw = await loadGLB(ASSETS_MODELS.storageArea.wareHouser);
+            const core = normalizeWarehouseModel(raw, W, H, D);
+            g.remove(ph);
+            core.name = "StorageArea:model";
+            g.add(core);
+        } catch (e) {
+            console.warn("Falha ao carregar GLB de StorageArea:", e);
+            // mantém placeholder se falhar
+        }
+    })();
+
+    return g;
 }

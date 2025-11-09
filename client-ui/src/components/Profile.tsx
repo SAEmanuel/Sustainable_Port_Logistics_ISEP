@@ -6,18 +6,20 @@ export default function Profile() {
     if (isLoading || !isAuthenticated || !user) return null;
 
     return (
-        <div>
+        <div className="profile-in-sidebar">
             {user.picture && (
                 <img
                     src={user.picture}
                     alt={user.name}
-                    width="60"
-                    height="60"
+                    width="40"
+                    height="40"
                     referrerPolicy="no-referrer"
                 />
             )}
-            <h3>{user.name}</h3>
-            <p>{user.email}</p>
+            <div className="profile-info">
+                <h4>{user.name}</h4>
+                <p>{user.email}</p>
+            </div>
         </div>
     );
 }

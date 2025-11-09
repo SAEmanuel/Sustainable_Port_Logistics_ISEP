@@ -6,50 +6,97 @@ import { useAuth0 } from "@auth0/auth0-react";
 import Profile from "../Profile";
 import LogoutButton from "../LogoutButton";
 
-export default function Nav() {
+import {
+    FiHome,
+    FiBox,
+    FiShield,
+    FiSettings,
+    FiUsers,
+    FiGrid,
+    FiBriefcase,
+    FiUserCheck,
+    FiFileText,
+    FiAnchor,
+    FiLayers,
+} from "react-icons/fi";
+import {FaShip} from "react-icons/fa";
+
+type NavProps = {
+    isOpen: boolean;
+};
+
+export default function Nav({ isOpen }: NavProps) {
     const { t } = useTranslation();
     const { isAuthenticated } = useAuth0();
     const user = useAppStore((s) => s.user);
 
-    const baseMenu = [{ label: t("menu.home"), path: "/" }];
+    const baseMenu = [
+        { label: t("menu.home"), path: "/", icon: <FiHome /> },
+    ];
 
     const adminMenu = user?.role?.includes(Roles.Administrator)
         ? [
-            { label: t("menu.admin"), path: "/admin" },
+            { label: t("menu.admin"), path: "/admin", icon: <FiSettings /> },
         ]
         : [];
 
     const operatorMenu = user?.role?.includes(Roles.LogisticsOperator)
         ? [
-            { label: t("menu.dashboard"), path: "/dashboard" },
-            { label: t("menu.qualifications"), path: "/qualifications" },
-            { label: t("menu.staffMembers"), path: "/staff-members" },
-            { label: t("menu.physicalResource"), path: "/physical-resources" },
+            { label: t("menu.dashboard"), path: "/dashboard", icon: <FiGrid /> },
+            { label: t("menu.qualifications"), path: "/qualifications", icon: <FiUserCheck /> },
+            { label: t("menu.staffMembers"), path: "/staff-members", icon: <FiUsers /> },
+            { label: t("menu.physicalResource"), path: "/physical-resources", icon: <FiBriefcase /> },
+        ]
+        : [];
+
+    const portAuthorityOfficerMenu = user?.role?.includes(Roles.PortAuthorityOfficer)
+        ? [
+            { label: t("menu.dashboard"), path: "/dashboard", icon: <FiShield /> },
+            { label: t("menu.3dView"), path: "/3dSecene", icon: <FiLayers /> },
+            { label: t("menu.storageArea"), path: "/storage-areas", icon: <FiBox /> },
+            { label: t("menu.vesselTypes"), path: "/vessel-types", icon: <FiAnchor /> },
+            { label: t("menu.vessels"), path: "/vessels", icon: <FaShip /> },
+            { label: t("menu.vvn"), path: "/vvn", icon: <FiFileText /> },
         ]
         : [];
 
     const sarMenu = user?.role?.includes(Roles.ShippingAgentRepresentative)
-        ? [{ label: t("menu.vvn"), path: "/vvn" }]
+        ? [
+            { label: t("menu.vvn"), path: "/vvn", icon: <FiFileText /> },
+        ]
         : [];
 
-    const menu = [...baseMenu, ...adminMenu, ...operatorMenu, ...sarMenu];
+    const menu = [...baseMenu, ...adminMenu, ...operatorMenu, ...sarMenu, ...portAuthorityOfficerMenu];
+
+    const uniqueMenu = menu.filter((item, index, self) =>
+            index === self.findIndex((t) => (
+                t.path === item.path
+            ))
+    );
 
     return (
-        <nav>
-            <ul>
-                {menu.map((i) => (
-                    <li key={i.path}>
-                        <Link to={i.path}>{i.label}</Link>
-                    </li>
-                ))}
-            </ul>
+        <aside className={`sidebar ${isOpen ? "open" : ""}`}>
+            <div className="sidebar-content">
+                <nav>
+                    <ul>
+                        {uniqueMenu.map((i) => (
+                            <li key={i.path}>
+                                <Link to={i.path}>
+                                    <span className="menu-icon">{i.icon}</span>
+                                    <span>{i.label}</span>
+                                </Link>
+                            </li>
+                        ))}
+                    </ul>
+                </nav>
 
-            {isAuthenticated && (
-                <div>
-                    <Profile />
-                    <LogoutButton />
-                </div>
-            )}
-        </nav>
+                {isAuthenticated && (
+                    <div className="sidebar-footer">
+                        <Profile />
+                        <LogoutButton />
+                    </div>
+                )}
+            </div>
+        </aside>
     );
 }

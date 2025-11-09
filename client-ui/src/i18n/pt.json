@@ -54,6 +54,10 @@
     "back": "Voltar ao início"
   },
 
+  "navExit": {
+    "logout" : "Sair"
+  },
+
   "menu": {
     "home": "Início",
     "vvn": "VVNs",
@@ -65,6 +69,7 @@
     "staffMembers": "Membros da Equipa",
     "physicalResource": "Recursos Físicos",
     "dashboard": "Dashboard",
+    "3dView": "Porto 3D",
     "login": "Entrar",
     "logout": "Sair",
     "adminPanel": "Gestão de Utilizadores"
@@ -794,5 +799,33 @@
       "id" : "Id",
       "auth0UserId" : "Auth0_Id"
     }
+  },
+
+  "activation": {
+    "titleLoading": "⏳ Por favor, aguarde",
+    "titleSuccess": "✅ Conta ativada",
+    "titleError": "❌ Falha na ativação",
+
+    "loading": "🔄 A ativar a sua conta...",
+    "missingLink": "⚠️ Link de ativação inválido ou ausente.",
+    "invalidLink": "⚠️ Este link de ativação é inválido ou expirou (utilizador não encontrado).",
+    "removedAccount": "❌ Esta conta foi removida. O link de ativação já não é válido.",
+    "successMessage": "✅ Conta ativada com sucesso!",
+    "failedMessage": "⚠️ A ativação falhou. Por favor contacte o suporte.",
+    "unexpectedError": "❌ Ocorreu um erro inesperado durante a ativação da conta.",
+    "goHome": "Ir para a página inicial"
+  },
+
+  "deleted": {
+    "title": "❌ Conta Eliminada",
+    "message": "A sua conta foi permanentemente eliminada e o acesso ao sistema foi revogado.",
+    "details": "Detalhes da conta:",
+    "emailText": "Esta conta estava associada ao endereço de email:",
+    "actions": {
+      "back": "Voltar à página inicial"
+    },
+    "contact": "Se acredita que isto foi um erro, por favor contacte o administrador do sistema.",
+    "unknownEmail": "email desconhecido"
   }
+
 }

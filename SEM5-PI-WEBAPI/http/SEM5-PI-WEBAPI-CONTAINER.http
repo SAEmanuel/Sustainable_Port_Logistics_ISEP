@@ -58,3 +58,7 @@ Accept: application/json
 {
   "description": "Dry container updated with fragile electronics"
 }
+
+###
+
+GET http://localhost:5008/api/email/test

@@ -226,6 +226,8 @@ namespace SEM5_PI_WEBAPI
 
             services.AddTransient<IUserRepository, UserRepository>();
             services.AddScoped<IUserService, UserService>();
+
+            services.AddTransient<IEmailSender, EmailSender>();
         }
     }
 }

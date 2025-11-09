@@ -3,6 +3,8 @@ using SEM5_PI_WEBAPI.Domain.Shared;
 using SEM5_PI_WEBAPI.Domain.Users;
 using SEM5_PI_WEBAPI.Domain.Users.DTOs;
 using SEM5_PI_WEBAPI.Domain.ValueObjects;
+using SEM5_PI_WEBAPI.utils;
+using SEM5_PI_WEBAPI.utils.EmailTemplates;
 
 namespace SEM5_PI_WEBAPI.Controllers;
 
@@ -12,11 +14,13 @@ public class UserController : ControllerBase
 {
     private readonly IUserService _service;
     private readonly ILogger<UserController> _logger;
+    private readonly IEmailSender _emailSender;
 
-    public UserController(IUserService service, ILogger<UserController> logger)
+    public UserController(IUserService service, ILogger<UserController> logger, IEmailSender emailSender)
     {
         _service = service;
         _logger = logger;
+        _emailSender = emailSender;
     }
 
     [HttpGet]
@@ -27,7 +31,7 @@ public class UserController : ControllerBase
         _logger.LogInformation("API Response (200): Returning {Count} Users", list.Count);
         return Ok(list);
     }
-    
+
     [HttpGet("NotEliminated")]
     public async Task<ActionResult<IEnumerable<UserDto>>> GetAllNotEliminated()
     {
@@ -148,16 +152,29 @@ public class UserController : ControllerBase
         {
             if (string.IsNullOrWhiteSpace(userDto.Email))
                 return BadRequest("Email is required");
+            
             var existing = await _service.TryGetByEmailAsync(userDto.Email);
-
             if (existing != null)
             {
                 _logger.LogInformation("User already exists, returning existing user");
                 return Ok(existing);
             }
-
+            
             var newUser = await _service.AddAsync(userDto);
             _logger.LogInformation("New user created successfully: {Email}", userDto.Email);
+            
+            try
+            {
+                var subject = "Ativação da Conta / Account Activation";
+                var message = ActivationEmailTemplate.Build(userDto.Name, userDto.Email);
+
+                await _emailSender.SendEmailAsync(userDto.Email!, subject, message);
+                _logger.LogInformation("Activation email sent to {Email}", userDto.Email);
+            }
+            catch (Exception mailEx)
+            {
+                _logger.LogError(mailEx, "Failed to send activation email to {Email}", userDto.Email);
+            }
 
             return CreatedAtAction(nameof(GetByEmail), new { email = userDto.Email }, newUser);
         }
@@ -166,5 +183,39 @@ public class UserController : ControllerBase
             _logger.LogError(ex, "API Error: Failed to sync user {Email}", userDto.Email);
             return StatusCode(500, new { Message = ex.Message });
         }
+    }
+
+    [HttpPut("activate")]
+    public async Task<IActionResult> ActivateUser([FromQuery] string email)
+    {
+        _logger.LogInformation("Activation request received for {Email}", email);
+
+        var user = await _service.TryGetByEmailAsync(email);
+        if (user == null)
+            return NotFound("User not found");
+
+        if (user.IsActive)
+            return Ok("User is already active");
+
+        await _service.ActivateUserAsync(new UserId(user.Id));
+
+        return Ok("Account activated successfully");
+    }
+
+    [HttpPut("eliminate")]
+    public async Task<IActionResult> EliminateUser([FromQuery] string email)
+    {
+        _logger.LogInformation("Elimination request received for {Email}", email);
+
+        var user = await _service.TryGetByEmailAsync(email);
+        if (user == null)
+            return NotFound("User not found");
+
+        if (user.Eliminated)
+            return Ok("User is already eliminated");
+
+        await _service.EliminateUserAsync(new UserId(user.Id));
+
+        return Ok("Account eliminated successfully");
     }
 }

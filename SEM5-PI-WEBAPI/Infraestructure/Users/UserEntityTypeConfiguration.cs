@@ -13,7 +13,6 @@ namespace SEM5_PI_WEBAPI.Infraestructure.Users
             builder.Property(u => u.Auth0UserId)
                 .IsRequired(false)
                 .HasMaxLength(240);
-            builder.HasIndex(u => u.Auth0UserId).IsUnique();
             
             builder.Property(u => u.Name)
                 .IsRequired(false)
@@ -22,9 +21,11 @@ namespace SEM5_PI_WEBAPI.Infraestructure.Users
             builder.Property(u => u.Email)
                 .IsRequired()
                 .HasMaxLength(240);
-            builder.HasIndex(u => u.Email).IsUnique();
             
             builder.Property(u => u.IsActive)
+                .IsRequired();
+            
+            builder.Property(u => u.Eliminated)
                 .IsRequired();
             
             builder.Property(u => u.Role)

@@ -3,13 +3,14 @@ import { useTranslation } from "react-i18next";
 import { notifyLoading, notifySuccess, notifyError } from "../../../utils/notify";
 import toast from "react-hot-toast";
 import { FaUsers } from "react-icons/fa";
+import { Link } from "react-router-dom";
 import type { StaffMember } from "../types/staffMember";
 import { getStaffMembers } from "../services/staffMemberService";
 import StaffMemberTable from "../components/StaffMemberTable";
 import StaffMemberDetails from "../components/StaffMemberDetails";
 import StaffMemberSearch from "../components/StaffMemberSearch";
 import StaffMemberEditModal from "../components/StaffMemberEditModal";
-import StaffMemberCreateModal from "../components/StaffMemberCreateModal"; // ⭐ IMPORT
+import StaffMemberCreateModal from "../components/StaffMemberCreateModal";
 import "../style/staffMember.css";
 
 export default function StaffMember() {
@@ -17,7 +18,7 @@ export default function StaffMember() {
     const [loading, setLoading] = useState(true);
     const [selected, setSelected] = useState<StaffMember | null>(null);
     const [editing, setEditing] = useState(false);
-    const [searchMode, setSearchMode] = useState<"list" | "mecNumber" | "name" | "status" | "qualifications">("list"); // ⭐ ADICIONAR "qualifications"
+    const [searchMode, setSearchMode] = useState<"list" | "mecNumber" | "name" | "status" | "qualifications">("list");
     const [createMode, setCreateMode] = useState(false);
 
     const { t } = useTranslation();
@@ -72,10 +73,7 @@ export default function StaffMember() {
     };
 
     const handleToggleSuccess = (updated: StaffMember) => {
-        setItems(items.map(sm =>
-            sm.id === updated.id ? updated : sm
-        ));
-
+        setItems(items.map(sm => (sm.id === updated.id ? updated : sm)));
         setSelected(updated);
     };
 
@@ -86,27 +84,36 @@ export default function StaffMember() {
 
     return (
         <div className="staffMember-page">
-            {/* HEADER */}
             <div className="staffMember-title-area">
-                <div className="staffMember-title-box">
-                    <h2 className="staffMember-title">
-                        <FaUsers className="staffMember-icon" /> {t("staffMembers.title")}
-                    </h2>
-                    <p className="staffMember-sub">
-                        {t("staffMembers.count", { count: items.length })}
-                    </p>
+                <div className="staffMember-header-left">
+                    <Link
+                        to="/dashboard"
+                        className="pr-back-button"
+                        title={t("physicalResource.actions.backToDashboard")}
+                    >
+                        ‹
+                    </Link>
+
+                    <div className="staffMember-title-box">
+                        <h2 className="staffMember-title">
+                            <FaUsers className="staffMember-icon" /> {t("staffMembers.title")}
+                        </h2>
+                        <p className="staffMember-sub">
+                            {t("staffMembers.count", { count: items.length })}
+                        </p>
+                    </div>
                 </div>
+
                 <div className="container-do-botao">
                     <button
                         className="staff-create-btn-top"
                         onClick={() => setCreateMode(true)}
                     >
-                        + {t("staffMembers.add")} {/* ⭐ MUDAR PARA staffMembers.add */}
+                        + {t("staffMembers.add")}
                     </button>
                 </div>
             </div>
 
-            {/* BUSCA */}
             <StaffMemberSearch
                 searchMode={searchMode}
                 onSearchModeChange={setSearchMode}
@@ -114,7 +121,6 @@ export default function StaffMember() {
                 onBackToList={handleBackToList}
             />
 
-            {/* TABELA */}
             {searchMode === "list" && (
                 <StaffMemberTable
                     items={items}
@@ -123,7 +129,6 @@ export default function StaffMember() {
                 />
             )}
 
-            {/* DETALHES */}
             {selected && !editing && (
                 <StaffMemberDetails
                     staffMember={selected}
@@ -133,7 +138,6 @@ export default function StaffMember() {
                 />
             )}
 
-            {/* MODAL DE EDIÇÃO */}
             {editing && selected && (
                 <StaffMemberEditModal
                     staffMember={selected}
@@ -143,7 +147,6 @@ export default function StaffMember() {
                 />
             )}
 
-            {/* MODAL DE CRIAÇÃO */}
             {createMode && (
                 <StaffMemberCreateModal
                     onClose={() => setCreateMode(false)}

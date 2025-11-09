@@ -75,5 +75,264 @@
       {"dockCode": "DK-0004", "distance": 150},
       {"dockCode": "DK-0005", "distance": 350}
     ]
+  },
+  
+  
+  
+  {
+    "name": "Yard D",
+    "description": "Outdoor storage area for containers - North section",
+    "type": "Yard",
+    "maxBays": 20,
+    "maxRows": 8,
+    "maxTiers": 4,
+    "physicalResources": [],
+    "distancesToDocks": [
+      {"dockCode": "DK-0001", "distance": 300},
+      {"dockCode": "DK-0002", "distance": 200},
+      {"dockCode": "DK-0003", "distance": 100},
+      {"dockCode": "DK-0004", "distance": 150},
+      {"dockCode": "DK-0005", "distance": 350}
+    ]
+  },
+  {
+    "name": "Yard E",
+    "description": "Outdoor storage area for containers - North section",
+    "type": "Yard",
+    "maxBays": 20,
+    "maxRows": 8,
+    "maxTiers": 4,
+    "physicalResources": [],
+    "distancesToDocks": [
+      {"dockCode": "DK-0001", "distance": 300},
+      {"dockCode": "DK-0002", "distance": 200},
+      {"dockCode": "DK-0003", "distance": 100},
+      {"dockCode": "DK-0004", "distance": 150},
+      {"dockCode": "DK-0005", "distance": 350}
+    ]
+  },
+  {
+    "name": "Yard F",
+    "description": "Outdoor storage area for containers - North section",
+    "type": "Yard",
+    "maxBays": 20,
+    "maxRows": 8,
+    "maxTiers": 4,
+    "physicalResources": [],
+    "distancesToDocks": [
+      {"dockCode": "DK-0001", "distance": 300},
+      {"dockCode": "DK-0002", "distance": 200},
+      {"dockCode": "DK-0003", "distance": 100},
+      {"dockCode": "DK-0004", "distance": 150},
+      {"dockCode": "DK-0005", "distance": 350}
+    ]
+  },
+  {
+    "name": "Yard G",
+    "description": "Outdoor storage area for containers - North section",
+    "type": "Yard",
+    "maxBays": 20,
+    "maxRows": 8,
+    "maxTiers": 4,
+    "physicalResources": [],
+    "distancesToDocks": [
+      {"dockCode": "DK-0001", "distance": 300},
+      {"dockCode": "DK-0002", "distance": 200},
+      {"dockCode": "DK-0003", "distance": 100},
+      {"dockCode": "DK-0004", "distance": 150},
+      {"dockCode": "DK-0005", "distance": 350}
+    ]
+  },
+  {
+    "name": "Yard H",
+    "description": "Outdoor storage area for containers - North section",
+    "type": "Yard",
+    "maxBays": 20,
+    "maxRows": 8,
+    "maxTiers": 4,
+    "physicalResources": [],
+    "distancesToDocks": [
+      {"dockCode": "DK-0001", "distance": 300},
+      {"dockCode": "DK-0002", "distance": 200},
+      {"dockCode": "DK-0003", "distance": 100},
+      {"dockCode": "DK-0004", "distance": 150},
+      {"dockCode": "DK-0005", "distance": 350}
+    ]
+  },
+  {
+    "name": "Yard I",
+    "description": "Outdoor storage area for containers - North section",
+    "type": "Yard",
+    "maxBays": 20,
+    "maxRows": 8,
+    "maxTiers": 4,
+    "physicalResources": [],
+    "distancesToDocks": [
+      {"dockCode": "DK-0001", "distance": 300},
+      {"dockCode": "DK-0002", "distance": 200},
+      {"dockCode": "DK-0003", "distance": 100},
+      {"dockCode": "DK-0004", "distance": 150},
+      {"dockCode": "DK-0005", "distance": 350}
+    ]
+  },
+  {
+    "name": "Warehouse C",
+    "description": "Outdoor storage area for containers - North section",
+    "type": "Warehouse",
+    "maxBays": 20,
+    "maxRows": 8,
+    "maxTiers": 4,
+    "physicalResources": [],
+    "distancesToDocks": [
+      {"dockCode": "DK-0001", "distance": 300},
+      {"dockCode": "DK-0002", "distance": 200},
+      {"dockCode": "DK-0003", "distance": 100},
+      {"dockCode": "DK-0004", "distance": 150},
+      {"dockCode": "DK-0005", "distance": 350}
+    ]
+  },
+  {
+    "name": "Warehouse D",
+    "description": "Outdoor storage area for containers - North section",
+    "type": "Warehouse",
+    "maxBays": 20,
+    "maxRows": 8,
+    "maxTiers": 4,
+    "physicalResources": [],
+    "distancesToDocks": [
+      {"dockCode": "DK-0001", "distance": 300},
+      {"dockCode": "DK-0002", "distance": 200},
+      {"dockCode": "DK-0003", "distance": 100},
+      {"dockCode": "DK-0004", "distance": 150},
+      {"dockCode": "DK-0005", "distance": 350}
+    ]
+  },
+  {
+    "name": "Warehouse E",
+    "description": "Outdoor storage area for containers - North section",
+    "type": "Warehouse",
+    "maxBays": 20,
+    "maxRows": 8,
+    "maxTiers": 4,
+    "physicalResources": [],
+    "distancesToDocks": [
+      {"dockCode": "DK-0001", "distance": 300},
+      {"dockCode": "DK-0002", "distance": 200},
+      {"dockCode": "DK-0003", "distance": 100},
+      {"dockCode": "DK-0004", "distance": 150},
+      {"dockCode": "DK-0005", "distance": 350}
+    ]
+  },
+  {
+    "name": "Warehouse F",
+    "description": "Outdoor storage area for containers - North section",
+    "type": "Warehouse",
+    "maxBays": 20,
+    "maxRows": 8,
+    "maxTiers": 4,
+    "physicalResources": [],
+    "distancesToDocks": [
+      {"dockCode": "DK-0001", "distance": 300},
+      {"dockCode": "DK-0002", "distance": 200},
+      {"dockCode": "DK-0003", "distance": 100},
+      {"dockCode": "DK-0004", "distance": 150},
+      {"dockCode": "DK-0005", "distance": 350}
+    ]
+  },
+  {
+    "name": "Warehouse G",
+    "description": "Outdoor storage area for containers - North section",
+    "type": "Warehouse",
+    "maxBays": 20,
+    "maxRows": 8,
+    "maxTiers": 4,
+    "physicalResources": [],
+    "distancesToDocks": [
+      {"dockCode": "DK-0001", "distance": 300},
+      {"dockCode": "DK-0002", "distance": 200},
+      {"dockCode": "DK-0003", "distance": 100},
+      {"dockCode": "DK-0004", "distance": 150},
+      {"dockCode": "DK-0005", "distance": 350}
+    ]
+  },
+  {
+    "name": "Warehouse H",
+    "description": "Outdoor storage area for containers - North section",
+    "type": "Warehouse",
+    "maxBays": 20,
+    "maxRows": 8,
+    "maxTiers": 4,
+    "physicalResources": [],
+    "distancesToDocks": [
+      {"dockCode": "DK-0001", "distance": 300},
+      {"dockCode": "DK-0002", "distance": 200},
+      {"dockCode": "DK-0003", "distance": 100},
+      {"dockCode": "DK-0004", "distance": 150},
+      {"dockCode": "DK-0005", "distance": 350}
+    ]
+  },
+  {
+    "name": "Warehouse I",
+    "description": "Outdoor storage area for containers - North section",
+    "type": "Warehouse",
+    "maxBays": 20,
+    "maxRows": 8,
+    "maxTiers": 4,
+    "physicalResources": [],
+    "distancesToDocks": [
+      {"dockCode": "DK-0001", "distance": 300},
+      {"dockCode": "DK-0002", "distance": 200},
+      {"dockCode": "DK-0003", "distance": 100},
+      {"dockCode": "DK-0004", "distance": 150},
+      {"dockCode": "DK-0005", "distance": 350}
+    ]
+  },
+  {
+    "name": "Warehouse J",
+    "description": "Outdoor storage area for containers - North section",
+    "type": "Warehouse",
+    "maxBays": 20,
+    "maxRows": 8,
+    "maxTiers": 4,
+    "physicalResources": [],
+    "distancesToDocks": [
+      {"dockCode": "DK-0001", "distance": 300},
+      {"dockCode": "DK-0002", "distance": 200},
+      {"dockCode": "DK-0003", "distance": 100},
+      {"dockCode": "DK-0004", "distance": 150},
+      {"dockCode": "DK-0005", "distance": 350}
+    ]
+  },
+  {
+    "name": "Warehouse J2",
+    "description": "Outdoor storage area for containers - North section",
+    "type": "Warehouse",
+    "maxBays": 20,
+    "maxRows": 8,
+    "maxTiers": 4,
+    "physicalResources": [],
+    "distancesToDocks": [
+      {"dockCode": "DK-0001", "distance": 300},
+      {"dockCode": "DK-0002", "distance": 200},
+      {"dockCode": "DK-0003", "distance": 100},
+      {"dockCode": "DK-0004", "distance": 150},
+      {"dockCode": "DK-0005", "distance": 350}
+    ]
+  },
+  {
+    "name": "Warehouse J3",
+    "description": "Outdoor storage area for containers - North section",
+    "type": "Warehouse",
+    "maxBays": 20,
+    "maxRows": 8,
+    "maxTiers": 4,
+    "physicalResources": [],
+    "distancesToDocks": [
+      {"dockCode": "DK-0001", "distance": 300},
+      {"dockCode": "DK-0002", "distance": 200},
+      {"dockCode": "DK-0003", "distance": 100},
+      {"dockCode": "DK-0004", "distance": 150},
+      {"dockCode": "DK-0005", "distance": 350}
+    ]
   }
 ]

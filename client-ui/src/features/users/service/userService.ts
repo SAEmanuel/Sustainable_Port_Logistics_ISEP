@@ -1,5 +1,6 @@
 import api from "../../../services/api";
-import type {Role, User} from "../../../app/types";
+import type { Role, User } from "../../../app/types";
+
 
 export async function getUsers(): Promise<User[]> {
     const res = await api.get("/api/User");
@@ -26,14 +27,31 @@ export async function getUserByEmail(email: string): Promise<User> {
     return res.data;
 }
 
+
 export async function toggleUserStatus(id: string): Promise<User> {
     const res = await api.put(`/api/User/toggle/${id}`);
     return res.data;
 }
 
-
 export async function changeUserRole(id: string, role: Role): Promise<User> {
-    const res = await api.put(`/api/User/changeRole/${id}`, null, { params: { role } });
+    const res = await api.put(`/api/User/changeRole/${id}`, null, {
+        params: { role },
+    });
     return res.data;
 }
 
+
+export async function activateUser(email: string): Promise<string> {
+    const res = await api.put(`/api/User/activate`, null, {
+        params: { email },
+    });
+    return res.data;
+}
+
+
+export async function eliminateUser(email: string): Promise<string> {
+    const res = await api.put(`/api/User/eliminate`, null, {
+        params: { email },
+    });
+    return res.data;
+}

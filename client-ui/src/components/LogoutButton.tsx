@@ -1,20 +1,21 @@
 import { useAuth0 } from "@auth0/auth0-react";
 import { useTranslation } from "react-i18next";
+import { FiLogOut } from "react-icons/fi";
 
-export default function LogoutButton() {
-    const { logout, isAuthenticated } = useAuth0();
+const LogoutButton = () => {
+    const { logout } = useAuth0();
     const { t } = useTranslation();
-
-    if (!isAuthenticated) return null;
 
     return (
         <button
-            onClick={() =>
-                logout({ logoutParams: { returnTo: window.location.origin } })
-            }
-            className="text-red-500 hover:text-red-600 font-medium transition"
+            className="logout-button"
+            onClick={() => logout({ logoutParams: { returnTo: window.location.origin } })}
+            title={t("navExit.logout") || "Logout"} // Tooltip opcional
         >
-            {t("auth.signOut")}
+            <FiLogOut size={20} className="logout-icon-svg" />
+            <span className="logout-text">{t("navExit.logout") || "Logout"}</span>
         </button>
     );
-}
+};
+
+export default LogoutButton;

@@ -24,7 +24,6 @@
       "type": "Unloading",
       "createdBy": "Agent02@gmail.com",
       "entries": [
-        { "bay": 1, "row": 2, "tier": 2, "storageAreaName": "Warehouse B", "container": { "isoCode": "BBCU5100617", "description": "Automotive parts", "type": "General", "weightKg": 7000 } },
         { "bay": 4, "row": 3, "tier": 1, "storageAreaName": "Warehouse B", "container": { "isoCode": "CSQU3054383", "description": "Furniture Related", "type": "General", "weightKg": 12000 } },
 
         { "bay": 0, "row": 0, "tier": 0, "storageAreaName": "Warehouse B", "container": { "isoCode": "CSQU8054030", "description": "Auto-assigned cargo", "type": "General", "weightKg": 6900 } },
@@ -46,7 +45,31 @@
         { "bay": 4, "row": 1, "tier": 1, "storageAreaName": "Warehouse B", "container": { "isoCode": "TEMU9502962", "description": "Auto-assigned cargo", "type": "General", "weightKg": 21300 } },
         { "bay": 5, "row": 1, "tier": 2, "storageAreaName": "Warehouse B", "container": { "isoCode": "MSCU2820896", "description": "Auto-assigned cargo", "type": "General", "weightKg": 22200 } },
         { "bay": 6, "row": 1, "tier": 0, "storageAreaName": "Warehouse B", "container": { "isoCode": "OOLU9354189", "description": "Auto-assigned cargo", "type": "General", "weightKg": 23100 } },
-        { "bay": 7, "row": 1, "tier": 1, "storageAreaName": "Warehouse B", "container": { "isoCode": "MSCU9560872", "description": "Auto-assigned cargo", "type": "General", "weightKg": 24000 } }
+        { "bay": 7, "row": 1, "tier": 1, "storageAreaName": "Warehouse B", "container": { "isoCode": "MSCU9560872", "description": "Auto-assigned cargo", "type": "General", "weightKg": 24000 } },
+          
+        { "bay": 8,  "row": 1, "tier": 0, "storageAreaName": "Warehouse B", "container": { "isoCode": "CMAU5836370", "description": "Auto-assigned cargo", "type": "General", "weightKg": 13200 } },
+        { "bay": 9,  "row": 1, "tier": 1, "storageAreaName": "Warehouse B", "container": { "isoCode": "CSQU4609953", "description": "Auto-assigned cargo", "type": "General", "weightKg": 14100 } },
+        { "bay": 10, "row": 1, "tier": 2, "storageAreaName": "Warehouse B", "container": { "isoCode": "TEMU8721333", "description": "Auto-assigned cargo", "type": "General", "weightKg": 15000 } },
+        { "bay": 11, "row": 1, "tier": 0, "storageAreaName": "Warehouse B", "container": { "isoCode": "MSCU9319850", "description": "Auto-assigned cargo", "type": "General", "weightKg": 15900 } },
+
+        { "bay": 0,  "row": 2, "tier": 1, "storageAreaName": "Warehouse B", "container": { "isoCode": "SUDU9354529", "description": "Auto-assigned cargo", "type": "General", "weightKg": 16800 } },
+        { "bay": 1,  "row": 2, "tier": 2, "storageAreaName": "Warehouse B", "container": { "isoCode": "SUDU6709477", "description": "Auto-assigned cargo", "type": "General", "weightKg": 17700 } },
+        { "bay": 2,  "row": 2, "tier": 0, "storageAreaName": "Warehouse B", "container": { "isoCode": "HLCU8033950", "description": "Auto-assigned cargo", "type": "General", "weightKg": 18600 } },
+        { "bay": 3,  "row": 2, "tier": 1, "storageAreaName": "Warehouse B", "container": { "isoCode": "HLCU9701592", "description": "Auto-assigned cargo", "type": "General", "weightKg": 19500 } },
+        { "bay": 5,  "row": 2, "tier": 0, "storageAreaName": "Warehouse B", "container": { "isoCode": "CSQU0341728", "description": "Auto-assigned cargo", "type": "General", "weightKg": 21300 } },
+        { "bay": 6,  "row": 2, "tier": 1, "storageAreaName": "Warehouse B", "container": { "isoCode": "HLCU5569852", "description": "Auto-assigned cargo", "type": "General", "weightKg": 22200 } },
+        { "bay": 7,  "row": 2, "tier": 2, "storageAreaName": "Warehouse B", "container": { "isoCode": "TGHU9992199", "description": "Auto-assigned cargo", "type": "General", "weightKg": 23100 } },
+        { "bay": 8,  "row": 2, "tier": 0, "storageAreaName": "Warehouse B", "container": { "isoCode": "TEMU7486986", "description": "Auto-assigned cargo", "type": "General", "weightKg": 24000 } },
+        { "bay": 9,  "row": 2, "tier": 1, "storageAreaName": "Warehouse B", "container": { "isoCode": "SUDU0946960", "description": "Auto-assigned cargo", "type": "General", "weightKg": 6000 } },
+        { "bay": 10, "row": 2, "tier": 2, "storageAreaName": "Warehouse B", "container": { "isoCode": "SUDU3966105", "description": "Auto-assigned cargo", "type": "General", "weightKg": 6900 } },
+        { "bay": 11, "row": 2, "tier": 0, "storageAreaName": "Warehouse B", "container": { "isoCode": "TEMU1747742", "description": "Auto-assigned cargo", "type": "General", "weightKg": 7800 } },
+
+        { "bay": 0,  "row": 3, "tier": 1, "storageAreaName": "Warehouse B", "container": { "isoCode": "CSQU8075202", "description": "Auto-assigned cargo", "type": "General", "weightKg": 8700 } },
+        { "bay": 1,  "row": 3, "tier": 2, "storageAreaName": "Warehouse B", "container": { "isoCode": "HLCU9431774", "description": "Auto-assigned cargo", "type": "General", "weightKg": 9600 } },
+        { "bay": 2,  "row": 3, "tier": 0, "storageAreaName": "Warehouse B", "container": { "isoCode": "CMAU5047330", "description": "Auto-assigned cargo", "type": "General", "weightKg": 10500 } },
+        { "bay": 3,  "row": 3, "tier": 1, "storageAreaName": "Warehouse B", "container": { "isoCode": "OOLU4692558", "description": "Auto-assigned cargo", "type": "General", "weightKg": 11400 } }
+        
+
       ]
     },
     "vesselImo": "IMO 9823455",
@@ -99,7 +122,29 @@
         { "bay": 16, "row": 0, "tier": 0, "storageAreaName": "Yard A", "container": { "isoCode": "SUDU6105564", "description": "Auto-assigned cargo", "type": "General", "weightKg": 20400 } },
         { "bay": 17, "row": 0, "tier": 1, "storageAreaName": "Yard A", "container": { "isoCode": "MSCU5012850", "description": "Auto-assigned cargo", "type": "General", "weightKg": 21300 } },
         { "bay": 18, "row": 0, "tier": 2, "storageAreaName": "Yard A", "container": { "isoCode": "CSQU1929336", "description": "Auto-assigned cargo", "type": "General", "weightKg": 22200 } },
-        { "bay": 19, "row": 0, "tier": 3, "storageAreaName": "Yard A", "container": { "isoCode": "HLCU7974704", "description": "Auto-assigned cargo", "type": "General", "weightKg": 23100 } }
+        { "bay": 19, "row": 0, "tier": 3, "storageAreaName": "Yard A", "container": { "isoCode": "HLCU7974704", "description": "Auto-assigned cargo", "type": "General", "weightKg": 23100 } },
+        { "bay": 0,  "row": 1, "tier": 0, "storageAreaName": "Yard A", "container": { "isoCode": "TEMU2695263", "description": "Auto-assigned cargo", "type": "General", "weightKg": 12300 } },
+        { "bay": 1,  "row": 1, "tier": 1, "storageAreaName": "Yard A", "container": { "isoCode": "TEMU8927509", "description": "Auto-assigned cargo", "type": "General", "weightKg": 13200 } },
+        { "bay": 2,  "row": 1, "tier": 2, "storageAreaName": "Yard A", "container": { "isoCode": "TEMU7631282", "description": "Auto-assigned cargo", "type": "General", "weightKg": 14100 } },
+        { "bay": 3,  "row": 1, "tier": 3, "storageAreaName": "Yard A", "container": { "isoCode": "MSCU0018367", "description": "Auto-assigned cargo", "type": "General", "weightKg": 15000 } },
+        { "bay": 4,  "row": 1, "tier": 0, "storageAreaName": "Yard A", "container": { "isoCode": "MAEU1803468", "description": "Auto-assigned cargo", "type": "General", "weightKg": 15900 } },
+        { "bay": 5,  "row": 1, "tier": 1, "storageAreaName": "Yard A", "container": { "isoCode": "MAEU5333594", "description": "Auto-assigned cargo", "type": "General", "weightKg": 16800 } },
+        { "bay": 6,  "row": 1, "tier": 2, "storageAreaName": "Yard A", "container": { "isoCode": "TRIU7571370", "description": "Auto-assigned cargo", "type": "General", "weightKg": 17700 } },
+        { "bay": 7,  "row": 1, "tier": 3, "storageAreaName": "Yard A", "container": { "isoCode": "MSCU6829356", "description": "Auto-assigned cargo", "type": "General", "weightKg": 18600 } },
+        { "bay": 8,  "row": 1, "tier": 0, "storageAreaName": "Yard A", "container": { "isoCode": "CSQU2352439", "description": "Auto-assigned cargo", "type": "General", "weightKg": 19500 } },
+        { "bay": 9,  "row": 1, "tier": 1, "storageAreaName": "Yard A", "container": { "isoCode": "TGHU9252567", "description": "Auto-assigned cargo", "type": "General", "weightKg": 20400 } },
+        { "bay": 10, "row": 1, "tier": 2, "storageAreaName": "Yard A", "container": { "isoCode": "TEMU3376070", "description": "Auto-assigned cargo", "type": "General", "weightKg": 21300 } },
+        { "bay": 11, "row": 1, "tier": 3, "storageAreaName": "Yard A", "container": { "isoCode": "TRIU4087320", "description": "Auto-assigned cargo", "type": "General", "weightKg": 22200 } },
+        { "bay": 12, "row": 1, "tier": 0, "storageAreaName": "Yard A", "container": { "isoCode": "CSQU5973580", "description": "Auto-assigned cargo", "type": "General", "weightKg": 23100 } },
+        { "bay": 13, "row": 1, "tier": 1, "storageAreaName": "Yard A", "container": { "isoCode": "TGHU3621415", "description": "Auto-assigned cargo", "type": "General", "weightKg": 24000 } },
+        { "bay": 14, "row": 1, "tier": 2, "storageAreaName": "Yard A", "container": { "isoCode": "CMAU1796520", "description": "Auto-assigned cargo", "type": "General", "weightKg": 6000 } },
+        { "bay": 15, "row": 1, "tier": 3, "storageAreaName": "Yard A", "container": { "isoCode": "SUDU0339380", "description": "Auto-assigned cargo", "type": "General", "weightKg": 6900 } },
+        { "bay": 16, "row": 1, "tier": 0, "storageAreaName": "Yard A", "container": { "isoCode": "OOLU6925746", "description": "Auto-assigned cargo", "type": "General", "weightKg": 7800 } },
+        { "bay": 17, "row": 1, "tier": 1, "storageAreaName": "Yard A", "container": { "isoCode": "CMAU7572039", "description": "Auto-assigned cargo", "type": "General", "weightKg": 8700 } },
+        { "bay": 18, "row": 1, "tier": 2, "storageAreaName": "Yard A", "container": { "isoCode": "MSCU3353250", "description": "Auto-assigned cargo", "type": "General", "weightKg": 9600 } },
+        { "bay": 19, "row": 1, "tier": 3, "storageAreaName": "Yard A", "container": { "isoCode": "OOLU6403145", "description": "Auto-assigned cargo", "type": "General", "weightKg": 10500 } }
+        
+
       ]
     },
     "vesselImo": "IMO 9999993",
@@ -148,7 +193,28 @@
         { "bay": 16, "row": 0, "tier": 1, "storageAreaName": "Yard C", "container": { "isoCode": "HLCU8416271", "description": "Auto-assigned cargo", "type": "General", "weightKg": 20400 } },
         { "bay": 17, "row": 0, "tier": 2, "storageAreaName": "Yard C", "container": { "isoCode": "TGHU9171357", "description": "Auto-assigned cargo", "type": "General", "weightKg": 21300 } },
         { "bay": 0, "row": 1, "tier": 0, "storageAreaName": "Yard C", "container": { "isoCode": "HLCU7521210", "description": "Auto-assigned cargo", "type": "General", "weightKg": 22200 } },
-        { "bay": 1, "row": 1, "tier": 1, "storageAreaName": "Yard C", "container": { "isoCode": "SUDU1756178", "description": "Auto-assigned cargo", "type": "General", "weightKg": 23100 } }
+        { "bay": 1, "row": 1, "tier": 1, "storageAreaName": "Yard C", "container": { "isoCode": "SUDU1756178", "description": "Auto-assigned cargo", "type": "General", "weightKg": 23100 } },
+        
+        { "bay": 2,  "row": 1, "tier": 0, "storageAreaName": "Yard C", "container": { "isoCode": "TRIU6322671", "description": "Auto-assigned cargo", "type": "General", "weightKg": 11400 } },
+        { "bay": 3,  "row": 1, "tier": 1, "storageAreaName": "Yard C", "container": { "isoCode": "CSQU2172000", "description": "Auto-assigned cargo", "type": "General", "weightKg": 12300 } },
+        { "bay": 4,  "row": 1, "tier": 2, "storageAreaName": "Yard C", "container": { "isoCode": "CMAU1246293", "description": "Auto-assigned cargo", "type": "General", "weightKg": 13200 } },
+        { "bay": 5,  "row": 1, "tier": 0, "storageAreaName": "Yard C", "container": { "isoCode": "CMAU1957223", "description": "Auto-assigned cargo", "type": "General", "weightKg": 14100 } },
+        { "bay": 6,  "row": 1, "tier": 1, "storageAreaName": "Yard C", "container": { "isoCode": "HLCU4309721", "description": "Auto-assigned cargo", "type": "General", "weightKg": 15000 } },
+        { "bay": 7,  "row": 1, "tier": 2, "storageAreaName": "Yard C", "container": { "isoCode": "OOLU2794714", "description": "Auto-assigned cargo", "type": "General", "weightKg": 15900 } },
+        { "bay": 8,  "row": 1, "tier": 0, "storageAreaName": "Yard C", "container": { "isoCode": "CMAU3881050", "description": "Auto-assigned cargo", "type": "General", "weightKg": 16800 } },
+        { "bay": 9,  "row": 1, "tier": 1, "storageAreaName": "Yard C", "container": { "isoCode": "HLCU2870306", "description": "Auto-assigned cargo", "type": "General", "weightKg": 17700 } },
+        { "bay": 10, "row": 1, "tier": 2, "storageAreaName": "Yard C", "container": { "isoCode": "MAEU4164400", "description": "Auto-assigned cargo", "type": "General", "weightKg": 18600 } },
+        { "bay": 11, "row": 1, "tier": 0, "storageAreaName": "Yard C", "container": { "isoCode": "HLCU1617973", "description": "Auto-assigned cargo", "type": "General", "weightKg": 19500 } },
+        { "bay": 12, "row": 1, "tier": 1, "storageAreaName": "Yard C", "container": { "isoCode": "TRIU3198422", "description": "Auto-assigned cargo", "type": "General", "weightKg": 20400 } },
+        { "bay": 13, "row": 1, "tier": 2, "storageAreaName": "Yard C", "container": { "isoCode": "CMAU1214742", "description": "Auto-assigned cargo", "type": "General", "weightKg": 21300 } },
+        { "bay": 14, "row": 1, "tier": 0, "storageAreaName": "Yard C", "container": { "isoCode": "TRIU0792071", "description": "Auto-assigned cargo", "type": "General", "weightKg": 22200 } },
+        { "bay": 15, "row": 1, "tier": 1, "storageAreaName": "Yard C", "container": { "isoCode": "CMAU4463482", "description": "Auto-assigned cargo", "type": "General", "weightKg": 23100 } },
+        { "bay": 16, "row": 1, "tier": 2, "storageAreaName": "Yard C", "container": { "isoCode": "TGHU1147776", "description": "Auto-assigned cargo", "type": "General", "weightKg": 24000 } },
+        { "bay": 17, "row": 1, "tier": 0, "storageAreaName": "Yard C", "container": { "isoCode": "MAEU0584426", "description": "Auto-assigned cargo", "type": "General", "weightKg": 6000 } },
+        { "bay": 0,  "row": 2, "tier": 1, "storageAreaName": "Yard C", "container": { "isoCode": "MSCU1525216", "description": "Auto-assigned cargo", "type": "General", "weightKg": 6900 } },
+        { "bay": 1,  "row": 2, "tier": 2, "storageAreaName": "Yard C", "container": { "isoCode": "SUDU3605798", "description": "Auto-assigned cargo", "type": "General", "weightKg": 7800 } },
+        { "bay": 2,  "row": 2, "tier": 0, "storageAreaName": "Yard C", "container": { "isoCode": "TEMU4510944", "description": "Auto-assigned cargo", "type": "General", "weightKg": 8700 } },
+        { "bay": 3,  "row": 2, "tier": 1, "storageAreaName": "Yard C", "container": { "isoCode": "MSCU4965570", "description": "Auto-assigned cargo", "type": "General", "weightKg": 9600 } }
       ]
     },
     "vesselImo": "IMO 9456783",
