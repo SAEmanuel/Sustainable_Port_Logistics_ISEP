@@ -12,6 +12,7 @@ public interface IUserService
     Task<UserDto> GetByIdAsync(UserId id);
     Task<UserDto> GetByEmailAsync(string email);
     Task<List<UserDto>> GetAllNonAuthorizedAsync();
+    Task<List<UserDto>> GetAllNotEliminatedAsync();
     Task<List<UserDto>> GetAllAsync();
     Task<UserDto> AddAsync(CreatingUserDto dto);
     Task<UserDto?> TryGetByEmailAsync(string email);

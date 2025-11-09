@@ -147,7 +147,7 @@ public class UserService : IUserService
     
     public async Task<List<UserDto>> GetAllNotEliminatedAsync()
     {
-        _logger.LogInformation("Fetching all Users.");
+        _logger.LogInformation("Fetching all not Eliminated Users.");
         var list = await _repo.GetAllNotEliminatedAsync();
         var dtos = UserMapper.ToDtoList(list);
         _logger.LogInformation("Returning {Count} Users.", dtos.Count);
