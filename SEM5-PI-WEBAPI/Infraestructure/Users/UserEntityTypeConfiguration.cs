@@ -25,6 +25,9 @@ namespace SEM5_PI_WEBAPI.Infraestructure.Users
             builder.Property(u => u.IsActive)
                 .IsRequired();
             
+            builder.Property(u => u.Eliminated)
+                .IsRequired();
+            
             builder.Property(u => u.Role)
                 .IsRequired(false)
                 .HasConversion<string>()

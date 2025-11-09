@@ -185,7 +185,7 @@ public class UserController : ControllerBase
         }
     }
 
-    [HttpGet("activate")]
+    [HttpPut("activate")]
     public async Task<IActionResult> ActivateUser([FromQuery] string email)
     {
         _logger.LogInformation("Activation request received for {Email}", email);
@@ -200,5 +200,22 @@ public class UserController : ControllerBase
         await _service.ActivateUserAsync(new UserId(user.Id));
 
         return Ok("Account activated successfully");
+    }
+
+    [HttpPut("eliminate")]
+    public async Task<IActionResult> EliminateUser([FromQuery] string email)
+    {
+        _logger.LogInformation("Elimination request received for {Email}", email);
+
+        var user = await _service.TryGetByEmailAsync(email);
+        if (user == null)
+            return NotFound("User not found");
+
+        if (user.Eliminated)
+            return Ok("User is already eliminated");
+
+        await _service.EliminateUserAsync(new UserId(user.Id));
+
+        return Ok("Account eliminated successfully");
     }
 }

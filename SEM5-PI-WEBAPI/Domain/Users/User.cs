@@ -39,6 +39,11 @@ public class User : Entity<UserId>, IAggregateRoot
     {
         IsActive = !IsActive;
     }
+    
+    public void Eliminate()
+    {
+        Eliminated = true;
+    }
 
     public override bool Equals(object? obj)
     {

@@ -55,6 +55,26 @@ public class UserService : IUserService
 
         return UserMapper.ToDto(user);
     }
+    
+    public async Task<UserDto> EliminateUserAsync(UserId id)
+    {
+        _logger.LogInformation("Eliminating user with ID: {Id}", id.Value);
+        var user = await _repo.GetByIdAsync(id);
+
+        if (user == null)
+        {
+            _logger.LogWarning("User with ID: {Id} not found.", id.Value);
+            throw new BusinessRuleValidationException($"User with ID: {id.Value} not found");
+        }
+
+        _logger.LogInformation("User with ID: {Id} found.", id.Value);
+        if (!user.Eliminated)
+            user.Eliminate();
+        await _unitOfWork.CommitAsync();
+        _logger.LogInformation("User with ID: {Id} eliminated.", id.Value);
+
+        return UserMapper.ToDto(user);
+    }
 
     public async Task<UserDto> ChangeRoleAsync(UserId id, Roles newRole)
     {
