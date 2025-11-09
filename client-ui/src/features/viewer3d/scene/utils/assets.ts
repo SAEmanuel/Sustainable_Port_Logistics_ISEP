@@ -6,12 +6,7 @@ const TEX    = `${BASE}3Dtextures`;
 
 export const ASSETS_MODELS = {
     vessels: {
-        vessel: `${MODELS}/ships/Boat.glb`,
-        vesseltug: `${MODELS}/physicalResources/vessels/tugBoat.glb`,
-        cruise: `${MODELS}/ships/Cruise_ship.glb`,
-        cargo: `${MODELS}/ships/ship-cargo-a.glb`,
-        ship_ocean: `${MODELS}/ships/ship-ocean-liner.glb`,
-        containerShip: `${MODELS}/ships/Container_Ship.glb`,
+        containerShip: `${MODELS}/physicalResources/vessels/Container_Ship.glb`,
     },
     containers: {
         containerRealistic: `${MODELS}/containers/realistics/Container.glb`,

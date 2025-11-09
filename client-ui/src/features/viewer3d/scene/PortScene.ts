@@ -1,7 +1,7 @@
 // src/features/viewer3d/scene/PortScene.ts
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
-import type { SceneData, ContainerDto, VesselDto } from "../types";
+import type { SceneData, ContainerDto } from "../types";
 
 import { makePortBase } from "./objects/PortBase";
 import { ASSETS_TEXTURES } from "./utils/assets";
@@ -12,7 +12,7 @@ import { addRoadPoles } from "./objects/roadLights";
 import { makeStorageArea } from "./objects/StorageArea";
 import { makeContainerPlaceholder } from "./objects/Container";
 import { makeDock } from "./objects/Dock";
-import { makeVesselPlaceholder } from "./objects/Vessel";
+import { makeVessel } from "./objects/Vessel";
 
 import { computeLayout } from "../services/layoutEngine";
 
@@ -68,7 +68,7 @@ export class PortScene {
         );
         this.camera.position.set(180, 200, 420);
 
-        this.scene.add(new THREE.AmbientLight(0xffffff, 0.6));
+        this.scene.add(new THREE.AmbientLight(0xffffff, 0.2));
         this.scene.add(new THREE.HemisphereLight(0xffffff, 0x404040, 0.25));
 
         /* ------------ BASE DO PORTO ------------ */
@@ -193,12 +193,14 @@ export class PortScene {
             this.gContainers.add(mesh);
             this.pickables.push(mesh);
         }
-
-        for (const v of layout.vessels as VesselDto[]) {
-            const mesh = makeVesselPlaceholder(v);
-            this.gVessels.add(mesh);
-            this.pickables.push(mesh);
+        
+        
+        for (const v of layout.vessels) {
+            const node = makeVessel(v as any);
+            this.gVessels.add(node);
+            this.pickables.push(node);
         }
+
         
         // 4) fit de câmara ao conteúdo
         const box = new THREE.Box3();
