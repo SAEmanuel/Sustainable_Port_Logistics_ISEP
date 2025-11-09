@@ -567,6 +567,10 @@
     }
   },
 
+  "navExit": {
+    "logout" : "Sair"
+  },
+
   "common": {
     "optional": "optional",
     "cancel": "Cancel",

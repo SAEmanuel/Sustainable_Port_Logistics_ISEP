@@ -54,6 +54,10 @@
     "back": "Voltar ao início"
   },
 
+  "navExit": {
+    "logout" : "Sair"
+  },
+
   "menu": {
     "home": "Início",
     "vvn": "VVNs",

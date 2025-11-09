@@ -14,6 +14,7 @@ export default function AppLayout() {
     const {i18n, t} = useTranslation();
     const user = useAppStore((s) => s.user);
 
+
     const toggleTheme = () => {
         const newTheme = dark ? "light" : "dark";
         document.documentElement.setAttribute("data-theme", newTheme);
@@ -105,12 +106,9 @@ export default function AppLayout() {
             </header>
 
             {/* SIDEBAR */}
-            <aside className={`sidebar ${menuOpen ? "open" : ""}`}>
-                <div onClick={toggleMenu}>
-                    <Nav/>
-                </div>
-            </aside>
+            <Nav isOpen={menuOpen} />
 
+            {/* OVERLAY para fechar o menu em mobile */}
             {menuOpen && <div className="overlay" onClick={toggleMenu}></div>}
 
             {/* MAIN */}
