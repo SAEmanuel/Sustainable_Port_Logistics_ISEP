@@ -43,5 +43,33 @@
     "depthM": 12.0,
     "maxDraftM": 11.8,
     "allowedVesselTypeNames": ["FeederMax"]
+  },
+  
+  {
+    "code": "DK-0006",
+    "physicalResourceCodes": [],
+    "location": "Terminal Central E-1",
+    "lengthM": 275.0,
+    "depthM": 12.0,
+    "maxDraftM": 11.8,
+    "allowedVesselTypeNames": ["FeederMax"]
+  },
+  {
+    "code": "DK-0007",
+    "physicalResourceCodes": [],
+    "location": "Terminal Central E-1",
+    "lengthM": 275.0,
+    "depthM": 12.0,
+    "maxDraftM": 11.8,
+    "allowedVesselTypeNames": ["FeederMax"]
+  },
+  {
+    "code": "DK-0008",
+    "physicalResourceCodes": [],
+    "location": "Terminal Central E-1",
+    "lengthM": 275.0,
+    "depthM": 12.0,
+    "maxDraftM": 11.8,
+    "allowedVesselTypeNames": ["FeederMax"]
   }
 ]

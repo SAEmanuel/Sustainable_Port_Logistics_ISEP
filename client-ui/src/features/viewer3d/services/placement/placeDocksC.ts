@@ -25,8 +25,8 @@ export function placeDocksC(docks: DockDto[], grids: GridsResult) {
         { key: "C.5",  side: "top"   },
         { key: "C.6",  side: "top"   },
         { key: "C.7",  side: "top"   },
-        { key: "C.7",  side: "right" },
-        { key: "C.9",  side: "right" },
+        { key: "C.7",  side: "left" },
+        { key: "C.9",  side: "left" },
     ];
 
     const out: Array<DockDto & { rotationY?: number }> = [];

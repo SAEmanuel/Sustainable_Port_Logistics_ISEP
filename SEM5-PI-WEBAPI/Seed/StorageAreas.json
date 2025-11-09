@@ -12,7 +12,10 @@
       {"dockCode": "DK-0002", "distance": 200},
       {"dockCode": "DK-0003", "distance": 100},
       {"dockCode": "DK-0004", "distance": 150},
-      {"dockCode": "DK-0005", "distance": 350}
+      {"dockCode": "DK-0005", "distance": 350},
+      {"dockCode": "DK-0006", "distance": 350},
+      {"dockCode": "DK-0007", "distance": 350},
+      {"dockCode": "DK-0008", "distance": 350}
     ]
   },
   {
@@ -28,7 +31,10 @@
       {"dockCode": "DK-0002", "distance": 200},
       {"dockCode": "DK-0003", "distance": 100},
       {"dockCode": "DK-0004", "distance": 150},
-      {"dockCode": "DK-0005", "distance": 350}
+      {"dockCode": "DK-0005", "distance": 350},
+      {"dockCode": "DK-0006", "distance": 350},
+      {"dockCode": "DK-0007", "distance": 350},
+      {"dockCode": "DK-0008", "distance": 350}
     ]  },
   {
     "name": "Warehouse A",
@@ -43,7 +49,10 @@
       {"dockCode": "DK-0002", "distance": 200},
       {"dockCode": "DK-0003", "distance": 100},
       {"dockCode": "DK-0004", "distance": 150},
-      {"dockCode": "DK-0005", "distance": 350}
+      {"dockCode": "DK-0005", "distance": 350},
+      {"dockCode": "DK-0006", "distance": 350},
+      {"dockCode": "DK-0007", "distance": 350},
+      {"dockCode": "DK-0008", "distance": 350}
     ]  },
   {
     "name": "Warehouse B",
@@ -58,7 +67,10 @@
       {"dockCode": "DK-0002", "distance": 200},
       {"dockCode": "DK-0003", "distance": 100},
       {"dockCode": "DK-0004", "distance": 150},
-      {"dockCode": "DK-0005", "distance": 350}
+      {"dockCode": "DK-0005", "distance": 350},
+      {"dockCode": "DK-0006", "distance": 350},
+      {"dockCode": "DK-0007", "distance": 350},
+      {"dockCode": "DK-0008", "distance": 350}
     ]  },
   {
     "name": "Yard C",
@@ -73,7 +85,10 @@
       {"dockCode": "DK-0002", "distance": 200},
       {"dockCode": "DK-0003", "distance": 100},
       {"dockCode": "DK-0004", "distance": 150},
-      {"dockCode": "DK-0005", "distance": 350}
+      {"dockCode": "DK-0005", "distance": 350},
+      {"dockCode": "DK-0006", "distance": 350},
+      {"dockCode": "DK-0007", "distance": 350},
+      {"dockCode": "DK-0008", "distance": 350}
     ]
   },
   
@@ -92,7 +107,10 @@
       {"dockCode": "DK-0002", "distance": 200},
       {"dockCode": "DK-0003", "distance": 100},
       {"dockCode": "DK-0004", "distance": 150},
-      {"dockCode": "DK-0005", "distance": 350}
+      {"dockCode": "DK-0005", "distance": 350},
+      {"dockCode": "DK-0006", "distance": 350},
+      {"dockCode": "DK-0007", "distance": 350},
+      {"dockCode": "DK-0008", "distance": 350}
     ]
   },
   {
@@ -108,7 +126,10 @@
       {"dockCode": "DK-0002", "distance": 200},
       {"dockCode": "DK-0003", "distance": 100},
       {"dockCode": "DK-0004", "distance": 150},
-      {"dockCode": "DK-0005", "distance": 350}
+      {"dockCode": "DK-0005", "distance": 350},
+      {"dockCode": "DK-0006", "distance": 350},
+      {"dockCode": "DK-0007", "distance": 350},
+      {"dockCode": "DK-0008", "distance": 350}
     ]
   },
   {
@@ -124,7 +145,10 @@
       {"dockCode": "DK-0002", "distance": 200},
       {"dockCode": "DK-0003", "distance": 100},
       {"dockCode": "DK-0004", "distance": 150},
-      {"dockCode": "DK-0005", "distance": 350}
+      {"dockCode": "DK-0005", "distance": 350},
+      {"dockCode": "DK-0006", "distance": 350},
+      {"dockCode": "DK-0007", "distance": 350},
+      {"dockCode": "DK-0008", "distance": 350}
     ]
   },
   {
@@ -140,7 +164,10 @@
       {"dockCode": "DK-0002", "distance": 200},
       {"dockCode": "DK-0003", "distance": 100},
       {"dockCode": "DK-0004", "distance": 150},
-      {"dockCode": "DK-0005", "distance": 350}
+      {"dockCode": "DK-0005", "distance": 350},
+      {"dockCode": "DK-0006", "distance": 350},
+      {"dockCode": "DK-0007", "distance": 350},
+      {"dockCode": "DK-0008", "distance": 350}
     ]
   },
   {
@@ -156,7 +183,10 @@
       {"dockCode": "DK-0002", "distance": 200},
       {"dockCode": "DK-0003", "distance": 100},
       {"dockCode": "DK-0004", "distance": 150},
-      {"dockCode": "DK-0005", "distance": 350}
+      {"dockCode": "DK-0005", "distance": 350},
+      {"dockCode": "DK-0006", "distance": 350},
+      {"dockCode": "DK-0007", "distance": 350},
+      {"dockCode": "DK-0008", "distance": 350}
     ]
   },
   {
@@ -172,7 +202,10 @@
       {"dockCode": "DK-0002", "distance": 200},
       {"dockCode": "DK-0003", "distance": 100},
       {"dockCode": "DK-0004", "distance": 150},
-      {"dockCode": "DK-0005", "distance": 350}
+      {"dockCode": "DK-0005", "distance": 350},
+      {"dockCode": "DK-0006", "distance": 350},
+      {"dockCode": "DK-0007", "distance": 350},
+      {"dockCode": "DK-0008", "distance": 350}
     ]
   },
   {
@@ -188,7 +221,10 @@
       {"dockCode": "DK-0002", "distance": 200},
       {"dockCode": "DK-0003", "distance": 100},
       {"dockCode": "DK-0004", "distance": 150},
-      {"dockCode": "DK-0005", "distance": 350}
+      {"dockCode": "DK-0005", "distance": 350},
+      {"dockCode": "DK-0006", "distance": 350},
+      {"dockCode": "DK-0007", "distance": 350},
+      {"dockCode": "DK-0008", "distance": 350}
     ]
   },
   {
@@ -204,7 +240,10 @@
       {"dockCode": "DK-0002", "distance": 200},
       {"dockCode": "DK-0003", "distance": 100},
       {"dockCode": "DK-0004", "distance": 150},
-      {"dockCode": "DK-0005", "distance": 350}
+      {"dockCode": "DK-0005", "distance": 350},
+      {"dockCode": "DK-0006", "distance": 350},
+      {"dockCode": "DK-0007", "distance": 350},
+      {"dockCode": "DK-0008", "distance": 350}
     ]
   },
   {
@@ -220,7 +259,10 @@
       {"dockCode": "DK-0002", "distance": 200},
       {"dockCode": "DK-0003", "distance": 100},
       {"dockCode": "DK-0004", "distance": 150},
-      {"dockCode": "DK-0005", "distance": 350}
+      {"dockCode": "DK-0005", "distance": 350},
+      {"dockCode": "DK-0006", "distance": 350},
+      {"dockCode": "DK-0007", "distance": 350},
+      {"dockCode": "DK-0008", "distance": 350}
     ]
   },
   {
@@ -236,7 +278,10 @@
       {"dockCode": "DK-0002", "distance": 200},
       {"dockCode": "DK-0003", "distance": 100},
       {"dockCode": "DK-0004", "distance": 150},
-      {"dockCode": "DK-0005", "distance": 350}
+      {"dockCode": "DK-0005", "distance": 350},
+      {"dockCode": "DK-0006", "distance": 350},
+      {"dockCode": "DK-0007", "distance": 350},
+      {"dockCode": "DK-0008", "distance": 350}
     ]
   },
   {
@@ -252,7 +297,10 @@
       {"dockCode": "DK-0002", "distance": 200},
       {"dockCode": "DK-0003", "distance": 100},
       {"dockCode": "DK-0004", "distance": 150},
-      {"dockCode": "DK-0005", "distance": 350}
+      {"dockCode": "DK-0005", "distance": 350},
+      {"dockCode": "DK-0006", "distance": 350},
+      {"dockCode": "DK-0007", "distance": 350},
+      {"dockCode": "DK-0008", "distance": 350}
     ]
   },
   {
@@ -268,7 +316,10 @@
       {"dockCode": "DK-0002", "distance": 200},
       {"dockCode": "DK-0003", "distance": 100},
       {"dockCode": "DK-0004", "distance": 150},
-      {"dockCode": "DK-0005", "distance": 350}
+      {"dockCode": "DK-0005", "distance": 350},
+      {"dockCode": "DK-0006", "distance": 350},
+      {"dockCode": "DK-0007", "distance": 350},
+      {"dockCode": "DK-0008", "distance": 350}
     ]
   },
   {
@@ -284,7 +335,10 @@
       {"dockCode": "DK-0002", "distance": 200},
       {"dockCode": "DK-0003", "distance": 100},
       {"dockCode": "DK-0004", "distance": 150},
-      {"dockCode": "DK-0005", "distance": 350}
+      {"dockCode": "DK-0005", "distance": 350},
+      {"dockCode": "DK-0006", "distance": 350},
+      {"dockCode": "DK-0007", "distance": 350},
+      {"dockCode": "DK-0008", "distance": 350}
     ]
   },
   {
@@ -300,7 +354,10 @@
       {"dockCode": "DK-0002", "distance": 200},
       {"dockCode": "DK-0003", "distance": 100},
       {"dockCode": "DK-0004", "distance": 150},
-      {"dockCode": "DK-0005", "distance": 350}
+      {"dockCode": "DK-0005", "distance": 350},
+      {"dockCode": "DK-0006", "distance": 350},
+      {"dockCode": "DK-0007", "distance": 350},
+      {"dockCode": "DK-0008", "distance": 350}
     ]
   },
   {
@@ -316,7 +373,10 @@
       {"dockCode": "DK-0002", "distance": 200},
       {"dockCode": "DK-0003", "distance": 100},
       {"dockCode": "DK-0004", "distance": 150},
-      {"dockCode": "DK-0005", "distance": 350}
+      {"dockCode": "DK-0005", "distance": 350},
+      {"dockCode": "DK-0006", "distance": 350},
+      {"dockCode": "DK-0007", "distance": 350},
+      {"dockCode": "DK-0008", "distance": 350}
     ]
   },
   {
