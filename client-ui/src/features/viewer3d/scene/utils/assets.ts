@@ -28,6 +28,9 @@ export const ASSETS_MODELS = {
         truck: `${MODELS}/physicalResources/vehicles/truck.glb`,
         sCarrier: `${MODELS}/physicalResources/vehicles/SCarrier.glb`,
         forklift: `${MODELS}/physicalResources/vehicles/forklift.glb`,
+        extras:{
+            
+        }
     },
     storageArea: {
         wareHouser: `${MODELS}/storageAreas/building-s.glb`,

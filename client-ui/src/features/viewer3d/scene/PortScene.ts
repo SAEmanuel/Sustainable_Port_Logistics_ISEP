@@ -1,7 +1,7 @@
 // src/features/viewer3d/scene/PortScene.ts
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
-import type { SceneData, ContainerDto, StorageAreaDto } from "../types";
+import type { SceneData, ContainerDto, StorageAreaDto, DockDto } from "../types";
 
 import { makePortBase } from "./objects/PortBase";
 import { ASSETS_TEXTURES } from "./utils/assets";
@@ -10,6 +10,7 @@ import { computePortGrids, drawPortGridsDebug } from "./objects/portGrids";
 import { makeContainerPlaceholder } from "./objects/Container";
 import { addRoadPoles } from "./objects/roadLights";
 import { makeStorageArea } from "./objects/StorageArea";
+import { makeDock, layoutDocksForZoneC } from "./objects/Dock";
 
 export type LayerVis = { containers: boolean };
 
@@ -23,6 +24,7 @@ export class PortScene {
     gBase = new THREE.Group();
     gContainers = new THREE.Group();
     gStorage = new THREE.Group();
+    gDocks = new THREE.Group();
 
     pickables: THREE.Object3D[] = [];
     reqId = 0;
@@ -99,8 +101,10 @@ export class PortScene {
         // GRUPOS
         this.gContainers.name = "containers";
         this.gStorage.name = "storage-areas";
+        this.gDocks.name = "docks";
         this.gBase.add(this.gContainers);
         this.gBase.add(this.gStorage);
+        this.gBase.add(this.gDocks);
 
         window.addEventListener("resize", this.onResize);
         this.loop();
@@ -118,7 +122,7 @@ export class PortScene {
     }
 
     /* ======================================================================
-       LAYOUT UNIFORME EM B: máx. 10 em B.1 e 10 em B.2, tamanhos uniformes
+       STORAGE AREAS EM B: máx. 10 em B.1 e 10 em B.2, tamanhos uniformes
        ====================================================================== */
 
     private placeUniformInRect(
@@ -129,7 +133,7 @@ export class PortScene {
         marginInit = 6,
         gapInit = 3,
         rotY = 0
-): number {
+    ): number {
         let margin = marginInit;
         let gap = gapInit;
 
@@ -170,7 +174,6 @@ export class PortScene {
             const sa = items[idx] as any;
             const h = Math.max(1, Number(sa.heightM) || hDefault);
 
-            // guarda tamanho base (placeholder/modelo aplicam scale final)
             sa.widthM  = w;
             sa.depthM  = d;
             sa.heightM = h;
@@ -190,11 +193,10 @@ export class PortScene {
         const B1 = this._grids.B["B.1"].rect;
         const B2 = this._grids.B["B.2"].rect;
 
-        let idx = this.placeUniformInRect(storage, 0, B1, 10, 6, 3,0);
+        let idx = this.placeUniformInRect(storage, 0, B1, 10, 6, 3, 0);
         if (idx < storage.length) {
-            idx = this.placeUniformInRect(storage, idx, B2, 10, 6, 3,Math.PI);
+            idx = this.placeUniformInRect(storage, idx, B2, 10, 6, 3, Math.PI);
         }
-        // restantes (se houvesse) ficam de fora por requisito (10+10).
     }
 
     /* ===================== Containers: A.2 com máx. 2 tiers ===================== */
@@ -279,16 +281,34 @@ export class PortScene {
             if (Array.isArray(o?.material)) o.material.forEach((m: any) => m?.dispose?.());
             else o?.material?.dispose?.();
         }
+        // limpa docks
+        while (this.gDocks.children.length) {
+            const o: any = this.gDocks.children.pop();
+            o?.geometry?.dispose?.();
+            if (Array.isArray(o?.material)) o.material.forEach((m: any) => m?.dispose?.());
+            else o?.material?.dispose?.();
+        }
+
         this.pickables = [];
 
-        // STORAGE AREAS (B.1 → B.2)
-        const storageCopy = data.storageAreas.slice(0,20).map(sa => ({ ...sa }));
-        
+        // STORAGE AREAS (B.1 → B.2) — máximo 20
+        const storageCopy = data.storageAreas.slice(0, 20).map(sa => ({ ...sa }));
         this.placeStorageAreasInB(storageCopy);
         for (const sa of storageCopy) {
-            const node = makeStorageArea(sa); // placeholder + swap interno para GLB
+            const node = makeStorageArea(sa);
             this.gStorage.add(node);
             this.pickables.push(node);
+        }
+
+        // DOCKS — máximo 8, layout na ZONA C
+        const docksCopy: DockDto[] = (data.docks ?? []).slice(0, 8).map(d => ({ ...d }));
+        if (this._grids) {
+            layoutDocksForZoneC(docksCopy, this._grids as any);
+            for (const d of docksCopy) {
+                const m = makeDock(d);
+                this.gDocks.add(m);
+                this.pickables.push(m);
+            }
         }
 
         // CONTAINERS (A.2, máx. 2 tiers por célula)
