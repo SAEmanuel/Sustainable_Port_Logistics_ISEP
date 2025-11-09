@@ -3,9 +3,9 @@ import type { GridsResult, Rect } from "../../scene/objects/Dock";
 
 /* ========================= TUNABLES ========================= */
 const DOCK_LENGTH_RATIO = 0.88; // encurta o comprimento ao longo da aresta
-const DOCK_DEPTH_M      = 14;   // “largura” ortogonal à aresta
-const DOCK_HEIGHT_M     = 5;    // altura visual
-const OVERHANG_M        = 4;    // quanto “sai” para fora do cais (lado da água)
+const DOCK_DEPTH_M      = 30;   // “largura” ortogonal à aresta
+const DOCK_HEIGHT_M     = 10;    // altura visual
+const OVERHANG_M        = 6;    // quanto “sai” para fora do cais (lado da água)
 
 /** Resultado interno de cálculo (inclui rotação). */
 type Placement = {
@@ -48,6 +48,7 @@ export function placeDocksC(docks: DockDto[], grids: GridsResult) {
             maxDraftM: p.maxDraftM,
             positionX: p.positionX,
             positionZ: p.positionZ,
+            positionY: 0,
             rotationY: p.rotationY, // campo adicional só para o cliente
         });
     }
@@ -75,6 +76,7 @@ function buildPlacementForEdge(
             maxDraftM: DOCK_HEIGHT_M,
             positionX: x + L / 2,
             positionZ: rect.maxZ + (depthM / 2 + overhang), // sai para a água
+            
             rotationY: 0,
         };
     }

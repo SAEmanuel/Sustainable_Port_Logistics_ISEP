@@ -37,7 +37,6 @@ export const ASSETS_MODELS = {
     },
     docks: {
         straight: `${MODELS}/Dock.glb`,
-        Lshape:   `${MODELS}/Dock_Complex.glb`,
     },
     props: {},
 } as const;
