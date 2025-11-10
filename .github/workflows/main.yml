@@ -1,10 +1,13 @@
-name: .NET CI
+name: .NET CI/CD with Deployment
 
 on:
   push:
     branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
+  schedule:
+    - cron: '0 2 * * *'  # Deploy automático às 2h da manhã
+  workflow_dispatch:
 
 jobs:
   build-and-test:
@@ -12,15 +15,95 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Set up .NET
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '9.0.x'   # ou 9.0.x se for o teu target
+          dotnet-version: '9.0.x'
 
       - name: Restore dependencies
         run: dotnet restore
 
       - name: Build
         run: dotnet build --no-restore --configuration Release
+
+      - name: Run Unit Tests
+        run: dotnet test --no-build --verbosity normal --configuration Release --logger "trx;LogFileName=test-results.trx"
+
+      - name: Upload Test Results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: '**/test-results.trx'
+
+      - name: Publish artifacts
+        run: dotnet publish -c Release -r linux-x64 --self-contained true -o ./publish
+
+      - name: Upload publish folder
+        uses: actions/upload-artifact@v4
+        with:
+          name: published-app
+          path: ./publish/
+
+  deploy:
+    needs: build-and-test
+    runs-on: self-hosted
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Download published app
+        uses: actions/download-artifact@v4
+        with:
+          name: published-app
+          path: ./publish
+
+      - name: Make deploy script executable
+        run: chmod +x ./SEM5-PI-WEBAPI/deploy.sh
+
+      - name: Deploy to DEI servers
+        env:
+          SSH_OPTS: "-o StrictHostKeyChecking=no -o ConnectTimeout=10 -o BatchMode=yes"
+        run: |
+          echo "Starting deployment to DEI servers..."
+          ./SEM5-PI-WEBAPI/deploy.sh all "$SSH_OPTS"
+
+      - name: Wait for services to stabilize
+        run: |
+          echo "Waiting for services to stabilize..."
+          sleep 15
+
+      - name: Run Health Checks
+        run: |
+          set -e
+          servers=("10.9.21.87" "10.9.23.188" "10.9.23.173" "10.9.23.147")
+          for s in "${servers[@]}"; do
+            echo "Checking $s..."
+            if ! curl -fs http://$s:5008/api/health; then
+              echo "Health check failed on $s"
+              exit 1
+            fi
+          done
+          echo "All servers are healthy."
+
+      - name: Archive Deployment Logs
+        if: always()
+        run: |
+          mkdir -p logs
+          LOGFILE="logs/deployment-$(date +%Y%m%d-%H%M%S).log"
+          echo "Deployment completed at $(date)" > "$LOGFILE"
+          echo "GitHub SHA: ${{ github.sha }}" >> "$LOGFILE"
+          echo "Deployed by: ${{ github.actor }}" >> "$LOGFILE"
+          echo "Workflow: ${{ github.workflow }}" >> "$LOGFILE"
+          echo "Deployment succeeded" >> "$LOGFILE"
+
+      - name: Upload Deployment Logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: deployment-logs
+          path: logs/
