@@ -28,7 +28,8 @@ export const ASSETS_MODELS = {
         }
     },
     storageArea: {
-        wareHouser: `${MODELS}/storageAreas/building-s.glb`,
+        wareHouser: `${MODELS}/storageAreas/StorageArea.glb`,
+        decorativeBuilding: `${MODELS}/storageAreas/building-m.glb`,
     },
     docks: {
         straight: `${MODELS}/Dock.glb`,

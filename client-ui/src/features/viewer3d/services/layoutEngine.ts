@@ -52,24 +52,15 @@ export function computeLayout(data: SceneData, grids: GridsResult): LayoutResult
 
     // --- Decoratives (Zona C: C.7, C.8, C.9, C.10 conforme regras) ---
     const decoratives = placeDecorativeStorageAreasZoneC(grids, {
-        // mais “gordo” (X):
-        thicknessRatio: 0.25,
-        thicknessScale: 1.3,
-
-        // mais “comprido” (Z):
-        lengthRatio: 0.65,
-        lengthScale: 1.1,
-
-        // mais alto (Y):
-        heightM: 7,
-        heightScale: 6,
-
-        // folgas (se tocar na rua, sobam isto):
-        edgeInsetM: 8,
-        roadClearM: 8,
-
-        includeTopBands: true,
+        thicknessRatio: 0.15,
+        lengthRatio: 0.40,
+        edgeInsetM: 40,
+        roadClearM: 30,
+        heightM: 2,          // base
+        heightScale: 1.0,    // ligeiro boost
+        footprintScale: 0.30 // << encolhe tudo ~22%
     });
+
 
 
     return { storage, containers, docks, vessels, decoratives };

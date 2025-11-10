@@ -1,6 +1,7 @@
 // services/placement/placeDecorativeStorageAreasZoneC.ts
 import type { GridsResult } from "../../scene/objects/portGrids";
 
+/* ================== Tipos ================== */
 export type Rect = { minX: number; maxX: number; minZ: number; maxZ: number };
 export type DecorativeSA = {
     zone: string;
@@ -8,52 +9,45 @@ export type DecorativeSA = {
     positionX: number; positionZ: number; rotationY: number;
 };
 
-/** Opções de afinação de dimensões/folgas. */
+/** Opções para escalar tamanhos/folgas/altura. */
 export type DecoRectOpts = {
-    /** Recuo geral às bordas da zona (X e Z). */
-    edgeInsetM?: number;          // default 8
-    /** Folga extra às ruas nas extremidades (aplicada no eixo Z). */
-    roadClearM?: number;          // default 8
+    edgeInsetM?: number;      // recuo geral às bordas (X e Z)
+    roadClearM?: number;      // folga extra às ruas (aplicada nas extremidades em Z)
 
-    /** Fração da largura útil da zona usada como ESPESSURA (X). */
-    thicknessRatio?: number;      // default 0.18
-    /** Multiplicador rápido da espessura. */
-    thicknessScale?: number;      // default 1
+    thicknessRatio?: number;  // fração da largura útil usada como ESPESSURA (X)
+    thicknessScale?: number;  // multiplicador rápido da espessura
 
-    /** Fração do comprimento útil da zona usada como COMPRIMENTO (Z). */
-    lengthRatio?: number;         // default 0.88
-    /** Multiplicador rápido do comprimento. */
-    lengthScale?: number;         // default 1
+    lengthRatio?: number;     // fração do comprimento útil usada como COMPRIMENTO (Z)
+    lengthScale?: number;     // multiplicador rápido do comprimento
 
-    /** Altura base (Y) e multiplicador. */
-    heightM?: number;             // default 2
-    heightScale?: number;         // default 1
+    heightM?: number;         // altura base (Y)
+    heightScale?: number;     // multiplicador da altura
 
-    /** Ativar as bandas de topo (C.5 e C.6). */
-    includeTopBands?: boolean;    // default true
+    includeTopBands?: boolean;// coloca também C.5 e C.6
+    footprintScale?: number;
 };
 
-/* utils */
+/* =============== Constantes/rotação =============== */
+const ROT_FACE_POS_X = +Math.PI / 2;
+const ROT_FACE_NEG_X = -Math.PI / 2;
+const ROT_FACE_POS_Z = 0;
+
+/* ================== Utils ================== */
 const sizeX = (r: Rect) => r.maxX - r.minX;
 const sizeZ = (r: Rect) => r.maxZ - r.minZ;
 const midX  = (r: Rect) => (r.minX + r.maxX) / 2;
-// @ts-ignore
-const midZ  = (r: Rect) => (r.minZ + r.maxZ) / 2;
 
-/**
- * Retângulos decorativos na Zona C:
- *  - C.8/C.10 → encostados ao LADO ESQUERDO (X), centrados em Z.
- *  - C.7/C.9  → encostados ao LADO DIREITO (X), centrados em Z.
- *  - C.5/C.6  → banda encostada EM BAIXO (Z), centrada em X (opcional).
- */
+/* ================== Placement ================== */
 export function placeDecorativeStorageAreasZoneC(
     grids: GridsResult,
     opts: DecoRectOpts = {}
 ): DecorativeSA[] {
+    // defaults
     const O: Required<DecoRectOpts> = {
         edgeInsetM: 8,
         roadClearM: 8,
         thicknessRatio: 0.18,
+        footprintScale:0.40,
         thicknessScale: 1,
         lengthRatio: 0.88,
         lengthScale: 1,
@@ -65,77 +59,105 @@ export function placeDecorativeStorageAreasZoneC(
 
     const out: DecorativeSA[] = [];
 
-    const addVerticalStrip = (zoneKey: keyof GridsResult["C"], side: "left" | "right") => {
-        const g = grids.C[zoneKey]; if (!g) return;
-        const r = g.rect;
+    /* --------- Grupo LATERAIS: C.7, C.8, C.9, C.10 --------- */
+    const lateralKeys: (keyof GridsResult["C"])[] = ["C.7","C.8","C.9","C.10"];
 
-        // área útil com recuos
+    // calcula o tamanho UNIFORME possível (com folgas) para TODAS as laterais
+    let lateralWidth = Infinity;  // X
+    let lateralDepth = Infinity;  // Z
+    
+    lateralWidth *= O.footprintScale;
+    lateralDepth *= O.footprintScale;
+    
+    lateralKeys.forEach(k => {
+        const r = grids.C[k]?.rect; if (!r) return;
         const usableX = Math.max(1, sizeX(r) - 2 * O.edgeInsetM);
         const usableZ = Math.max(1, sizeZ(r) - 2 * O.edgeInsetM);
 
-        // dimensões desejadas
-        const width  = Math.max(1, usableX * O.thicknessRatio * O.thicknessScale); // espessura (X)
-        const maxDepth = Math.max(0, usableZ - 2 * O.roadClearM);
-        const depth  = Math.max(1, Math.min(maxDepth, usableZ * O.lengthRatio * O.lengthScale)); // comprimento (Z)
+        const widthCandidate  = Math.max(1, usableX * O.thicknessRatio * O.thicknessScale);
+        const depthMax        = Math.max(0, usableZ - 2 * O.roadClearM);
+        const depthCandidate  = Math.max(1, Math.min(depthMax, usableZ * O.lengthRatio * O.lengthScale));
 
-        // posicionamento
-        const xLeft  = (r.minX + O.edgeInsetM) + width / 2;
-        const xRight = (r.maxX - O.edgeInsetM) - width / 2;
+        lateralWidth = Math.min(lateralWidth, widthCandidate);
+        lateralDepth = Math.min(lateralDepth, depthCandidate);
+    });
+
+    // posiciona cada lateral encostando ao lado correto e centrando em Z no “corredor” com folga
+    const placeLateral = (zoneKey: keyof GridsResult["C"], side: "left" | "right") => {
+        const g = grids.C[zoneKey]; if (!g) return;
+        const r = g.rect;
+
+        const xLeft  = (r.minX + O.edgeInsetM) + lateralWidth / 2;
+        const xRight = (r.maxX - O.edgeInsetM) - lateralWidth / 2;
         const posX   = side === "left" ? xLeft : xRight;
 
-        // centrado no espaço com folga às ruas
-        const zMin = r.minZ + O.edgeInsetM + O.roadClearM;
-        const zMax = r.maxZ - O.edgeInsetM - O.roadClearM;
-        const posZ = (zMin + zMax) / 2;
+        const zMin   = r.minZ + O.edgeInsetM + O.roadClearM;
+        const zMax   = r.maxZ - O.edgeInsetM - O.roadClearM;
+        const posZ   = (zMin + zMax) / 2;
 
         out.push({
             zone: zoneKey,
-            widthM: width,
-            depthM: depth,
+            widthM: lateralWidth,
+            depthM: lateralDepth,
             heightM: Math.max(0.1, O.heightM * O.heightScale),
             positionX: posX,
             positionZ: posZ,
-            rotationY: 0,
+            rotationY: side === "left" ? ROT_FACE_NEG_X : ROT_FACE_POS_X,
         });
     };
 
-    const addBottomBand = (zoneKey: keyof GridsResult["C"]) => {
-        const g = grids.C[zoneKey]; if (!g) return;
-        const r = g.rect;
+    placeLateral("C.7", "right");
+    placeLateral("C.9", "right");
+    placeLateral("C.8", "left");
+    placeLateral("C.10", "left");
 
-        const usableX = Math.max(1, sizeX(r) - 2 * O.edgeInsetM);
-        const usableZ = Math.max(1, sizeZ(r) - 2 * O.edgeInsetM);
-
-        const width = Math.max(1, usableX * O.lengthRatio * O.lengthScale);         // ao longo de X
-        const depth = Math.max(1, usableZ * O.thicknessRatio * O.thicknessScale);    // espessura em Z
-
-        // encostado em baixo com folga à rua
-        const bottomInset = O.edgeInsetM + O.roadClearM;
-        const posZ = (r.minZ + bottomInset) + depth / 2;
-        const posX = midX(r);
-
-        out.push({
-            zone: zoneKey,
-            widthM: width,
-            depthM: depth,
-            heightM: Math.max(0.1, O.heightM * O.heightScale),
-            positionX: posX,
-            positionZ: posZ,
-            rotationY: 0,
-        });
-    };
-
-    // Esquerda (no render): encostar à DIREITA
-    addVerticalStrip("C.7", "right");
-    addVerticalStrip("C.9", "right");
-
-    // Direita: encostar à ESQUERDA
-    addVerticalStrip("C.8", "left");
-    addVerticalStrip("C.10", "left");
-
+    /* --------- Grupo TOPO: C.5, C.6 (opcional) --------- */
     if (O.includeTopBands) {
-        addBottomBand("C.5");
-        addBottomBand("C.6");
+        const topKeys: (keyof GridsResult["C"])[] = ["C.5","C.6"];
+
+        // tamanho UNIFORME para topo (largura ao longo de X, espessura em Z)
+        let topWidth = Infinity; // ao longo de X
+        let topDepth = Infinity; // espessura em Z
+        
+        lateralWidth *= O.footprintScale;
+        lateralDepth *= O.footprintScale;
+        
+        topKeys.forEach(k => {
+            const r = grids.C[k]?.rect; if (!r) return;
+            const usableX = Math.max(1, sizeX(r) - 2 * O.edgeInsetM);
+            const usableZ = Math.max(1, sizeZ(r) - 2 * O.edgeInsetM);
+
+            const widthCandidate = Math.max(1, usableX * O.lengthRatio * O.lengthScale);
+            const depthCandidate = Math.max(1, usableZ * O.thicknessRatio * O.thicknessScale);
+
+            // garantir que não encosta à rua inferior
+            const depthMax = Math.max(0, usableZ - O.roadClearM); // uma margem para baixo
+            topWidth = Math.min(topWidth, widthCandidate);
+            topDepth = Math.min(topDepth, Math.min(depthCandidate, depthMax));
+        });
+
+        const bottomInset = O.edgeInsetM + O.roadClearM;
+
+        const placeTop = (zoneKey: keyof GridsResult["C"]) => {
+            const g = grids.C[zoneKey]; if (!g) return;
+            const r = g.rect;
+
+            const posX = midX(r);
+            const posZ = (r.minZ + bottomInset) + topDepth / 2;
+
+            out.push({
+                zone: zoneKey,
+                widthM: topWidth,
+                depthM: topDepth,
+                heightM: Math.max(0.1, O.heightM * O.heightScale),
+                positionX: posX,
+                positionZ: posZ,
+                rotationY: ROT_FACE_POS_Z, // “olhar” para +Z
+            });
+        };
+
+        placeTop("C.5");
+        placeTop("C.6");
     }
 
     return out;
