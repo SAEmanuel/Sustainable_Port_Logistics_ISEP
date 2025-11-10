@@ -77,19 +77,22 @@ export function computeLayout(data: SceneData, grids: GridsResult): LayoutResult
         depthM:    Number(d.depthM)    || 10,
         rotationY: Number((d as any).rotationY) || 0,
     }));
-    
 
-// Grua decorativa em TORRE (um por dock)
-    const decorativeCranes = placeDecorativeCranesZoneC(dockEdges, {
-        baseRatio: 0.26,        // lado do quadrado ≈ 26% da profundidade do dock
-        baseMinM: 3.2,
-        baseMaxM: 8.5,
-        heightM: 22,            // bem alto
-        heightScale: 1.0,
-        offsetFromEdgeM: 10.2,   // afasta um pouco da borda de água
-        marginAlongM: 10,       // evita as pontas do dock
-        alignAlong: 0.5,        // centro do dock (0 = ponta A, 1 = ponta B)
-    });
+
+// Grua decorativa (um por dock)
+    const decorativeCranes = placeDecorativeCranesZoneC(
+        dockEdges,
+        {
+            occupyAlongRatio: 0.95,
+            marginAlongM: 6,
+            depthRatio: 0.70,
+            heightM: 38,
+            offsetFromWaterEdgeM: 1.0,
+            alignAlong: 0.5,
+        },
+        (grids as any).C 
+    );
+
 
 
     return { storage, containers, docks, vessels, decoratives, decorativeCranes };

@@ -21,15 +21,27 @@ export const ASSETS_MODELS = {
     },
     vehicles: {
         truck: `${MODELS}/physicalResources/vehicles/truck.glb`,
-        sCarrier: `${MODELS}/physicalResources/vehicles/SCarrier.glb`,
+        truckCarrier: `${MODELS}/physicalResources/vehicles/SCarrier.glb`,
+        garbagetruck: `${MODELS}/physicalResources/vehicles/garbage-truck.glb`,
+        fireTuck: `${MODELS}/physicalResources/vehicles/firetruck.glb`,
+
+        sedan: `${MODELS}/physicalResources/vehicles/sedan.glb`,
+        suv: `${MODELS}/physicalResources/vehicles/suv.glb`,
+        taxi: `${MODELS}/physicalResources/vehicles/taxi.glb`,
+        sedanSport: `${MODELS}/physicalResources/vehicles/sedan-sports.glb`,
+        suvluxury: `${MODELS}/physicalResources/vehicles/suv-luxury.glb`,
+        
         forklift: `${MODELS}/physicalResources/vehicles/forklift.glb`,
-        extras:{
-            
-        }
     },
     storageArea: {
         wareHouser: `${MODELS}/storageAreas/StorageArea.glb`,
         decorativeBuilding: `${MODELS}/storageAreas/building-m.glb`,
+    },
+    buildings:{
+        bigOffice: `${MODELS}/props/buildings/BigOffice.glb`,
+        chillBuilding: `${MODELS}/props/buildings/extras/chillBuilding.glb`,
+        midleBuilding: `${MODELS}/props/buildings/extras/midleBuilding.glb`,
+        smallBuilding: `${MODELS}/props/buildings/extras/smallBuilding.glb`,
     },
     docks: {
         straight: `${MODELS}/Dock.glb`,
