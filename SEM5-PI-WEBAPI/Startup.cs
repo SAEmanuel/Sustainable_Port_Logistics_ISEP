@@ -77,7 +77,7 @@ namespace SEM5_PI_WEBAPI
                 {
                     options.Authority = domain;
                     options.Audience = audience;
-                    options.RequireHttpsMetadata = false; 
+                    options.RequireHttpsMetadata = false;
                     options.TokenValidationParameters = new TokenValidationParameters
                     {
                         NameClaimType = ClaimTypes.NameIdentifier,
@@ -89,7 +89,7 @@ namespace SEM5_PI_WEBAPI
             {
                 options.AddPolicy("AdminOnly", policy => policy.RequireRole(Roles.Administrator.ToString()));
             });
-            
+
             services.AddCors(options =>
             {
                 options.AddPolicy("AllowSPA", builder =>
@@ -106,25 +106,20 @@ namespace SEM5_PI_WEBAPI
                         .AllowCredentials();
                 });
             });
+            services.AddHealthChecks();
 
-            
+
             services.AddDbContext<DddSample1DbContext>(opt =>
                 opt.UseNpgsql(Configuration.GetConnectionString("DefaultConnection"))
                     .ReplaceService<IValueConverterSelector, StronglyEntityIdValueConverterSelector>());
 
-            
+
             ConfigureMyServices(services);
 
-           
+
             services.AddControllers()
-                .AddNewtonsoftJson(options =>
-                {
-                    options.SerializerSettings.Converters.Add(new StringEnumConverter());
-                })
-                .AddJsonOptions(o =>
-            {
-                o.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
-            });
+                .AddNewtonsoftJson(options => { options.SerializerSettings.Converters.Add(new StringEnumConverter()); })
+                .AddJsonOptions(o => { o.JsonSerializerOptions.PropertyNameCaseInsensitive = true; });
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -152,6 +147,7 @@ namespace SEM5_PI_WEBAPI
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                endpoints.MapHealthChecks("/api/health");
             });
         }
 
