@@ -1,25 +1,30 @@
 // services/layoutEngine.ts
 import type { SceneData } from "../types";
 import type { GridsResult } from "../scene/objects/portGrids";
+
 import { placeStorageAreasInB } from "./placement/placeStorageAreaB";
 import { placeContainersA2_Max2PerSlot } from "./placement/placeContainerA2";
 import { placeDocksC } from "./placement/placeDocksC";
 import { placeVesselsOnWater, type VesselPlacementOpts } from "./placement/placeVesselWater";
-import { placeDecorativeStorageAreasZoneC } from "./placement/placeDecorativeStorageAreasZoneC";
 
-/** Nó decorativo (retângulos amarelos em frente às docks na Zona C) */
-export type DecorativeSA = {
-    zone: string;
-    widthM: number; depthM: number; heightM: number;
-    positionX: number; positionZ: number; rotationY: number;
-};
+import {
+    placeDecorativeStorageAreasZoneC,
+    type DecorativeSA,
+} from "./placement/placeDecorativeStorageAreasZoneC";
+
+import {
+    placeDecorativeCranesZoneC,
+    type DecorativeCrane,
+    type DockEdgePlacement, // << usar o tipo mínimo (sem SceneData)
+} from "./placement/placeDecorativeCranesZoneC";
 
 export type LayoutResult = {
     storage: SceneData["storageAreas"];
     containers: SceneData["containers"];
     docks: Array<SceneData["docks"][number] & { rotationY?: number }>;
     vessels: Array<SceneData["vessels"][number] & { rotationY?: number }>;
-    decoratives: DecorativeSA[]; 
+    decoratives: DecorativeSA[];
+    decorativeCranes: DecorativeCrane[];
 };
 
 export function computeLayout(data: SceneData, grids: GridsResult): LayoutResult {
@@ -33,35 +38,59 @@ export function computeLayout(data: SceneData, grids: GridsResult): LayoutResult
     if (gridA2) placeContainersA2_Max2PerSlot(containers, gridA2);
 
     // --- Docks (Zona C, máx. 8) ---
-    const docks = placeDocksC(data.docks ?? [], grids);
+    const docks = placeDocksC(data.docks ?? [], grids); // já vêm com rotationY calculado
 
     // --- Vessels (1 por dock, lado da água, máx. 8) ---
     const vesselOpts: VesselPlacementOpts = {
-        lengthScale: 1.6,  // +60% no comprimento
-        addLengthM:  20,   // +20 m extra
-        widthScale:  1.9,  // +90% na largura
-        addWidthM:   6,    // +6 m extra
-        clearanceM:  8,    // mais afastado da doca para não colidir
-        yOffsetM:    -34,  // subir/descer todos
-        jitterAlongM:   0, // variação ao longo (0 = desligado)
-        jitterLateralM: 0, // variação lateral (0 = desligado)
+        lengthScale: 1.6,
+        addLengthM: 20,
+        widthScale: 1.9,
+        addWidthM: 6,
+        clearanceM: 8,
+        yOffsetM: -34,
+        jitterAlongM: 0,
+        jitterLateralM: 0,
     };
 
     const vesselsRaw = (data.vessels ?? []).map(v => ({ ...v }));
     const vessels = placeVesselsOnWater(vesselsRaw as any, docks as any, vesselOpts);
 
-    // --- Decoratives (Zona C: C.7, C.8, C.9, C.10 conforme regras) ---
+    // --- Decoratives (Zona C: retângulos “baixos” amarelos) ---
     const decoratives = placeDecorativeStorageAreasZoneC(grids, {
         thicknessRatio: 0.15,
         lengthRatio: 0.40,
         edgeInsetM: 40,
         roadClearM: 30,
-        heightM: 2,          // base
-        heightScale: 1.0,    // ligeiro boost
-        footprintScale: 0.30 // << encolhe tudo ~22%
+        heightM: 2,
+        heightScale: 1.0,
+        footprintScale: 0.30,
+        includeTopBands: true,
+    });
+
+    // --- Decorative Cranes (retângulos altos sobre as docks) ---
+    // Mapear os docks para o tipo mínimo esperado pelo placement decorativo
+    const dockEdges: DockEdgePlacement[] = docks.map(d => ({
+        id: d.id,
+        positionX: Number(d.positionX) || 0,
+        positionZ: Number(d.positionZ) || 0,
+        lengthM:   Number(d.lengthM)   || 20,
+        depthM:    Number(d.depthM)    || 10,
+        rotationY: Number((d as any).rotationY) || 0,
+    }));
+    
+
+// Grua decorativa em TORRE (um por dock)
+    const decorativeCranes = placeDecorativeCranesZoneC(dockEdges, {
+        baseRatio: 0.26,        // lado do quadrado ≈ 26% da profundidade do dock
+        baseMinM: 3.2,
+        baseMaxM: 8.5,
+        heightM: 22,            // bem alto
+        heightScale: 1.0,
+        offsetFromEdgeM: 10.2,   // afasta um pouco da borda de água
+        marginAlongM: 10,       // evita as pontas do dock
+        alignAlong: 0.5,        // centro do dock (0 = ponta A, 1 = ponta B)
     });
 
 
-
-    return { storage, containers, docks, vessels, decoratives };
+    return { storage, containers, docks, vessels, decoratives, decorativeCranes };
 }

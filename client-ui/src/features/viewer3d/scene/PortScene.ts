@@ -14,6 +14,7 @@ import { makeContainerPlaceholder } from "./objects/Container";
 import { makeDock } from "./objects/Dock";
 import { makeVessel } from "./objects/Vessel";
 import { makeDecorativeStorage } from "./objects/DecorativeStorage";
+import {makeDecorativeCrane} from "./objects/DecorativeCrane";
 
 import { computeLayout } from "../services/layoutEngine";
 
@@ -24,7 +25,7 @@ export type LayerVis = Partial<{
     docks: boolean;
     vessels: boolean;
     resources: boolean;  // futuro
-    // decoratives?: boolean; // (opcional, se quiseres toggle no futuro)
+    decoratives?: boolean;
 }>;
 
 export class PortScene {
@@ -39,8 +40,8 @@ export class PortScene {
     gStorage = new THREE.Group();
     gDocks = new THREE.Group();
     gVessels = new THREE.Group();
-    gDecor = new THREE.Group(); // ⬅️ novo grupo para decoratives
-
+    gDecor = new THREE.Group();
+    
     pickables: THREE.Object3D[] = [];
     reqId = 0;
 
@@ -149,7 +150,7 @@ export class PortScene {
         if (vis.storage    !== undefined) this.gStorage.visible    = vis.storage;
         if (vis.docks      !== undefined) this.gDocks.visible      = vis.docks;
         if (vis.vessels    !== undefined) this.gVessels.visible    = vis.vessels;
-        // if ((vis as any).decoratives !== undefined) this.gDecor.visible = (vis as any).decoratives; // opcional
+        if ((vis as any).decoratives !== undefined) this.gDecor.visible = (vis as any).decoratives; // opcional
         // if (vis.resources !== undefined) this.gResources.visible = vis.resources;
     }
 
@@ -206,13 +207,19 @@ export class PortScene {
             this.pickables.push(node);
         }
 
-        // Decoratives (retângulos amarelos)
+        // Decoratives Storage Areas (retângulos amarelos)
         for (const deco of layout.decoratives) {
             const mesh = makeDecorativeStorage(deco);
             this.gDecor.add(mesh);
             this.pickables.push(mesh);
         }
 
+        for (const dc of layout.decorativeCranes) {
+            const node = makeDecorativeCrane(dc as any);
+            this.gDecor.add(node);
+            this.pickables.push(node);
+        }
+        
         // 4) fit de câmara ao conteúdo
         const box = new THREE.Box3();
         this.pickables.forEach((o) => box.expandByObject(o));
