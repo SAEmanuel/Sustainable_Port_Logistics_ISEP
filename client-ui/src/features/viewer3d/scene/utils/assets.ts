@@ -51,6 +51,11 @@ export const ASSETS_MODELS = {
         cone: `${MODELS}/physicalResources/Traffic_Cone.glb`,
         worker: `${MODELS}/props/people/Worker.glb`
     },
+    greens: {
+        pine: `${MODELS}/props/green/Pine.glb`,
+        fallTree: `${MODELS}/props/green/FallTree.glb`,
+        tree: `${MODELS}/props/green/Tree.glb`,
+    },
 } as const;
 
 export const ASSETS_TEXTURES = {

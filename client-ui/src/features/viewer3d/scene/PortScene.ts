@@ -17,6 +17,7 @@ import { makeVessel } from "./objects/Vessel";
 import { makeDecorativeStorage } from "./objects/DecorativeStorage";
 import { makeDecorativeCrane } from "./objects/DecorativeCrane";
 import { makePhysicalResource } from "./objects/PhysicalResource";
+import { addRoadTrees } from "./objects/roadTrees";
 
 import { addRoadTraffic } from "../services/placement/addRoadTraffic";
 import { addAngleParkingInC } from "../services/placement/addParking";
@@ -189,6 +190,32 @@ export class PortScene {
             spawnGlow: false,
             clearMargin: 1.2,
         });
+
+
+
+        /* ------------ ARVORES ------------ */
+
+        addRoadTrees(this.scene, this._baseLayout, {
+            yGround: 0,
+            roadWidth: 12,
+            offsetFromRoad: 4.2,
+            spacing: 18,
+            spacingPhase: 9,
+            jitterXY: 1.4,
+            clearMargin: 1.6,
+            density: 0.9,
+            scaleMin: 0.9,
+            scaleMax: 1.45,
+            bothSides: true,
+            seed: 20251111,
+            // opcional: afinar pesos (continuará a garantir 1x de cada se houver >=3 marcas)
+            // weights: { pine: 2, fallTree: 1, tree: 2 },
+        });
+
+
+
+
+
 
         /* ------------ CONTROLOS ORBIT ------------ */
         this.controls = new OrbitControls(this.camera, this.renderer.domElement);
