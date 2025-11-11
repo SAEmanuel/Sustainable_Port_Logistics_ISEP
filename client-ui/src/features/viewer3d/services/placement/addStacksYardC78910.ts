@@ -1,8 +1,8 @@
+// src/features/viewer3d/services/placement/addStacksYardC78910.ts
 import * as THREE from "three";
 import type { GridsResult, Rect } from "../../scene/objects/portGrids";
 import { ASSETS_MODELS } from "../../scene/utils/assets";
 import { loadGLBNormalized } from "../../scene/utils/loadGLBNormalized";
-
 
 /* =================== Parâmetros base 40ft =================== */
 const SCALE = 3;
@@ -12,7 +12,7 @@ export type StacksYardOpts = {
     zones?: Array<"C.7" | "C.8" | "C.9" | "C.10">;
     roadY?: number;
 
-    // “cadeado” central
+    // “cadeado” central (miolo utilizável)
     widthRatio?: number;
     depthRatio?: number;
     marginX?: number;
@@ -27,8 +27,9 @@ export type StacksYardOpts = {
 
     // orientação única
     yawRad?: number;        // -PI/2 → comprimento // X
-    // NOVO: fator de escala global do contentor (encolher para caber melhor)
-    unitScale?: number;     // 0.7..1.0 (ex.: 0.85)
+
+    // escala global do contentor (encolher para caber melhor)
+    unitScale?: number;     // 0.6..1.0 (ex.: 0.85)
 };
 
 const DEF: Required<StacksYardOpts> = {
@@ -38,25 +39,37 @@ const DEF: Required<StacksYardOpts> = {
     depthRatio: 0.55,
     marginX: 4,
     marginZ: 4,
-    gapX: 0.40,          // pequeno espaçamento longitudinal
-    gapZ: 0.20,          // linhas mais próximas
+    gapX: 0.40,
+    gapZ: 0.20,
     maxStack: 3,
     maxCols: 24,
     rowsMax: 0,
     yawRad: -Math.PI / 2,
-    unitScale: 0.85,     // ↓ contentores ~15% mais pequenos
+    unitScale: 0.85,
 };
 
-/* ---------------- utils do “cadeado” ---------------- */
-function centerSubRect(r: Rect, wRatio: number, dRatio: number, marginX: number, marginZ: number): Rect {
+/* ---------------- utils do “cadeado” com viés em X ---------------- */
+/**
+ * Sub-rectângulo centrado em Z e com viés em X:
+ *  biasX ∈ [-1..+1]  (-1 encosta à esquerda; 0 centro; +1 encosta à direita)
+ */
+function subRectWithBiasX(
+    r: Rect, wRatio: number, dRatio: number, marginX: number, marginZ: number, biasX = 0
+): Rect {
     const inner: Rect = {
         minX: r.minX + marginX, maxX: r.maxX - marginX,
         minZ: r.minZ + marginZ, maxZ: r.maxZ - marginZ,
     };
-    const w = (inner.maxX - inner.minX) * THREE.MathUtils.clamp(wRatio, 0.05, 1);
-    const d = (inner.maxZ - inner.minZ) * THREE.MathUtils.clamp(dRatio, 0.05, 1);
-    const cx = (inner.minX + inner.maxX) / 2;
-    const cz = (inner.minZ + inner.maxZ) / 2;
+    const iw = inner.maxX - inner.minX;
+    const id = inner.maxZ - inner.minZ;
+
+    const w = iw * THREE.MathUtils.clamp(wRatio, 0.05, 1);
+    const d = id * THREE.MathUtils.clamp(dRatio, 0.05, 1);
+
+    const t = (THREE.MathUtils.clamp(biasX, -1, 1) + 1) / 2; // [-1,+1] → [0,1]
+    const cx = inner.minX + w / 2 + (iw - w) * t;            // interpola para a borda
+    const cz = inner.minZ + id / 2;                           // centrado em Z
+
     return { minX: cx - w / 2, maxX: cx + w / 2, minZ: cz - d / 2, maxZ: cz + d / 2 };
 }
 
@@ -98,7 +111,7 @@ async function loadAndNormalizeContainer(url: string, unitScale: number) {
     // sombras
     root.traverse((o: any) => { if (o.isMesh) { o.castShadow = true; o.receiveShadow = true; } });
 
-    // dimensões finais, **medidas** (usaremos isto para o step)
+    // dimensões finais medidas (para step)
     root.updateWorldMatrix(true, true);
     const finalSize = new THREE.Box3().setFromObject(root).getSize(new THREE.Vector3());
     return { root, size: finalSize };
@@ -117,7 +130,8 @@ async function spawnStack(
     // mede a altura real do primeiro
     const first = await loadAndNormalizeContainer(urls[0], unitScale);
     const H = first.size.y;
-    // para o primeiro nível usa o próprio first, os restantes novos loads
+
+    // para o primeiro nível usa o próprio first; restantes carregam alternando URLs
     for (let i = 0; i < stackH; i++) {
         const { root } = i === 0 ? first : await loadAndNormalizeContainer(urls[i % urls.length], unitScale);
 
@@ -147,37 +161,40 @@ export function addContainerYardsInC78910(
     // ε: folga mínima para NUNCA tocar mesmo com flutuações de bbox
     const EPS = 0.04;
 
+    // viés por zona: puxa para o lado “água”
+    const biasByZone: Record<"C.7" | "C.8" | "C.9" | "C.10", number> = {
+        "C.7": -1, // esquerda
+        "C.9": -1, // esquerda
+        "C.8": +1, // direita
+        "C.10": +1 // direita
+    };
+
     for (const key of O.zones!) {
         const grid = grids.C[key as keyof typeof grids.C];
         if (!grid) continue;
 
-        const yard = centerSubRect(grid.rect, O.widthRatio, O.depthRatio, O.marginX, O.marginZ);
+        // Sub-rectângulo deslocado para a água
+        const biasX = biasByZone[key as "C.7" | "C.8" | "C.9" | "C.10"] ?? 0;
+        const yard = subRectWithBiasX(grid.rect, O.widthRatio, O.depthRatio, O.marginX, O.marginZ, biasX);
+
         const usableW = yard.maxX - yard.minX; // X
         const usableD = yard.maxZ - yard.minZ; // Z
 
-        // Como o step depende da dimensão **final medida**, primeiro estimamos
-        // o step com o “alvo” (BASE * unitScale). Depois medimos um contentor real
-        // para refinar.
+        // estimativa inicial de step (antes de medir real)
         const estLen = BASE.L * O.unitScale;
         const estWid = BASE.W * O.unitScale;
 
-        // pass 1 (estimativa) só para contar slots
         let stepX = estLen + O.gapX + EPS;
         let stepZ = estWid + O.gapZ + EPS;
 
-        // slots máximos que cabem geometricamente
+        // slots máximos
         let colsRaw = Math.max(1, Math.floor(usableW / stepX));
         let rowsRaw = Math.max(1, Math.floor(usableD / stepZ));
         const cols = Math.min(colsRaw, Math.max(1, O.maxCols));
         const rows = O.rowsMax && O.rowsMax > 0 ? Math.min(rowsRaw, O.rowsMax) : rowsRaw;
 
-        // Agora medimos um contentor real (precisão no step).
-        // Usamos o container verde como base.
+        // medir um contentor real para refinar step
         const probe = loadAndNormalizeContainer(ASSETS_MODELS.containers.container, O.unitScale);
-        // Nota: não aguardamos aqui para paralelizar; aguardamos ao usar os valores:
-        void probe;
-
-        // Função lazy que devolve tamanho real quando a promise cumprir
         let realLen = estLen, realWid = estWid;
         const ensureRealSize = async () => {
             const p = await probe;
@@ -187,12 +204,11 @@ export function addContainerYardsInC78910(
             stepZ = realWid + O.gapZ + EPS;
         };
 
-        // centragem
+        // centragem interna do grid já enviesado
         const offsetX = (usableW - cols * stepX) / 2 + stepX / 2;
         const offsetZ = (usableD - rows * stepZ) / 2 + stepZ / 2;
 
-        // garante dimensionamento refinado antes de instanciar
-        const prep = ensureRealSize();
+        const prep = ensureRealSize(); // garante step refinado
 
         // alternância de modelo por pilha
         let toggle = 0;
@@ -206,8 +222,6 @@ export function addContainerYardsInC78910(
                         ? [ASSETS_MODELS.containers.container, ASSETS_MODELS.containers.container2]
                         : [ASSETS_MODELS.containers.container2, ASSETS_MODELS.containers.container];
 
-                // espera o “prep” apenas na primeira utilização
-                // (as seguintes já apanham stepX/stepZ reais)
                 // eslint-disable-next-line @typescript-eslint/no-floating-promises
                 (async () => {
                     await prep;

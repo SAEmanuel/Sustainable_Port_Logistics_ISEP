@@ -14,15 +14,16 @@ import { makeStorageArea } from "./objects/StorageArea";
 import { makeContainerPlaceholder } from "./objects/Container";
 import { makeDock } from "./objects/Dock";
 import { makeVessel } from "./objects/Vessel";
-//import { makeDecorativeStorage } from "./objects/DecorativeStorage";
+import { makeDecorativeStorage } from "./objects/DecorativeStorage";
 import { makeDecorativeCrane } from "./objects/DecorativeCrane";
 
 import { addRoadTraffic } from "./objects/addRoadTraffic";
 import { addAngleParkingInC } from "./objects/addParking";
 import { addWorkshopsInC34 } from "./objects/addWorkshopsC34";
 import { addExtrasRowInC34 } from "../services/placement/addExtrasRowC34";
-import { addFactoriesInC78910 } from "../services/placement/addFactoriesC78910";
 import { addContainerYardsInC78910 } from "../services/placement/addStacksYardC78910";
+import { addModernAwningsInA1 } from "../services/placement/addMarqueeA1";
+
 
 import { computeLayout } from "../services/layoutEngine";
 
@@ -240,11 +241,11 @@ export class PortScene {
         }
 
         // Decoratives Storage Areas (retângulos amarelos)
-        // for (const deco of layoutResult.decoratives) {
-        //     const mesh = makeDecorativeStorage(deco);
-        //     this.gDecor.add(mesh);
-        //     this.pickables.push(mesh);
-        // }
+        for (const deco of layoutResult.decoratives) {
+            const mesh = makeDecorativeStorage(deco);
+            this.gDecor.add(mesh);
+            this.pickables.push(mesh);
+        }
 
         for (const dc of layoutResult.decorativeCranes) {
             const node = makeDecorativeCrane(dc as any);
@@ -278,7 +279,7 @@ export class PortScene {
             blockDepthRatio: 0.50,  // miolo mais curto (centro da zona)
             blockDriveway: 6.0,
             lineWidth: 0.18,
-            occupancy: 0.65,
+            occupancy: 0.20,
             roadY: 0.03,
             seed: 20251110,
         });
@@ -306,20 +307,7 @@ export class PortScene {
             fitScaleFactor: 0.992,  // encosta às bordas da célula sem tocar
             roadY: 0.03,
         });
-
-
-        // 3 fábricas por zona (C.7,C.8,C.9,C.10) — faixa central em Z
-        addFactoriesInC78910(this.gIndustry, this._grids!, {
-            bandDepthRatio: 0.26,
-            marginX: 6,
-            marginZ: 6,
-            cellGapX: 1.5,
-            fitScaleFactor: 0.992,
-            // yawExtra: 0, // opcional
-            targetFootprint: { x: 26, z: 18 },
-            roadY: 0.03,
-        });
-
+        
 
 
         // Miolo com pilhas de contentores até 3 de altura (centro da zona)
@@ -335,6 +323,35 @@ export class PortScene {
             yawRad: -Math.PI / 2,
             roadY: 0.03,
         });
+
+        addModernAwningsInA1(this.gDecor, this._grids!, {
+            // encher quase tudo
+            fillWidthRatio: 0.87,
+            fillDepthRatio: 0.87,
+            marginX: 1.0,          // margem de segurança lateral
+            marginZ: 1.0,          // margem frente/fundo
+            gapBetween: 1.2,       // quase cola os 2 módulos
+
+            // mantém a volumetria que curtiste
+            eaveHeight: 29.5,
+            ridgeExtra: 32,
+
+            // estrutura robusta
+            postRadius: 0.50,
+            beamRadius: 0.50,
+            finishBarRadius: 0.50,
+
+            // deixa a lona esticar um bocadinho para tapar a “junta”
+            overhangX: 1.0,
+            overhangZ: 1.0,
+
+            colorFabric: 0xffffff,
+            fabricOpacity: 0.68,
+            softEdges: true,
+        });
+
+
+
 
 
 

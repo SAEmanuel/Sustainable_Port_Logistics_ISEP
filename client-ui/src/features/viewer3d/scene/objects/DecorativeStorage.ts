@@ -114,7 +114,7 @@ export function makeDecorativeStorage(n: DecorativeNode): THREE.Group {
 
     (async () => {
         try {
-            const raw = await loadGLB(ASSETS_MODELS.storageArea.decorativeBuilding);
+            const raw = await loadGLB(ASSETS_MODELS.buildings.factoryBuilding);
             const core = normalizeDecorativeModel(raw, W, Hmin, D);
             g.remove(ph);
             core.name = "DecorativeStorage:model";

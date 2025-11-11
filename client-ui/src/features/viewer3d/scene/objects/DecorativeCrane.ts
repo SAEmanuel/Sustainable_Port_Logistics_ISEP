@@ -56,13 +56,13 @@ export function makeDecorativeCrane(n: DecorativeCraneNode): THREE.Group {
     // Grupo “boomPivot” (boom+contra-lança+trolley+cabos+contentor) — yaw relativo
     const boomPivot = new THREE.Group();
     boomPivot.name = "boomPivot";
-    boomPivot.rotation.y = Number(n.childYaw || 0); // ⬅️ aqui a magia
+    boomPivot.rotation.y = Number(n.childYaw || 0);
     g.add(boomPivot);
 
     // ==== proporções base
     const railGauge   = clamp(D * 0.75, 5, D * 0.9);
     const railThick   = clamp(D * 0.03, 0.22, 0.6);
-    const railLen     = W * 0.86; // ligeiramente mais curto
+    const railLen     = W * 0.86; 
     const legHeight   = clamp(H * 0.72, 8, H * 0.9);
     const girderY     = legHeight + H * 0.05;
     const girderThick = clamp(H * 0.04, 0.4, 1.4);
