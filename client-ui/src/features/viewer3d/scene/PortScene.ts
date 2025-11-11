@@ -7,7 +7,7 @@ import { makePortBase } from "./objects/PortBase";
 import type { PortLayout } from "./objects/PortBase";
 import { ASSETS_TEXTURES } from "./utils/assets";
 // @ts-ignore – util interno com tipos compatíveis
-import { computePortGrids, drawPortGridsDebug } from "./objects/portGrids";
+import { computePortGrids /* , drawPortGridsDebug */ } from "./objects/portGrids";
 
 import { addRoadPoles } from "./objects/roadLights";
 import { makeStorageArea } from "./objects/StorageArea";
@@ -25,8 +25,10 @@ import { addExtrasRowInC34 } from "../services/placement/addExtrasRowC34";
 import { addContainerYardsInC78910 } from "../services/placement/addStacksYardC78910";
 import { addModernAwningsInA1 } from "../services/placement/addMarqueeA1";
 
-
 import { computeLayout } from "../services/layoutEngine";
+
+import { WorkerAvatar } from "./objects/Worker";
+import { FirstPersonRig } from "./FisrtPersonRig";
 
 export type LayerVis = Partial<{
     containers: boolean;
@@ -57,6 +59,11 @@ export class PortScene {
     gIndustry = new THREE.Group();
     gYards = new THREE.Group();
     gResources = new THREE.Group();
+
+    // 1st-person
+    fp!: FirstPersonRig;
+    worker!: WorkerAvatar;
+    lastT = performance.now();
 
     pickables: THREE.Object3D[] = [];
     reqId = 0;
@@ -108,7 +115,7 @@ export class PortScene {
             },
         });
         this.gBase = base;
-        this._baseLayout = baseLayout; // ← guarda PortLayout
+        this._baseLayout = baseLayout;
         this.scene.add(this.gBase);
 
         /* ------------ PREPARAR GRUPOS 3D E ANEXAR ------------ */
@@ -124,6 +131,7 @@ export class PortScene {
         this.gIndustry.name = "industry";
         this.gYards.name = "yards";
         this.gResources.name = "resources";
+
         this.gBase.add(
             this.gContainers,
             this.gStorage,
@@ -139,11 +147,36 @@ export class PortScene {
             this.gResources,
         );
 
+        /* ------------ AVATAR + FIRST PERSON (desligado por omissão) ------------ */
+        this.worker = new WorkerAvatar({ heightM: 1.85, bodyH: 1.85, bodyR: 0.36, yBase: 0.03 });
+        this.worker.setXZ(0, 0);
+        this.gBase.add(this.worker.root);
+
+        this.fp = new FirstPersonRig(this.camera, this.renderer.domElement, {
+            groundY: 0.03,
+            speed: 20,
+            autoPointerLock: false,   // NÃO entra ao clicar
+            keyToggleCode: "KeyF",    // alterna com F
+        });
+        this.fp.attachTo(this.worker.getCameraAnchor());
+
+        // o “player object” tem de estar na Scene
+        this.scene.add(this.fp.controls.object);
+        // começa onde a câmara está, para evitar salto/esmagamento
+        (this.fp.controls.object as THREE.Object3D).position.copy(this.camera.position);
+
+        // tecla F alterna orbit <-> FP
+        window.addEventListener("keydown", (e) => {
+            if (e.code === "KeyF") {
+                this.fp.controls.isLocked ? this.fp.unlock() : this.fp.lock();
+            }
+        });
+
         /* ------------ GRELHAS (A/B/C) ------------ */
         const W = this._baseLayout.zoneC.size.w;
         const D = this._baseLayout.zoneC.size.d * 2;
         this._grids = computePortGrids(W, D, 10);
-        //drawPortGridsDebug(this.scene, this._grids, 1.1);
+        // drawPortGridsDebug(this.scene, this._grids, 1.1);
 
         /* ------------ FARÓIS ------------ */
         addRoadPoles(this.scene, this._baseLayout, {
@@ -157,7 +190,7 @@ export class PortScene {
             clearMargin: 1.2,
         });
 
-        /* ------------ CONTROLOS ------------ */
+        /* ------------ CONTROLOS ORBIT ------------ */
         this.controls = new OrbitControls(this.camera, this.renderer.domElement);
         this.controls.enableDamping = true;
         this.controls.target.set(0, 0, 0);
@@ -167,8 +200,7 @@ export class PortScene {
     }
 
     onResize = () => {
-        const w = this.container.clientWidth,
-            h = this.container.clientHeight;
+        const w = this.container.clientWidth, h = this.container.clientHeight;
         this.camera.aspect = w / h;
         this.camera.updateProjectionMatrix();
         this.renderer.setSize(w, h);
@@ -179,8 +211,8 @@ export class PortScene {
         if (vis.storage !== undefined) this.gStorage.visible = vis.storage;
         if (vis.docks !== undefined) this.gDocks.visible = vis.docks;
         if (vis.vessels !== undefined) this.gVessels.visible = vis.vessels;
-        if (vis.resources !== undefined) this.gResources.visible = vis.resources; // << NOVO
-        if ((vis as any).decoratives !== undefined) this.gDecor.visible = (vis as any).decoratives; // opcional
+        if (vis.resources !== undefined) this.gResources.visible = vis.resources;
+        if ((vis as any).decoratives !== undefined) this.gDecor.visible = (vis as any).decoratives;
     }
 
     /* ===========================================================
@@ -210,56 +242,51 @@ export class PortScene {
         disposeGroup(this.gResources);
         this.pickables = [];
 
-        // 2) calcular layout (Storage/Containers/Docks/Vessels/Decor) com as grelhas
+        // 2) calcular layout
         if (!this._grids) {
             console.warn("[PortScene] grids não inicializadas — fallback.");
             this._grids = computePortGrids(600, 500, 10);
         }
-        const layoutResult = computeLayout(data, this._grids!); // <- LayoutResult
+        const layoutResult = computeLayout(data, this._grids!);
 
         // 3) construir nós 3D
-        // Storage Areas
         for (const sa of layoutResult.storage) {
             const node = makeStorageArea(sa);
             this.gStorage.add(node);
             this.pickables.push(node);
         }
 
-        // Docks
         for (const d of layoutResult.docks) {
             const node = makeDock(d as any);
             this.gDocks.add(node);
             this.pickables.push(node);
         }
 
-        // Containers (A.2 com limitação de 2 por slot – já posicionado)
         for (const c of layoutResult.containers as ContainerDto[]) {
             const mesh = makeContainerPlaceholder(c, 3);
             this.gContainers.add(mesh);
             this.pickables.push(mesh);
         }
 
-        // Vessels
         for (const v of layoutResult.vessels) {
             const node = makeVessel(v as any);
             this.gVessels.add(node);
             this.pickables.push(node);
         }
 
-        // Decoratives Storage Areas (retângulos amarelos)
+        // decor
         for (const deco of layoutResult.decoratives) {
             const mesh = makeDecorativeStorage(deco);
             this.gDecor.add(mesh);
             this.pickables.push(mesh);
         }
-
         for (const dc of layoutResult.decorativeCranes) {
             const node = makeDecorativeCrane(dc as any);
             this.gDecor.add(node);
             this.pickables.push(node);
         }
 
-        // 3.1) TRAFFIC usa o PortLayout da base (não o LayoutResult!)
+        // tráfego (usa PortLayout base)
         addRoadTraffic(this.gTraffic, this._baseLayout, {
             approxVehicles: 100,
             truckRatio: 0.35,
@@ -269,10 +296,9 @@ export class PortScene {
             minGapMeters: 11,
             roadY: 0.03,
             seed: 20251110,
-            // baseYawRad: Math.PI,
         });
 
-        // 3.2) PARKING (C.1 e C.2) — precisa de grids
+        // parques (C.1 e C.2)
         addAngleParkingInC(this.gParking, this._grids!, {
             zones: ["C.1", "C.2"],
             angleDeg: 60,
@@ -280,9 +306,9 @@ export class PortScene {
             stallLength: 5.2,
             aisleWidth: 6.0,
             edgeMargin: 1.2,
-            roadClearM: 4.5,        // folga extra às ruas
-            blockWidthRatio: 0.68,  // miolo mais estreito
-            blockDepthRatio: 0.50,  // miolo mais curto (centro da zona)
+            roadClearM: 4.5,
+            blockWidthRatio: 0.68,
+            blockDepthRatio: 0.50,
             blockDriveway: 6.0,
             lineWidth: 0.18,
             occupancy: 0.20,
@@ -293,36 +319,34 @@ export class PortScene {
         addWorkshopsInC34(this.gWorkshops, this._grids!, {
             zones: ["C.3", "C.4"],
             countPerZone: 5,
-            marginX: 4,            // margem mínima
+            marginX: 4,
             marginZ: 4,
-            fillWidthRatio: 0.96,  // usa quase toda a largura
-            fillDepthRatio: 0.96,  // e quase toda a profundidade da metade
-            cellGap: 1.2,          // pouco espaço entre edifícios
-            fitScaleFactor: 0.985, // “cola” à célula (sem tocar)
-            faceParking: true,     // olha para os parques
+            fillWidthRatio: 0.96,
+            fillDepthRatio: 0.96,
+            cellGap: 1.2,
+            fitScaleFactor: 0.985,
+            faceParking: true,
             roadY: 0.03,
         });
 
         addExtrasRowInC34(this.gExtras!, this._grids!, {
             zones: ["C.3", "C.4"],
-            fillWidthRatio: 0.98,   // larga
-            fillDepthRatio: 0.92,   // profunda
+            fillWidthRatio: 0.98,
+            fillDepthRatio: 0.92,
             marginX: 2.5,
             marginZ: 2.5,
-            cellGap: 10,           // edifícios quase encostados entre si
-            fitScaleFactor: 0.992,  // encosta às bordas da célula sem tocar
+            cellGap: 10,
+            fitScaleFactor: 0.992,
             roadY: 0.03,
         });
-        
 
-
-        // Miolo com pilhas de contentores até 3 de altura (centro da zona)
+        // Yards no miolo (C.7…C.10)
         addContainerYardsInC78910(this.gYards, this._grids!, {
-            unitScale: 0.60,   // ↓ tamanho → resolve “estão muito grandes”
-            gapX: 0.95,        // ↑ folga longitudinal → evita tocar
-            gapZ: 0.18,        // linhas mais juntas (sem colar)
-            widthRatio: 0.70,  // mais largo → permite mais colunas se precisares
-            depthRatio: 0.62,  // mais fundo → mais linhas
+            unitScale: 0.60,
+            gapX: 0.95,
+            gapZ: 0.18,
+            widthRatio: 0.70,
+            depthRatio: 0.62,
             maxCols: 4,
             rowsMax: 0,
             maxStack: 3,
@@ -330,59 +354,54 @@ export class PortScene {
             roadY: 0.03,
         });
 
+        // toldos A.1 a ocupar praticamente toda a zona
         addModernAwningsInA1(this.gDecor, this._grids!, {
-            // encher quase tudo
             fillWidthRatio: 0.87,
             fillDepthRatio: 0.87,
-            marginX: 1.0,          // margem de segurança lateral
-            marginZ: 1.0,          // margem frente/fundo
-            gapBetween: 1.2,       // quase cola os 2 módulos
-
-            // mantém a volumetria que curtiste
+            marginX: 1.0,
+            marginZ: 1.0,
+            gapBetween: 1.2,
             eaveHeight: 29.5,
             ridgeExtra: 32,
-
-            // estrutura robusta
             postRadius: 0.50,
             beamRadius: 0.50,
             finishBarRadius: 0.50,
-
-            // deixa a lona esticar um bocadinho para tapar a “junta”
             overhangX: 1.0,
             overhangZ: 1.0,
-
             colorFabric: 0xffffff,
             fabricOpacity: 0.68,
             softEdges: true,
         });
 
-        
-
-        for (const pr of layoutResult.resources) {
-            const node = makePhysicalResource(pr);
-            this.gResources.add(node);
-            this.pickables.push(node);
+        // physical resources (posicionados pelo layout)
+        if ((layoutResult as any).resources) {
+            for (const pr of (layoutResult as any).resources) {
+                const node = makePhysicalResource(pr);
+                this.gResources.add(node);
+                this.pickables.push(node);
+            }
         }
 
-        // 4) fit de câmara ao conteúdo
-        const box = new THREE.Box3();
-        this.pickables.forEach((o) => box.expandByObject(o));
-        box.expandByObject(this.gTraffic);
-        box.expandByObject(this.gParking);
+        // 4) fit de câmara ao conteúdo (apenas quando NÃO estiver em FP)
+        if (!this.fp.controls.isLocked) {
+            const box = new THREE.Box3();
+            this.pickables.forEach((o) => box.expandByObject(o));
+            box.expandByObject(this.gTraffic);
+            box.expandByObject(this.gParking);
 
-        if (!box.isEmpty()) {
-            const size = new THREE.Vector3(),
-                center = new THREE.Vector3();
-            box.getSize(size);
-            box.getCenter(center);
-            const maxSize = Math.max(size.x, size.y, size.z);
-            const distance = (maxSize * 1.5) / Math.tan((this.camera.fov * Math.PI) / 360);
-            const dir = new THREE.Vector3(1, 1, 1).normalize();
-            this.controls.target.copy(center);
-            this.camera.position.copy(center.clone().add(dir.multiplyScalar(distance)));
-            this.camera.near = Math.max(0.1, maxSize / 1000);
-            this.camera.far = Math.max(2000, distance * 10);
-            this.camera.updateProjectionMatrix();
+            if (!box.isEmpty()) {
+                const size = new THREE.Vector3(), center = new THREE.Vector3();
+                box.getSize(size);
+                box.getCenter(center);
+                const maxSize = Math.max(size.x, size.y, size.z);
+                const distance = (maxSize * 1.5) / Math.tan((this.camera.fov * Math.PI) / 360);
+                const dir = new THREE.Vector3(1, 1, 1).normalize();
+                this.controls.target.copy(center);
+                this.camera.position.copy(center.clone().add(dir.multiplyScalar(distance)));
+                this.camera.near = Math.max(0.1, maxSize / 1000);
+                this.camera.far = Math.max(2000, distance * 10);
+                this.camera.updateProjectionMatrix();
+            }
         }
     }
 
@@ -406,7 +425,14 @@ export class PortScene {
 
     /* =================== LOOP & DISPOSE =================== */
     loop = () => {
-        this.controls.update();
+        const now = performance.now();
+        const dt = Math.min(0.05, (now - this.lastT) / 1000);
+        this.lastT = now;
+
+        // Orbit ativo só quando NÃO estiver em FP
+        if (!this.fp.controls.isLocked) this.controls.update();
+        this.fp.update(dt);
+
         this.renderer.render(this.scene, this.camera);
         this.reqId = requestAnimationFrame(this.loop);
     };

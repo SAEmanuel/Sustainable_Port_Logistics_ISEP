@@ -49,6 +49,7 @@ export const ASSETS_MODELS = {
     },
     props: {
         cone: `${MODELS}/physicalResources/Traffic_Cone.glb`,
+        worker: `${MODELS}/props/people/Worker.glb`
     },
 } as const;
 
