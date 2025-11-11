@@ -30,6 +30,7 @@ import { computeLayout } from "../services/layoutEngine";
 
 import { WorkerAvatar } from "./objects/Worker";
 import { FirstPersonRig } from "./FisrtPersonRig";
+import { LightingController } from "./lighting/LightingController";
 
 export type LayerVis = Partial<{
     containers: boolean;
@@ -66,6 +67,8 @@ export class PortScene {
     worker!: WorkerAvatar;
     lastT = performance.now();
 
+    light!: LightingController;
+
     pickables: THREE.Object3D[] = [];
     reqId = 0;
 
@@ -92,9 +95,44 @@ export class PortScene {
         this.camera = new THREE.PerspectiveCamera(20, container.clientWidth / container.clientHeight, 0.1, 8000);
         this.camera.position.set(180, 200, 420);
 
-        this.scene.add(new THREE.AmbientLight(0xffffff, 0.6));
-        this.scene.add(new THREE.HemisphereLight(0xffffff, 0x404040, 0.25));
 
+
+        /* ------------ Luzes ------------ */
+
+        // this.scene.add(new THREE.AmbientLight(0xffffff, 0.6));
+        // this.scene.add(new THREE.HemisphereLight(0xffffff, 0x404040, 0.25));
+
+        this.light = new LightingController(this.scene, this.renderer, {
+            enableGUI: true,
+            guiMount: container,          // o DIV host que recebes no constructor
+            guiPlacement: "bottom-left",  // canto inferior esquerdo
+            startTime: 14,        // começa “tarde”
+            exposure: 1.0,
+            ambientIntensity: 0.35,
+            hemiIntensity: 0.35,
+            dirIntensity: 1.1,
+            castsShadows: true,
+            shadowSize: 1024,
+        });
+
+        const el = this.light.gui!.domElement as HTMLElement;
+        const host = this.renderer.domElement.parentElement!;
+        host.style.position = "relative";
+        Object.assign(el.style, {
+            position: "absolute",
+            bottom: "10px",
+            left: "10px",
+            right: "auto",
+            top: "auto",
+            zIndex: "10",
+        });
+        host.appendChild(el);
+
+
+        this.gBase.traverse((o: any) => {
+            if (o.isMesh) { o.castShadow = true; o.receiveShadow = true; }
+        });
+        
         /* ------------ BASE DO PORTO ------------ */
         const { group: base, layout: baseLayout } = makePortBase({
             width: 1200,
@@ -231,6 +269,8 @@ export class PortScene {
         this.camera.aspect = w / h;
         this.camera.updateProjectionMatrix();
         this.renderer.setSize(w, h);
+        this.light.updateShadowCameraBounds(400); // ou calculado com base na tua box3
+
     };
 
     setLayers(vis: LayerVis) {
