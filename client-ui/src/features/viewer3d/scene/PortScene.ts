@@ -16,10 +16,11 @@ import { makeDock } from "./objects/Dock";
 import { makeVessel } from "./objects/Vessel";
 import { makeDecorativeStorage } from "./objects/DecorativeStorage";
 import { makeDecorativeCrane } from "./objects/DecorativeCrane";
+import { makePhysicalResource } from "./objects/PhysicalResource";
 
-import { addRoadTraffic } from "./objects/addRoadTraffic";
-import { addAngleParkingInC } from "./objects/addParking";
-import { addWorkshopsInC34 } from "./objects/addWorkshopsC34";
+import { addRoadTraffic } from "../services/placement/addRoadTraffic";
+import { addAngleParkingInC } from "../services/placement/addParking";
+import { addWorkshopsInC34 } from "../services/placement/addWorkshopsC34";
 import { addExtrasRowInC34 } from "../services/placement/addExtrasRowC34";
 import { addContainerYardsInC78910 } from "../services/placement/addStacksYardC78910";
 import { addModernAwningsInA1 } from "../services/placement/addMarqueeA1";
@@ -55,6 +56,7 @@ export class PortScene {
     gExtras = new THREE.Group();
     gIndustry = new THREE.Group();
     gYards = new THREE.Group();
+    gResources = new THREE.Group();
 
     pickables: THREE.Object3D[] = [];
     reqId = 0;
@@ -121,6 +123,7 @@ export class PortScene {
         this.gExtras.name = "extras";
         this.gIndustry.name = "industry";
         this.gYards.name = "yards";
+        this.gResources.name = "resources";
         this.gBase.add(
             this.gContainers,
             this.gStorage,
@@ -133,6 +136,7 @@ export class PortScene {
             this.gExtras,
             this.gIndustry,
             this.gYards,
+            this.gResources,
         );
 
         /* ------------ GRELHAS (A/B/C) ------------ */
@@ -175,6 +179,7 @@ export class PortScene {
         if (vis.storage !== undefined) this.gStorage.visible = vis.storage;
         if (vis.docks !== undefined) this.gDocks.visible = vis.docks;
         if (vis.vessels !== undefined) this.gVessels.visible = vis.vessels;
+        if (vis.resources !== undefined) this.gResources.visible = vis.resources; // << NOVO
         if ((vis as any).decoratives !== undefined) this.gDecor.visible = (vis as any).decoratives; // opcional
     }
 
@@ -202,6 +207,7 @@ export class PortScene {
         disposeGroup(this.gExtras);
         disposeGroup(this.gIndustry);
         disposeGroup(this.gYards);
+        disposeGroup(this.gResources);
         this.pickables = [];
 
         // 2) calcular layout (Storage/Containers/Docks/Vessels/Decor) com as grelhas
@@ -350,11 +356,13 @@ export class PortScene {
             softEdges: true,
         });
 
+        
 
-
-
-
-
+        for (const pr of layoutResult.resources) {
+            const node = makePhysicalResource(pr);
+            this.gResources.add(node);
+            this.pickables.push(node);
+        }
 
         // 4) fit de câmara ao conteúdo
         const box = new THREE.Box3();

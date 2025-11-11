@@ -1,7 +1,9 @@
 import * as THREE from "three";
-import type { GridsResult, Rect } from "../objects/portGrids";
-import { ASSETS_MODELS } from "../utils/assets";
-import { loadGLBNormalized } from "../utils/loadGLBNormalized";
+import type { GridsResult, Rect } from "../../scene/objects/portGrids";
+import { ASSETS_MODELS } from "../../scene/utils/assets";
+import { loadGLBNormalized } from "../../scene/utils/loadGLBNormalized";
+
+
 
 export type WorkshopsOpts = {
     zones?: Array<"C.3" | "C.4">;

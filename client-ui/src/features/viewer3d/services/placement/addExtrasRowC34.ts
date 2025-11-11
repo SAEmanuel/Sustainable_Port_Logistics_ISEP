@@ -1,4 +1,3 @@
-// src/features/viewer3d/scene/objects/buildings/addExtrasRowC34.ts
 import * as THREE from "three";
 import type { GridsResult, Rect } from "../../scene/objects/portGrids";
 import { ASSETS_MODELS } from "../../scene/utils/assets";

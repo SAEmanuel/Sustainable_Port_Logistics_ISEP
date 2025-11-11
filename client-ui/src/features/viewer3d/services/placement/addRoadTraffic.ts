@@ -1,7 +1,7 @@
 import * as THREE from "three";
-import type { PortLayout } from "../objects/PortBase";
-import { ASSETS_MODELS } from "../utils/assets";
-import { loadGLBNormalized } from "../utils/loadGLBNormalized";
+import { ASSETS_MODELS } from "../../scene/utils/assets";
+import { loadGLBNormalized } from "../../scene/utils/loadGLBNormalized";
+import type { PortLayout } from "../../scene/objects/PortBase";
 
 /* =====================================================================
    Tráfego com GLBs: sedan/suv (carros) e truck/truckCarrier (camiões)

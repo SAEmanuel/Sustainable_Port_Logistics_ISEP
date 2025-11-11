@@ -7,6 +7,7 @@ const TEX    = `${BASE}3Dtextures`;
 export const ASSETS_MODELS = {
     vessels: {
         containerShip: `${MODELS}/physicalResources/vessels/Container_Ship.glb`,
+        tugBoat: `${MODELS}/physicalResources/vessels/tugBoat.glb`,
     },
     containers: {
         containerRealistic: `${MODELS}/containers/realistics/Container.glb`,
@@ -46,7 +47,9 @@ export const ASSETS_MODELS = {
     docks: {
         straight: `${MODELS}/Dock.glb`,
     },
-    props: {},
+    props: {
+        cone: `${MODELS}/physicalResources/Traffic_Cone.glb`,
+    },
 } as const;
 
 export const ASSETS_TEXTURES = {

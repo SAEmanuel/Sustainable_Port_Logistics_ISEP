@@ -1,7 +1,7 @@
 import * as THREE from "three";
-import type { GridsResult, Rect } from "./portGrids";
-import { ASSETS_MODELS } from "../utils/assets";
-import { loadGLBNormalized } from "../utils/loadGLBNormalized";
+import type { GridsResult, Rect } from "../../scene/objects/portGrids";
+import { ASSETS_MODELS } from "../../scene/utils/assets";
+import { loadGLBNormalized } from "../../scene/utils/loadGLBNormalized";
 
 /* =====================================================================
    Parking em C.1 e C.2 — MIolo centrado (não toca nas ruas)
