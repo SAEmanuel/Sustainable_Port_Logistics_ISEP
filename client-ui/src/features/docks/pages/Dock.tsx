@@ -73,7 +73,7 @@ function computeNextDockCode(known: string[]): string {
 }
 
 export default function DockPage() {
-    const { t } = useTranslation(["dock", "common"]);
+    const { t } = useTranslation();
 
     const [items, setItems] = useState<Dock[]>([]);
     const [filtered, setFiltered] = useState<Dock[]>([]);
@@ -206,30 +206,30 @@ export default function DockPage() {
         const next: typeof errors = {};
         const loc = editData.location?.trim() ?? "";
         if (!loc)
-            next.location = t("dock:errors.locationRequired", {
+            next.location = t("Dock.errors.locationRequired", {
                 defaultValue: "Localização é obrigatória.",
             });
         else if (sanitizeLocation(loc).length !== loc.length)
-            next.location = t("dock:errors.locationInvalid", {
+            next.location = t("Dock.errors.locationInvalid", {
                 defaultValue: "Localização contém caracteres inválidos.",
             });
         const L = parseDecimal(editNums.lengthM);
         const D = parseDecimal(editNums.depthM);
         const C = parseDecimal(editNums.maxDraftM);
         if (editNums.lengthM && !isPositive(L))
-            next.lengthM = t("dock:errors.mustBePositive", {
+            next.lengthM = t("Dock.errors.mustBePositive", {
                 defaultValue: "Deve ser > 0",
             });
         if (editNums.depthM && !isPositive(D))
-            next.depthM = t("dock:errors.mustBePositive", {
+            next.depthM = t("Dock.errors.mustBePositive", {
                 defaultValue: "Deve ser > 0",
             });
         if (editNums.maxDraftM && !isPositive(C))
-            next.maxDraftM = t("dock:errors.mustBePositive", {
+            next.maxDraftM = t("Dock.errors.mustBePositive", {
                 defaultValue: "Deve ser > 0",
             });
         if (!editVTs.length)
-            next.vessels = t("dock:errors.chooseVesselType", {
+            next.vessels = t("Dock.errors.chooseVesselType", {
                 defaultValue: "Seleciona pelo menos um tipo de navio.",
             });
         setErrors(next);
@@ -241,25 +241,25 @@ export default function DockPage() {
 
         const code = (createData.code ?? "").trim().toUpperCase();
         if (!code)
-            next.code = t("dock:errors.codeRequired", {
+            next.code = t("Dock.errors.codeRequired", {
                 defaultValue: "Código é obrigatório",
             });
         else if (!codeRegex.test(code))
-            next.code = t("dock:errors.codeFormat", {
+            next.code = t("Dock.errors.codeFormat", {
                 defaultValue: "Formato DK-0000",
             });
         else if (allKnownCodes.includes(code))
-            next.code = t("dock:errors.codeDuplicate", {
+            next.code = t("Dock.errors.codeDuplicate", {
                 defaultValue: "Já existe uma dock com esse código",
             });
 
         const loc = (createData.location ?? "").trim();
         if (!loc)
-            next.location = t("dock:errors.locationRequired", {
+            next.location = t("Dock.errors.locationRequired", {
                 defaultValue: "Localização é obrigatória.",
             });
         else if (sanitizeLocation(loc).length !== loc.length)
-            next.location = t("dock:errors.locationInvalid", {
+            next.location = t("Dock.errors.locationInvalid", {
                 defaultValue: "Localização contém caracteres inválidos.",
             });
 
@@ -268,15 +268,15 @@ export default function DockPage() {
         const rawC = (createNums.maxDraftM ?? "").trim();
 
         if (!rawL)
-            next.lengthM = t("dock:errors.lengthRequired", {
+            next.lengthM = t("Dock.errors.lengthRequired", {
                 defaultValue: "Comprimento é obrigatório",
             });
         if (!rawD)
-            next.depthM = t("dock:errors.depthRequired", {
+            next.depthM = t("Dock.errors.depthRequired", {
                 defaultValue: "Profundidade é obrigatória",
             });
         if (!rawC)
-            next.maxDraftM = t("dock:errors.maxdraftRequired", {
+            next.maxDraftM = t("Dock.errors.maxdraftRequired", {
                 defaultValue: "Calado é obrigatório",
             });
 
@@ -285,34 +285,34 @@ export default function DockPage() {
         const C = rawC ? parseDecimal(rawC) : undefined;
 
         if (rawL && L == null)
-            next.lengthM = t("dock:errors.numberInvalid", {
+            next.lengthM = t("Dock.errors.numberInvalid", {
                 defaultValue: "Número inválido",
             });
         else if (rawL && !isPositive(L))
-            next.lengthM = t("dock:errors.mustBePositive", {
+            next.lengthM = t("Dock.errors.mustBePositive", {
                 defaultValue: "Deve ser > 0",
             });
 
         if (rawD && D == null)
-            next.depthM = t("dock:errors.numberInvalid", {
+            next.depthM = t("Dock.errors.numberInvalid", {
                 defaultValue: "Número inválido",
             });
         else if (rawD && !isPositive(D))
-            next.depthM = t("dock:errors.mustBePositive", {
+            next.depthM = t("Dock.errors.mustBePositive", {
                 defaultValue: "Deve ser > 0",
             });
 
         if (rawC && C == null)
-            next.maxDraftM = t("dock:errors.numberInvalid", {
+            next.maxDraftM = t("Dock.errors.numberInvalid", {
                 defaultValue: "Número inválido",
             });
         else if (rawC && !isPositive(C))
-            next.maxDraftM = t("dock:errors.mustBePositive", {
+            next.maxDraftM = t("Dock.errors.mustBePositive", {
                 defaultValue: "Deve ser > 0",
             });
 
         if (!createVTs.length)
-            next.vessels = t("dock:errors.chooseVesselType", {
+            next.vessels = t("Dock.errors.chooseVesselType", {
                 defaultValue: "Seleciona pelo menos um tipo de navio.",
             });
 
@@ -326,7 +326,7 @@ export default function DockPage() {
                 next.depthM ??
                 next.maxDraftM ??
                 next.vessels ??
-                t("dock:errors.formFix", {
+                t("Dock.errors.formFix", {
                     defaultValue: "Corrige os erros do formulário.",
                 });
             toast.error(first);
@@ -340,12 +340,12 @@ export default function DockPage() {
             await apiGetDockByCode(code);
             setCreateErrors((p) => ({
                 ...p,
-                code: t("dock:errors.codeDuplicate", {
+                code: t("Dock.errors.codeDuplicate", {
                     defaultValue: "Já existe uma dock com esse código",
                 }),
             }));
             toast.error(
-                t("dock:errors.codeDuplicate", {
+                t("Dock.errors.codeDuplicate", {
                     defaultValue: "Já existe uma dock com esse código",
                 })
             );
@@ -360,12 +360,12 @@ export default function DockPage() {
             try {
                 const data = await runWithLoading(
                     getDocks(),
-                    t("dock:messages.loading", { defaultValue: "A carregar..." })
+                    t("Dock.messages.loading", { defaultValue: "A carregar..." })
                 );
                 setItems(data);
                 setFiltered(data);
                 toast.success(
-                    t("dock:messages.searchSuccess", {
+                    t("Dock.messages.searchSuccess", {
                         count: data.length,
                         defaultValue: "Resultados: {{count}}",
                     })
@@ -410,32 +410,32 @@ export default function DockPage() {
                 result = [
                     await runWithLoading(
                         getDockById(q),
-                        t("dock:messages.loading", { defaultValue: "A carregar..." })
+                        t("Dock.messages.loading", { defaultValue: "A carregar..." })
                     ),
                 ];
             } else if (codeRegex.test(q)) {
                 result = [
                     await runWithLoading(
                         getDockByCode(q),
-                        t("dock:messages.loading", { defaultValue: "A carregar..." })
+                        t("Dock.messages.loading", { defaultValue: "A carregar..." })
                     ),
                 ];
             } else if (isStatus(q)) {
                 result = await runWithLoading(
                     filterDocks({ status: q }),
-                    t("dock:messages.loading", { defaultValue: "A carregar..." })
+                    t("Dock.messages.loading", { defaultValue: "A carregar..." })
                 );
             } else {
                 const vtId = vesselTypeIdByName.get(q.toLowerCase());
                 if (vtId) {
                     result = await runWithLoading(
                         getDocksByVesselType(vtId),
-                        t("dock:messages.loading", { defaultValue: "A carregar..." })
+                        t("Dock.messages.loading", { defaultValue: "A carregar..." })
                     );
                 } else {
                     result = await runWithLoading(
                         getDocksByLocation(q),
-                        t("dock:messages.loading", { defaultValue: "A carregar..." })
+                        t("Dock.messages.loading", { defaultValue: "A carregar..." })
                     );
                     if (!result.length) {
                         const ql = q.toLowerCase();
@@ -458,11 +458,11 @@ export default function DockPage() {
             setFiltered(result.filter(Boolean));
             if (result.length === 0)
                 toast.error(
-                    t("dock:messages.noResults", { defaultValue: "Sem resultados" })
+                    t("Dock.messages.noResults", { defaultValue: "Sem resultados" })
                 );
             else
                 toast.success(
-                    t("dock:messages.searchSuccess", {
+                    t("Dock.messages.searchSuccess", {
                         count: result.length,
                         defaultValue: "Resultados: {{count}}",
                     })
@@ -470,7 +470,7 @@ export default function DockPage() {
         } catch {
             setFiltered([]);
             toast.error(
-                t("dock:messages.noResults", { defaultValue: "Sem resultados" })
+                t("Dock.messages.noResults", { defaultValue: "Sem resultados" })
             );
         }
     }
@@ -495,7 +495,7 @@ export default function DockPage() {
 
         const created = await runWithLoading(
             createDock(payload as any),
-            t("dock:modal.addTitle", { defaultValue: "Adicionar Dock" })
+            t("Dock.modal.addTitle", { defaultValue: "Adicionar Dock" })
         ).catch((e) => {
             const status = e?.response?.status;
             const msg: string =
@@ -511,12 +511,12 @@ export default function DockPage() {
             if (isDup) {
                 setCreateErrors((p) => ({
                     ...p,
-                    code: t("dock:errors.codeDuplicate", {
+                    code: t("Dock.errors.codeDuplicate", {
                         defaultValue: "Já existe uma dock com esse código",
                     }),
                 }));
                 toast.error(
-                    t("dock:errors.codeDuplicate", {
+                    t("Dock.errors.codeDuplicate", {
                         defaultValue: "Já existe uma dock com esse código",
                     })
                 );
@@ -527,9 +527,7 @@ export default function DockPage() {
         });
         if (!created) return;
 
-        toast.success(
-            t("dock:messages.created", { defaultValue: "Dock criada" })
-        );
+        toast.success(t("Dock.messages.created", { defaultValue: "Dock criada" }));
         const data = await getDocks();
         setItems(data);
         setFiltered(data);
@@ -551,7 +549,7 @@ export default function DockPage() {
         if (!editCode) return;
         if (!validateEdit()) {
             toast.error(
-                t("dock:errors.formFix", { defaultValue: "Corrige os erros do formulário." })
+                t("Dock.errors.formFix", { defaultValue: "Corrige os erros do formulário." })
             );
             return;
         }
@@ -574,7 +572,7 @@ export default function DockPage() {
             (payload.allowedVesselTypeIds ?? []).length === 0
         ) {
             toast.error(
-                t("dock:messages.fillSomething", {
+                t("Dock.messages.fillSomething", {
                     defaultValue: "Preenche algum campo para editar",
                 })
             );
@@ -582,15 +580,13 @@ export default function DockPage() {
         }
         const updated = await runWithLoading(
             patchDockByCode(editCode, payload),
-            t("dock:modal.editTitle", { defaultValue: "Editar Dock" })
+            t("Dock.modal.editTitle", { defaultValue: "Editar Dock" })
         ).catch((e) => {
             toast.error(e?.response?.data?.error ?? "Erro ao atualizar");
             return null;
         });
         if (!updated) return;
-        toast.success(
-            t("dock:messages.updated", { defaultValue: "Dock atualizada" })
-        );
+        toast.success(t("Dock.messages.updated", { defaultValue: "Dock atualizada" }));
         const data = await getDocks();
         setItems(data);
         setFiltered(data);
@@ -600,7 +596,7 @@ export default function DockPage() {
     const closeSlide = () => setSelected(null);
 
     const statusLabel = (s?: string) =>
-        t(`dock:status.${s ?? ""}`, { defaultValue: s ?? "—" });
+        t(`Dock.status.${s ?? ""}`, { defaultValue: s ?? "—" });
 
     return (
         <div className="dk-page">
@@ -610,10 +606,10 @@ export default function DockPage() {
             <div className="dk-title-area">
                 <div>
                     <h2 className="dk-title">
-                        <FaAnchor /> {t("dock:title", { defaultValue: "Gestão de Docks" })}
+                        <FaAnchor /> {t("Dock.title", { defaultValue: "Gestão de Docks" })}
                     </h2>
                     <p className="dk-sub">
-                        {t("dock:count", {
+                        {t("Dock.count", {
                             count: items.length,
                             defaultValue: "{{count}} docks registadas",
                         })}
@@ -621,8 +617,7 @@ export default function DockPage() {
                 </div>
                 <div style={{ display: "flex", gap: 10 }}>
                     <button className="dk-create-btn-top" onClick={openCreate}>
-                        <FaPlus />{" "}
-                        {t("dock:buttons.add", { defaultValue: "Adicionar Dock" })}
+                        <FaPlus /> {t("Dock.buttons.add", { defaultValue: "Adicionar Dock" })}
                     </button>
                 </div>
             </div>
@@ -631,7 +626,7 @@ export default function DockPage() {
             <div className="dk-search-box">
                 <div className="dk-search-wrapper">
                     <input
-                        placeholder={t("dock:searchPlaceholder", { defaultValue: "Pesquisar..." })}
+                        placeholder={t("Dock.searchPlaceholder", { defaultValue: "Pesquisar..." })}
                         className="dk-search"
                         value={searchValue}
                         onChange={(e) => {
@@ -675,14 +670,14 @@ export default function DockPage() {
                             <div className="dk-card-body">
                                 <div className="dk-row-item">
                   <span className="dk-label">
-                    {t("dock:details.location", { defaultValue: "Localização" })}
+                    {t("Dock.details.location", { defaultValue: "Localização" })}
                   </span>
                                     <span className="dk-chip">{d.location || "—"}</span>
                                 </div>
 
                                 <div className="dk-row-item">
                   <span className="dk-label">
-                    {t("dock:details.vesselType", { defaultValue: "Tipos de Navio" })}
+                    {t("Dock.details.vesselType", { defaultValue: "Tipos de Navio" })}
                   </span>
                                     <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
                                         {vesselTypeNamesFor(d.vesselTypeIds).map((name) => (
@@ -699,7 +694,7 @@ export default function DockPage() {
                                 {d.physicalResourceCodes?.length ? (
                                     <div className="dk-row-item">
                     <span className="dk-label">
-                      {t("dock:details.physicalResource", {
+                      {t("Dock.details.physicalResource", {
                           defaultValue: "Recursos Físicos",
                       })}
                     </span>
@@ -716,14 +711,14 @@ export default function DockPage() {
                                 {(d.lengthM || d.depthM || d.maxDraftM) && (
                                     <div className="dk-row-item">
                     <span className="dk-label">
-                      {t("dock:details.dimensions", {
+                      {t("Dock.details.dimensions", {
                           defaultValue: "Dimensões (m)",
                       })}
                     </span>
                                         <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
                                             {d.lengthM !== undefined && (
                                                 <span className="dk-chip">
-                          {t("dock:details.length", {
+                          {t("Dock.details.length", {
                               defaultValue: "Comprimento",
                           })}
                                                     : {d.lengthM}
@@ -731,12 +726,12 @@ export default function DockPage() {
                                             )}
                                             {d.depthM !== undefined && (
                                                 <span className="dk-chip">
-                          {t("dock:details.depth", { defaultValue: "Profundidade" })}: {d.depthM}
+                          {t("Dock.details.depth", { defaultValue: "Profundidade" })}: {d.depthM}
                         </span>
                                             )}
                                             {d.maxDraftM !== undefined && (
                                                 <span className="dk-chip">
-                          {t("dock:details.maxdraft", {
+                          {t("Dock.details.maxdraft", {
                               defaultValue: "Calado Máximo",
                           })}
                                                     : {d.maxDraftM}
@@ -761,20 +756,20 @@ export default function DockPage() {
 
                     <p>
                         <strong>
-                            {t("dock:details.location", { defaultValue: "Localização" })}:
+                            {t("Dock.details.location", { defaultValue: "Localização" })}:
                         </strong>{" "}
                         {selected.location || "—"}
                     </p>
                     <p>
                         <strong>
-                            {t("dock:details.status", { defaultValue: "Estado" })}:
+                            {t("Dock.details.status", { defaultValue: "Estado" })}:
                         </strong>{" "}
                         {statusLabel(selected.status)}
                     </p>
 
                     <p>
                         <strong>
-                            {t("dock:details.vesselType", { defaultValue: "Tipos de Navio" })}:
+                            {t("Dock.details.vesselType", { defaultValue: "Tipos de Navio" })}:
                         </strong>
                     </p>
                     <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginBottom: 8 }}>
@@ -792,7 +787,7 @@ export default function DockPage() {
                         <>
                             <p>
                                 <strong>
-                                    {t("dock:details.physicalResource", {
+                                    {t("Dock.details.physicalResource", {
                                         defaultValue: "Recursos Físicos",
                                     })}
                                     :
@@ -812,23 +807,23 @@ export default function DockPage() {
                         <>
                             <p>
                                 <strong>
-                                    {t("dock:details.dimensions", { defaultValue: "Dimensões (m)" })}:
+                                    {t("Dock.details.dimensions", { defaultValue: "Dimensões (m)" })}:
                                 </strong>
                             </p>
                             <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
                                 {selected.lengthM !== undefined && (
                                     <span className="dk-chip">
-                    {t("dock:details.length", { defaultValue: "Comprimento" })}: {selected.lengthM}
+                    {t("Dock.details.length", { defaultValue: "Comprimento" })}: {selected.lengthM}
                   </span>
                                 )}
                                 {selected.depthM !== undefined && (
                                     <span className="dk-chip">
-                    {t("dock:details.depth", { defaultValue: "Profundidade" })}: {selected.depthM}
+                    {t("Dock.details.depth", { defaultValue: "Profundidade" })}: {selected.depthM}
                   </span>
                                 )}
                                 {selected.maxDraftM !== undefined && (
                                     <span className="dk-chip">
-                    {t("dock:details.maxdraft", { defaultValue: "Calado Máximo" })}: {selected.maxDraftM}
+                    {t("Dock.details.maxdraft", { defaultValue: "Calado Máximo" })}: {selected.maxDraftM}
                   </span>
                                 )}
                             </div>
@@ -837,7 +832,7 @@ export default function DockPage() {
 
                     <div className="dk-slide-actions">
                         <button className="dk-btn-edit" onClick={() => openEdit(selected)}>
-                            {t("dock:buttons.edit", { defaultValue: "Editar" })}
+                            {t("Dock.buttons.edit", { defaultValue: "Editar" })}
                         </button>
                     </div>
                 </div>
@@ -847,10 +842,10 @@ export default function DockPage() {
             {isCreateOpen && (
                 <div className="dk-modal-overlay">
                     <div className="dk-modal">
-                        <h3>{t("dock:modal.addTitle", { defaultValue: "Adicionar Dock" })}</h3>
+                        <h3>{t("Dock.modal.addTitle", { defaultValue: "Adicionar Dock" })}</h3>
 
                         <div className="dk-modal-body">
-                            <label>{t("dock:fields.code", { defaultValue: "Código *" })}</label>
+                            <label>{t("Dock.fields.code", { defaultValue: "Código *" })}</label>
                             <input
                                 className={`dk-input ${createErrors.code ? "dk-input--error" : ""}`}
                                 value={createData.code}
@@ -865,14 +860,14 @@ export default function DockPage() {
                                     if (!codeRegex.test(v)) {
                                         setCreateErrors((p) => ({
                                             ...p,
-                                            code: t("dock:errors.codeFormat", { defaultValue: "Formato DK-0000" }),
+                                            code: t("Dock.errors.codeFormat", { defaultValue: "Formato DK-0000" }),
                                         }));
                                         return;
                                     }
                                     if (allKnownCodes.includes(v)) {
                                         setCreateErrors((p) => ({
                                             ...p,
-                                            code: t("dock:errors.codeDuplicate", {
+                                            code: t("Dock.errors.codeDuplicate", {
                                                 defaultValue: "Já existe uma dock com esse código",
                                             }),
                                         }));
@@ -882,7 +877,7 @@ export default function DockPage() {
                                         await apiGetDockByCode(v);
                                         setCreateErrors((p) => ({
                                             ...p,
-                                            code: t("dock:errors.codeDuplicate", {
+                                            code: t("Dock.errors.codeDuplicate", {
                                                 defaultValue: "Já existe uma dock com esse código",
                                             }),
                                         }));
@@ -894,7 +889,7 @@ export default function DockPage() {
                             />
                             {createErrors.code && <div className="dk-error-text">{createErrors.code}</div>}
 
-                            <label>{t("dock:fields.location", { defaultValue: "Localização *" })}</label>
+                            <label>{t("Dock.fields.location", { defaultValue: "Localização *" })}</label>
                             <input
                                 className={`dk-input ${createErrors.location ? "dk-input--error" : ""}`}
                                 value={createData.location}
@@ -907,24 +902,24 @@ export default function DockPage() {
                             />
                             {createErrors.location && <div className="dk-error-text">{createErrors.location}</div>}
 
-                            <label>{t("dock:fields.status", { defaultValue: "Estado" })}</label>
+                            <label>{t("Dock.fields.status", { defaultValue: "Estado" })}</label>
                             <select
                                 className="dk-input"
                                 value={createData.status}
                                 onChange={(e) => setCreateData({ ...createData, status: e.target.value as any })}
                             >
                                 <option value="Available">
-                                    {t("dock:status.Available", { defaultValue: "Disponível" })}
+                                    {t("Dock.status.Available", { defaultValue: "Disponível" })}
                                 </option>
                                 <option value="Unavailable">
-                                    {t("dock:status.Unavailable", { defaultValue: "Indisponível" })}
+                                    {t("Dock.status.Unavailable", { defaultValue: "Indisponível" })}
                                 </option>
                                 <option value="Maintenance">
-                                    {t("dock:status.Maintenance", { defaultValue: "Manutenção" })}
+                                    {t("Dock.status.Maintenance", { defaultValue: "Manutenção" })}
                                 </option>
                             </select>
 
-                            <label>{t("dock:fields.length", { defaultValue: "Comprimento (m)" })}</label>
+                            <label>{t("Dock.fields.length", { defaultValue: "Comprimento (m)" })}</label>
                             <input
                                 className={`dk-input ${createErrors.lengthM ? "dk-input--error" : ""}`}
                                 inputMode="decimal"
@@ -939,7 +934,7 @@ export default function DockPage() {
                             />
                             {createErrors.lengthM && <div className="dk-error-text">{createErrors.lengthM}</div>}
 
-                            <label>{t("dock:fields.depth", { defaultValue: "Profundidade (m)" })}</label>
+                            <label>{t("Dock.fields.depth", { defaultValue: "Profundidade (m)" })}</label>
                             <input
                                 className={`dk-input ${createErrors.depthM ? "dk-input--error" : ""}`}
                                 inputMode="decimal"
@@ -954,7 +949,7 @@ export default function DockPage() {
                             />
                             {createErrors.depthM && <div className="dk-error-text">{createErrors.depthM}</div>}
 
-                            <label>{t("dock:fields.maxdraft", { defaultValue: "Calado Máximo (m)" })}</label>
+                            <label>{t("Dock.fields.maxdraft", { defaultValue: "Calado Máximo (m)" })}</label>
                             <input
                                 className={`dk-input ${createErrors.maxDraftM ? "dk-input--error" : ""}`}
                                 inputMode="decimal"
@@ -972,7 +967,7 @@ export default function DockPage() {
                             )}
 
                             <label>
-                                {t("dock:fields.physicalResource", {
+                                {t("Dock.fields.physicalResource", {
                                     defaultValue: "Recursos Físicos (disponíveis)",
                                 })}
                             </label>
@@ -993,13 +988,13 @@ export default function DockPage() {
                                 ))}
                                 {availablePRsForCreate.length === 0 && (
                                     <span className="dk-chip">
-                    {t("dock:messages.noAvailablePR", { defaultValue: "Sem recursos disponíveis" })}
+                    {t("Dock.messages.noAvailablePR", { defaultValue: "Sem recursos disponíveis" })}
                   </span>
                                 )}
                             </div>
 
                             <label>
-                                {t("dock:fields.vesselType", { defaultValue: "Tipos de Navio Permitidos" })}
+                                {t("Dock.fields.vesselType", { defaultValue: "Tipos de Navio Permitidos" })}
                             </label>
                             <div style={{ display: "flex", flexWrap: "wrap", gap: 8, maxHeight: 160, overflow: "auto" }}>
                                 {vesselTypes.map((vt) => (
@@ -1020,7 +1015,7 @@ export default function DockPage() {
                             {createErrors.vessels && <div className="dk-error-text">{createErrors.vessels}</div>}
 
                             <p style={{ opacity: 0.7, fontSize: 12, marginTop: 6 }}>
-                                {t("dock:chips.summary", {
+                                {t("Dock.chips.summary", {
                                     pr: createPRs.length,
                                     vt: createVTs.length,
                                     defaultValue: "{{pr}} PR selecionado(s) • {{vt}} tipo(s) de navio"
@@ -1030,10 +1025,10 @@ export default function DockPage() {
 
                         <div className="dk-modal-actions">
                             <button className="dk-btn-cancel" onClick={() => setIsCreateOpen(false)}>
-                                {t("dock:buttons.cancel", { defaultValue: "Cancelar" })}
+                                {t("Dock.buttons.cancel", { defaultValue: "Cancelar" })}
                             </button>
                             <button className="dk-btn-save" onClick={handleCreate}>
-                                {t("dock:buttons.save", { defaultValue: "Guardar" })}
+                                {t("Dock.buttons.save", { defaultValue: "Guardar" })}
                             </button>
                         </div>
                     </div>
@@ -1044,10 +1039,10 @@ export default function DockPage() {
             {isEditOpen && (
                 <div className="dk-modal-overlay">
                     <div className="dk-modal">
-                        <h3>{t("dock:modal.editTitle", { defaultValue: "Editar Dock" })}</h3>
+                        <h3>{t("Dock.modal.editTitle", { defaultValue: "Editar Dock" })}</h3>
 
                         <div className="dk-modal-body">
-                            <label>{t("dock:fields.location", { defaultValue: "Localização *" })}</label>
+                            <label>{t("Dock.fields.location", { defaultValue: "Localização *" })}</label>
                             <input
                                 className={`dk-input ${errors.location ? "dk-input--error" : ""}`}
                                 value={editData.location || ""}
@@ -1059,24 +1054,24 @@ export default function DockPage() {
                             />
                             {errors.location && <div className="dk-error-text">{errors.location}</div>}
 
-                            <label>{t("dock:fields.status", { defaultValue: "Estado" })}</label>
+                            <label>{t("Dock.fields.status", { defaultValue: "Estado" })}</label>
                             <select
                                 className="dk-input"
                                 value={editData.status || ""}
                                 onChange={(e) => setEditData({ ...editData, status: e.target.value })}
                             >
                                 <option value="Available">
-                                    {t("dock:status.Available", { defaultValue: "Disponível" })}
+                                    {t("Dock.status.Available", { defaultValue: "Disponível" })}
                                 </option>
                                 <option value="Unavailable">
-                                    {t("dock:status.Unavailable", { defaultValue: "Indisponível" })}
+                                    {t("Dock.status.Unavailable", { defaultValue: "Indisponível" })}
                                 </option>
                                 <option value="Maintenance">
-                                    {t("dock:status.Maintenance", { defaultValue: "Manutenção" })}
+                                    {t("Dock.status.Maintenance", { defaultValue: "Manutenção" })}
                                 </option>
                             </select>
 
-                            <label>{t("dock:fields.length", { defaultValue: "Comprimento (m)" })}</label>
+                            <label>{t("Dock.fields.length", { defaultValue: "Comprimento (m)" })}</label>
                             <input
                                 className={`dk-input ${errors.lengthM ? "dk-input--error" : ""}`}
                                 type="text"
@@ -1090,7 +1085,7 @@ export default function DockPage() {
                             />
                             {errors.lengthM && <div className="dk-error-text">{errors.lengthM}</div>}
 
-                            <label>{t("dock:fields.depth", { defaultValue: "Profundidade (m)" })}</label>
+                            <label>{t("Dock.fields.depth", { defaultValue: "Profundidade (m)" })}</label>
                             <input
                                 className={`dk-input ${errors.depthM ? "dk-input--error" : ""}`}
                                 type="text"
@@ -1104,7 +1099,7 @@ export default function DockPage() {
                             />
                             {errors.depthM && <div className="dk-error-text">{errors.depthM}</div>}
 
-                            <label>{t("dock:fields.maxdraft", { defaultValue: "Calado Máximo (m)" })}</label>
+                            <label>{t("Dock.fields.maxdraft", { defaultValue: "Calado Máximo (m)" })}</label>
                             <input
                                 className={`dk-input ${errors.maxDraftM ? "dk-input--error" : ""}`}
                                 type="text"
@@ -1119,7 +1114,7 @@ export default function DockPage() {
                             {errors.maxDraftM && <div className="dk-error-text">{errors.maxDraftM}</div>}
 
                             <label>
-                                {t("dock:details.physicalResource", { defaultValue: "Recursos Físicos" })}
+                                {t("Dock.details.physicalResource", { defaultValue: "Recursos Físicos" })}
                             </label>
                             <div style={{ display: "flex", flexWrap: "wrap", gap: 8, maxHeight: 160, overflow: "auto" }}>
                                 {availablePRsForEdit.map((code) => (
@@ -1138,12 +1133,12 @@ export default function DockPage() {
                                 ))}
                                 {availablePRsForEdit.length === 0 && (
                                     <span className="dk-chip">
-                    {t("dock:messages.noAvailablePR", { defaultValue: "Sem recursos disponíveis" })}
+                    {t("Dock.messages.noAvailablePR", { defaultValue: "Sem recursos disponíveis" })}
                   </span>
                                 )}
                             </div>
 
-                            <label>{t("dock:fields.vesselType", { defaultValue: "Tipos de Navio Permitidos" })}</label>
+                            <label>{t("Dock.fields.vesselType", { defaultValue: "Tipos de Navio Permitidos" })}</label>
                             <div style={{ display: "flex", flexWrap: "wrap", gap: 8, maxHeight: 160, overflow: "auto" }}>
                                 {vesselTypes.map((vt) => (
                                     <label key={vt.id} style={{ display: "flex", gap: 6, alignItems: "center" }}>
@@ -1166,10 +1161,10 @@ export default function DockPage() {
 
                         <div className="dk-modal-actions">
                             <button className="dk-btn-cancel" onClick={closeEdit}>
-                                {t("dock:buttons.cancel", { defaultValue: "Cancelar" })}
+                                {t("Dock.buttons.cancel", { defaultValue: "Cancelar" })}
                             </button>
                             <button className="dk-btn-save" onClick={handleSaveEdit}>
-                                {t("dock:buttons.save", { defaultValue: "Guardar" })}
+                                {t("Dock.buttons.save", { defaultValue: "Guardar" })}
                             </button>
                         </div>
                     </div>
