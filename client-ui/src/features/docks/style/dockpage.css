@@ -167,3 +167,12 @@
 @media (max-width: 640px) {
     .dk-modal-overlay { align-items: flex-start; padding: 16px; }
 }
+
+.dk-page-container {
+    transition: transform 1s ease;
+    transform-origin: center center;
+}
+
+.dk-page-container.stored {
+    transform: rotate(180deg);
+}

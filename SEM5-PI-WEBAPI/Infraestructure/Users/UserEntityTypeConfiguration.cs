@@ -21,6 +21,7 @@ namespace SEM5_PI_WEBAPI.Infraestructure.Users
             builder.Property(u => u.Email)
                 .IsRequired()
                 .HasMaxLength(240);
+            builder.HasIndex(u => u.Email).IsUnique();
             
             builder.Property(u => u.IsActive)
                 .IsRequired();

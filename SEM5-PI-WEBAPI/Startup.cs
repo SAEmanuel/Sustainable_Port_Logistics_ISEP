@@ -133,10 +133,10 @@ namespace SEM5_PI_WEBAPI
                 app.UseHsts();
             }
 
-            //app.UseHttpsRedirection();
+            
             app.UseRouting();
 
-            // ⚙️ CORS antes da autenticação
+            
             app.UseCors("AllowSPA");
 
             app.UseMiddleware<RequestLogsMiddleware>();
@@ -159,10 +159,10 @@ namespace SEM5_PI_WEBAPI
                 options.AddPolicy("AllowSPA", builder =>
                     builder
                         .WithOrigins(
-                            "http://localhost:5173", // Vite local
-                            "http://localhost:3000", // React default
-                            "http://10.9.23.188", // IP VM
-                            "http://10.9.23.188:5173" // IP VM + Vite
+                            "http://localhost:5173", 
+                            "http://localhost:3000", 
+                            "http://10.9.23.188", 
+                            "http://10.9.23.188:5173" 
                         )
                         .AllowAnyHeader()
                         .AllowAnyMethod()

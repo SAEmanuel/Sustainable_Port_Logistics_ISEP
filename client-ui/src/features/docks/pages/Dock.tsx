@@ -1,5 +1,5 @@
-﻿import { useEffect, useMemo, useState } from "react";
-import { FaAnchor, FaSearch, FaPlus, FaTimes } from "react-icons/fa";
+﻿import {useEffect, useMemo, useState} from "react";
+import {FaAnchor, FaSearch, FaPlus, FaTimes} from "react-icons/fa";
 import toast from "react-hot-toast";
 import {
     getDocks,
@@ -13,11 +13,11 @@ import {
     patchDockByCode,
     getAllDockCodes,
 } from "../services/dockService";
-import { getVesselTypes } from "../../vesselsTypes/services/vesselTypeService";
-import type { VesselType } from "../../vesselsTypes/types/vesselType";
-import { getAllPhysicalResources } from "../../physicalResource/services/physicalResourceService";
-import type { Dock, UpdateDockRequest } from "../types/dock";
-import { useTranslation } from "react-i18next";
+import {getVesselTypes} from "../../vesselsTypes/services/vesselTypeService";
+import type {VesselType} from "../../vesselsTypes/types/vesselType";
+import {getAllPhysicalResources} from "../../physicalResource/services/physicalResourceService";
+import type {Dock, UpdateDockRequest} from "../types/dock";
+import {useTranslation} from "react-i18next";
 import "../style/dockpage.css";
 
 const MIN_LOADING_TIME = 500;
@@ -73,7 +73,7 @@ function computeNextDockCode(known: string[]): string {
 }
 
 export default function DockPage() {
-    const { t } = useTranslation();
+    const {t} = useTranslation();
 
     const [items, setItems] = useState<Dock[]>([]);
     const [filtered, setFiltered] = useState<Dock[]>([]);
@@ -84,6 +84,7 @@ export default function DockPage() {
     const [allPRCodes, setAllPRCodes] = useState<string[]>([]);
 
     const [selected, setSelected] = useState<Dock | null>(null);
+    const [isStored, setIsStored] = useState(false);
 
     const [isCreateOpen, setIsCreateOpen] = useState(false);
     const [isEditOpen, setIsEditOpen] = useState(false);
@@ -141,7 +142,7 @@ export default function DockPage() {
     const openEdit = (dock: Dock) => {
         setErrors({});
         setEditCode(dock.code);
-        setEditData({ location: dock.location || "", status: dock.status || "" });
+        setEditData({location: dock.location || "", status: dock.status || ""});
         setEditNums({
             lengthM: dock.lengthM?.toString() ?? "",
             depthM: dock.depthM?.toString() ?? "",
@@ -160,10 +161,11 @@ export default function DockPage() {
     };
 
     function openCreate() {
+        setIsStored(true);
         setCreateErrors({});
         setCreatePRs([]);
         setCreateVTs([]);
-        setCreateNums({ lengthM: "", depthM: "", maxDraftM: "" });
+        setCreateNums({lengthM: "", depthM: "", maxDraftM: ""});
         setCreateData({
             code: computeNextDockCode(allKnownCodes),
             location: "",
@@ -360,7 +362,7 @@ export default function DockPage() {
             try {
                 const data = await runWithLoading(
                     getDocks(),
-                    t("Dock.messages.loading", { defaultValue: "A carregar..." })
+                    t("Dock.messages.loading", {defaultValue: "A carregar..."})
                 );
                 setItems(data);
                 setFiltered(data);
@@ -384,6 +386,7 @@ export default function DockPage() {
                 setLoading(false);
             }
         }
+
         load();
     }, [t]);
 
@@ -410,32 +413,32 @@ export default function DockPage() {
                 result = [
                     await runWithLoading(
                         getDockById(q),
-                        t("Dock.messages.loading", { defaultValue: "A carregar..." })
+                        t("Dock.messages.loading", {defaultValue: "A carregar..."})
                     ),
                 ];
             } else if (codeRegex.test(q)) {
                 result = [
                     await runWithLoading(
                         getDockByCode(q),
-                        t("Dock.messages.loading", { defaultValue: "A carregar..." })
+                        t("Dock.messages.loading", {defaultValue: "A carregar..."})
                     ),
                 ];
             } else if (isStatus(q)) {
                 result = await runWithLoading(
-                    filterDocks({ status: q }),
-                    t("Dock.messages.loading", { defaultValue: "A carregar..." })
+                    filterDocks({status: q}),
+                    t("Dock.messages.loading", {defaultValue: "A carregar..."})
                 );
             } else {
                 const vtId = vesselTypeIdByName.get(q.toLowerCase());
                 if (vtId) {
                     result = await runWithLoading(
                         getDocksByVesselType(vtId),
-                        t("Dock.messages.loading", { defaultValue: "A carregar..." })
+                        t("Dock.messages.loading", {defaultValue: "A carregar..."})
                     );
                 } else {
                     result = await runWithLoading(
                         getDocksByLocation(q),
-                        t("Dock.messages.loading", { defaultValue: "A carregar..." })
+                        t("Dock.messages.loading", {defaultValue: "A carregar..."})
                     );
                     if (!result.length) {
                         const ql = q.toLowerCase();
@@ -458,7 +461,7 @@ export default function DockPage() {
             setFiltered(result.filter(Boolean));
             if (result.length === 0)
                 toast.error(
-                    t("Dock.messages.noResults", { defaultValue: "Sem resultados" })
+                    t("Dock.messages.noResults", {defaultValue: "Sem resultados"})
                 );
             else
                 toast.success(
@@ -470,7 +473,7 @@ export default function DockPage() {
         } catch {
             setFiltered([]);
             toast.error(
-                t("Dock.messages.noResults", { defaultValue: "Sem resultados" })
+                t("Dock.messages.noResults", {defaultValue: "Sem resultados"})
             );
         }
     }
@@ -495,7 +498,7 @@ export default function DockPage() {
 
         const created = await runWithLoading(
             createDock(payload as any),
-            t("Dock.modal.addTitle", { defaultValue: "Adicionar Dock" })
+            t("Dock.modal.addTitle", {defaultValue: "Adicionar Dock"})
         ).catch((e) => {
             const status = e?.response?.status;
             const msg: string =
@@ -527,7 +530,7 @@ export default function DockPage() {
         });
         if (!created) return;
 
-        toast.success(t("Dock.messages.created", { defaultValue: "Dock criada" }));
+        toast.success(t("Dock.messages.created", {defaultValue: "Dock criada"}));
         const data = await getDocks();
         setItems(data);
         setFiltered(data);
@@ -539,7 +542,7 @@ export default function DockPage() {
             location: "",
             status: "Available",
         });
-        setCreateNums({ lengthM: "", depthM: "", maxDraftM: "" });
+        setCreateNums({lengthM: "", depthM: "", maxDraftM: ""});
         setCreatePRs([]);
         setCreateVTs([]);
         setCreateErrors({});
@@ -549,7 +552,7 @@ export default function DockPage() {
         if (!editCode) return;
         if (!validateEdit()) {
             toast.error(
-                t("Dock.errors.formFix", { defaultValue: "Corrige os erros do formulário." })
+                t("Dock.errors.formFix", {defaultValue: "Corrige os erros do formulário."})
             );
             return;
         }
@@ -580,13 +583,13 @@ export default function DockPage() {
         }
         const updated = await runWithLoading(
             patchDockByCode(editCode, payload),
-            t("Dock.modal.editTitle", { defaultValue: "Editar Dock" })
+            t("Dock.modal.editTitle", {defaultValue: "Editar Dock"})
         ).catch((e) => {
             toast.error(e?.response?.data?.error ?? "Erro ao atualizar");
             return null;
         });
         if (!updated) return;
-        toast.success(t("Dock.messages.updated", { defaultValue: "Dock atualizada" }));
+        toast.success(t("Dock.messages.updated", {defaultValue: "Dock atualizada"}));
         const data = await getDocks();
         setItems(data);
         setFiltered(data);
@@ -596,580 +599,618 @@ export default function DockPage() {
     const closeSlide = () => setSelected(null);
 
     const statusLabel = (s?: string) =>
-        t(`Dock.status.${s ?? ""}`, { defaultValue: s ?? "—" });
+        t(`Dock.status.${s ?? ""}`, {defaultValue: s ?? "—"});
 
     return (
-        <div className="dk-page">
-            {selected && <div className="dk-overlay" onClick={closeSlide} />}
+        <div className={`dk-page-container ${isStored ? "stored" : ""}`}>
+            <div className="dk-page">
+                {selected && <div className="dk-overlay" onClick={closeSlide}/>}
 
-            {/* HEADER */}
-            <div className="dk-title-area">
-                <div>
-                    <h2 className="dk-title">
-                        <FaAnchor /> {t("Dock.title", { defaultValue: "Gestão de Docks" })}
-                    </h2>
-                    <p className="dk-sub">
-                        {t("Dock.count", {
-                            count: items.length,
-                            defaultValue: "{{count}} docks registadas",
-                        })}
-                    </p>
+                {/* HEADER */}
+                <div className="dk-title-area">
+                    <div>
+                        <h2 className="dk-title">
+                            <FaAnchor/> {t("Dock.title", {defaultValue: "Gestão de Docks"})}
+                        </h2>
+                        <p className="dk-sub">
+                            {t("Dock.count", {
+                                count: items.length,
+                                defaultValue: "{{count}} docks registadas",
+                            })}
+                        </p>
+                    </div>
+                    <div style={{display: "flex", gap: 10}}>
+                        <button className="dk-create-btn-top" onClick={openCreate}>
+                            <FaPlus/> {t("Dock.buttons.add", {defaultValue: "Adicionar Dock"})}
+                        </button>
+                    </div>
                 </div>
-                <div style={{ display: "flex", gap: 10 }}>
-                    <button className="dk-create-btn-top" onClick={openCreate}>
-                        <FaPlus /> {t("Dock.buttons.add", { defaultValue: "Adicionar Dock" })}
+
+                {/* SEARCH */}
+                <div className="dk-search-box">
+                    <div className="dk-search-wrapper">
+                        <input
+                            placeholder={t("Dock.searchPlaceholder", {defaultValue: "Pesquisar..."})}
+                            className="dk-search"
+                            value={searchValue}
+                            onChange={(e) => {
+                                setSearchValue(e.target.value);
+                                if (!e.target.value) setFiltered(items);
+                            }}
+                            onKeyDown={(e) => e.key === "Enter" && executeSearch()}
+                            list="docks-codes"
+                        />
+                        {searchValue !== "" && (
+                            <button
+                                className="dk-clear-input"
+                                onClick={() => {
+                                    setSearchValue("");
+                                    setFiltered(items);
+                                }}
+                            >
+                                ✕
+                            </button>
+                        )}
+                        <datalist id="docks-codes">
+                            {dockCodes.map((c) => (
+                                <option key={c} value={c}/>
+                            ))}
+                        </datalist>
+                    </div>
+                    <button className="dk-search-btn" onClick={executeSearch}>
+                        <FaSearch/>
                     </button>
                 </div>
-            </div>
 
-            {/* SEARCH */}
-            <div className="dk-search-box">
-                <div className="dk-search-wrapper">
-                    <input
-                        placeholder={t("Dock.searchPlaceholder", { defaultValue: "Pesquisar..." })}
-                        className="dk-search"
-                        value={searchValue}
-                        onChange={(e) => {
-                            setSearchValue(e.target.value);
-                            if (!e.target.value) setFiltered(items);
-                        }}
-                        onKeyDown={(e) => e.key === "Enter" && executeSearch()}
-                        list="docks-codes"
-                    />
-                    {searchValue !== "" && (
-                        <button
-                            className="dk-clear-input"
-                            onClick={() => {
-                                setSearchValue("");
-                                setFiltered(items);
-                            }}
-                        >
-                            ✕
-                        </button>
-                    )}
-                    <datalist id="docks-codes">
-                        {dockCodes.map((c) => (
-                            <option key={c} value={c} />
-                        ))}
-                    </datalist>
-                </div>
-                <button className="dk-search-btn" onClick={executeSearch}>
-                    <FaSearch />
-                </button>
-            </div>
-
-            {/* CARDS */}
-            <div className="dk-card-grid">
-                {!loading &&
-                    filtered.map((d) => (
-                        <div key={d.id} className="dk-card" onClick={() => setSelected(d)}>
-                            <div className="dk-card-header">
-                                <span className="dk-card-title">{d.code}</span>
-                                <span className="dk-badge">{statusLabel(d.status)}</span>
-                            </div>
-                            <div className="dk-card-body">
-                                <div className="dk-row-item">
-                  <span className="dk-label">
-                    {t("Dock.details.location", { defaultValue: "Localização" })}
-                  </span>
-                                    <span className="dk-chip">{d.location || "—"}</span>
+                {/* CARDS */}
+                <div className="dk-card-grid">
+                    {!loading &&
+                        filtered.map((d) => (
+                            <div key={d.id} className="dk-card" onClick={() => setSelected(d)}>
+                                <div className="dk-card-header">
+                                    <span className="dk-card-title">{d.code}</span>
+                                    <span className="dk-badge">{statusLabel(d.status)}</span>
                                 </div>
-
-                                <div className="dk-row-item">
+                                <div className="dk-card-body">
+                                    <div className="dk-row-item">
                   <span className="dk-label">
-                    {t("Dock.details.vesselType", { defaultValue: "Tipos de Navio" })}
+                    {t("Dock.details.location", {defaultValue: "Localização"})}
                   </span>
-                                    <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
-                                        {vesselTypeNamesFor(d.vesselTypeIds).map((name) => (
-                                            <span className="dk-chip" key={name + d.id}>
+                                        <span className="dk-chip">{d.location || "—"}</span>
+                                    </div>
+
+                                    <div className="dk-row-item">
+                  <span className="dk-label">
+                    {t("Dock.details.vesselType", {defaultValue: "Tipos de Navio"})}
+                  </span>
+                                        <div style={{display: "flex", flexWrap: "wrap", gap: 6}}>
+                                            {vesselTypeNamesFor(d.vesselTypeIds).map((name) => (
+                                                <span className="dk-chip" key={name + d.id}>
                         {name}
                       </span>
-                                        ))}
-                                        {(!d.vesselTypeIds || d.vesselTypeIds.length === 0) && (
-                                            <span className="dk-chip">—</span>
-                                        )}
+                                            ))}
+                                            {(!d.vesselTypeIds || d.vesselTypeIds.length === 0) && (
+                                                <span className="dk-chip">—</span>
+                                            )}
+                                        </div>
                                     </div>
-                                </div>
 
-                                {d.physicalResourceCodes?.length ? (
-                                    <div className="dk-row-item">
+                                    {d.physicalResourceCodes?.length ? (
+                                        <div className="dk-row-item">
                     <span className="dk-label">
                       {t("Dock.details.physicalResource", {
                           defaultValue: "Recursos Físicos",
                       })}
                     </span>
-                                        <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
-                                            {d.physicalResourceCodes.map((code) => (
-                                                <span className="dk-chip" key={code + d.id}>
+                                            <div style={{display: "flex", flexWrap: "wrap", gap: 6}}>
+                                                {d.physicalResourceCodes.map((code) => (
+                                                    <span className="dk-chip" key={code + d.id}>
                           {code}
                         </span>
-                                            ))}
+                                                ))}
+                                            </div>
                                         </div>
-                                    </div>
-                                ) : null}
+                                    ) : null}
 
-                                {(d.lengthM || d.depthM || d.maxDraftM) && (
-                                    <div className="dk-row-item">
+                                    {(d.lengthM || d.depthM || d.maxDraftM) && (
+                                        <div className="dk-row-item">
                     <span className="dk-label">
                       {t("Dock.details.dimensions", {
                           defaultValue: "Dimensões (m)",
                       })}
                     </span>
-                                        <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
-                                            {d.lengthM !== undefined && (
-                                                <span className="dk-chip">
+                                            <div style={{display: "flex", flexWrap: "wrap", gap: 6}}>
+                                                {d.lengthM !== undefined && (
+                                                    <span className="dk-chip">
                           {t("Dock.details.length", {
                               defaultValue: "Comprimento",
                           })}
-                                                    : {d.lengthM}
+                                                        : {d.lengthM}
                         </span>
-                                            )}
-                                            {d.depthM !== undefined && (
-                                                <span className="dk-chip">
-                          {t("Dock.details.depth", { defaultValue: "Profundidade" })}: {d.depthM}
+                                                )}
+                                                {d.depthM !== undefined && (
+                                                    <span className="dk-chip">
+                          {t("Dock.details.depth", {defaultValue: "Profundidade"})}: {d.depthM}
                         </span>
-                                            )}
-                                            {d.maxDraftM !== undefined && (
-                                                <span className="dk-chip">
+                                                )}
+                                                {d.maxDraftM !== undefined && (
+                                                    <span className="dk-chip">
                           {t("Dock.details.maxdraft", {
                               defaultValue: "Calado Máximo",
                           })}
-                                                    : {d.maxDraftM}
+                                                        : {d.maxDraftM}
                         </span>
-                                            )}
+                                                )}
+                                            </div>
                                         </div>
-                                    </div>
-                                )}
+                                    )}
+                                </div>
                             </div>
-                        </div>
-                    ))}
-            </div>
+                        ))}
+                </div>
 
-            {/* SLIDE PANEL */}
-            {selected && (
-                <div className="dk-slide">
-                    <button className="dk-slide-close" onClick={closeSlide}>
-                        <FaTimes />
-                    </button>
+                {/* SLIDE PANEL */}
+                {selected && (
+                    <div className="dk-slide">
+                        <button className="dk-slide-close" onClick={closeSlide}>
+                            <FaTimes/>
+                        </button>
 
-                    <h3>{selected.code}</h3>
+                        <h3>{selected.code}</h3>
 
-                    <p>
-                        <strong>
-                            {t("Dock.details.location", { defaultValue: "Localização" })}:
-                        </strong>{" "}
-                        {selected.location || "—"}
-                    </p>
-                    <p>
-                        <strong>
-                            {t("Dock.details.status", { defaultValue: "Estado" })}:
-                        </strong>{" "}
-                        {statusLabel(selected.status)}
-                    </p>
+                        <p>
+                            <strong>
+                                {t("Dock.details.location", {defaultValue: "Localização"})}:
+                            </strong>{" "}
+                            {selected.location || "—"}
+                        </p>
+                        <p>
+                            <strong>
+                                {t("Dock.details.status", {defaultValue: "Estado"})}:
+                            </strong>{" "}
+                            {statusLabel(selected.status)}
+                        </p>
 
-                    <p>
-                        <strong>
-                            {t("Dock.details.vesselType", { defaultValue: "Tipos de Navio" })}:
-                        </strong>
-                    </p>
-                    <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginBottom: 8 }}>
-                        {vesselTypeNamesFor(selected.vesselTypeIds).map((name) => (
-                            <span className="dk-chip" key={name + "_sel"}>
+                        <p>
+                            <strong>
+                                {t("Dock.details.vesselType", {defaultValue: "Tipos de Navio"})}:
+                            </strong>
+                        </p>
+                        <div style={{display: "flex", flexWrap: "wrap", gap: 6, marginBottom: 8}}>
+                            {vesselTypeNamesFor(selected.vesselTypeIds).map((name) => (
+                                <span className="dk-chip" key={name + "_sel"}>
                 {name}
               </span>
-                        ))}
-                        {(!selected.vesselTypeIds || selected.vesselTypeIds.length === 0) && (
-                            <span className="dk-chip">—</span>
-                        )}
-                    </div>
+                            ))}
+                            {(!selected.vesselTypeIds || selected.vesselTypeIds.length === 0) && (
+                                <span className="dk-chip">—</span>
+                            )}
+                        </div>
 
-                    {selected.physicalResourceCodes?.length ? (
-                        <>
-                            <p>
-                                <strong>
-                                    {t("Dock.details.physicalResource", {
-                                        defaultValue: "Recursos Físicos",
-                                    })}
-                                    :
-                                </strong>
-                            </p>
-                            <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
-                                {selected.physicalResourceCodes.map((c) => (
-                                    <span className="dk-chip" key={c + "_sel"}>
+                        {selected.physicalResourceCodes?.length ? (
+                            <>
+                                <p>
+                                    <strong>
+                                        {t("Dock.details.physicalResource", {
+                                            defaultValue: "Recursos Físicos",
+                                        })}
+                                        :
+                                    </strong>
+                                </p>
+                                <div style={{display: "flex", flexWrap: "wrap", gap: 6}}>
+                                    {selected.physicalResourceCodes.map((c) => (
+                                        <span className="dk-chip" key={c + "_sel"}>
                     {c}
                   </span>
-                                ))}
-                            </div>
-                        </>
-                    ) : null}
+                                    ))}
+                                </div>
+                            </>
+                        ) : null}
 
-                    {(selected.lengthM || selected.depthM || selected.maxDraftM) && (
-                        <>
-                            <p>
-                                <strong>
-                                    {t("Dock.details.dimensions", { defaultValue: "Dimensões (m)" })}:
-                                </strong>
-                            </p>
-                            <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
-                                {selected.lengthM !== undefined && (
-                                    <span className="dk-chip">
-                    {t("Dock.details.length", { defaultValue: "Comprimento" })}: {selected.lengthM}
+                        {(selected.lengthM || selected.depthM || selected.maxDraftM) && (
+                            <>
+                                <p>
+                                    <strong>
+                                        {t("Dock.details.dimensions", {defaultValue: "Dimensões (m)"})}:
+                                    </strong>
+                                </p>
+                                <div style={{display: "flex", flexWrap: "wrap", gap: 6}}>
+                                    {selected.lengthM !== undefined && (
+                                        <span className="dk-chip">
+                    {t("Dock.details.length", {defaultValue: "Comprimento"})}: {selected.lengthM}
                   </span>
-                                )}
-                                {selected.depthM !== undefined && (
-                                    <span className="dk-chip">
-                    {t("Dock.details.depth", { defaultValue: "Profundidade" })}: {selected.depthM}
+                                    )}
+                                    {selected.depthM !== undefined && (
+                                        <span className="dk-chip">
+                    {t("Dock.details.depth", {defaultValue: "Profundidade"})}: {selected.depthM}
                   </span>
-                                )}
-                                {selected.maxDraftM !== undefined && (
-                                    <span className="dk-chip">
-                    {t("Dock.details.maxdraft", { defaultValue: "Calado Máximo" })}: {selected.maxDraftM}
+                                    )}
+                                    {selected.maxDraftM !== undefined && (
+                                        <span className="dk-chip">
+                    {t("Dock.details.maxdraft", {defaultValue: "Calado Máximo"})}: {selected.maxDraftM}
                   </span>
-                                )}
-                            </div>
-                        </>
-                    )}
+                                    )}
+                                </div>
+                            </>
+                        )}
 
-                    <div className="dk-slide-actions">
-                        <button className="dk-btn-edit" onClick={() => openEdit(selected)}>
-                            {t("Dock.buttons.edit", { defaultValue: "Editar" })}
-                        </button>
-                    </div>
-                </div>
-            )}
-
-            {/* CREATE MODAL */}
-            {isCreateOpen && (
-                <div className="dk-modal-overlay">
-                    <div className="dk-modal">
-                        <h3>{t("Dock.modal.addTitle", { defaultValue: "Adicionar Dock" })}</h3>
-
-                        <div className="dk-modal-body">
-                            <label>{t("Dock.fields.code", { defaultValue: "Código *" })}</label>
-                            <input
-                                className={`dk-input ${createErrors.code ? "dk-input--error" : ""}`}
-                                value={createData.code}
-                                onChange={(e) => {
-                                    const v = e.target.value.toUpperCase();
-                                    setCreateData({ ...createData, code: v });
-                                    if (createErrors.code) setCreateErrors((p) => ({ ...p, code: undefined }));
-                                }}
-                                onBlur={async (e) => {
-                                    const v = e.target.value.toUpperCase().trim();
-                                    if (!v) return;
-                                    if (!codeRegex.test(v)) {
-                                        setCreateErrors((p) => ({
-                                            ...p,
-                                            code: t("Dock.errors.codeFormat", { defaultValue: "Formato DK-0000" }),
-                                        }));
-                                        return;
-                                    }
-                                    if (allKnownCodes.includes(v)) {
-                                        setCreateErrors((p) => ({
-                                            ...p,
-                                            code: t("Dock.errors.codeDuplicate", {
-                                                defaultValue: "Já existe uma dock com esse código",
-                                            }),
-                                        }));
-                                        return;
-                                    }
-                                    try {
-                                        await apiGetDockByCode(v);
-                                        setCreateErrors((p) => ({
-                                            ...p,
-                                            code: t("Dock.errors.codeDuplicate", {
-                                                defaultValue: "Já existe uma dock com esse código",
-                                            }),
-                                        }));
-                                    } catch {
-                                        /* ok */
-                                    }
-                                }}
-                                placeholder="DK-0000"
-                            />
-                            {createErrors.code && <div className="dk-error-text">{createErrors.code}</div>}
-
-                            <label>{t("Dock.fields.location", { defaultValue: "Localização *" })}</label>
-                            <input
-                                className={`dk-input ${createErrors.location ? "dk-input--error" : ""}`}
-                                value={createData.location}
-                                onChange={(e) => {
-                                    const v = sanitizeLocation(e.target.value);
-                                    setCreateData({ ...createData, location: v });
-                                    if (createErrors.location)
-                                        setCreateErrors((p) => ({ ...p, location: undefined }));
-                                }}
-                            />
-                            {createErrors.location && <div className="dk-error-text">{createErrors.location}</div>}
-
-                            <label>{t("Dock.fields.status", { defaultValue: "Estado" })}</label>
-                            <select
-                                className="dk-input"
-                                value={createData.status}
-                                onChange={(e) => setCreateData({ ...createData, status: e.target.value as any })}
-                            >
-                                <option value="Available">
-                                    {t("Dock.status.Available", { defaultValue: "Disponível" })}
-                                </option>
-                                <option value="Unavailable">
-                                    {t("Dock.status.Unavailable", { defaultValue: "Indisponível" })}
-                                </option>
-                                <option value="Maintenance">
-                                    {t("Dock.status.Maintenance", { defaultValue: "Manutenção" })}
-                                </option>
-                            </select>
-
-                            <label>{t("Dock.fields.length", { defaultValue: "Comprimento (m)" })}</label>
-                            <input
-                                className={`dk-input ${createErrors.lengthM ? "dk-input--error" : ""}`}
-                                inputMode="decimal"
-                                value={createNums.lengthM}
-                                onChange={(e) => {
-                                    setCreateNums({ ...createNums, lengthM: e.target.value });
-                                    if (createErrors.lengthM) setCreateErrors((p) => ({ ...p, lengthM: undefined }));
-                                }}
-                                onBlur={(e) =>
-                                    setCreateNums({ ...createNums, lengthM: e.target.value.replace(",", ".") })
-                                }
-                            />
-                            {createErrors.lengthM && <div className="dk-error-text">{createErrors.lengthM}</div>}
-
-                            <label>{t("Dock.fields.depth", { defaultValue: "Profundidade (m)" })}</label>
-                            <input
-                                className={`dk-input ${createErrors.depthM ? "dk-input--error" : ""}`}
-                                inputMode="decimal"
-                                value={createNums.depthM}
-                                onChange={(e) => {
-                                    setCreateNums({ ...createNums, depthM: e.target.value });
-                                    if (createErrors.depthM) setCreateErrors((p) => ({ ...p, depthM: undefined }));
-                                }}
-                                onBlur={(e) =>
-                                    setCreateNums({ ...createNums, depthM: e.target.value.replace(",", ".") })
-                                }
-                            />
-                            {createErrors.depthM && <div className="dk-error-text">{createErrors.depthM}</div>}
-
-                            <label>{t("Dock.fields.maxdraft", { defaultValue: "Calado Máximo (m)" })}</label>
-                            <input
-                                className={`dk-input ${createErrors.maxDraftM ? "dk-input--error" : ""}`}
-                                inputMode="decimal"
-                                value={createNums.maxDraftM}
-                                onChange={(e) => {
-                                    setCreateNums({ ...createNums, maxDraftM: e.target.value });
-                                    if (createErrors.maxDraftM) setCreateErrors((p) => ({ ...p, maxDraftM: undefined }));
-                                }}
-                                onBlur={(e) =>
-                                    setCreateNums({ ...createNums, maxDraftM: e.target.value.replace(",", ".") })
-                                }
-                            />
-                            {createErrors.maxDraftM && (
-                                <div className="dk-error-text">{createErrors.maxDraftM}</div>
-                            )}
-
-                            <label>
-                                {t("Dock.fields.physicalResource", {
-                                    defaultValue: "Recursos Físicos (disponíveis)",
-                                })}
-                            </label>
-                            <div style={{ display: "flex", flexWrap: "wrap", gap: 8, maxHeight: 160, overflow: "auto" }}>
-                                {availablePRsForCreate.map((code) => (
-                                    <label key={code} style={{ display: "flex", gap: 6, alignItems: "center" }}>
-                                        <input
-                                            type="checkbox"
-                                            checked={createPRs.includes(code)}
-                                            onChange={(e) =>
-                                                setCreatePRs((prev) =>
-                                                    e.target.checked ? [...prev, code] : prev.filter((x) => x !== code)
-                                                )
-                                            }
-                                        />
-                                        {code}
-                                    </label>
-                                ))}
-                                {availablePRsForCreate.length === 0 && (
-                                    <span className="dk-chip">
-                    {t("Dock.messages.noAvailablePR", { defaultValue: "Sem recursos disponíveis" })}
-                  </span>
-                                )}
-                            </div>
-
-                            <label>
-                                {t("Dock.fields.vesselType", { defaultValue: "Tipos de Navio Permitidos" })}
-                            </label>
-                            <div style={{ display: "flex", flexWrap: "wrap", gap: 8, maxHeight: 160, overflow: "auto" }}>
-                                {vesselTypes.map((vt) => (
-                                    <label key={vt.id} style={{ display: "flex", gap: 6, alignItems: "center" }}>
-                                        <input
-                                            type="checkbox"
-                                            checked={createVTs.includes(vt.name)}
-                                            onChange={(e) =>
-                                                setCreateVTs((prev) =>
-                                                    e.target.checked ? [...prev, vt.name] : prev.filter((x) => x !== vt.name)
-                                                )
-                                            }
-                                        />
-                                        {vt.name}
-                                    </label>
-                                ))}
-                            </div>
-                            {createErrors.vessels && <div className="dk-error-text">{createErrors.vessels}</div>}
-
-                            <p style={{ opacity: 0.7, fontSize: 12, marginTop: 6 }}>
-                                {t("Dock.chips.summary", {
-                                    pr: createPRs.length,
-                                    vt: createVTs.length,
-                                    defaultValue: "{{pr}} PR selecionado(s) • {{vt}} tipo(s) de navio"
-                                })}
-                            </p>
-                        </div>
-
-                        <div className="dk-modal-actions">
-                            <button className="dk-btn-cancel" onClick={() => setIsCreateOpen(false)}>
-                                {t("Dock.buttons.cancel", { defaultValue: "Cancelar" })}
-                            </button>
-                            <button className="dk-btn-save" onClick={handleCreate}>
-                                {t("Dock.buttons.save", { defaultValue: "Guardar" })}
+                        <div className="dk-slide-actions">
+                            <button className="dk-btn-edit" onClick={() => openEdit(selected)}>
+                                {t("Dock.buttons.edit", {defaultValue: "Editar"})}
                             </button>
                         </div>
                     </div>
-                </div>
-            )}
+                )}
 
-            {/* EDIT MODAL */}
-            {isEditOpen && (
-                <div className="dk-modal-overlay">
-                    <div className="dk-modal">
-                        <h3>{t("Dock.modal.editTitle", { defaultValue: "Editar Dock" })}</h3>
+                {/* CREATE MODAL */}
+                {isCreateOpen && (
+                    <div className="dk-modal-overlay">
+                        <div className="dk-modal">
+                            <h3>{t("Dock.modal.addTitle", {defaultValue: "Adicionar Dock"})}</h3>
 
-                        <div className="dk-modal-body">
-                            <label>{t("Dock.fields.location", { defaultValue: "Localização *" })}</label>
-                            <input
-                                className={`dk-input ${errors.location ? "dk-input--error" : ""}`}
-                                value={editData.location || ""}
-                                onChange={(e) => {
-                                    const v = sanitizeLocation(e.target.value);
-                                    setEditData({ ...editData, location: v });
-                                    if (errors.location) setErrors((p) => ({ ...p, location: undefined }));
-                                }}
-                            />
-                            {errors.location && <div className="dk-error-text">{errors.location}</div>}
+                            <div className="dk-modal-body">
+                                <label>{t("Dock.fields.code", {defaultValue: "Código *"})}</label>
+                                <input
+                                    className={`dk-input ${createErrors.code ? "dk-input--error" : ""}`}
+                                    value={createData.code}
+                                    onChange={(e) => {
+                                        const v = e.target.value.toUpperCase();
+                                        setCreateData({...createData, code: v});
+                                        if (createErrors.code) setCreateErrors((p) => ({...p, code: undefined}));
+                                    }}
+                                    onBlur={async (e) => {
+                                        const v = e.target.value.toUpperCase().trim();
+                                        if (!v) return;
+                                        if (!codeRegex.test(v)) {
+                                            setCreateErrors((p) => ({
+                                                ...p,
+                                                code: t("Dock.errors.codeFormat", {defaultValue: "Formato DK-0000"}),
+                                            }));
+                                            return;
+                                        }
+                                        if (allKnownCodes.includes(v)) {
+                                            setCreateErrors((p) => ({
+                                                ...p,
+                                                code: t("Dock.errors.codeDuplicate", {
+                                                    defaultValue: "Já existe uma dock com esse código",
+                                                }),
+                                            }));
+                                            return;
+                                        }
+                                        try {
+                                            await apiGetDockByCode(v);
+                                            setCreateErrors((p) => ({
+                                                ...p,
+                                                code: t("Dock.errors.codeDuplicate", {
+                                                    defaultValue: "Já existe uma dock com esse código",
+                                                }),
+                                            }));
+                                        } catch {
+                                            /* ok */
+                                        }
+                                    }}
+                                    placeholder="DK-0000"
+                                />
+                                {createErrors.code && <div className="dk-error-text">{createErrors.code}</div>}
 
-                            <label>{t("Dock.fields.status", { defaultValue: "Estado" })}</label>
-                            <select
-                                className="dk-input"
-                                value={editData.status || ""}
-                                onChange={(e) => setEditData({ ...editData, status: e.target.value })}
-                            >
-                                <option value="Available">
-                                    {t("Dock.status.Available", { defaultValue: "Disponível" })}
-                                </option>
-                                <option value="Unavailable">
-                                    {t("Dock.status.Unavailable", { defaultValue: "Indisponível" })}
-                                </option>
-                                <option value="Maintenance">
-                                    {t("Dock.status.Maintenance", { defaultValue: "Manutenção" })}
-                                </option>
-                            </select>
+                                <label>{t("Dock.fields.location", {defaultValue: "Localização *"})}</label>
+                                <input
+                                    className={`dk-input ${createErrors.location ? "dk-input--error" : ""}`}
+                                    value={createData.location}
+                                    onChange={(e) => {
+                                        const v = sanitizeLocation(e.target.value);
+                                        setCreateData({...createData, location: v});
+                                        if (createErrors.location)
+                                            setCreateErrors((p) => ({...p, location: undefined}));
+                                    }}
+                                />
+                                {createErrors.location && <div className="dk-error-text">{createErrors.location}</div>}
 
-                            <label>{t("Dock.fields.length", { defaultValue: "Comprimento (m)" })}</label>
-                            <input
-                                className={`dk-input ${errors.lengthM ? "dk-input--error" : ""}`}
-                                type="text"
-                                inputMode="decimal"
-                                value={editNums.lengthM}
-                                onChange={(e) => {
-                                    setEditNums({ ...editNums, lengthM: e.target.value });
-                                    if (errors.lengthM) setErrors((p) => ({ ...p, lengthM: undefined }));
-                                }}
-                                onBlur={(e) => setEditNums({ ...editNums, lengthM: e.target.value.replace(",", ".") })}
-                            />
-                            {errors.lengthM && <div className="dk-error-text">{errors.lengthM}</div>}
+                                <label>{t("Dock.fields.status", {defaultValue: "Estado"})}</label>
+                                <select
+                                    className="dk-input"
+                                    value={createData.status}
+                                    onChange={(e) => setCreateData({...createData, status: e.target.value as any})}
+                                >
+                                    <option value="Available">
+                                        {t("Dock.status.Available", {defaultValue: "Disponível"})}
+                                    </option>
+                                    <option value="Unavailable">
+                                        {t("Dock.status.Unavailable", {defaultValue: "Indisponível"})}
+                                    </option>
+                                    <option value="Maintenance">
+                                        {t("Dock.status.Maintenance", {defaultValue: "Manutenção"})}
+                                    </option>
+                                </select>
 
-                            <label>{t("Dock.fields.depth", { defaultValue: "Profundidade (m)" })}</label>
-                            <input
-                                className={`dk-input ${errors.depthM ? "dk-input--error" : ""}`}
-                                type="text"
-                                inputMode="decimal"
-                                value={editNums.depthM}
-                                onChange={(e) => {
-                                    setEditNums({ ...editNums, depthM: e.target.value });
-                                    if (errors.depthM) setErrors((p) => ({ ...p, depthM: undefined }));
-                                }}
-                                onBlur={(e) => setEditNums({ ...editNums, depthM: e.target.value.replace(",", ".") })}
-                            />
-                            {errors.depthM && <div className="dk-error-text">{errors.depthM}</div>}
+                                <label>{t("Dock.fields.length", {defaultValue: "Comprimento (m)"})}</label>
+                                <input
+                                    className={`dk-input ${createErrors.lengthM ? "dk-input--error" : ""}`}
+                                    inputMode="decimal"
+                                    value={createNums.lengthM}
+                                    onChange={(e) => {
+                                        setCreateNums({...createNums, lengthM: e.target.value});
+                                        if (createErrors.lengthM) setCreateErrors((p) => ({...p, lengthM: undefined}));
+                                    }}
+                                    onBlur={(e) =>
+                                        setCreateNums({...createNums, lengthM: e.target.value.replace(",", ".")})
+                                    }
+                                />
+                                {createErrors.lengthM && <div className="dk-error-text">{createErrors.lengthM}</div>}
 
-                            <label>{t("Dock.fields.maxdraft", { defaultValue: "Calado Máximo (m)" })}</label>
-                            <input
-                                className={`dk-input ${errors.maxDraftM ? "dk-input--error" : ""}`}
-                                type="text"
-                                inputMode="decimal"
-                                value={editNums.maxDraftM}
-                                onChange={(e) => {
-                                    setEditNums({ ...editNums, maxDraftM: e.target.value });
-                                    if (errors.maxDraftM) setErrors((p) => ({ ...p, maxDraftM: undefined }));
-                                }}
-                                onBlur={(e) => setEditNums({ ...editNums, maxDraftM: e.target.value.replace(",", ".") })}
-                            />
-                            {errors.maxDraftM && <div className="dk-error-text">{errors.maxDraftM}</div>}
+                                <label>{t("Dock.fields.depth", {defaultValue: "Profundidade (m)"})}</label>
+                                <input
+                                    className={`dk-input ${createErrors.depthM ? "dk-input--error" : ""}`}
+                                    inputMode="decimal"
+                                    value={createNums.depthM}
+                                    onChange={(e) => {
+                                        setCreateNums({...createNums, depthM: e.target.value});
+                                        if (createErrors.depthM) setCreateErrors((p) => ({...p, depthM: undefined}));
+                                    }}
+                                    onBlur={(e) =>
+                                        setCreateNums({...createNums, depthM: e.target.value.replace(",", ".")})
+                                    }
+                                />
+                                {createErrors.depthM && <div className="dk-error-text">{createErrors.depthM}</div>}
 
-                            <label>
-                                {t("Dock.details.physicalResource", { defaultValue: "Recursos Físicos" })}
-                            </label>
-                            <div style={{ display: "flex", flexWrap: "wrap", gap: 8, maxHeight: 160, overflow: "auto" }}>
-                                {availablePRsForEdit.map((code) => (
-                                    <label key={code} style={{ display: "flex", gap: 6, alignItems: "center" }}>
-                                        <input
-                                            type="checkbox"
-                                            checked={editPRs.includes(code)}
-                                            onChange={(e) =>
-                                                setEditPRs((prev) =>
-                                                    e.target.checked ? [...prev, code] : prev.filter((x) => x !== code)
-                                                )
-                                            }
-                                        />
-                                        {code}
-                                    </label>
-                                ))}
-                                {availablePRsForEdit.length === 0 && (
-                                    <span className="dk-chip">
-                    {t("Dock.messages.noAvailablePR", { defaultValue: "Sem recursos disponíveis" })}
-                  </span>
+                                <label>{t("Dock.fields.maxdraft", {defaultValue: "Calado Máximo (m)"})}</label>
+                                <input
+                                    className={`dk-input ${createErrors.maxDraftM ? "dk-input--error" : ""}`}
+                                    inputMode="decimal"
+                                    value={createNums.maxDraftM}
+                                    onChange={(e) => {
+                                        setCreateNums({...createNums, maxDraftM: e.target.value});
+                                        if (createErrors.maxDraftM) setCreateErrors((p) => ({
+                                            ...p,
+                                            maxDraftM: undefined
+                                        }));
+                                    }}
+                                    onBlur={(e) =>
+                                        setCreateNums({...createNums, maxDraftM: e.target.value.replace(",", ".")})
+                                    }
+                                />
+                                {createErrors.maxDraftM && (
+                                    <div className="dk-error-text">{createErrors.maxDraftM}</div>
                                 )}
+
+                                <label>
+                                    {t("Dock.fields.physicalResource", {
+                                        defaultValue: "Recursos Físicos (disponíveis)",
+                                    })}
+                                </label>
+                                <div style={{
+                                    display: "flex",
+                                    flexWrap: "wrap",
+                                    gap: 8,
+                                    maxHeight: 160,
+                                    overflow: "auto"
+                                }}>
+                                    {availablePRsForCreate.map((code) => (
+                                        <label key={code} style={{display: "flex", gap: 6, alignItems: "center"}}>
+                                            <input
+                                                type="checkbox"
+                                                checked={createPRs.includes(code)}
+                                                onChange={(e) =>
+                                                    setCreatePRs((prev) =>
+                                                        e.target.checked ? [...prev, code] : prev.filter((x) => x !== code)
+                                                    )
+                                                }
+                                            />
+                                            {code}
+                                        </label>
+                                    ))}
+                                    {availablePRsForCreate.length === 0 && (
+                                        <span className="dk-chip">
+                    {t("Dock.messages.noAvailablePR", {defaultValue: "Sem recursos disponíveis"})}
+                  </span>
+                                    )}
+                                </div>
+
+                                <label>
+                                    {t("Dock.fields.vesselType", {defaultValue: "Tipos de Navio Permitidos"})}
+                                </label>
+                                <div style={{
+                                    display: "flex",
+                                    flexWrap: "wrap",
+                                    gap: 8,
+                                    maxHeight: 160,
+                                    overflow: "auto"
+                                }}>
+                                    {vesselTypes.map((vt) => (
+                                        <label key={vt.id} style={{display: "flex", gap: 6, alignItems: "center"}}>
+                                            <input
+                                                type="checkbox"
+                                                checked={createVTs.includes(vt.name)}
+                                                onChange={(e) =>
+                                                    setCreateVTs((prev) =>
+                                                        e.target.checked ? [...prev, vt.name] : prev.filter((x) => x !== vt.name)
+                                                    )
+                                                }
+                                            />
+                                            {vt.name}
+                                        </label>
+                                    ))}
+                                </div>
+                                {createErrors.vessels && <div className="dk-error-text">{createErrors.vessels}</div>}
+
+                                <p style={{opacity: 0.7, fontSize: 12, marginTop: 6}}>
+                                    {t("Dock.chips.summary", {
+                                        pr: createPRs.length,
+                                        vt: createVTs.length,
+                                        defaultValue: "{{pr}} PR selecionado(s) • {{vt}} tipo(s) de navio"
+                                    })}
+                                </p>
                             </div>
 
-                            <label>{t("Dock.fields.vesselType", { defaultValue: "Tipos de Navio Permitidos" })}</label>
-                            <div style={{ display: "flex", flexWrap: "wrap", gap: 8, maxHeight: 160, overflow: "auto" }}>
-                                {vesselTypes.map((vt) => (
-                                    <label key={vt.id} style={{ display: "flex", gap: 6, alignItems: "center" }}>
-                                        <input
-                                            type="checkbox"
-                                            checked={editVTs.includes(vt.id)}
-                                            onChange={(e) => {
-                                                setEditVTs((prev) =>
-                                                    e.target.checked ? [...prev, vt.id] : prev.filter((x) => x !== vt.id)
-                                                );
-                                                if (errors.vessels) setErrors((p) => ({ ...p, vessels: undefined }));
-                                            }}
-                                        />
-                                        {vt.name}
-                                    </label>
-                                ))}
+                            <div className="dk-modal-actions">
+                                <button className="dk-btn-cancel" onClick={() => {
+                                    setIsCreateOpen(false);
+                                    setIsStored(false);
+                                }}>
+                                    {t("Dock.buttons.cancel", {defaultValue: "Cancelar"})}
+                                </button>
+                                <button className="dk-btn-save" onClick={handleCreate}>
+                                    {t("Dock.buttons.save", {defaultValue: "Guardar"})}
+                                </button>
                             </div>
-                            {errors.vessels && <div className="dk-error-text">{errors.vessels}</div>}
-                        </div>
-
-                        <div className="dk-modal-actions">
-                            <button className="dk-btn-cancel" onClick={closeEdit}>
-                                {t("Dock.buttons.cancel", { defaultValue: "Cancelar" })}
-                            </button>
-                            <button className="dk-btn-save" onClick={handleSaveEdit}>
-                                {t("Dock.buttons.save", { defaultValue: "Guardar" })}
-                            </button>
                         </div>
                     </div>
-                </div>
-            )}
+                )}
+
+                {/* EDIT MODAL */}
+                {isEditOpen && (
+                    <div className="dk-modal-overlay">
+                        <div className="dk-modal">
+                            <h3>{t("Dock.modal.editTitle", {defaultValue: "Editar Dock"})}</h3>
+
+                            <div className="dk-modal-body">
+                                <label>{t("Dock.fields.location", {defaultValue: "Localização *"})}</label>
+                                <input
+                                    className={`dk-input ${errors.location ? "dk-input--error" : ""}`}
+                                    value={editData.location || ""}
+                                    onChange={(e) => {
+                                        const v = sanitizeLocation(e.target.value);
+                                        setEditData({...editData, location: v});
+                                        if (errors.location) setErrors((p) => ({...p, location: undefined}));
+                                    }}
+                                />
+                                {errors.location && <div className="dk-error-text">{errors.location}</div>}
+
+                                <label>{t("Dock.fields.status", {defaultValue: "Estado"})}</label>
+                                <select
+                                    className="dk-input"
+                                    value={editData.status || ""}
+                                    onChange={(e) => setEditData({...editData, status: e.target.value})}
+                                >
+                                    <option value="Available">
+                                        {t("Dock.status.Available", {defaultValue: "Disponível"})}
+                                    </option>
+                                    <option value="Unavailable">
+                                        {t("Dock.status.Unavailable", {defaultValue: "Indisponível"})}
+                                    </option>
+                                    <option value="Maintenance">
+                                        {t("Dock.status.Maintenance", {defaultValue: "Manutenção"})}
+                                    </option>
+                                </select>
+
+                                <label>{t("Dock.fields.length", {defaultValue: "Comprimento (m)"})}</label>
+                                <input
+                                    className={`dk-input ${errors.lengthM ? "dk-input--error" : ""}`}
+                                    type="text"
+                                    inputMode="decimal"
+                                    value={editNums.lengthM}
+                                    onChange={(e) => {
+                                        setEditNums({...editNums, lengthM: e.target.value});
+                                        if (errors.lengthM) setErrors((p) => ({...p, lengthM: undefined}));
+                                    }}
+                                    onBlur={(e) => setEditNums({
+                                        ...editNums,
+                                        lengthM: e.target.value.replace(",", ".")
+                                    })}
+                                />
+                                {errors.lengthM && <div className="dk-error-text">{errors.lengthM}</div>}
+
+                                <label>{t("Dock.fields.depth", {defaultValue: "Profundidade (m)"})}</label>
+                                <input
+                                    className={`dk-input ${errors.depthM ? "dk-input--error" : ""}`}
+                                    type="text"
+                                    inputMode="decimal"
+                                    value={editNums.depthM}
+                                    onChange={(e) => {
+                                        setEditNums({...editNums, depthM: e.target.value});
+                                        if (errors.depthM) setErrors((p) => ({...p, depthM: undefined}));
+                                    }}
+                                    onBlur={(e) => setEditNums({...editNums, depthM: e.target.value.replace(",", ".")})}
+                                />
+                                {errors.depthM && <div className="dk-error-text">{errors.depthM}</div>}
+
+                                <label>{t("Dock.fields.maxdraft", {defaultValue: "Calado Máximo (m)"})}</label>
+                                <input
+                                    className={`dk-input ${errors.maxDraftM ? "dk-input--error" : ""}`}
+                                    type="text"
+                                    inputMode="decimal"
+                                    value={editNums.maxDraftM}
+                                    onChange={(e) => {
+                                        setEditNums({...editNums, maxDraftM: e.target.value});
+                                        if (errors.maxDraftM) setErrors((p) => ({...p, maxDraftM: undefined}));
+                                    }}
+                                    onBlur={(e) => setEditNums({
+                                        ...editNums,
+                                        maxDraftM: e.target.value.replace(",", ".")
+                                    })}
+                                />
+                                {errors.maxDraftM && <div className="dk-error-text">{errors.maxDraftM}</div>}
+
+                                <label>
+                                    {t("Dock.details.physicalResource", {defaultValue: "Recursos Físicos"})}
+                                </label>
+                                <div style={{
+                                    display: "flex",
+                                    flexWrap: "wrap",
+                                    gap: 8,
+                                    maxHeight: 160,
+                                    overflow: "auto"
+                                }}>
+                                    {availablePRsForEdit.map((code) => (
+                                        <label key={code} style={{display: "flex", gap: 6, alignItems: "center"}}>
+                                            <input
+                                                type="checkbox"
+                                                checked={editPRs.includes(code)}
+                                                onChange={(e) =>
+                                                    setEditPRs((prev) =>
+                                                        e.target.checked ? [...prev, code] : prev.filter((x) => x !== code)
+                                                    )
+                                                }
+                                            />
+                                            {code}
+                                        </label>
+                                    ))}
+                                    {availablePRsForEdit.length === 0 && (
+                                        <span className="dk-chip">
+                    {t("Dock.messages.noAvailablePR", {defaultValue: "Sem recursos disponíveis"})}
+                  </span>
+                                    )}
+                                </div>
+
+                                <label>{t("Dock.fields.vesselType", {defaultValue: "Tipos de Navio Permitidos"})}</label>
+                                <div style={{
+                                    display: "flex",
+                                    flexWrap: "wrap",
+                                    gap: 8,
+                                    maxHeight: 160,
+                                    overflow: "auto"
+                                }}>
+                                    {vesselTypes.map((vt) => (
+                                        <label key={vt.id} style={{display: "flex", gap: 6, alignItems: "center"}}>
+                                            <input
+                                                type="checkbox"
+                                                checked={editVTs.includes(vt.id)}
+                                                onChange={(e) => {
+                                                    setEditVTs((prev) =>
+                                                        e.target.checked ? [...prev, vt.id] : prev.filter((x) => x !== vt.id)
+                                                    );
+                                                    if (errors.vessels) setErrors((p) => ({...p, vessels: undefined}));
+                                                }}
+                                            />
+                                            {vt.name}
+                                        </label>
+                                    ))}
+                                </div>
+                                {errors.vessels && <div className="dk-error-text">{errors.vessels}</div>}
+                            </div>
+
+                            <div className="dk-modal-actions">
+                                <button className="dk-btn-cancel" onClick={closeEdit}>
+                                    {t("Dock.buttons.cancel", {defaultValue: "Cancelar"})}
+                                </button>
+                                <button className="dk-btn-save" onClick={handleSaveEdit}>
+                                    {t("Dock.buttons.save", {defaultValue: "Guardar"})}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                )}
+            </div>
         </div>
     );
 }
