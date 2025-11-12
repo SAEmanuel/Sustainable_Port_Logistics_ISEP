@@ -1,4 +1,3 @@
-// src/features/viewer3d/pages/Viewer3DPage.tsx
 import { useEffect, useMemo, useRef, useState, useCallback } from "react";
 import ThreeScene, { type ThreeSceneHandle } from "../components/ThreeScene";
 import { loadSceneData } from "../services/viewer3dService";

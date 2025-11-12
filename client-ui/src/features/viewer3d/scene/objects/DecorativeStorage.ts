@@ -1,4 +1,3 @@
-// src/features/viewer3d/scene/objects/DecorativeStorage.ts
 import * as THREE from "three";
 import { ASSETS_MODELS } from "../utils/assets";
 import { loadGLB } from "../utils/loader";
@@ -17,9 +16,9 @@ const LIFT_EPS = 0.01;
  *  - Y_ASPECT_GAIN: multiplica o mesmo fator de XZ no eixo Y (evita flatten)
  *  - MIN_HEIGHT_M: altura mínima absoluta (além de heightM do placement)
  */
-const XZ_FILL_BIAS  = 1.00;  // de 1.02 -> 1.00 (não exagera no fill)
-const Y_ASPECT_GAIN = 1.05;  // de 1.15 -> 1.05 (menos “gordo” em Y)
-const MIN_HEIGHT_M  = 3.2;   // de 4.0 -> 3.2 (altura mínima mais contida)
+const XZ_FILL_BIAS  = 1.00;  // de 1.02 -> 1.00 
+const Y_ASPECT_GAIN = 1.05;  // de 1.15 -> 1.05 
+const MIN_HEIGHT_M  = 3.2;   // de 4.0 -> 3.2 
 
 
 /* ---------- helpers ---------- */
@@ -65,7 +64,7 @@ function makePlaceholderBox(W: number, H: number, D: number) {
     mesh.castShadow = false;
     mesh.receiveShadow = true;
     mesh.name = "DecorativeStorage:placeholder";
-    mesh.position.y = H / 2; // base em y=0
+    mesh.position.y = H / 2; 
     return mesh;
 }
 
@@ -85,7 +84,7 @@ function normalizeDecorativeModel(raw: THREE.Object3D, W: number, Hmin: number, 
     });
 
     centerOnBottom(core);
-    fillXZ_andGrowY(core, W, Hmin, D); // <<< evita “aplastado”
+    fillXZ_andGrowY(core, W, Hmin, D); 
     centerOnBottom(core);
     return core;
 }
@@ -98,7 +97,7 @@ function normalizeDecorativeModel(raw: THREE.Object3D, W: number, Hmin: number, 
  */
 export function makeDecorativeStorage(n: DecorativeNode): THREE.Group {
     const W = Math.max(1, Number(n.widthM));
-    const Hmin = Math.max(0.1, Number(n.heightM)); // tratado como “mínimo”
+    const Hmin = Math.max(0.1, Number(n.heightM)); 
     const D = Math.max(1, Number(n.depthM));
 
     const g = new THREE.Group();

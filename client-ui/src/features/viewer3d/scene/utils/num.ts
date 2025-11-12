@@ -1,4 +1,3 @@
-// helpers numéricos e unwrap seguro para Value Objects { value: "..." }
 export function unwrap(v: any): any {
     if (v == null) return v;
     if (typeof v === "string" || typeof v === "number" || typeof v === "boolean") return v;
@@ -25,7 +24,6 @@ export function safeSize(x: any, min: number, fallback: number): number {
     return Math.max(min, finite(x, fallback));
 }
 
-// TEU dimensões (m)
 export const TEU_LENGTH = 6.06;
 export const TEU_WIDTH  = 2.44;
 export const TEU_HEIGHT = 2.59;

@@ -1,4 +1,3 @@
-// src/features/viewer3d/scene/objects/Container.ts
 import * as THREE from "three";
 import type { ContainerDto } from "../../types";
 import { ASSETS_MODELS } from "../utils/assets";
@@ -108,9 +107,9 @@ function normalizeBaseY(yRaw: number, H: number): number {
     const eps = 0.05 * H; // tolerância 5%
     const mod = ((yRaw % H) + H) % H;
     if (Math.abs(yRaw - H / 2) < eps || Math.abs(mod - H / 2) < eps) {
-        return yRaw - H / 2; // veio do centro → passa para base
+        return yRaw - H / 2; // veio do centro passa para base
     }
-    return yRaw; // já era base
+    return yRaw; 
 }
 
 /* ======================= API pública ====================== */
@@ -152,8 +151,7 @@ export function makeContainerPlaceholder(
     g.position.set(x, isFinite(yBase) ? yBase : 0, z);
     g.rotation.y = Number((c as any).rotationY) || 0;
 
-    // (Opcional) eleva 2 cm para evitar z-fighting no chão:
-    // g.position.y += 0.02;
+
 
     // Carregar 1 dos 3 modelos e substituir
     (async () => {
@@ -167,7 +165,6 @@ export function makeContainerPlaceholder(
             g.add(core);
         } catch (e) {
             console.warn("Falha a carregar GLB de contentor:", e);
-            // mantém placeholder
         }
     })();
 

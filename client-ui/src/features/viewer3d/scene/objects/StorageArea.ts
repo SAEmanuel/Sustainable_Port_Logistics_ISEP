@@ -1,4 +1,3 @@
-// src/features/viewer3d/scene/objects/StorageArea.ts
 import * as THREE from "three";
 import type { StorageAreaDto } from "../../types";
 import { ASSETS_MODELS } from "../utils/assets";
@@ -67,7 +66,7 @@ function normalizeWarehouseModel(raw: THREE.Object3D, W: number, H: number, D: n
 
     centerOnBottom(core);
     fitToSize(core, W, H, D);
-    centerOnBottom(core); // recentra após escala
+    centerOnBottom(core);
 
     return core;
 }

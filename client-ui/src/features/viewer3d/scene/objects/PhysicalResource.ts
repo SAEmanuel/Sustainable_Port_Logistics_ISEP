@@ -1,4 +1,3 @@
-// src/features/viewer3d/scene/objects/PhysicalResource.ts
 import * as THREE from "three";
 import type { PhysicalResourceDTO } from "../../types";
 import { ASSETS_MODELS } from "../utils/assets";
@@ -39,7 +38,7 @@ function normalizeBaseY(yRaw: number | undefined | null, H: number): number {
     if (!isFinite(Number(yRaw))) return 0;
     const y = Number(yRaw);
     const eps = 0.05 * H;
-    if (Math.abs(y - H / 2) < eps) return y - H / 2; // veio do centro → passa para base
+    if (Math.abs(y - H / 2) < eps) return y - H / 2;
     return y;
 }
 
@@ -51,20 +50,18 @@ type PType =
 
 type PStatus = "Available" | "Unavailable" | "UnderMaintenance";
 
-/** URL do modelo por tipo (ajusta conforme o teu assets.ts) */
 const TYPE_TO_MODEL: Partial<Record<PType, string>> = {
     STSCrane: ASSETS_MODELS.cranes?.stsCrane ?? ASSETS_MODELS.cranes?.mcCrane,
     YGCrane:  ASSETS_MODELS.cranes?.ygcCrane ?? ASSETS_MODELS.cranes?.mcCrane,
     MCrane:   ASSETS_MODELS.cranes?.mcCrane,
     Truck:    ASSETS_MODELS.vehicles?.truck ?? ASSETS_MODELS.vehicles?.truckCarrier,
     Forklift: ASSETS_MODELS.vehicles?.forklift,
-    RStacker: ASSETS_MODELS.props?.cone,           // placeholder até teres modelo
+    RStacker: ASSETS_MODELS.props?.cone,        
     SCarrier: ASSETS_MODELS.vehicles?.truckCarrier,
     TugBoat:  ASSETS_MODELS.vessels?.tugBoat,
     Other:    ASSETS_MODELS.props?.cone,
 };
 
-/** Dimensões-alvo (em metros) por tipo — heurísticas industriais */
 export const TYPE_FOOTPRINT: Record<PType, { L: number; W: number; H: number }> = {
     STSCrane: { L: 40, W: 14, H: 52 },
     YGCrane:  { L: 24, W: 10, H: 26 },
@@ -77,13 +74,11 @@ export const TYPE_FOOTPRINT: Record<PType, { L: number; W: number; H: number }> 
     Other:    { L:  8, W:  4, H:  6 },
 };
 
-/** <<< NOVO: para o placement saber o footprint do tipo >>> */
 export function getResourceFootprint(type: string) {
     const key = (type as PType) ?? "Other";
     return TYPE_FOOTPRINT[key] ?? TYPE_FOOTPRINT.Other;
 }
 
-/* ================== Placeholder por tipo ================== */
 function makePlaceholderForType(pt: PType, colorMat?: THREE.Material) {
     const mat = (colorMat as THREE.Material) ?? Materials.resource;
 
@@ -91,7 +86,6 @@ function makePlaceholderForType(pt: PType, colorMat?: THREE.Material) {
         case "STSCrane":
         case "YGCrane":
         case "MCrane": {
-            // torre simples + base
             const g = new THREE.Group();
             const core = new THREE.Mesh(new THREE.BoxGeometry(2, 6, 2), mat);
             const foot = new THREE.Mesh(new THREE.BoxGeometry(6, 0.6, 6), mat);
@@ -180,7 +174,7 @@ function normalizeLoadedModel(raw: THREE.Object3D, target: { L: number; W: numbe
 
     alignLongestAxisToX(core);
     centerOnBottom(core);
-    uniformScaleToFit(core, target.L, target.H, target.W);   // <<< uniforme
+    uniformScaleToFit(core, target.L, target.H, target.W);   
     centerOnBottom(core);
 
     return core;
@@ -208,7 +202,7 @@ export function makePhysicalResource(r: PhysicalResourceDTO): THREE.Group {
     phWrap.add(placeholder);
     alignLongestAxisToX(phWrap);
     centerOnBottom(phWrap);
-    uniformScaleToFit(phWrap, target.L, target.H, target.W); // <<< uniforme
+    uniformScaleToFit(phWrap, target.L, target.H, target.W); 
     centerOnBottom(phWrap);
     applyStatusVfx(phWrap, status);
     phWrap.name = "PhysicalResource:placeholder";
@@ -222,10 +216,8 @@ export function makePhysicalResource(r: PhysicalResourceDTO): THREE.Group {
     g.position.set(x, isFinite(yBase) ? yBase : 0, z);
     g.rotation.y = rotY;
 
-    // Elevar ligeiramente para evitar z-fighting
     g.position.y += 0.02;
 
-    // Carregar GLB e substituir placeholder
     (async () => {
         try {
             const url = TYPE_TO_MODEL[pt] || TYPE_TO_MODEL.Other!;
