@@ -1,4 +1,3 @@
-// src/features/viewer3d/scene/objects/roadLights.ts
 import * as THREE from "three";
 import type { PortLayout } from "./PortBase";
 
@@ -20,7 +19,7 @@ const DEF: Required<RoadLightOpts> = {
     poleHeight: 7.5,
     poleOffset: 3.5,
     spacing: 22,
-    intensity: 0,        // 0 = sem luz real, só poste/cabeça
+    intensity: 0,       
     spawnGlow: true,
     clearMargin: 2.0,
 };
@@ -77,7 +76,7 @@ function cullIfInsideRoad(pos: THREE.Vector3, opts: Required<RoadLightOpts>, xCu
 function polesAlong(
     A: THREE.Vector3,
     B: THREE.Vector3,
-    sideSign: 1 | -1,                   // +1 = “lado direito”, -1 = “lado esquerdo” do segmento
+    sideSign: 1 | -1,                   
     opts: Required<RoadLightOpts>,
     xCuts: number[],
     zCuts: number[],

@@ -1,4 +1,3 @@
-// src/features/viewer3d/scene/objects/DecorativeCrane.ts
 import * as THREE from "three";
 
 export type DecorativeCraneNode = {
@@ -8,8 +7,8 @@ export type DecorativeCraneNode = {
     heightM: number;  // altura total
     positionX: number;
     positionZ: number;
-    rotationY: number;   // chassis
-    childYaw?: number;   // yaw do BOOM relativo ao chassis (novo)
+    rotationY: number;   
+    childYaw?: number;   
 };
 
 const YELLOW = new THREE.MeshStandardMaterial({ color: 0xffd44d, metalness: 0.05, roughness: 0.9 });

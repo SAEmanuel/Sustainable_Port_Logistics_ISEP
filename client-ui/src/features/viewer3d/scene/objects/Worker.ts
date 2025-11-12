@@ -1,4 +1,3 @@
-// src/features/viewer3d/scene/objects/Worker.ts
 import * as THREE from "three";
 import { loadGLB } from "../utils/loader";
 import { ASSETS_MODELS } from "../utils/assets";
@@ -37,7 +36,7 @@ export class WorkerAvatar {
     camAnchor = new THREE.Object3D();  // onde a câmara 1ª pessoa encaixa
     heightM: number;
     yBase: number;
-    private _hideHead: boolean = true; // <-- inicialização para satisfazer TS
+    private _hideHead: boolean = true; 
 
     constructor(opts: WorkerOpts = {}) {
         const O = { ...DEF, ...opts };

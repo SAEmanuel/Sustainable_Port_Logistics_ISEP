@@ -8,7 +8,6 @@ export function getGLTFLoader(): GLTFLoader {
     if (sharedLoader) return sharedLoader;
     const loader = new GLTFLoader();
     const draco = new DRACOLoader();
-    // coloca os decoders do Draco em /public/draco/ (ou altera o path)
     draco.setDecoderPath("/draco/");
     loader.setDRACOLoader(draco);
     sharedLoader = loader;
@@ -37,7 +36,7 @@ export async function loadGLB(url: string): Promise<THREE.Object3D> {
         }
     });
 
-    __glbCache.set(url, root);      // guarda o original
-    return root.clone(true);        // devolve um clone para uso na cena
+    __glbCache.set(url, root);     
+    return root.clone(true);       
 }
 

@@ -19,7 +19,6 @@ export default function App() {
             <main style={{ textAlign: "center", marginTop: "3rem" }}>
                 <h1>Auth0 Login</h1>
                 <LoginButton />
-                {/* podes ter toasts também aqui, se quiseres */}
                 <Toaster position="top-right" toastOptions={{ style: { zIndex: 2147483647 } }} />
             </main>
         );
@@ -29,7 +28,6 @@ export default function App() {
         <>
             <SyncUser />
             <RouterProvider router={router} />
-            {/* ⬇️ Um único Toaster, na raiz, fora das páginas/modais */}
             <Toaster
                 position="top-right"
                 toastOptions={{

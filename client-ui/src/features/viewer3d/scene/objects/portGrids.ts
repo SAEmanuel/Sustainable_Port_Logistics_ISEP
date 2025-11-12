@@ -10,7 +10,6 @@ export type GridsResult = {
     B: { "B.1": Grid; "B.2": Grid };
 };
 
-/** Cria uma grelha rectangular com passo “step” (aproximado). */
 function makeGrid(rect: Rect, step: number): Grid {
     const width = rect.maxX - rect.minX;
     const depth = rect.maxZ - rect.minZ;

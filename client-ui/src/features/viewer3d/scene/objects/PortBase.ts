@@ -212,28 +212,25 @@ export function makePortBase(opts: PortBaseOptions): { group: THREE.Group; layou
         });
     }
 
-    // HORIZONTAL contínua (sem cortes)
-    // coloco um micro-lift para as horizontais ficarem mesmo por cima
+
     const H_LIFT = 0.0006;
 
-// HORIZONTAL contínua (sem cortes) — DESENHADA POR CIMA
     function addHorizontalFull(zLine: number) {
         const geom = new THREE.PlaneGeometry(W, RW);
         const tex  = setupTexClone(baseRoadTexH, W, RW);
         const mat  = makeMat(tex);
         mat.polygonOffset = true;
-        mat.polygonOffsetFactor = -2;  // um pouco mais que as verticais
+        mat.polygonOffsetFactor = -2;  
         mat.polygonOffsetUnits  = -2;
 
         const mesh = new THREE.Mesh(geom, mat);
         mesh.rotation.x = -Math.PI / 2;
-        mesh.position.set(0, roadY + H_LIFT, zLine); // ← ligeiramente acima
+        mesh.position.set(0, roadY + H_LIFT, zLine); 
         mesh.receiveShadow = true;
-        mesh.renderOrder = 3.0; // ← H acima das V
+        mesh.renderOrder = 3.0; 
         G.add(mesh);
     }
 
-// HORIZONTAL parcial (span entre xMin e xMax) — TAMBÉM POR CIMA
     function addHorizontalSpan(xMin: number, xMax: number, zLine: number) {
         const wspan = Math.max(0, xMax - xMin);
         if (wspan <= 0.01) return;
@@ -247,13 +244,12 @@ export function makePortBase(opts: PortBaseOptions): { group: THREE.Group; layou
 
         const mesh = new THREE.Mesh(geom, mat);
         mesh.rotation.x = -Math.PI / 2;
-        mesh.position.set((xMin + xMax) / 2, roadY + H_LIFT, zLine); // ↑
+        mesh.position.set((xMin + xMax) / 2, roadY + H_LIFT, zLine); 
         mesh.receiveShadow = true;
-        mesh.renderOrder = 3.0; // ← H acima das V
+        mesh.renderOrder = 3.0; 
         G.add(mesh);
     }
 
-// VERTICAL limitada — FICA POR BAIXO
     function addVertical(xCut: number, zMin: number, zMax: number) {
         const len = Math.max(0, zMax - zMin);
         if (len <= 0.01) return;
@@ -262,14 +258,14 @@ export function makePortBase(opts: PortBaseOptions): { group: THREE.Group; layou
         const tex  = setupTexClone(baseRoadTexV, RW, len);
         const mat  = makeMat(tex);
         mat.polygonOffset = true;
-        mat.polygonOffsetFactor = -1; // menos agressivo que horizontais
+        mat.polygonOffsetFactor = -1; 
         mat.polygonOffsetUnits  = -1;
 
         const mesh = new THREE.Mesh(geom, mat);
         mesh.rotation.x = -Math.PI / 2;
         mesh.position.set(xCut, roadY, (zMin + zMax) / 2);
         mesh.receiveShadow = true;
-        mesh.renderOrder = 2.0; // ← V por baixo das H
+        mesh.renderOrder = 2.0; 
         G.add(mesh);
     }
 

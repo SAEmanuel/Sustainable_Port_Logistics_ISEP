@@ -1,4 +1,3 @@
-// src/features/viewer3d/scene/objects/roadTrees.ts
 import * as THREE from "three";
 import type { PortLayout } from "./PortBase";
 import { ASSETS_MODELS } from "../utils/assets";
@@ -92,7 +91,7 @@ function cloneTree(type: GreenKey, heightScale: number): THREE.Group {
     const mesh = root.clone(true);
     mesh.scale.multiplyScalar(heightScale);
     // levantar/baixar de acordo com o BB do protótipo
-    const EXTRA = 0.12; // sobe ~12 cm
+    const EXTRA = 0.12; // sobe 12 cm
     mesh.position.y += liftY * heightScale + EXTRA;
 
     container.add(mesh);
@@ -261,7 +260,7 @@ export function addRoadTrees(scene: THREE.Scene, layout: PortLayout, user?: Road
                 }
 
                 const node = cloneTree(type, m.heightScale);
-                node.position.copy(m.pos);     // yGround aplicado aqui
+                node.position.copy(m.pos);
                 node.rotation.y = m.rotY;
                 G.add(node);
             }

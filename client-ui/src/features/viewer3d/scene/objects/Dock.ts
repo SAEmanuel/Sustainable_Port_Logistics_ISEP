@@ -1,4 +1,3 @@
-// src/features/viewer3d/scene/objects/Dock.ts
 import * as THREE from "three";
 import type { DockDto } from "../../types";
 import { ASSETS_MODELS } from "../utils/assets";
