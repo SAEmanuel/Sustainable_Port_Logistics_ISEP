@@ -7,7 +7,7 @@ import { makePortBase } from "./objects/PortBase";
 import type { PortLayout } from "./objects/PortBase";
 import { ASSETS_TEXTURES } from "./utils/assets";
 // @ts-ignore – util interno com tipos compatíveis
-import { computePortGrids /* , drawPortGridsDebug */ } from "./objects/portGrids";
+import { computePortGrids , drawPortGridsDebug  } from "./objects/portGrids";
 
 import { addRoadPoles } from "./objects/roadLights";
 import { makeStorageArea } from "./objects/StorageArea";
