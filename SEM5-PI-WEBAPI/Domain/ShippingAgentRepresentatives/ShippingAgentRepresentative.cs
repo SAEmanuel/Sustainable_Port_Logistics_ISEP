@@ -24,11 +24,14 @@ public class ShippingAgentRepresentative : Entity<ShippingAgentRepresentativeId>
 
     public ShippingOrganizationCode SAO { get; set; }
 
-    public List<VvnCode> Notifs { get; set; } 
+    public List<VvnCode> Notifs { get; set; }
 
-    protected ShippingAgentRepresentative() { }
+    protected ShippingAgentRepresentative()
+    {
+    }
 
-    public ShippingAgentRepresentative(string name, CitizenId citizenId, Nationality nationality, EmailAddress email, PhoneNumber phoneNumber,Status status, ShippingOrganizationCode sao)
+    public ShippingAgentRepresentative(string name, CitizenId citizenId, Nationality nationality, EmailAddress email,
+        PhoneNumber phoneNumber, Status status, ShippingOrganizationCode sao)
     {
         Name = name;
         CitizenId = citizenId;
@@ -48,12 +51,13 @@ public class ShippingAgentRepresentative : Entity<ShippingAgentRepresentativeId>
             throw new BusinessRuleValidationException("Notification cannot be null.");
 
         if (Notifs.Any(n => n.Equals(notif)))
-            throw new BusinessRuleValidationException($"Notification {notif.Code} already exists for this representative.");
+            throw new BusinessRuleValidationException(
+                $"Notification {notif.Code} already exists for this representative.");
 
         Notifs.Add(notif);
     }
 
-    
+
     public override bool Equals(object? obj) =>
         obj is ShippingAgentRepresentative other && Id == other.Id;
 
@@ -66,10 +70,11 @@ public class ShippingAgentRepresentative : Entity<ShippingAgentRepresentativeId>
     {
         Email = email;
     }
+
     public void UpdateStatus(string status)
     {
-       if (string.IsNullOrWhiteSpace(status))
-        throw new ArgumentException("Status cannot be null or empty.", nameof(status));
+        if (string.IsNullOrWhiteSpace(status))
+            throw new ArgumentException("Status cannot be null or empty.", nameof(status));
 
         // Try to parse the string to a valid enum value (case-insensitive)
         if (Enum.TryParse<Status>(status, true, out var parsedStatus))
@@ -78,9 +83,11 @@ public class ShippingAgentRepresentative : Entity<ShippingAgentRepresentativeId>
         }
         else
         {
-            throw new ArgumentException($"Invalid status value: {status}. Valid values are: {string.Join(", ", Enum.GetNames(typeof(Status)))}");
+            throw new ArgumentException(
+                $"Invalid status value: {status}. Valid values are: {string.Join(", ", Enum.GetNames(typeof(Status)))}");
         }
     }
+
     public void UpdatePhoneNumber(PhoneNumber phoneNumber)
     {
         PhoneNumber = phoneNumber;
