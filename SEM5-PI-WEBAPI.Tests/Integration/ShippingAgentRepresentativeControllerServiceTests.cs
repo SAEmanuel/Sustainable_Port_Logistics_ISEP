@@ -7,6 +7,7 @@ using SEM5_PI_WEBAPI.Domain.ShippingAgentRepresentatives.DTOs;
 using SEM5_PI_WEBAPI.Domain.ValueObjects;
 using SEM5_PI_WEBAPI.Domain.Shared;
 using SEM5_PI_WEBAPI.Domain.VVN;
+using SEM5_PI_WEBAPI.utils;
 
 namespace SEM5_PI_WEBAPI.Tests.Integration
 {
@@ -14,11 +15,25 @@ namespace SEM5_PI_WEBAPI.Tests.Integration
     {
         private readonly Mock<IShippingAgentRepresentativeService> _serviceMock = new();
         private readonly Mock<ILogger<ShippingAgentRepresentativeController>> _loggerMock = new();
+
+        private readonly Mock<IResponsesToFrontend> _mockRefrontend = new();
         private readonly ShippingAgentRepresentativeController _controller;
 
         public ShippingAgentRepresentativeControllerTests()
         {
-            _controller = new ShippingAgentRepresentativeController(_serviceMock.Object, _loggerMock.Object);
+                _mockRefrontend
+                .Setup(f => f.ProblemResponse(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>()))
+                .Returns((string title, string detail, int status) =>
+                {
+                    return status switch
+                    {
+                        400 => new BadRequestObjectResult(detail),
+                        404 => new NotFoundObjectResult(detail),
+                        _   => new ObjectResult(detail) { StatusCode = status }
+                    };
+                });
+                
+            _controller = new ShippingAgentRepresentativeController(_serviceMock.Object, _loggerMock.Object,_mockRefrontend.Object);
         }
 
         [Fact]

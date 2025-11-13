@@ -6,6 +6,7 @@ using SEM5_PI_WEBAPI.Domain.Shared;
 using SEM5_PI_WEBAPI.Domain.ShippingAgentRepresentatives;
 using SEM5_PI_WEBAPI.Domain.ShippingAgentRepresentatives.DTOs;
 using SEM5_PI_WEBAPI.Domain.ValueObjects;
+using SEM5_PI_WEBAPI.utils;
 
 namespace SEM5_PI_WEBAPI.Tests.Controllers
 {
@@ -13,13 +14,29 @@ namespace SEM5_PI_WEBAPI.Tests.Controllers
     {
         private readonly Mock<IShippingAgentRepresentativeService> _mockService;
         private readonly Mock<ILogger<ShippingAgentRepresentativeController>> _mockLogger;
+        private readonly Mock<IResponsesToFrontend> _mockRefrontend;
         private readonly ShippingAgentRepresentativeController _controller;
 
         public ShippingAgentRepresentativeControllerTests()
         {
             _mockService = new Mock<IShippingAgentRepresentativeService>();
             _mockLogger = new Mock<ILogger<ShippingAgentRepresentativeController>>();
-            _controller = new ShippingAgentRepresentativeController(_mockService.Object, _mockLogger.Object);
+            _mockRefrontend = new Mock<IResponsesToFrontend>();
+
+           _mockRefrontend
+                .Setup(f => f.ProblemResponse(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>()))
+                .Returns((string title, string detail, int status) =>
+                {
+                    return status switch
+                    {
+                        400 => new BadRequestObjectResult(detail),
+                        404 => new NotFoundObjectResult(detail),
+                        _   => new ObjectResult(detail) { StatusCode = status }
+                    };
+                });
+                
+
+            _controller = new ShippingAgentRepresentativeController(_mockService.Object, _mockLogger.Object,_mockRefrontend.Object);
         }
 
         private readonly ShippingAgentRepresentativeDto _sampleDto = new(
