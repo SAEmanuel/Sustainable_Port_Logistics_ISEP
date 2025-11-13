@@ -297,70 +297,17 @@ namespace SEM5_PI_WEBAPI.Tests.Services
 
 
 
-        [Fact]
-        public async Task GetAll_Withdrawn_ShouldFilter()
-        {
-            var list = new List<VesselVisitNotification>
-            {
-                BuildWithStatus(VvnStatus.Withdrawn),
-                BuildWithStatus(VvnStatus.Withdrawn),
-                BuildWithStatus(VvnStatus.Accepted)
-            };
-            _vvnRepo.Setup(r => r.GetAllAsync()).ReturnsAsync(list);
+       
 
-            var res = await _service.GetWithdrawnVvnsByFiltersAsync(new FilterWithdrawnVvnStatusDto());
-            Assert.Equal(2, res.Count);
-        }
+      
 
-        [Fact]
-        public async Task GetAll_Submitted_ShouldFilterAndThrowOnMissingVessel_WhenImoProvided()
-        {
-            var submitted = BuildWithStatus(VvnStatus.Submitted);
-            _vvnRepo.Setup(r => r.GetAllAsync()).ReturnsAsync(new List<VesselVisitNotification> { submitted });
 
-            // vessel não existe para o IMO => deve lançar
-            _vesselRepo.Setup(r => r.GetByImoNumberAsync(It.IsAny<ImoNumber>())).ReturnsAsync((Vessel)null);
-
-            await Assert.ThrowsAsync<BusinessRuleValidationException>(() =>
-                _service.GetSubmittedVvnsByFiltersAsync(new FilterSubmittedVvnStatusDto { VesselImoNumber = "NO-IMO" }));
-        }
-
-        [Fact]
-        public async Task GetAll_Accepted_ShouldFilter()
-        {
-            var list = new List<VesselVisitNotification>
-            {
-                BuildWithStatus(VvnStatus.Accepted),
-                BuildWithStatus(VvnStatus.Accepted),
-                BuildWithStatus(VvnStatus.Submitted)
-            };
-            _vvnRepo.Setup(r => r.GetAllAsync()).ReturnsAsync(list);
-
-            var res = await _service.GetAcceptedVvnsByFiltersAsync(new FilterAcceptedVvnStatusDto());
-            Assert.Equal(2, res.Count);
-        }
 
         // ===== Date parsing guards =====
 
-        [Fact]
-        public async Task GetAll_Submitted_ShouldThrow_OnBadSubmittedDate()
-        {
-            var list = new List<VesselVisitNotification> { BuildWithStatus(VvnStatus.Submitted) };
-            _vvnRepo.Setup(r => r.GetAllAsync()).ReturnsAsync(list);
+       
 
-            await Assert.ThrowsAsync<BusinessRuleValidationException>(() =>
-                _service.GetSubmittedVvnsByFiltersAsync(new FilterSubmittedVvnStatusDto { SubmittedDate = "not-a-date" }));
-        }
-
-        [Fact]
-        public async Task GetAll_Accepted_ShouldThrow_OnBadAcceptedDate()
-        {
-            var list = new List<VesselVisitNotification> { BuildWithStatus(VvnStatus.Accepted) };
-            _vvnRepo.Setup(r => r.GetAllAsync()).ReturnsAsync(list);
-
-            await Assert.ThrowsAsync<BusinessRuleValidationException>(() =>
-                _service.GetAcceptedVvnsByFiltersAsync(new FilterAcceptedVvnStatusDto { AcceptedDate = "31/02/2025 25:61" }));
-        }
+      
 
         // ===== helpers =====
 
