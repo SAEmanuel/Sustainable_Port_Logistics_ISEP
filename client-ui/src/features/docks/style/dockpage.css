@@ -126,12 +126,9 @@
 .dk-modal {
     background: var(--card-bg); padding: 28px; border-radius: 14px; width: min(520px, 92vw);
     border: 1px solid var(--shadow);
-    /* NOVO: modal com coluna + altura limitada */
     display: flex; flex-direction: column; gap: 8px; box-sizing: border-box; max-height: 86vh;
 }
-/* NOVO: corpo do modal com scroll próprio */
 .dk-modal-body { overflow: auto; padding-right: 4px; }
-/* NOVO: barra de ações sticky no fundo do modal */
 .dk-modal-actions {
     position: sticky; bottom: 0;
     background: var(--card-bg);
@@ -168,11 +165,31 @@
     .dk-modal-overlay { align-items: flex-start; padding: 16px; }
 }
 
-.dk-page-container {
-    transition: transform 1s ease;
-    transform-origin: center center;
+.dk-back-btn {
+    position: absolute;
+    top: -10px;
+    left: -20px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+
+    padding: 8px 12px;
+    border-radius: 999px;
+    border: 1px solid var(--shadow);
+    background: rgba(0,0,0,0.04);
+    color: var(--text);
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 500;
+
+    box-shadow: 0 4px 10px rgba(0,0,0,0.12);
+    transition: transform .18s ease, box-shadow .18s ease, background .18s ease;
 }
 
-.dk-page-container.stored {
-    transform: rotate(180deg);
+.dk-back-btn:hover {
+    background: rgba(0,0,0,0.08);
+    transform: translateY(-1px);
+    box-shadow: 0 8px 18px rgba(0,0,0,0.18);
 }
