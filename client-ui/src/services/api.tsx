@@ -1,19 +1,25 @@
 import axios from "axios";
 import { notifyError } from "../utils/notify";
+import { router } from "../app/router";
 
 function extractApiError(error: any): string {
     const data = error?.response?.data;
 
     // Falha de rede / servidor offline
-    if (!error.response)
+    if (!error?.response)
         return "Servidor indisponível. Verifique a ligação.";
 
-    // ProblemDetails (.NET default)
-    if (data?.detail) return data.detail;
-    if (data?.title) return data.title;
+    // ProblemDetails (.NET default) ou DTO com message
+    if (data && typeof data === "object") {
+        if (data.detail) return data.detail;
+        if (data.title) return data.title;
+        if (data.message) return data.message;
+    }
 
-    // Custom backend message
-    if (data?.message) return data.message;
+    // Se o backend devolveu uma string simples (caso do middleware de rede)
+    if (typeof data === "string") {
+        return data;
+    }
 
     // Axios / fallback
     return error?.message || "Erro inesperado ao comunicar com o servidor.";
@@ -37,6 +43,7 @@ api.interceptors.response.use(
     (res) => res,
     (error) => {
         const status = error?.response?.status;
+        const rawData = error?.response?.data;
         const message = extractApiError(error);
 
         switch (status) {
@@ -50,9 +57,21 @@ api.interceptors.response.use(
                 window.dispatchEvent(new Event("sessionExpired"));
                 break;
 
-            case 403:
-                notifyError(message || "Acesso negado.");
+            case 403: {
+                const isNetworkRestriction = typeof rawData === "string";
+
+                if (isNetworkRestriction) {
+                    notifyError(
+                        "Acesso restrito: só é possível aceder a partir da rede interna do DEI ou via VPN do ISEP."
+                    );
+                } else {
+                    notifyError(message || "Acesso negado.");
+                }
+
+                // Redireciona sempre que há 403 para a página de Forbidden
+                router.navigate("/forbidden");
                 break;
+            }
 
             case 404:
                 notifyError(message || "Recurso não encontrado.");

@@ -9,9 +9,14 @@ namespace SEM5_PI_WEBAPI.Api.Config
         public string[] EnforceForEnvironments { get; set; } = Array.Empty<string>();
 
         /// <summary>
-        /// Lista de IPs/subredes permitidas em formato "IP" ou "IP/Prefix" (CIDR).
-        /// Ex: "10.8.211.0/30", "10.9.0.0/16", "127.0.0.1".
+        /// Lista “inline” de CIDRs/IPs. Pode servir de default/fallback.
         /// </summary>
         public string[] AllowedCidrs { get; set; } = Array.Empty<string>();
+
+        /// <summary>
+        /// Caminho para o ficheiro de endpoints permitidos.
+        /// Pode ser relativo ao ContentRoot (por ex. "Config/allowed-endpoints.txt").
+        /// </summary>
+        public string? AllowedCidrsFile { get; set; }
     }
 }

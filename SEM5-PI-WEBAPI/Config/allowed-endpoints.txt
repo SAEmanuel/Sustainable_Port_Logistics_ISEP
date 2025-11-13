@@ -1,0 +1,18 @@
+# allowed-endpoints.txt
+# One CIDR or IP per line (IPv4 or IPv6)
+# Blank lines and lines starting with # or // are ignored.
+
+# Local development machine
+127.0.0.1
+::1
+
+# DEI VPN pool (clients connected via institutional VPN)
+10.8.211.0/30
+
+# DEI private cloud – VNET1 (vs343, vs453, ...)
+//10.9.0.0/16
+
+# (Opcional) só esta VM específica
+# 10.9.21.87/32   # vs343
+# 10.9.23.188/32  # vs453
+
