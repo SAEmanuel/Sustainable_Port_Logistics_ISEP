@@ -200,6 +200,19 @@ namespace SEM5_PI_WEBAPI
                         rollingInterval: RollingInterval.Day,
                         outputTemplate: "[{Timestamp:HH:mm:ss} {Level:u3}] {SourceContext,-55} - {Message:lj}{NewLine}{Exception}")
                 )
+                
+                // Network (US 3.5.2 – network access + request logs)
+                .WriteTo.Logger(lc => lc
+                    .Filter.ByIncludingOnly(e =>
+                        e.Properties.ContainsKey("SourceContext") && (
+                            e.Properties["SourceContext"].ToString().Contains("SEM5_PI_WEBAPI.Api.Middleware.NetworkRestrictionMiddleware") ||
+                            e.Properties["SourceContext"].ToString().Contains("SEM5_PI_WEBAPI.Domain.Shared.RequestLogsMiddleware")
+                        )
+                    )
+                    .WriteTo.File("Logs/Network/networkLog-.log",
+                        rollingInterval: RollingInterval.Day,
+                        outputTemplate: "[{Timestamp:HH:mm:ss} {Level:u3}] {SourceContext,-70} - {Message:lj}{NewLine}{Exception}")
+                )
 
                 //PhysicalResource logs
                 .WriteTo.Logger(lc => lc

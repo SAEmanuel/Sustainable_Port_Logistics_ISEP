@@ -44,11 +44,9 @@ using SEM5_PI_WEBAPI.Infraestructure.Users;
 using SEM5_PI_WEBAPI.Infraestructure.VVN;
 using SEM5_PI_WEBAPI.Seed;
 using SEM5_PI_WEBAPI.utils;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
-using SEM5_PI_WEBAPI.Domain.Users;
+using SEM5_PI_WEBAPI.Api.Config;
 using SEM5_PI_WEBAPI.Domain.ValueObjects;
+using SEM5_PI_WEBAPI.Api.Middleware; 
 
 
 namespace SEM5_PI_WEBAPI
@@ -106,8 +104,10 @@ namespace SEM5_PI_WEBAPI
                         .AllowCredentials();
                 });
             });
-            services.AddHealthChecks();
 
+
+            services.AddHealthChecks();
+            services.Configure<NetworkAccessOptions>(Configuration.GetSection("NetworkAccess"));
 
             services.AddDbContext<DddSample1DbContext>(opt =>
                 opt.UseNpgsql(Configuration.GetConnectionString("DefaultConnection"))
@@ -133,10 +133,8 @@ namespace SEM5_PI_WEBAPI
                 app.UseHsts();
             }
 
-            
             app.UseRouting();
 
-            
             app.UseCors("AllowSPA");
 
             app.UseMiddleware<RequestLogsMiddleware>();
@@ -144,12 +142,15 @@ namespace SEM5_PI_WEBAPI
             app.UseAuthentication();
             app.UseAuthorization();
 
+            app.UseMiddleware<NetworkRestrictionMiddleware>();
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
                 endpoints.MapHealthChecks("/api/health");
             });
         }
+
 
 
         private void ConfigureMyServices(IServiceCollection services)
