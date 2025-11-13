@@ -115,7 +115,7 @@ public class ShippingAgentRepresentativeController : ControllerBase
         catch (BusinessRuleValidationException e)
         {
             _logger.LogWarning("API Response (404): {Message}", e.Message);
-            return NotFound(e.Message);
+            return _refrontend.ProblemResponse("Not Found", e.Message, 404);
         }
     }
     
