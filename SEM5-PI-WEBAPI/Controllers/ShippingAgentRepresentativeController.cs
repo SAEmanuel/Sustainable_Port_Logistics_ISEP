@@ -3,6 +3,7 @@ using SEM5_PI_WEBAPI.Domain.ShippingAgentRepresentatives;
 using SEM5_PI_WEBAPI.Domain.Shared;
 using SEM5_PI_WEBAPI.Domain.ShippingAgentRepresentatives.DTOs;
 using SEM5_PI_WEBAPI.Domain.ValueObjects;
+using SEM5_PI_WEBAPI.utils;
 namespace SEM5_PI_WEBAPI.Controllers;
 
 [Route("api/[controller]")]
@@ -11,30 +12,46 @@ public class ShippingAgentRepresentativeController : ControllerBase
 {
     private readonly IShippingAgentRepresentativeService _service;
     private readonly ILogger<ShippingAgentRepresentativeController> _logger;
+    private readonly IResponsesToFrontend _refrontend;
 
-    public ShippingAgentRepresentativeController(IShippingAgentRepresentativeService service, ILogger<ShippingAgentRepresentativeController> logger)
+    public ShippingAgentRepresentativeController(IShippingAgentRepresentativeService service, ILogger<ShippingAgentRepresentativeController> logger,IResponsesToFrontend refrontend)
     {
         _logger = logger;
         _service = service;
+        _refrontend = refrontend;
     }
 
     [HttpGet]
     public async Task<ActionResult<IEnumerable<ShippingAgentRepresentativeDto>>> GetAll()
     {
-        return Ok(await _service.GetAllAsync());
+        try
+        {
+            return Ok(await _service.GetAllAsync());
+        }catch (BusinessRuleValidationException e)
+        {
+            _logger.LogWarning("API Response (404): No SARs found on DataBase");
+            return _refrontend.ProblemResponse("Not Found", e.Message, 404);
+        }
     }
 
     [HttpGet("{id}")]
     public async Task<ActionResult<ShippingAgentRepresentativeDto>> GetGetById(Guid id)
     {
-        var q = await _service.GetByIdAsync(new ShippingAgentRepresentativeId(id));
-
-        if (q == null)
+        try
         {
-            return NotFound();
-        }
+            var q = await _service.GetByIdAsync(new ShippingAgentRepresentativeId(id));
 
-        return q;
+            if (q == null)
+            {
+                return NotFound();
+            }
+
+            return q;
+        }catch (BusinessRuleValidationException e)
+        {
+             _logger.LogWarning("API Response (404): No SAR with ID = {id} found on DataBase",id);
+            return _refrontend.ProblemResponse("Not Found", e.Message, 404);
+        }
     }
 
     [HttpGet("name/{name}")]
@@ -53,8 +70,8 @@ public class ShippingAgentRepresentativeController : ControllerBase
         }
         catch (BusinessRuleValidationException e)
         {
-            _logger.LogWarning("API Response (404): {Message}", e.Message);
-            return NotFound(e.Message);
+           _logger.LogWarning("API Response (404): {Message}", e.Message);
+            return _refrontend.ProblemResponse("Not Found", e.Message, 404);
         }
     }
 
@@ -75,7 +92,7 @@ public class ShippingAgentRepresentativeController : ControllerBase
         catch (BusinessRuleValidationException e)
         {
             _logger.LogWarning("API Response (404): {Message}", e.Message);
-            return NotFound(e.Message);
+            return _refrontend.ProblemResponse("Not Found", e.Message, 404);
         }
     }
     
@@ -121,7 +138,7 @@ public class ShippingAgentRepresentativeController : ControllerBase
         catch (BusinessRuleValidationException e)
         {
             _logger.LogWarning("API Response (404): {Message}", e.Message);
-            return NotFound(e.Message);
+            return _refrontend.ProblemResponse("Not Found", e.Message, 404);
         }
     }
 
@@ -134,9 +151,10 @@ public class ShippingAgentRepresentativeController : ControllerBase
             _logger.LogInformation("API Response (200): Representative with  email = {EMAIL} created successfully", dto.Email);
             return CreatedAtAction(nameof(GetGetById), new { id = q.Id }, q);
         }
-        catch (BusinessRuleValidationException ex)
+        catch (BusinessRuleValidationException e)
         {
-            return BadRequest(new { Message = ex.Message });
+           _logger.LogWarning("API Error (400): {Message}", e.Message);
+            return _refrontend.ProblemResponse("Validation Error", e.Message, 400);
         }
     }
 
@@ -158,8 +176,8 @@ public class ShippingAgentRepresentativeController : ControllerBase
         }
         catch (BusinessRuleValidationException e)
         {
-            _logger.LogWarning("API Error (400): {Message}", e.Message);
-            return BadRequest(e.Message);
+           _logger.LogWarning("API Error (400): {Message}", e.Message);
+            return _refrontend.ProblemResponse("Validation Error", e.Message, 400);
         }
     }
     
@@ -178,7 +196,7 @@ public class ShippingAgentRepresentativeController : ControllerBase
         catch (BusinessRuleValidationException e)
         {
             _logger.LogWarning("API Error (400): {Message}", e.Message);
-            return BadRequest(new { Message = e.Message });
+            return _refrontend.ProblemResponse("Validation Error", e.Message, 400);
         }
     }
 

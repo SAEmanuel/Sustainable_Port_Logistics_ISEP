@@ -3,6 +3,7 @@ using SEM5_PI_WEBAPI.Domain.ShippingAgentOrganizations;
 using SEM5_PI_WEBAPI.Domain.Shared;
 using SEM5_PI_WEBAPI.Domain.ShippingAgentOrganizations.DTOs;
 using SEM5_PI_WEBAPI.Domain.ValueObjects;
+using SEM5_PI_WEBAPI.utils;
 
 namespace SEM5_PI_WEBAPI.Controllers;
 
@@ -14,31 +15,47 @@ public class ShippingAgentOrganizationController : ControllerBase
 
     private readonly IShippingAgentOrganizationService _service;
 
-    public ShippingAgentOrganizationController(IShippingAgentOrganizationService service,ILogger<ShippingAgentOrganizationController> logger)
+    private readonly IResponsesToFrontend _refrontend;
+
+    public ShippingAgentOrganizationController(IShippingAgentOrganizationService service,ILogger<ShippingAgentOrganizationController> logger, IResponsesToFrontend refrontend)
     {
         _logger = logger;
         _service = service;
-
+        _refrontend = refrontend;
     }
 
     [HttpGet]
     public async Task<ActionResult<IEnumerable<ShippingAgentOrganizationDto>>> GetAll()
     {
-        return Ok(await _service.GetAllAsync());
+        try
+        {
+            return Ok(await _service.GetAllAsync());
+        }catch (BusinessRuleValidationException e)
+        {
+            _logger.LogWarning("API Response (404): No SAOs found on DataBase");
+            return _refrontend.ProblemResponse("Not Found", e.Message, 404);
+        }
     }
 
     // GET: api/Products/5
     [HttpGet("{id}")]
     public async Task<ActionResult<ShippingAgentOrganizationDto>> GetGetById(Guid id)
     {
-        var q = await _service.GetByIdAsync(new ShippingAgentOrganizationId(id));
-
-        if (q == null)
+        try
         {
-            return NotFound();
-        }
+            var q = await _service.GetByIdAsync(new ShippingAgentOrganizationId(id));
 
-        return q;
+            if (q == null)
+            {
+                return NotFound();
+            }
+
+            return q;
+        }catch (BusinessRuleValidationException e)
+        {
+            _logger.LogWarning("API Response (404): No SAO with ID = {id} found on DataBase",id);
+            return _refrontend.ProblemResponse("Not Found", e.Message, 404);
+        }
     }
 
     [HttpGet("code/{code}")]
@@ -58,7 +75,7 @@ public class ShippingAgentOrganizationController : ControllerBase
         catch (BusinessRuleValidationException e)
         {
             _logger.LogWarning("API Response (404): {Message}", e.Message);
-            return NotFound(e.Message);
+            return _refrontend.ProblemResponse("Not Found", e.Message, 404);
         }
     }
     
@@ -79,7 +96,7 @@ public class ShippingAgentOrganizationController : ControllerBase
         catch (BusinessRuleValidationException e)
         {
             _logger.LogWarning("API Response (404): {Message}", e.Message);
-            return NotFound(e.Message);
+             return _refrontend.ProblemResponse("Not Found", e.Message, 404);
         }
     }
 
@@ -101,7 +118,7 @@ public class ShippingAgentOrganizationController : ControllerBase
         catch (BusinessRuleValidationException e)
         {
             _logger.LogWarning("API Response (404): {Message}", e.Message);
-            return NotFound(e.Message);
+             return _refrontend.ProblemResponse("Not Found", e.Message, 404);
         }
     }
 
@@ -115,9 +132,10 @@ public class ShippingAgentOrganizationController : ControllerBase
 
             return CreatedAtAction(nameof(GetGetById), new { id = q.Id }, q);
         }
-        catch (BusinessRuleValidationException ex)
+        catch (BusinessRuleValidationException e)
         {
-            return BadRequest(new { Message = ex.Message });
+            _logger.LogWarning("API Error (400): {Message}", e.Message);
+            return _refrontend.ProblemResponse("Validation Error", e.Message, 400);
         }
     }
 }
