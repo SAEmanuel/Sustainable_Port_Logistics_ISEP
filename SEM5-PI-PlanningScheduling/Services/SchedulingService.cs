@@ -60,7 +60,6 @@ public class SchedulingService
     foreach (var vvn in vvnsForDay)
     {
         var crane = cranes[vvn.Id];
-        var qualification = craneQualifications[vvn.Id];
         var staff = staffByVvn[vvn.Id];
 
         
@@ -95,7 +94,7 @@ public class SchedulingService
     {
         if (end <= start)
             throw new ArgumentException("End time must be after start time.");
-
+        
         var totalDuration = end - start;
 
         var rng = new Random();
@@ -105,7 +104,7 @@ public class SchedulingService
     }
 
 
-    // 1. Crane by VVN
+    // Crane by VVN
     private async Task<Dictionary<string, PhysicalResourceDto>> GetCranesForVvnsAsync
         (List<VesselVisitNotificationPSDto> vvns)
     {

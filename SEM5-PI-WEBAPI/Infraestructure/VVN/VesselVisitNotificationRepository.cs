@@ -67,8 +67,7 @@ public class VesselVisitNotificationRepository : BaseRepository<VesselVisitNotif
     
     public async Task<List<VesselVisitNotification>> GetAllAcceptedComplete()
     {
-        return await _context.VesselVisitNotification
-            .Where(v => v.Status.StatusValue == VvnStatus.Accepted)    
+        var query = _context.VesselVisitNotification
             .Include(v => v.Dock)
             .Include(v => v.CrewManifest)
             .ThenInclude(cm => cm.CrewMembers)
@@ -78,8 +77,13 @@ public class VesselVisitNotificationRepository : BaseRepository<VesselVisitNotif
             .Include(v => v.UnloadingCargoManifest)
             .ThenInclude(cgm => cgm.ContainerEntries)
             .ThenInclude(e => e.Container)
-            .Include(v => v.Tasks)
-            .ToListAsync();
+            .Include(v => v.Tasks);
+
+        var all = await query.ToListAsync();
+
+        return all
+            .Where(v => v.Status.StatusValue == VvnStatus.Accepted)
+            .ToList();
     }
 
 }
