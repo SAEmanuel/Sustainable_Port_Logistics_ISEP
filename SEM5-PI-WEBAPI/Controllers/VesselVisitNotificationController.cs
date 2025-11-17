@@ -531,10 +531,10 @@ public class VesselVisitNotificationController : ControllerBase
     }
     
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<VesselVisitNotificationDto>>> GetAll()
+    public async Task<ActionResult<IEnumerable<VesselVisitNotificationDto>>> GetAllAccepted()
     {
         _logger.LogInformation("API Request: Get all vessel visit notifications");
-        var list = await _service.GetAllAsync();
+        var list = await _service.GetAllAcceptedAsync();
         _logger.LogInformation("API Response (200): Returning {Count} vessel visit notifications", list.Count);
         return Ok(list);
     }

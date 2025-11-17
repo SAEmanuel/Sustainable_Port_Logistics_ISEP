@@ -1128,11 +1128,11 @@ public class VesselVisitNotificationService : IVesselVisitNotificationService
         return result;
     }
 
-    public async Task<List<VesselVisitNotificationDto>> GetAllAsync()
+    public async Task<List<VesselVisitNotificationDto>> GetAllAcceptedAsync()
     {
         _logger.LogInformation("Business Domain: Fetching ALL Vessel Visit Notifications.");
 
-        var allVvns = await _repo.GetAllComplete();
+        var allVvns = await _repo.GetAllAcceptedComplete();
 
         var result = VesselVisitNotificationMapper.ToDtoList(allVvns);
 

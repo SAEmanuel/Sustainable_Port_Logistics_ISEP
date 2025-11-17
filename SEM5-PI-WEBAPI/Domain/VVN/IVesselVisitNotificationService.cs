@@ -31,5 +31,5 @@ public interface IVesselVisitNotificationService
     Task<List<VesselVisitNotificationDto>> GetWithdrawnVvnsByFiltersAsync(FilterWithdrawnVvnStatusDto dto);
     Task<List<VesselVisitNotificationDto>> GetSubmittedVvnsByFiltersAsync(FilterSubmittedVvnStatusDto dto);
     Task<List<VesselVisitNotificationDto>> GetAcceptedVvnsByFiltersAsync(FilterAcceptedVvnStatusDto dto);
-    Task<List<VesselVisitNotificationDto>> GetAllAsync();
+    Task<List<VesselVisitNotificationDto>> GetAllAcceptedAsync();
 }

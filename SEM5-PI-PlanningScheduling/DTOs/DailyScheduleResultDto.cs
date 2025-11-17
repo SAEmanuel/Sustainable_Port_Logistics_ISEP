@@ -1,0 +1,26 @@
+namespace SEM5_PI_DecisionEngineAPI.DTOs;
+
+public class DailyScheduleResultDto
+{
+    public List<SchedulingOperationDto> Operations { get; set; } = new();
+}
+
+public class SchedulingOperationDto
+{
+    public string VvnId { get; set; }
+    public string Vessel { get; set; }
+    public string Dock { get; set; }
+    public DateTime StartTime { get; set; }      
+    public DateTime EndTime { get; set; }        
+    public TimeSpan LoadingDuration { get; set; }
+    public TimeSpan UnloadingDuration { get; set; }
+    public PhysicalResourceDto Crane { get; set; }
+    public List<StaffAssignmentDto> StaffAssignments { get; set; }
+}
+
+public class StaffAssignmentDto
+{
+    public Guid StaffMemberId { get; set; }
+    public DateTime IntervalStart { get; set; }
+    public DateTime IntervalEnd { get; set; }
+}

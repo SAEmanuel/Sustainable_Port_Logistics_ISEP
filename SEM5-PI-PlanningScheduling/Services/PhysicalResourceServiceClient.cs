@@ -22,4 +22,15 @@ public class PhysicalResourceServiceClient
         var dto = await response.Content.ReadFromJsonAsync<PhysicalResourceDto>();
         return dto;
     }
+
+    public async Task<PhysicalResourceDto?> GetAvailableCranes(string type)
+    {
+        var response = await _httpClient.GetAsync($"/api/PhysicalResource/get/type/{type}");
+
+        if (!response.IsSuccessStatusCode)
+            return null;
+
+        var dto = await response.Content.ReadFromJsonAsync<PhysicalResourceDto>();
+        return dto;
+    }
 }

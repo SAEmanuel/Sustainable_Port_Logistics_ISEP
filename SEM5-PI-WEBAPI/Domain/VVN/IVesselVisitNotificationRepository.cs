@@ -9,4 +9,5 @@ public interface IVesselVisitNotificationRepository : IRepository<VesselVisitNot
     Task<VesselVisitNotification?> GetCompleteByCodeAsync(VvnCode code);
     Task<VesselVisitNotification?> GetCompleteByIdAsync(VesselVisitNotificationId id);
     Task<List<VesselVisitNotification>> GetAllComplete();
+    Task<List<VesselVisitNotification>> GetAllAcceptedComplete();
 }

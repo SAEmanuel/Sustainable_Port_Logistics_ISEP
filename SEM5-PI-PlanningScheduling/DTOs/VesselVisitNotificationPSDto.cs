@@ -7,7 +7,7 @@ public class VesselVisitNotificationPSDto
     public DateTime EstimatedTimeDeparture { get; set; }
 
     public string Status { get; set; }
-    public string? Dock { get; set; }
+    public string Dock { get; set; }
 
     public CargoManifestPSDto? LoadingCargoManifest { get; set; }
     public CargoManifestPSDto? UnloadingCargoManifest { get; set; }
