@@ -74,7 +74,8 @@ public class VesselVisitNotificationController : ControllerBase
         try
         {
             var vvnDto = await _service.WithdrawByIdAsync(new VesselVisitNotificationId(id));
-            _logger.LogInformation("API Response (200): VVN with ID = {Id} withdrawn. Status = {Status}", id, vvnDto.Status);
+            _logger.LogInformation("API Response (200): VVN with ID = {Id} withdrawn. Status = {Status}", id,
+                vvnDto.Status);
             return Ok(vvnDto);
         }
         catch (BusinessRuleValidationException e)
@@ -97,7 +98,8 @@ public class VesselVisitNotificationController : ControllerBase
         try
         {
             var vvnDto = await _service.WithdrawByCodeAsync(new VvnCode(code));
-            _logger.LogInformation("API Response (200): VVN with Code = {Code} withdrawn. Status = {Status}", code, vvnDto.Status);
+            _logger.LogInformation("API Response (200): VVN with Code = {Code} withdrawn. Status = {Status}", code,
+                vvnDto.Status);
             return Ok(vvnDto);
         }
         catch (BusinessRuleValidationException e)
@@ -120,7 +122,8 @@ public class VesselVisitNotificationController : ControllerBase
         try
         {
             var vvnDto = await _service.SubmitByCodeAsync(new VvnCode(code));
-            _logger.LogInformation("API Response (200): VVN with Code = {Code} submitted. Status = {Status}", code, vvnDto.Status);
+            _logger.LogInformation("API Response (200): VVN with Code = {Code} submitted. Status = {Status}", code,
+                vvnDto.Status);
             return Ok(vvnDto);
         }
         catch (BusinessRuleValidationException e)
@@ -143,7 +146,8 @@ public class VesselVisitNotificationController : ControllerBase
         try
         {
             var vvnDto = await _service.SubmitByIdAsync(new VesselVisitNotificationId(id));
-            _logger.LogInformation("API Response (200): VVN with ID = {Id} submitted. Status = {Status}", id, vvnDto.Status);
+            _logger.LogInformation("API Response (200): VVN with ID = {Id} submitted. Status = {Status}", id,
+                vvnDto.Status);
             return Ok(vvnDto);
         }
         catch (BusinessRuleValidationException e)
@@ -168,7 +172,8 @@ public class VesselVisitNotificationController : ControllerBase
         try
         {
             var updatedVvn = await _service.UpdateAsync(new VesselVisitNotificationId(id), dto);
-            _logger.LogInformation("API Response (200): VVN with ID = {Id} updated. New Status = {Status}", id, updatedVvn.Status);
+            _logger.LogInformation("API Response (200): VVN with ID = {Id} updated. New Status = {Status}", id,
+                updatedVvn.Status);
             return Ok(updatedVvn);
         }
         catch (BusinessRuleValidationException ex)
@@ -193,7 +198,8 @@ public class VesselVisitNotificationController : ControllerBase
             var vvn = await _service.GetByIdAsync(new VesselVisitNotificationId(id));
             _logger.LogInformation("Service: Found VVN to accept. ID = {Id}, Code = {Code}", id, vvn.Code);
             var vvnDto = await _service.AcceptVvnAsync(new VvnCode(vvn.Code));
-            _logger.LogInformation("API Response (200): VVN with ID = {Id} accepted. Status = {Status}", id, vvnDto.Status);
+            _logger.LogInformation("API Response (200): VVN with ID = {Id} accepted. Status = {Status}", id,
+                vvnDto.Status);
             return Ok(vvnDto);
         }
         catch (BusinessRuleValidationException ex)
@@ -212,11 +218,14 @@ public class VesselVisitNotificationController : ControllerBase
     [HttpPut("reject/")]
     public async Task<ActionResult<VesselVisitNotificationDto>> RejectVvn(RejectVesselVisitNotificationDto dto)
     {
-        _logger.LogInformation("API Request: PUT reject VVN with code = {Code}. Reason = {Reason}", dto.VvnCode, dto.Reason);
+        _logger.LogInformation("API Request: PUT reject VVN with code = {Code}. Reason = {Reason}", dto.VvnCode,
+            dto.Reason);
         try
         {
             var vvnDto = await _service.MarkAsPendingAsync(dto);
-            _logger.LogInformation("API Response (200): VVN with code = {Code} marked as PENDING INFORMATION. Status = {Status}", dto.VvnCode, vvnDto.Status);
+            _logger.LogInformation(
+                "API Response (200): VVN with code = {Code} marked as PENDING INFORMATION. Status = {Status}",
+                dto.VvnCode, vvnDto.Status);
             return Ok(vvnDto);
         }
         catch (BusinessRuleValidationException ex)
@@ -264,7 +273,8 @@ public class VesselVisitNotificationController : ControllerBase
         }
         catch (BusinessRuleValidationException ex)
         {
-            _logger.LogWarning("API Error (404): SAR = {SarId}. InProgress/Pending query failed. {Msg}", idSarWhoImAm, ex.Message);
+            _logger.LogWarning("API Error (404): SAR = {SarId}. InProgress/Pending query failed. {Msg}", idSarWhoImAm,
+                ex.Message);
             return _refrontend.ProblemResponse("Not Found", ex.Message, 404);
         }
         catch (Exception ex)
@@ -306,7 +316,8 @@ public class VesselVisitNotificationController : ControllerBase
         }
         catch (BusinessRuleValidationException ex)
         {
-            _logger.LogWarning("API Error (404): SAR = {SarId}. Withdrawn query failed. {Msg}", idSarWhoImAm, ex.Message);
+            _logger.LogWarning("API Error (404): SAR = {SarId}. Withdrawn query failed. {Msg}", idSarWhoImAm,
+                ex.Message);
             return _refrontend.ProblemResponse("Not Found", ex.Message, 404);
         }
         catch (Exception ex)
@@ -328,7 +339,8 @@ public class VesselVisitNotificationController : ControllerBase
     {
         _logger.LogInformation(
             "API Request: GET SAR Submitted VVN. SAR = {SarId}, Filters -> Rep = {Rep}, IMO = {Imo}, ETA = {Eta}, ETD = {Etd}, SubmittedDate = {Submitted}",
-            idSarWhoImAm, specificRepresentative, vesselImoNumber, estimatedTimeArrival, estimatedTimeDeparture, submittedDate);
+            idSarWhoImAm, specificRepresentative, vesselImoNumber, estimatedTimeArrival, estimatedTimeDeparture,
+            submittedDate);
 
         try
         {
@@ -350,7 +362,8 @@ public class VesselVisitNotificationController : ControllerBase
         }
         catch (BusinessRuleValidationException ex)
         {
-            _logger.LogWarning("API Error (404): SAR = {SarId}. Submitted query failed. {Msg}", idSarWhoImAm, ex.Message);
+            _logger.LogWarning("API Error (404): SAR = {SarId}. Submitted query failed. {Msg}", idSarWhoImAm,
+                ex.Message);
             return _refrontend.ProblemResponse("Not Found", ex.Message, 404);
         }
         catch (Exception ex)
@@ -373,7 +386,8 @@ public class VesselVisitNotificationController : ControllerBase
     {
         _logger.LogInformation(
             "API Request: GET SAR Accepted VVN. SAR = {SarId}, Filters -> Rep = {Rep}, IMO = {Imo}, ETA = {Eta}, ETD = {Etd}, Submitted = {Submitted}, Accepted = {Accepted}",
-            idSarWhoImAm, specificRepresentative, vesselImoNumber, estimatedTimeArrival, estimatedTimeDeparture, submittedDate, acceptedDate);
+            idSarWhoImAm, specificRepresentative, vesselImoNumber, estimatedTimeArrival, estimatedTimeDeparture,
+            submittedDate, acceptedDate);
 
         try
         {
@@ -396,7 +410,8 @@ public class VesselVisitNotificationController : ControllerBase
         }
         catch (BusinessRuleValidationException ex)
         {
-            _logger.LogWarning("API Error (404): SAR = {SarId}. Accepted query failed. {Msg}", idSarWhoImAm, ex.Message);
+            _logger.LogWarning("API Error (404): SAR = {SarId}. Accepted query failed. {Msg}", idSarWhoImAm,
+                ex.Message);
             return _refrontend.ProblemResponse("Not Found", ex.Message, 404);
         }
         catch (Exception ex)
@@ -496,7 +511,8 @@ public class VesselVisitNotificationController : ControllerBase
     {
         _logger.LogInformation(
             "API Request: GET ADMIN Accepted. Filters -> Rep = {Rep}, IMO = {Imo}, ETA = {Eta}, ETD = {Etd}, Submitted = {Submitted}, Accepted = {Accepted}",
-            specificRepresentative, vesselImoNumber, estimatedTimeArrival, estimatedTimeDeparture, submittedDate, acceptedDate);
+            specificRepresentative, vesselImoNumber, estimatedTimeArrival, estimatedTimeDeparture, submittedDate,
+            acceptedDate);
 
         var dto = new FilterAcceptedVvnStatusDto
         {
@@ -512,5 +528,14 @@ public class VesselVisitNotificationController : ControllerBase
         _logger.LogInformation("API Response (200): ADMIN Accepted -> {Count} VVN(s) found.", res.Count);
 
         return Ok(res);
+    }
+    
+    [HttpGet]
+    public async Task<ActionResult<IEnumerable<VesselVisitNotificationDto>>> GetAll()
+    {
+        _logger.LogInformation("API Request: Get all vessel visit notifications");
+        var list = await _service.GetAllAsync();
+        _logger.LogInformation("API Response (200): Returning {Count} vessel visit notifications", list.Count);
+        return Ok(list);
     }
 }

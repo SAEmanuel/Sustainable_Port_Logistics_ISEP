@@ -17,3 +17,8 @@ Accept: application/json
 
 GET {{DecisionAddress}}/api/schedule/physicalResource-details?code=FORKL-0001
 Accept: application/json
+
+###
+
+GET {{DecisionAddress}}/api/schedule/all-vvn
+Accept: application/json
