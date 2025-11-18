@@ -22,13 +22,11 @@ public class DockServiceClient
 
         if (!response.IsSuccessStatusCode)
             return new List<PhysicalResourceDto>();
-
-        var docks = await response.Content.ReadFromJsonAsync<List<DockDto>>();
-        if (docks == null || docks.Count == 0)
+        
+        var dock = await response.Content.ReadFromJsonAsync<DockDto>();
+        if (dock == null)
             return new List<PhysicalResourceDto>();
 
-        var dock = docks.First();
-        
         var resourceCodes = dock.PhysicalResourceCodes?
             .Select(rc => rc.Value)
             .ToList() ?? new List<string>();
@@ -38,7 +36,6 @@ public class DockServiceClient
 
         var resources = new List<PhysicalResourceDto>();
 
-        
         foreach (var code in resourceCodes)
         {
             var r = await _httpClient
@@ -47,7 +44,7 @@ public class DockServiceClient
             if (r != null)
                 resources.Add(r);
         }
-        
+
         var craneTypes = new HashSet<string>
         {
             StsCrane,
@@ -61,7 +58,7 @@ public class DockServiceClient
 
         if (cranes.Count == 0)
             return new List<PhysicalResourceDto>();
-        
+
         var random = new Random();
         var chosenCrane = cranes[random.Next(cranes.Count)];
 

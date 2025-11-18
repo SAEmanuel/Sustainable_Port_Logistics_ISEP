@@ -75,7 +75,7 @@ Accept: {{accept}}
 # 3 - SUBMIT Vessel Visit Notification for approval
 
 ###
-PUT {{portURL}}/api/VesselVisitNotification/46d6b08b-feba-43ec-b4ea-d083696301c2/submit
+PUT {{portURL}}/api/VesselVisitNotification/cfc62475-41ce-4892-aebc-2e29cfdff2ce/submit
 Content-Type: {{contentType}}
 Accept: {{accept}}
 
@@ -98,7 +98,7 @@ Accept: {{accept}}
 # ️6 - PUT Accept VVN
 
 ###
-PUT {{portURL}}/api/VesselVisitNotification/accept/id/46d6b08b-feba-43ec-b4ea-d083696301c2
+PUT {{portURL}}/api/VesselVisitNotification/accept/id/cfc62475-41ce-4892-aebc-2e29cfdff2ce
 Accept: {{accept}}
 
 # ️7 - PUT Reject/MarkAsPending VVN
