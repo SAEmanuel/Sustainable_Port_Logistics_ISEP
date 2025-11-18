@@ -435,7 +435,8 @@
       "changeQualifications": "Change qualifications completely",
       "currentQualifications": "Current qualifications",
       "changeQualificationsDescription": "Add all staff qualifications",
-      "addQualificationsDescription": "Add all staff qualifications to current ones"
+      "addQualificationsDescription": "Add all staff qualifications to current ones",
+      "noQualifications" : "No qualifications"
     },
     "details": {
       "name": "Name",

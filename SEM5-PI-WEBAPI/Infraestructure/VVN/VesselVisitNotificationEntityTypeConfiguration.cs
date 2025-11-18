@@ -1,28 +1,39 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using SEM5_PI_WEBAPI.Domain.ValueObjects;
 using SEM5_PI_WEBAPI.Domain.VVN;
 
 namespace SEM5_PI_WEBAPI.Infraestructure.VVN
 {
-    public class VesselVisitNotificationEntityTypeConfiguration : IEntityTypeConfiguration<VesselVisitNotification>
+    public class VesselVisitNotificationEntityTypeConfiguration 
+        : IEntityTypeConfiguration<VesselVisitNotification>
     {
         public void Configure(EntityTypeBuilder<VesselVisitNotification> builder)
         {
             builder.HasKey(v => v.Id);
 
+            // Converter timestamps para UTC
             var utcConverter = new ValueConverter<DateTime, DateTime>(
                 v => v.Kind == DateTimeKind.Utc ? v : v.ToUniversalTime(),
                 v => DateTime.SpecifyKind(v, DateTimeKind.Utc)
             );
 
+            // ---------------------------
+            //   CODE (Owned)
+            // ---------------------------
             builder.OwnsOne(v => v.Code, code =>
             {
                 code.Property(c => c.Code)
                     .HasColumnName("Code")
                     .IsRequired();
+
+                code.WithOwner();
             });
 
+            // ---------------------------
+            //   DATAS (Owned)
+            // ---------------------------
             builder.OwnsOne(v => v.EstimatedTimeArrival, eta =>
             {
                 eta.Property(e => e.Value)
@@ -30,6 +41,8 @@ namespace SEM5_PI_WEBAPI.Infraestructure.VVN
                     .HasColumnType("timestamp with time zone")
                     .HasConversion(utcConverter)
                     .IsRequired();
+
+                eta.WithOwner();
             });
 
             builder.OwnsOne(v => v.EstimatedTimeDeparture, etd =>
@@ -39,6 +52,8 @@ namespace SEM5_PI_WEBAPI.Infraestructure.VVN
                     .HasColumnType("timestamp with time zone")
                     .HasConversion(utcConverter)
                     .IsRequired();
+
+                etd.WithOwner();
             });
 
             builder.OwnsOne(v => v.ActualTimeArrival, ata =>
@@ -46,8 +61,9 @@ namespace SEM5_PI_WEBAPI.Infraestructure.VVN
                 ata.Property(e => e.Value)
                     .HasColumnName("ActualTimeArrival")
                     .HasColumnType("timestamp with time zone")
-                    .HasConversion(utcConverter)
-                    .IsRequired(false);
+                    .HasConversion(utcConverter);
+
+                ata.WithOwner();
             });
 
             builder.OwnsOne(v => v.ActualTimeDeparture, atd =>
@@ -55,8 +71,9 @@ namespace SEM5_PI_WEBAPI.Infraestructure.VVN
                 atd.Property(e => e.Value)
                     .HasColumnName("ActualTimeDeparture")
                     .HasColumnType("timestamp with time zone")
-                    .HasConversion(utcConverter)
-                    .IsRequired(false);
+                    .HasConversion(utcConverter);
+
+                atd.WithOwner();
             });
 
             builder.OwnsOne(v => v.AcceptenceDate, acc =>
@@ -64,8 +81,9 @@ namespace SEM5_PI_WEBAPI.Infraestructure.VVN
                 acc.Property(e => e.Value)
                     .HasColumnName("AcceptanceDate")
                     .HasColumnType("timestamp with time zone")
-                    .HasConversion(utcConverter)
-                    .IsRequired(false);
+                    .HasConversion(utcConverter);
+
+                acc.WithOwner();
             });
 
             builder.OwnsOne(v => v.SubmittedDate, sub =>
@@ -73,37 +91,52 @@ namespace SEM5_PI_WEBAPI.Infraestructure.VVN
                 sub.Property(e => e.Value)
                     .HasColumnName("SubmittedDate")
                     .HasColumnType("timestamp with time zone")
-                    .HasConversion(utcConverter)
-                    .IsRequired(false);
+                    .HasConversion(utcConverter);
+
+                sub.WithOwner();
             });
 
-            builder.OwnsOne(v => v.VesselImo, imo =>
-            {
-                imo.Property(i => i.Value)
-                    .HasColumnName("VesselImo")
-                    .IsRequired();
-            });
+            // ---------------------------
+            //   VESSEL IMO (Owned) — FIX
+            // ---------------------------
+            builder.Property(v => v.VesselImo)
+                .HasConversion(
+                    v => v.Value,
+                    v => new ImoNumber(v)
+                )
+                .HasColumnName("VesselImo")
+                .IsRequired();
 
+            // ---------------------------
+            //   DOCK (Owned)
+            // ---------------------------
             builder.OwnsOne(v => v.Dock, dock =>
             {
                 dock.Property(d => d.Value)
-                    .HasColumnName("Dock")
-                    .IsRequired(false);
+                    .HasColumnName("Dock");
+
+                dock.WithOwner();
             });
 
             builder.Property(v => v.Volume)
                 .IsRequired();
 
-            // === STATUS (ENUM ↔ STRING) ===
+            // ---------------------------
+            //   STATUS (Enum <-> string)
+            // ---------------------------
             var statusConverter = new ValueConverter<Status, string>(
                 v => v.ToString(),
-                v => new Status(Enum.Parse<VvnStatus>(v.Replace("Status: ", "")), null));
+                v => new Status(Enum.Parse<VvnStatus>(v.Replace("Status: ", "")), null)
+            );
 
-            builder.Property(v => v.Status)
+            builder
+                .Property(v => v.Status)
                 .HasConversion(statusConverter)
                 .IsRequired();
 
-            // === RELAÇÕES ===
+            // ---------------------------
+            //   RELAÇÕES
+            // ---------------------------
             builder.HasOne(v => v.CrewManifest)
                 .WithMany()
                 .HasForeignKey("CrewManifestId")

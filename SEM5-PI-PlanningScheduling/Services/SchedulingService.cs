@@ -12,6 +12,7 @@ public class SchedulingService
     private readonly VesselVisitNotificationServiceClient _vvnClient;
     private readonly PhysicalResourceServiceClient _resourceClient;
     private readonly StaffMemberServiceClient _staffClient;
+    private readonly VesselServiceClient _vesselSClient;
     private readonly DockServiceClient _dockClient;
     private readonly PrologClient _prologClient;
 
@@ -21,6 +22,7 @@ public class SchedulingService
         StaffMemberServiceClient staffClient,
         DockServiceClient dockClient,
         QualificationServiceClient qualificationService,
+        VesselServiceClient vesselClient,
         PrologClient prologClient)
     {
         _vvnClient = vvnClient;
@@ -28,79 +30,100 @@ public class SchedulingService
         _staffClient = staffClient;
         _dockClient = dockClient;
         _qualificationService = qualificationService;
+        _vesselSClient = vesselClient;
         _prologClient = prologClient;
     }
 
-   public async Task<DailyScheduleResultDto> ComputeDailyScheduleAsync(DateOnly day)
-{
-    var vvns = await _vvnClient.GetVisitNotifications();
-    var vvnsForDay = vvns
-        .Where(v => DateOnly.FromDateTime(v.EstimatedTimeArrival.Date) == day)
-        .ToList();
-
-    if (vvnsForDay.Count == 0)
-        throw new PlanningSchedulingException(
-            $"No vessel visit notifications for chosen day: {day}"
-        );
-
-    if (vvnsForDay.Any(v => string.IsNullOrWhiteSpace(v.Dock)))
-        throw new PlanningSchedulingException(
-            "One or more vessel visit notifications have no assigned dock yet"
-        );
-
-    
-    var cranes = await GetCranesForVvnsAsync(vvnsForDay);
-    
-    var craneQualifications = await GetCraneQualificationsAsync(cranes);
-    
-    var staffByVvn = await GetQualifiedStaffForVvnsAsync(craneQualifications);
-    
-    var result = new DailyScheduleResultDto();
-
-    foreach (var vvn in vvnsForDay)
+    public async Task<DailyScheduleResultDto> ComputeDailyScheduleAsync(DateOnly day)
     {
-        var crane = cranes[vvn.Id];
-        var staff = staffByVvn[vvn.Id];
+        var vvns = await _vvnClient.GetVisitNotifications();
+        var vvnsForDay = vvns
+            .Where(v => DateOnly.FromDateTime(v.EstimatedTimeArrival.Date) == day)
+            .ToList();
 
-        
-        var loadingDuration = GenerateRandomTime(vvn.EstimatedTimeArrival, vvn.EstimatedTimeDeparture);
-        var unloadingDuration = GenerateRandomTime(vvn.EstimatedTimeArrival, vvn.EstimatedTimeDeparture);
+        if (vvnsForDay.Count == 0)
+            throw new PlanningSchedulingException(
+                $"No accepted vessel visit notifications for chosen day: {day}"
+            );
 
-        
-        var staffAssignments = BuildStaffAssignmentsForVvn(vvn, staff, day);
+        if (vvnsForDay.Any(v => string.IsNullOrWhiteSpace(v.Dock)))
+            throw new PlanningSchedulingException(
+                "One or more vessel visit notifications have no assigned dock yet"
+            );
 
-        
-        var op = new SchedulingOperationDto
+
+        var cranes = await GetCranesForVvnsAsync(vvnsForDay);
+
+        var craneQualifications = await GetCraneQualificationsAsync(cranes);
+
+        var staffByVvn = await GetQualifiedStaffForVvnsAsync(craneQualifications);
+
+        var result = new DailyScheduleResultDto();
+
+        foreach (var vvn in vvnsForDay)
         {
-            VvnId = vvn.Id,
-            Vessel = vvn.VesselImo,
-            Dock = vvn.Dock,
-            StartTime = vvn.EstimatedTimeArrival,
-            EndTime = vvn.EstimatedTimeDeparture,
-            LoadingDuration = loadingDuration,
-            UnloadingDuration = unloadingDuration,
-            Crane = crane,
-            StaffAssignments = staffAssignments
-        };
+            var crane = cranes[vvn.Id];
+            var staff = staffByVvn[vvn.Id];
+            var vessel = await _vesselSClient.GetVesselByImo(vvn.VesselImo);
 
-        result.Operations.Add(op);
+            var loadingDuration = TimeSpan.Zero;
+            var unloadingDuration = TimeSpan.Zero;
+
+            if (vvn.LoadingCargoManifest is not null && vvn.UnloadingCargoManifest is null)
+            {
+                loadingDuration = GenerateRandomTime(vvn.EstimatedTimeArrival, vvn.EstimatedTimeDeparture);
+            }
+
+            if (vvn.LoadingCargoManifest is null && vvn.UnloadingCargoManifest is not null)
+            {
+                unloadingDuration = GenerateRandomTime(vvn.EstimatedTimeArrival, vvn.EstimatedTimeDeparture);
+            }
+
+            if (vvn.LoadingCargoManifest is not null && vvn.UnloadingCargoManifest is not null)
+            {
+                unloadingDuration = GenerateRandomTime(vvn.EstimatedTimeArrival, vvn.EstimatedTimeDeparture);
+                loadingDuration = GenerateRandomTime(vvn.EstimatedTimeArrival - unloadingDuration, vvn.EstimatedTimeDeparture);
+            }
+
+            var staffAssignments = BuildStaffAssignmentsForVvn(vvn, staff, day);
+
+
+            var op = new SchedulingOperationDto
+            {
+                VvnId = vvn.Id,
+                Vessel = vessel!.Name,
+                Dock = vvn.Dock,
+                StartTime = vvn.EstimatedTimeArrival,
+                EndTime = vvn.EstimatedTimeDeparture,
+                LoadingDuration = loadingDuration,
+                UnloadingDuration = unloadingDuration,
+                Crane = crane.Code.Value,
+                StaffAssignments = staffAssignments
+            };
+
+            result.Operations.Add(op);
+        }
+
+        return result;
     }
-
-    return result;
-}
 
 
     private TimeSpan GenerateRandomTime(DateTime start, DateTime end)
     {
         if (end <= start)
             throw new ArgumentException("End time must be after start time.");
-        
+
         var totalDuration = end - start;
 
         var rng = new Random();
         double multiplier = rng.NextDouble() * (MaxP - MinP) + MinP;
 
-        return TimeSpan.FromTicks((long)(totalDuration.Ticks * multiplier));
+        var raw = TimeSpan.FromTicks((long)(totalDuration.Ticks * multiplier));
+
+        const int roundToMinutes = 5;
+
+        int totalMinutes = (int)Math.Round(raw.TotalMinutes / roundToMinutes) * roundToMinutes;
+        return TimeSpan.FromMinutes(totalMinutes);
     }
 
 
@@ -170,6 +193,10 @@ public class SchedulingService
         foreach (var code in qualificationCodes)
         {
             var staff = await _staffClient.GetStaffWithQualifications(new List<string> { code });
+            foreach (var s in staff)
+            {
+               Console.WriteLine(s.ShortName); 
+            }
 
             if (staff == null || staff.Count == 0)
                 throw new PlanningSchedulingException(
@@ -252,7 +279,7 @@ public class SchedulingService
 
             assignments.Add(new StaffAssignmentDto
             {
-                StaffMemberId = staff.Id,
+                StaffMemberName = staff.ShortName,
                 IntervalStart = intervalStart,
                 IntervalEnd = intervalEnd
             });

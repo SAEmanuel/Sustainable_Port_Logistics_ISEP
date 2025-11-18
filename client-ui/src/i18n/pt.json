@@ -439,7 +439,8 @@
       "changeQualifications": "Modificar qualificações totalmente",
       "currentQualifications": "Qualificações atuais",
       "changeQualificationsDescription": "Adicione todas as qualificações do membro da equipa",
-      "addQualificationsDescription": "Adicione todas as qualificações do membro da equipa às existentes"
+      "addQualificationsDescription": "Adicione todas as qualificações do membro da equipa às existentes",
+      "noQualifications" : "Sem qualificações"
     },
     "details": {
       "name": "Nome",

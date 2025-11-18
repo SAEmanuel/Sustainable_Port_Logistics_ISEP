@@ -52,6 +52,10 @@ public class DockServiceClient
             MCrane
         };
 
+        foreach (var r in resources)
+        {
+            Console.WriteLine(r.PhysicalResourceType);
+        }
         var cranes = resources
             .Where(r => craneTypes.Contains(r.PhysicalResourceType))
             .ToList();

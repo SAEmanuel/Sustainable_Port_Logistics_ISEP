@@ -1,75 +1,29 @@
 [
   {
     "code": "DK-0001",
-    "physicalResourceCodes": ["TRUCK-0001", "RSTAC-0001"],
+    "physicalResourceCodes": ["TRUCK-0001", "RSTAC-0001", "MCRAN-0001"],
     "location": "Terminal Norte A-3",
     "lengthM": 350.0,
     "depthM": 15.5,
     "maxDraftM": 14.8,
-    "allowedVesselTypeNames": ["Panamax"]
+    "allowedVesselTypeNames": ["Panamax", "Post-Panamax", "Feedermax", "Handymax", "ULCV"]
   },
   {
     "code": "DK-0002",
-    "physicalResourceCodes": ["YGCRA-0001"],
+    "physicalResourceCodes": ["STSCR-0001"],
     "location": "Terminal Sul B-1",
     "lengthM": 420.0,
     "depthM": 17.0,
     "maxDraftM": 15.2,
-    "allowedVesselTypeNames": ["Post-Panamax","Panamax"]
+    "allowedVesselTypeNames": ["Panamax", "Post-Panamax", "Feedermax", "Handymax", "ULCV"]
   },
   {
     "code": "DK-0003",
-    "physicalResourceCodes": ["FORKL-0001"],
+    "physicalResourceCodes": ["YGCRA-0001", "FORKL-0001"],
     "location": "Terminal Oeste C-2",
     "lengthM": 300.0,
     "depthM": 14.0,
     "maxDraftM": 13.5,
-    "allowedVesselTypeNames": ["Feedermax", "Handymax"]
-  },
-  {
-    "code": "DK-0004",
-    "physicalResourceCodes": ["STSCR-0001"],
-    "location": "Terminal Leste D-4",
-    "lengthM": 500.0,
-    "depthM": 18.5,
-    "maxDraftM": 16.9,
-    "allowedVesselTypeNames": ["Handymax", "ULCV"]
-  },
-  {
-    "code": "DK-0005",
-    "physicalResourceCodes": [],
-    "location": "Terminal Central E-1",
-    "lengthM": 275.0,
-    "depthM": 12.0,
-    "maxDraftM": 11.8,
-    "allowedVesselTypeNames": ["FeederMax"]
-  },
-  
-  {
-    "code": "DK-0006",
-    "physicalResourceCodes": [],
-    "location": "Terminal Central E-1",
-    "lengthM": 275.0,
-    "depthM": 12.0,
-    "maxDraftM": 11.8,
-    "allowedVesselTypeNames": ["FeederMax"]
-  },
-  {
-    "code": "DK-0007",
-    "physicalResourceCodes": [],
-    "location": "Terminal Central E-1",
-    "lengthM": 275.0,
-    "depthM": 12.0,
-    "maxDraftM": 11.8,
-    "allowedVesselTypeNames": ["FeederMax"]
-  },
-  {
-    "code": "DK-0008",
-    "physicalResourceCodes": [],
-    "location": "Terminal Central E-1",
-    "lengthM": 275.0,
-    "depthM": 12.0,
-    "maxDraftM": 11.8,
-    "allowedVesselTypeNames": ["FeederMax"]
+    "allowedVesselTypeNames": ["Panamax", "Post-Panamax", "Feedermax", "Handymax", "ULCV"]
   }
 ]

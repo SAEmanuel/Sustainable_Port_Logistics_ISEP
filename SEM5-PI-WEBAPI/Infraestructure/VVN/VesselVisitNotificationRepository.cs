@@ -83,19 +83,20 @@ public class VesselVisitNotificationRepository
 
     public async Task<List<VesselVisitNotification>> GetAllAcceptedComplete()
     {
-        return await _context.VesselVisitNotification
-            .Where(v => v.Status.StatusValue == VvnStatus.Accepted) // filtro aplicado ANTES
-            .AsSplitQuery()
-            .Include(v => v.Dock)
-            .Include(v => v.CrewManifest)
+        return (await _context.VesselVisitNotification
+                .AsSplitQuery()
+                .Include(v => v.Dock)
+                .Include(v => v.CrewManifest)
                 .ThenInclude(cm => cm.CrewMembers)
-            .Include(v => v.LoadingCargoManifest)
+                .Include(v => v.LoadingCargoManifest)
                 .ThenInclude(cgm => cgm.ContainerEntries)
-                    .ThenInclude(e => e.Container)
-            .Include(v => v.UnloadingCargoManifest)
+                .ThenInclude(e => e.Container)
+                .Include(v => v.UnloadingCargoManifest)
                 .ThenInclude(cgm => cgm.ContainerEntries)
-                    .ThenInclude(e => e.Container)
-            .Include(v => v.Tasks)
-            .ToListAsync();
+                .ThenInclude(e => e.Container)
+                .Include(v => v.Tasks)
+                .ToListAsync())
+            .Where(v => v.Status.StatusValue == VvnStatus.Accepted)
+            .ToList();
     }
 }

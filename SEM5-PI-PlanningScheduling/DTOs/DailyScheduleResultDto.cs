@@ -14,13 +14,13 @@ public class SchedulingOperationDto
     public DateTime EndTime { get; set; }        
     public TimeSpan LoadingDuration { get; set; }
     public TimeSpan UnloadingDuration { get; set; }
-    public PhysicalResourceDto Crane { get; set; }
+    public string Crane { get; set; }
     public List<StaffAssignmentDto> StaffAssignments { get; set; }
 }
 
 public class StaffAssignmentDto
 {
-    public Guid StaffMemberId { get; set; }
+    public string StaffMemberName { get; set; }
     public DateTime IntervalStart { get; set; }
     public DateTime IntervalEnd { get; set; }
 }

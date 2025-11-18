@@ -33,5 +33,12 @@
     "setupTime": 8,
     "physicalResourceType": "Forklift",
     "qualificationCode": "FLK-001"
+  },
+  {
+    "description": "Mobile Harbor Crane MHC120",
+    "operationalCapacity": 120.0,
+    "setupTime": 15,
+    "physicalResourceType": "MCrane",
+    "qualificationCode": "STS-001"
   }
 ]

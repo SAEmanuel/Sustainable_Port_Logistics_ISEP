@@ -159,7 +159,8 @@ public class VesselVisitNotificationService : IVesselVisitNotificationService
         if (vvnInDb == null)
             throw new BusinessRuleValidationException($"No Vessel Visit Notification found with Code = {code}");
         var tasks = new List<EntityTask>();
-        var dock = await BasicDockAttributionAlgorithm(vvnInDb.VesselImo);
+        // var dock = await BasicDockAttributionAlgorithm(vvnInDb.VesselImo); // não IARTI
+        var dock = await ForcedAlgorithmDockAttribution(vvnInDb.VesselImo); // IARTI
         vvnInDb.UpdateDock(dock);
 
         if (vvnInDb.UnloadingCargoManifest != null)
@@ -978,6 +979,19 @@ public class VesselVisitNotificationService : IVesselVisitNotificationService
             throw new BusinessRuleValidationException("Unable to set dock status");
 
         return availableDocks[attributedDock].Code;
+    }
+    
+    // Serve apenas para fins demonstrativos para IARTI
+    private async Task<DockCode> ForcedAlgorithmDockAttribution(ImoNumber imo)
+    {
+        
+        var forcedDock = await _dockRepository.GetByCodeAsync(new DockCode("DK-0001"));
+        if (forcedDock == null)
+            throw new BusinessRuleValidationException("Test dock DK-0001 does not exist in the database.");
+        
+        _dockRepository.SetUnavailable(new DockCode("DK-0001"));
+
+        return new DockCode("DK-0001");
     }
 
     private void CheckNeededPeople(CargoManifest cargoManifest, CrewManifest crewManifest)
