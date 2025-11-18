@@ -82,10 +82,11 @@ public class SchedulingService
             if (vvn.LoadingCargoManifest is not null && vvn.UnloadingCargoManifest is not null)
             {
                 unloadingDuration = GenerateRandomTime(vvn.EstimatedTimeArrival, vvn.EstimatedTimeDeparture);
-                loadingDuration = GenerateRandomTime(vvn.EstimatedTimeArrival - unloadingDuration, vvn.EstimatedTimeDeparture);
+                loadingDuration = GenerateRandomTime(vvn.EstimatedTimeArrival - unloadingDuration,
+                    vvn.EstimatedTimeDeparture);
             }
 
-            var staffAssignments = BuildStaffAssignmentsForVvn(vvn, staff, day);
+            var staffAssignments = BuildStaffAssignmentsForVvn(vvn, staff);
 
 
             var op = new SchedulingOperationDto
@@ -105,6 +106,11 @@ public class SchedulingService
         }
 
         return result;
+    }
+
+    public async Task<object?> SendScheduleToProlog(DailyScheduleResultDto schedule)
+    {
+        return await _prologClient.SendToPrologAsync<object>("schedule", schedule);
     }
 
 
@@ -195,7 +201,7 @@ public class SchedulingService
             var staff = await _staffClient.GetStaffWithQualifications(new List<string> { code });
             foreach (var s in staff)
             {
-               Console.WriteLine(s.ShortName); 
+                Console.WriteLine(s.ShortName);
             }
 
             if (staff == null || staff.Count == 0)
@@ -241,8 +247,7 @@ public class SchedulingService
     // Staff assignments 
     private List<StaffAssignmentDto> BuildStaffAssignmentsForVvn(
         VesselVisitNotificationPSDto vvn,
-        List<StaffMemberDto> staffForVvn,
-        DateOnly day)
+        List<StaffMemberDto> staffForVvn)
     {
         if (staffForVvn == null || staffForVvn.Count == 0)
             throw new PlanningSchedulingException($"No staff available for VVN {vvn.Id}.");
@@ -252,37 +257,55 @@ public class SchedulingService
         var eta = vvn.EstimatedTimeArrival;
         var etd = vvn.EstimatedTimeDeparture;
 
-        var dayStart = day.ToDateTime(TimeOnly.MinValue);
-        var dayEnd = dayStart.AddDays(1);
+        if (etd <= eta)
+            throw new PlanningSchedulingException(
+                $"Invalid time window for VVN {vvn.Id}: ETD before ETA."
+            );
 
-        var operationStart = eta < dayStart ? dayStart : eta;
-        var operationEnd = etd > dayEnd ? dayEnd : etd;
+        var currentDay = DateOnly.FromDateTime(eta);
+        var lastDay = DateOnly.FromDateTime(etd);
 
-        if (operationEnd <= operationStart)
-            return assignments;
-
-        var shifts = new[] { "Night", "Morning", "Evening" };
-        int staffIndex = 0;
-
-        foreach (var shift in shifts)
+        while (currentDay <= lastDay)
         {
-            var (shiftStart, shiftEnd) = GetShiftWindow(day, shift);
+            var dayStart = currentDay.ToDateTime(TimeOnly.MinValue);
+            var dayEnd = dayStart.AddDays(1);
 
-            var intervalStart = operationStart > shiftStart ? operationStart : shiftStart;
-            var intervalEnd = operationEnd < shiftEnd ? operationEnd : shiftEnd;
+            var opStart = eta < dayStart ? dayStart : eta;
+            var opEnd = etd > dayEnd ? dayEnd : etd;
 
-            if (intervalEnd <= intervalStart)
-                continue;
-
-            var staff = staffForVvn[staffIndex % staffForVvn.Count];
-            staffIndex++;
-
-            assignments.Add(new StaffAssignmentDto
+            if (opEnd > opStart)
             {
-                StaffMemberName = staff.ShortName,
-                IntervalStart = intervalStart,
-                IntervalEnd = intervalEnd
-            });
+                var shifts = new[] { "Night", "Morning", "Evening" };
+                int assignedIndex = 0;
+
+                foreach (var shift in shifts)
+                {
+                    var (shiftStart, shiftEnd) = GetShiftWindow(currentDay, shift);
+
+                    var intervalStart = opStart > shiftStart ? opStart : shiftStart;
+                    var intervalEnd = opEnd < shiftEnd ? opEnd : shiftEnd;
+
+                    if (intervalEnd <= intervalStart)
+                        continue;
+
+                    if (staffForVvn.Count == 0)
+                        throw new PlanningSchedulingException(
+                            $"No staff available to cover shift '{shift}' for VVN {vvn.Id} on day {currentDay}."
+                        );
+
+                    var chosen = staffForVvn[assignedIndex % staffForVvn.Count];
+                    assignedIndex++;
+
+                    assignments.Add(new StaffAssignmentDto
+                    {
+                        StaffMemberName = chosen.ShortName,
+                        IntervalStart = intervalStart,
+                        IntervalEnd = intervalEnd
+                    });
+                }
+            }
+
+            currentDay = currentDay.AddDays(1);
         }
 
         return assignments;

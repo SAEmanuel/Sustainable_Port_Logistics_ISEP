@@ -20,14 +20,19 @@ public class ScheduleController : ControllerBase
     {
         try
         {
-            var result = await _schedulingService.ComputeDailyScheduleAsync(day);
-            return Ok(result);
+            var schedule = await _schedulingService.ComputeDailyScheduleAsync(day);
+            
+            var prologResponse = await _schedulingService.SendScheduleToProlog(schedule);
+
+            return Ok(new
+            {
+                schedule,
+                prolog = prologResponse
+            });
         }
         catch (PlanningSchedulingException e)
         {
             return BadRequest(new { error = e.Message });
         }
     }
-    
-    
 }
