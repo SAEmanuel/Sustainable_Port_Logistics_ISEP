@@ -81,23 +81,27 @@ public class SchedulingService
 
             if (vvn.LoadingCargoManifest is not null && vvn.UnloadingCargoManifest is not null)
             {
-                unloadingDuration = GenerateRandomTime(vvn.EstimatedTimeArrival, vvn.EstimatedTimeDeparture);
-                loadingDuration = GenerateRandomTime(vvn.EstimatedTimeArrival - unloadingDuration,
-                    vvn.EstimatedTimeDeparture);
+                var (load, unload) = GenerateLoadingAndUnloading(vvn.EstimatedTimeArrival, vvn.EstimatedTimeDeparture);
+                loadingDuration = load;
+                unloadingDuration = unload;
             }
 
             var staffAssignments = BuildStaffAssignmentsForVvn(vvn, staff);
 
+            var eta = DateTimeToFloat(day, vvn.EstimatedTimeArrival);
+            var etd = DateTimeToFloat(day, vvn.EstimatedTimeDeparture);
+            var loadDuration = TimeSpanToFloat(loadingDuration);
+            var unloadDuration = TimeSpanToFloat(unloadingDuration);
 
             var op = new SchedulingOperationDto
             {
                 VvnId = vvn.Id,
                 Vessel = vessel!.Name,
                 Dock = vvn.Dock,
-                StartTime = vvn.EstimatedTimeArrival,
-                EndTime = vvn.EstimatedTimeDeparture,
-                LoadingDuration = loadingDuration,
-                UnloadingDuration = unloadingDuration,
+                StartTime = eta,
+                EndTime = etd,
+                LoadingDuration = loadDuration,
+                UnloadingDuration = unloadDuration,
                 Crane = crane.Code.Value,
                 StaffAssignments = staffAssignments
             };
@@ -130,6 +134,43 @@ public class SchedulingService
 
         int totalMinutes = (int)Math.Round(raw.TotalMinutes / roundToMinutes) * roundToMinutes;
         return TimeSpan.FromMinutes(totalMinutes);
+    }
+    
+    
+    private TimeSpan GenerateRandomTimeFromSpan(TimeSpan total)
+    {
+        if (total <= TimeSpan.Zero)
+            throw new ArgumentException("Total duration must be positive.");
+
+        var rng = new Random();
+        double multiplier = rng.NextDouble() * (MaxP - MinP) + MinP;
+
+        var raw = TimeSpan.FromTicks((long)(total.Ticks * multiplier));
+
+        const int roundToMinutes = 5;
+        int totalMinutes = (int)Math.Round(raw.TotalMinutes / roundToMinutes) * roundToMinutes;
+        return TimeSpan.FromMinutes(totalMinutes);
+    }
+
+    private (TimeSpan loading, TimeSpan unloading) GenerateLoadingAndUnloading(
+        DateTime start, DateTime end)
+    {
+        if (end <= start)
+            throw new ArgumentException("End time must be after start time.");
+
+        var total = end - start;
+        var unloading = GenerateRandomTimeFromSpan(total);
+
+        var remaining = total - unloading;
+        if (remaining <= TimeSpan.Zero)
+        {
+            unloading = TimeSpan.FromTicks((long)(total.Ticks * MinP));
+            remaining = total - unloading;
+        }
+
+        var loading = GenerateRandomTimeFromSpan(remaining);
+
+        return (loading, unloading);
     }
 
 
@@ -309,5 +350,19 @@ public class SchedulingService
         }
 
         return assignments;
+    }
+
+    private float DateTimeToFloat(DateOnly init, DateTime actual)
+    {
+        var initDateTime = init.ToDateTime(TimeOnly.MinValue);
+        var diff = actual - initDateTime;
+        float hours = (float)diff.TotalHours;
+        return (float)Math.Round(hours, 2);
+    }
+
+    private float TimeSpanToFloat(TimeSpan span)
+    {
+        float hours = (float)span.TotalHours;
+        return (float)Math.Round(hours, 2);
     }
 }

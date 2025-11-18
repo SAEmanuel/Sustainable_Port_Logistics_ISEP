@@ -1,7 +1,7 @@
 @DecisionAddress = http://localhost:5296
+
+
 ###
-
-
 GET {{DecisionAddress}}/api/schedule/daily?day=2025-12-01
 Accept: application/json
 

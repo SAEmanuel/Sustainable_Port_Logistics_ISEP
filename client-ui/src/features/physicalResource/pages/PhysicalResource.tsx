@@ -44,12 +44,6 @@ function PhysicalResourcePage() {
         try {
             const data = await getAllPhysicalResources();
             setPhysicalResources(data);
-
-            const audio = new Audio("/gg.mp3");
-            audio.play().catch(err => {
-                console.warn("Não foi possível tocar o áudio automaticamente:", err);
-            });
-
         } catch (err) {
             setError(err as Error);
             toast.error(t("errors.loadAll"));
