@@ -766,6 +766,7 @@ export default function DockPage() {
                     ))}
             </div>
 
+            
             {/* SLIDE PANEL */}
             {selected && (
                 <div className="dk-slide">
