@@ -72,7 +72,8 @@
     "3dView": "Porto 3D",
     "login": "Entrar",
     "logout": "Sair",
-    "adminPanel": "Gestão de Utilizadores"
+    "adminPanel": "Gestão de Utilizadores",
+    "sao": "Organizações Agente de Transporte"
   },
 
   "layout": {
@@ -941,5 +942,28 @@
     },
     "selection": "Seleção",
     "clickHint": "Clica num objeto na cena."
+  },
+  "sao":{
+    "title": "Organização Agente de Transporte",
+    "searchPlaceholder": "Procurar",
+    "details":{
+      "code":"Código",
+      "legalName":"Designação Legal",
+      "altName":"Nome",
+      "address":"Morada",
+      "taxnumber":"Número Fiscal"
+    },
+    "add":"Adicionar",
+    "cancel":"Cancelar",
+    "save":"Guardar",
+    "count": "{{count}} Organizações Agente de Transporte registadas",
+    "errors":{
+    "legalNameRequired": "Designação Legal é obrigatória",
+    "codeRequired" :"Código é obrigatório",
+    "taxRequired":"Número Fiscal é obrigatório"
+    },
+    "loading":"A carregar Organizações Agente de Transporte",
+    "loadSuccess":"Carregadas {{count}} Organizações Agente de Transporte com sucesso.",
+    "created":"Organização Agente de Transporte craida!"
   }
 }

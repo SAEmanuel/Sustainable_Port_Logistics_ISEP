@@ -68,7 +68,8 @@
     "dashboard": "Dashboard",
     "adminPanel": "User Management",
     "login": "Login",
-    "logout": "Logout"
+    "logout": "Logout",
+    "sao": "Shipping Agent Organizations"
   },
 
   "layout": {
@@ -944,6 +945,29 @@
     },
     "selection": "Selection",
     "clickHint": "Click an object in the scene."
+  },
+  "sao":{
+    "title": "Shipping Agent Organization",
+    "searchPlaceholder": "Search",
+    "details":{
+      "code":"Code",
+      "legalName":"Legal Name",
+      "altName":"Name",
+      "address":"Address",
+      "taxnumber":"Tax Number"
+    },
+    "add":"Add",
+    "cancel":"Cancel",
+    "save":"Save",
+    "count": "{{count}} Shipping Agent Organizations registered",
+    "errors":{
+    "legalNameRequired": "Legal name is required",
+    "codeRequired" :"Code is required",
+    "taxRequired":"Tax Number is required"
+    },
+    "loading":"Loading Shipping Agent Organizations",
+    "loadSuccess":"Loaded {{count}} Shipping Agent Organizations successfully.",
+    "created":"Shipping Agent Organization created successfully!"
   }
 
 }
