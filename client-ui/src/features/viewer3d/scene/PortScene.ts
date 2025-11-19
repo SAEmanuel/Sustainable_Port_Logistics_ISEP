@@ -17,6 +17,7 @@ import { makeDecorativeStorage } from "./objects/DecorativeStorage";
 import { makeDecorativeCrane } from "./objects/DecorativeCrane";
 import { makePhysicalResource } from "./objects/PhysicalResource";
 import { addRoadTrees } from "./objects/roadTrees";
+import { addBridges } from "./objects/Bridges";
 
 import { addRoadTraffic } from "../services/placement/addRoadTraffic";
 import { addAngleParkingInC } from "../services/placement/addParking";
@@ -64,7 +65,8 @@ export class PortScene {
     gIndustry = new THREE.Group();
     gYards = new THREE.Group();
     gResources = new THREE.Group();
-
+    gBridge = new THREE.Group();
+    
     // 1st-person
     fp!: FirstPersonRig;
     worker!: WorkerAvatar;
@@ -98,8 +100,8 @@ export class PortScene {
         this.camera = new THREE.PerspectiveCamera(20, container.clientWidth / container.clientHeight, 0.1, 8000);
         this.camera.position.set(180, 200, 420);
 
-        //this.renderer.toneMappingExposure = 0.7;   // ajusta 0.7–1.2 se ficar “estourado”
-        //this.loadSkyHDR();
+        // this.renderer.toneMappingExposure = 0.7;   // ajusta 0.7–1.2 se ficar “estourado”
+        // this.loadSkyHDR();
 
         /* ------------ Luzes ------------ */
 
@@ -173,6 +175,7 @@ export class PortScene {
         this.gIndustry.name = "industry";
         this.gYards.name = "yards";
         this.gResources.name = "resources";
+        this.gBridge.name = "bridge";
 
         this.gBase.add(
             this.gContainers,
@@ -187,6 +190,7 @@ export class PortScene {
             this.gIndustry,
             this.gYards,
             this.gResources,
+            this.gBridge,
         );
 
         /* ------------ AVATAR + FIRST PERSON (desligado por omissão) ------------ */
@@ -248,6 +252,20 @@ export class PortScene {
             seed: 20251111,
             // weights: { pine: 2, fallTree: 1, tree: 2 },
         });
+        
+
+        /* ------------ PONTES (procedurais) ------------ */
+        addBridges(this.gBridge, this._baseLayout, {
+            deckWidth: 9,
+            deckLength: 800,   // se precisares que avance mais pela água
+            deckHeight: 2.0,
+            separationX: 7,    // quão afastadas uma da outra
+            baseY: 0.03,       // alinhado com a estrada (usa +/− 0.05 se der z-fighting)
+
+            insetLeft: -4.5,    // ponte esquerda um pouco mais “para trás” da rua
+            insetRight: -4.5,   // ponte direita ligeiramente menos recuada
+        });
+
 
         /* ------------ CONTROLOS ORBIT ------------ */
         this.controls = new OrbitControls(this.camera, this.renderer.domElement);

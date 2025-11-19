@@ -70,9 +70,6 @@ export function computeLayout(data: SceneData, grids: GridsResult): LayoutResult
         fillDepthRatio: 0.86,
         marginX: 1.2,
         marginZ: 1.2,
-        spacingX: 14,
-        spacingZ: 12,
-        maxPerRow: 12,
     });
 
     return { storage, containers, docks, vessels, decoratives, decorativeCranes, resources };
