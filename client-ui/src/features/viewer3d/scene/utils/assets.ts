@@ -56,6 +56,10 @@ export const ASSETS_MODELS = {
         fallTree: `${MODELS}/props/green/FallTree.glb`,
         tree: `${MODELS}/props/green/Tree.glb`,
     },
+    extras:{
+        city: `${MODELS}/extras/city.glb`,
+        RioJaneiro: `${MODELS}/extras/RioJaneiro.glb`,
+    }
 } as const;
 
 export const ASSETS_TEXTURES = {
