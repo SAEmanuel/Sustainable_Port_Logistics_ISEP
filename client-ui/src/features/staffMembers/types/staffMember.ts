@@ -4,7 +4,7 @@
 
 export const ShiftType = {
     Morning: "Morning",
-    Afternoon: "Afternoon",
+    Evening: "Evening",
     Night: "Night"
 } as const;
 
@@ -135,7 +135,7 @@ export function createSchedule(shift: ShiftType, days: number[]): Schedule {
 
 export const SHIFT_OPTIONS: ShiftType[] = [
     ShiftType.Morning,
-    ShiftType.Afternoon,
+    ShiftType.Evening,
     ShiftType.Night
 ];
 

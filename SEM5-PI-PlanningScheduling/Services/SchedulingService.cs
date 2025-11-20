@@ -5,12 +5,11 @@ namespace SEM5_PI_DecisionEngineAPI.Services;
 
 public class SchedulingService
 {
-    public const float MinP = 0.4f;
-    public const float MaxP = 0.8f;
+    const float MinP = 0.4f;
+    const float MaxP = 0.8f;
 
     private readonly QualificationServiceClient _qualificationService;
     private readonly VesselVisitNotificationServiceClient _vvnClient;
-    private readonly PhysicalResourceServiceClient _resourceClient;
     private readonly StaffMemberServiceClient _staffClient;
     private readonly VesselServiceClient _vesselSClient;
     private readonly DockServiceClient _dockClient;
@@ -18,7 +17,6 @@ public class SchedulingService
 
     public SchedulingService(
         VesselVisitNotificationServiceClient vvnClient,
-        PhysicalResourceServiceClient resourceClient,
         StaffMemberServiceClient staffClient,
         DockServiceClient dockClient,
         QualificationServiceClient qualificationService,
@@ -26,7 +24,6 @@ public class SchedulingService
         PrologClient prologClient)
     {
         _vvnClient = vvnClient;
-        _resourceClient = resourceClient;
         _staffClient = staffClient;
         _dockClient = dockClient;
         _qualificationService = qualificationService;
@@ -51,11 +48,8 @@ public class SchedulingService
                 "One or more vessel visit notifications have no assigned dock yet"
             );
 
-
         var cranes = await GetCranesForVvnsAsync(vvnsForDay);
-
         var craneQualifications = await GetCraneQualificationsAsync(cranes);
-
         var staffByVvn = await GetQualifiedStaffForVvnsAsync(craneQualifications);
 
         var result = new DailyScheduleResultDto();
@@ -88,10 +82,10 @@ public class SchedulingService
 
             var staffAssignments = BuildStaffAssignmentsForVvn(vvn, staff);
 
-            var eta = DateTimeToFloat(day, vvn.EstimatedTimeArrival);
-            var etd = DateTimeToFloat(day, vvn.EstimatedTimeDeparture);
-            var loadDuration = TimeSpanToFloat(loadingDuration);
-            var unloadDuration = TimeSpanToFloat(unloadingDuration);
+            var eta = DateTimeToInteger(day, vvn.EstimatedTimeArrival);
+            var etd = DateTimeToInteger(day, vvn.EstimatedTimeDeparture);
+            var loadDuration = TimeSpanToInteger(loadingDuration);
+            var unloadDuration = TimeSpanToInteger(unloadingDuration);
 
             var op = new SchedulingOperationDto
             {
@@ -112,9 +106,19 @@ public class SchedulingService
         return result;
     }
 
-    public async Task<object?> SendScheduleToProlog(DailyScheduleResultDto schedule)
+    public async Task<object?> SendScheduleToPrologOptimal(DailyScheduleResultDto schedule)
     {
-        return await _prologClient.SendToPrologAsync<object>("schedule", schedule);
+        return await _prologClient.SendToPrologAsync<object>("schedule/optimal", schedule);
+    }
+
+    public async Task<object?> SendScheduleToPrologGreedy(DailyScheduleResultDto schedule)
+    {
+        return await _prologClient.SendToPrologAsync<object>("schedule/greedy", schedule);
+    }
+
+    public async Task<object?> SendScheduleToPrologLocalSearch(DailyScheduleResultDto schedule)
+    {
+        return await _prologClient.SendToPrologAsync<object>("schedule/local_search", schedule);
     }
 
 
@@ -135,8 +139,7 @@ public class SchedulingService
         int totalMinutes = (int)Math.Round(raw.TotalMinutes / roundToMinutes) * roundToMinutes;
         return TimeSpan.FromMinutes(totalMinutes);
     }
-    
-    
+
     private TimeSpan GenerateRandomTimeFromSpan(TimeSpan total)
     {
         if (total <= TimeSpan.Zero)
@@ -173,8 +176,6 @@ public class SchedulingService
         return (loading, unloading);
     }
 
-
-    // Crane by VVN
     private async Task<Dictionary<string, PhysicalResourceDto>> GetCranesForVvnsAsync
         (List<VesselVisitNotificationPSDto> vvns)
     {
@@ -195,8 +196,6 @@ public class SchedulingService
         return result;
     }
 
-
-    // Qualifications by Crane
     private async Task<Dictionary<string, QualificationDto>> GetCraneQualificationsAsync(
         Dictionary<string, PhysicalResourceDto> cranes)
     {
@@ -222,7 +221,6 @@ public class SchedulingService
         return result;
     }
 
-
     // Staff for VVN by qualifications
     private async Task<Dictionary<string, List<StaffMemberDto>>> GetQualifiedStaffForVvnsAsync(
         Dictionary<string, QualificationDto> craneQualifications)
@@ -240,10 +238,6 @@ public class SchedulingService
         foreach (var code in qualificationCodes)
         {
             var staff = await _staffClient.GetStaffWithQualifications(new List<string> { code });
-            foreach (var s in staff)
-            {
-                Console.WriteLine(s.ShortName);
-            }
 
             if (staff == null || staff.Count == 0)
                 throw new PlanningSchedulingException(
@@ -269,7 +263,6 @@ public class SchedulingService
         return result;
     }
 
-
     // Shift windows
     private (DateTime Start, DateTime End) GetShiftWindow(DateOnly day, string shift)
     {
@@ -277,15 +270,14 @@ public class SchedulingService
 
         return shift switch
         {
-            "Night" => (dayStart, dayStart.AddHours(8)),
-            "Morning" => (dayStart.AddHours(8), dayStart.AddHours(16)),
+            "Night"   => (dayStart,          dayStart.AddHours(8)),
+            "Morning" => (dayStart.AddHours(8),  dayStart.AddHours(16)),
             "Evening" => (dayStart.AddHours(16), dayStart.AddDays(1)),
             _ => throw new ArgumentOutOfRangeException(nameof(shift), shift, null)
         };
     }
 
-
-    // Staff assignments 
+    // Staff assignments
     private List<StaffAssignmentDto> BuildStaffAssignmentsForVvn(
         VesselVisitNotificationPSDto vvn,
         List<StaffMemberDto> staffForVvn)
@@ -317,7 +309,8 @@ public class SchedulingService
             if (opEnd > opStart)
             {
                 var shifts = new[] { "Night", "Morning", "Evening" };
-                int assignedIndex = 0;
+
+                var activeShifts = new List<(string Name, DateTime Start, DateTime End)>();
 
                 foreach (var shift in shifts)
                 {
@@ -326,22 +319,40 @@ public class SchedulingService
                     var intervalStart = opStart > shiftStart ? opStart : shiftStart;
                     var intervalEnd = opEnd < shiftEnd ? opEnd : shiftEnd;
 
-                    if (intervalEnd <= intervalStart)
-                        continue;
+                    if (intervalEnd > intervalStart)
+                        activeShifts.Add((shift, intervalStart, intervalEnd));
+                }
 
-                    if (staffForVvn.Count == 0)
+                if (activeShifts.Count == 0)
+                {
+                    currentDay = currentDay.AddDays(1);
+                    continue;
+                }
+
+                var usedStaffIds = new HashSet<Guid>();
+
+                foreach (var shiftInfo in activeShifts)
+                {
+                    var staffForShift = staffForVvn.FirstOrDefault(s =>
+                        !usedStaffIds.Contains(s.Id) &&
+                        WorksOnDay(s, currentDay) &&
+                        IsStaffAvailableForShift(s, shiftInfo.Name));
+
+                    if (staffForShift == null)
+                    {
                         throw new PlanningSchedulingException(
-                            $"No staff available to cover shift '{shift}' for VVN {vvn.Id} on day {currentDay}."
+                            $"No staff available for shift '{shiftInfo.Name}' " +
+                            $"for VVN {vvn.Id} on {currentDay}."
                         );
+                    }
 
-                    var chosen = staffForVvn[assignedIndex % staffForVvn.Count];
-                    assignedIndex++;
+                    usedStaffIds.Add(staffForShift.Id);
 
                     assignments.Add(new StaffAssignmentDto
                     {
-                        StaffMemberName = chosen.ShortName,
-                        IntervalStart = intervalStart,
-                        IntervalEnd = intervalEnd
+                        StaffMemberName = staffForShift.ShortName,
+                        IntervalStart = shiftInfo.Start,
+                        IntervalEnd = shiftInfo.End
                     });
                 }
             }
@@ -352,17 +363,55 @@ public class SchedulingService
         return assignments;
     }
 
-    private float DateTimeToFloat(DateOnly init, DateTime actual)
+    private bool IsStaffAvailableForShift(StaffMemberDto staff, string requiredShift)
     {
-        var initDateTime = init.ToDateTime(TimeOnly.MinValue);
-        var diff = actual - initDateTime;
-        float hours = (float)diff.TotalHours;
-        return (float)Math.Round(hours, 2);
+        if (staff.Schedule == null || string.IsNullOrWhiteSpace(staff.Schedule.Shift))
+            return false;
+
+        return string.Equals(
+            staff.Schedule.Shift,
+            requiredShift,
+            StringComparison.OrdinalIgnoreCase
+        );
+    }
+    
+    private bool WorksOnDay(StaffMemberDto staff, DateOnly day)
+    {
+        if (staff.Schedule == null || string.IsNullOrWhiteSpace(staff.Schedule.DaysOfWeek))
+            return false;
+
+        var bits = staff.Schedule.DaysOfWeek.Trim();
+
+        if (bits.Length != 7)
+            return false;
+        
+        int offset = day.DayOfWeek switch
+        {
+            DayOfWeek.Monday    => 0,
+            DayOfWeek.Tuesday   => 1,
+            DayOfWeek.Wednesday => 2,
+            DayOfWeek.Thursday  => 3,
+            DayOfWeek.Friday    => 4,
+            DayOfWeek.Saturday  => 5,
+            DayOfWeek.Sunday    => 6,
+            _ => throw new Exception("Invalid day")
+        };
+        
+        int indexFromRight = offset;                  
+        int indexInString = bits.Length - 1 - indexFromRight; 
+
+        return bits[indexInString] == '1';
     }
 
-    private float TimeSpanToFloat(TimeSpan span)
+    private int DateTimeToInteger(DateOnly init, DateTime actual)
     {
-        float hours = (float)span.TotalHours;
-        return (float)Math.Round(hours, 2);
+        var baseDt = init.ToDateTime(TimeOnly.MinValue);
+        var diff = actual - baseDt;
+        return (int)Math.Floor(diff.TotalHours);
+    }
+
+    private int TimeSpanToInteger(TimeSpan span)
+    {
+        return (int)Math.Floor(span.TotalHours);
     }
 }

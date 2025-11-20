@@ -2,7 +2,16 @@
 
 
 ###
-GET {{DecisionAddress}}/api/schedule/daily?day=2025-12-01
+GET {{DecisionAddress}}/api/schedule/daily/optimal?day=2025-12-01
 Accept: application/json
 
 
+###
+GET {{DecisionAddress}}/api/schedule/daily/greedy?day=2025-12-01
+Accept: application/json
+
+
+
+###
+GET {{DecisionAddress}}/api/schedule/daily/local-search?day=2025-12-01
+Accept: application/json

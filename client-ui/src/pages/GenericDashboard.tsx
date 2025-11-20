@@ -14,6 +14,7 @@ import {
     FaRoute,
 } from "react-icons/fa";
 import "./css/genericDashboard.css";
+import {FiAnchor, FiBox, FiFileText, FiMapPin} from "react-icons/fi";
 
 type LinkItem = { label: string; path: string; color: string; icon: JSX.Element };
 
@@ -32,6 +33,11 @@ const routeIcon: Record<string, JSX.Element> = {
     "/physical-resources": <FaCogs size={44} />,
     "/vessels": <FaShip size={44} />,
     "/projects": <FaProjectDiagram size={44} />,
+    "/storageArea": <FiBox size={44} />,
+    "/docks": <FiMapPin size={44} />,
+    "/vesselTypes": <FiAnchor size={44} />,
+    "/vvnResponse": <FiFileText size={44} />,
+    "/sao": <FiFileText size={44} />,
 };
 
 function useAccessibleLinksByRole(t: (k: string) => string, role?: "Administrator" | "PortAuthorityOfficer" | "LogisticsOperator" | "ShippingAgentRepresentative" | "ProjectManager" | null | undefined) {
@@ -52,8 +58,14 @@ function useAccessibleLinksByRole(t: (k: string) => string, role?: "Administrato
                 L.push({ label: t("dashboard.vvn"), path: "/vvn", color, icon: routeIcon["/vvn"] });
                 break;
             case Roles.PortAuthorityOfficer:
-                L.push({ label: t("dashboard.vessels"), path: "/vessels", color, icon: routeIcon["/vessels"] });
                 L.push({ label: t("dashboard.docks"), path: "/docks", color, icon: routeIcon["/docks"] });
+                L.push({ label: t("dashboard.responsevvn"), path: "/responsevvn", color, icon: routeIcon["/vvnResponse"] });
+                L.push({ label: t("dashboard.vessels"), path: "/vessels", color, icon: routeIcon["/vessels"] });
+                L.push({ label: t("dashboard.vessel-types"), path: "/vessel-types", color, icon: routeIcon["/vesselTypes"] });
+                L.push({ label: t("dashboard.storage-areas"), path: "/storage-areas", color, icon: routeIcon["/storageArea"] });
+                L.push({ label: t("dashboard.sao"), path: "/sao", color, icon: routeIcon["/sao"] },);
+                L.push({ label: t("dashboard.port3d"), path: "/3dSecene", color, icon: routeIcon["/3dSecene"] },);
+
                 break;
             case Roles.ProjectManager:
                 L.push({ label: t("dashboard.projects"), path: "/projects", color, icon: routeIcon["/projects"] });

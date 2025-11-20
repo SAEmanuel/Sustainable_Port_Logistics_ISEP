@@ -70,7 +70,8 @@
     "login": "Login",
     "logout": "Logout",
     "sao": "Shipping Agent Organizations",
-    "vvnResponse": "VVN Response"
+    "vvnResponse": "VVN Response",
+    "docks" : "Docks"
   },
 
   "layout": {
@@ -99,6 +100,10 @@
     "quickActions": "Quick actions",
     "vessels" : "Manage Vessels",
     "docks" : "Manage Docks",
+    "responsevvn" : "Validate VVN",
+    "vessel-types" : "Manage Vessel Types",
+    "storage-areas" : "Manage Storage Areas",
+    "sao" : "Manage Shipping Agent Organizations",
     "adminPanel" : "Users administration",
     "accessModules" : "Access Modules",
     "port3d" : "3D Visualization",

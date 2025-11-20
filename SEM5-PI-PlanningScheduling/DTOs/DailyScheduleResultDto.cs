@@ -10,10 +10,10 @@ public class SchedulingOperationDto
     public string VvnId { get; set; }
     public string Vessel { get; set; }
     public string Dock { get; set; }
-    public float StartTime { get; set; }      
-    public float EndTime { get; set; }        
-    public float LoadingDuration { get; set; }
-    public float UnloadingDuration { get; set; }
+    public int StartTime { get; set; }      
+    public int EndTime { get; set; }        
+    public int LoadingDuration { get; set; }
+    public int UnloadingDuration { get; set; }
     public string Crane { get; set; }
     public List<StaffAssignmentDto> StaffAssignments { get; set; }
 }

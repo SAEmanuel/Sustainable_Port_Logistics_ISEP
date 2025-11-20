@@ -16,7 +16,7 @@ export default function AppLayout() {
 
     const theme = useAppStore((state) => state.theme);
     const toggleTheme = useAppStore((state) => state.toggleTheme);
-    const isDarkMode = theme === "dark"; // Substitui a sua variável local 'dark'
+    const isDarkMode = theme === "dark"; 
 
 
     /*

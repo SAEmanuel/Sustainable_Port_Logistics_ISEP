@@ -15,17 +15,62 @@ public class ScheduleController : ControllerBase
         _schedulingService = schedulingService;
     }
 
-    [HttpGet("daily")]
-    public async Task<IActionResult> GetDailySchedule([FromQuery] DateOnly day)
+    
+    [HttpGet("daily/optimal")]
+    public async Task<IActionResult> GetDailyScheduleOptimal([FromQuery] DateOnly day)
     {
         try
         {
             var schedule = await _schedulingService.ComputeDailyScheduleAsync(day);
-            
-            var prologResponse = await _schedulingService.SendScheduleToProlog(schedule);
+            var prologResponse = await _schedulingService.SendScheduleToPrologOptimal(schedule);
 
             return Ok(new
             {
+                algorithm = "optimal",
+                schedule,
+                prolog = prologResponse
+            });
+        }
+        catch (PlanningSchedulingException e)
+        {
+            return BadRequest(new { error = e.Message });
+        }
+    }
+
+   
+    [HttpGet("daily/greedy")]
+    public async Task<IActionResult> GetDailyScheduleGreedy([FromQuery] DateOnly day)
+    {
+        try
+        {
+            var schedule = await _schedulingService.ComputeDailyScheduleAsync(day);
+            var prologResponse = await _schedulingService.SendScheduleToPrologGreedy(schedule);
+
+            return Ok(new
+            {
+                algorithm = "greedy",
+                schedule,
+                prolog = prologResponse
+            });
+        }
+        catch (PlanningSchedulingException e)
+        {
+            return BadRequest(new { error = e.Message });
+        }
+    }
+
+    
+    [HttpGet("daily/local-search")]
+    public async Task<IActionResult> GetDailyScheduleLocalSearch([FromQuery] DateOnly day)
+    {
+        try
+        {
+            var schedule = await _schedulingService.ComputeDailyScheduleAsync(day);
+            var prologResponse = await _schedulingService.SendScheduleToPrologLocalSearch(schedule);
+
+            return Ok(new
+            {
+                algorithm = "local_search",
                 schedule,
                 prolog = prologResponse
             });

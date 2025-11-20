@@ -169,7 +169,7 @@ Accept: application/json
   "email": "maria.silva@example.com",
   "phone": "+351923456789",
   "schedule": {
-    "shift": "Afternoon",
+    "shift": "Evening",
     "daysOfWeek": "1111100"
   },
   "isActive": true,
@@ -333,7 +333,7 @@ Accept: application/json
   "mecNumber": "1250001",
   "email": "paulo.updated@example.com",
   "schedule": {
-    "shift": "Afternoon",
+    "shift": "Evening",
     "daysOfWeek": "1010101"
   }
 }

@@ -17,7 +17,7 @@ import {
     FiUserCheck,
     FiFileText,
     FiAnchor,
-    FiLayers,
+    FiLayers, FiMapPin,
 } from "react-icons/fi";
 import {FaShip} from "react-icons/fa";
 
@@ -54,8 +54,8 @@ export default function Nav({ isOpen }: NavProps) {
 
     const portAuthorityOfficerMenu = user?.role?.includes(Roles.PortAuthorityOfficer)
         ? [
-            { label: t("menu.dashboard"), path: "/dashboard", icon: <FiShield /> },
             { label: t("menu.storageArea"), path: "/storage-areas", icon: <FiBox /> },
+            { label: t("menu.docks"), path: "/docks", icon: <FiMapPin /> },
             { label: t("menu.vesselTypes"), path: "/vessel-types", icon: <FiAnchor /> },
             { label: t("menu.vessels"), path: "/vessels", icon: <FaShip /> },
             { label: t("menu.vvnResponse"), path: "/responsevvn", icon: <FiFileText /> },

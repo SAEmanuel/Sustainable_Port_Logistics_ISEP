@@ -74,7 +74,8 @@
     "logout": "Sair",
     "adminPanel": "Gestão de Utilizadores",
     "sao": "Organizações Agente de Transporte",
-    "vvnResponse": "Responder VVN"
+    "vvnResponse": "Responder VVN",
+    "docks" : "Docks"
   },
 
   "layout": {
@@ -105,6 +106,10 @@
     "accessModules" : "Módulos de acesso",
     "vessels" : "Gerir Navios",
     "docks" : "Gerir Docks",
+    "responsevvn" : "Responder VVN",
+    "vessel-types" : "Gerir Tipos de Navio",
+    "storage-areas" : "Gerir Áreas de Armazenamento",
+    "sao" : "Gerir Organizações Agente de Transporte",
     "port3d" : "Visualização 3D",
     "announcement": {
       "title": "Avisos do sistema",
