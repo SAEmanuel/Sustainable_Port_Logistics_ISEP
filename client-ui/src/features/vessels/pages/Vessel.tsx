@@ -1,5 +1,4 @@
 import "../style/vesselspage.css";
-
 import { useVessels } from "../hooks/useVessels";
 import { VesselHeader } from "../components/VesselHeader";
 import { VesselSearchBar } from "../components/VesselSearchBar";
