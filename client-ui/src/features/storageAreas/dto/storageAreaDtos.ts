@@ -1,33 +1,34 @@
-export interface StorageAreaDockDistance {
+
+export interface StorageAreaDockDistanceDto {
     dockCode: string;
     distance: number;
 }
 
-export type StorageAreaType = "Yard" | "Warehouse";
+export type StorageAreaTypeDto = "Yard" | "Warehouse";
 
-export interface CreatingStorageArea {
+export interface CreatingStorageAreaDto {
     name: string;
     description?: string | null;
-    type: StorageAreaType;
+    type: StorageAreaTypeDto;
     maxBays: number;
     maxRows: number;
     maxTiers: number;
     physicalResources: string[];
-    distancesToDocks: StorageAreaDockDistance[];
+    distancesToDocks: StorageAreaDockDistanceDto[];
 }
 
 export interface StorageAreaDto {
     id: string;
     name: string;
     description?: string | null;
-    type: StorageAreaType;
+    type: StorageAreaTypeDto;
     maxBays: number;
     maxRows: number;
     maxTiers: number;
     maxCapacityTeu: number;
     currentCapacityTeu: number;
     physicalResources: string[];
-    distancesToDocks: StorageAreaDockDistance[];
+    distancesToDocks: StorageAreaDockDistanceDto[];
 }
 
 export interface StorageSlotDto {
@@ -41,19 +42,28 @@ export interface StorageAreaGridDto {
     maxBays: number;
     maxRows: number;
     maxTiers: number;
-    slots: StorageSlotDto[]; // só ocupados têm iso
+    slots: StorageSlotDto[];
 }
 
+export type ContainerTypeDto =
+    | "General"
+    | "Reefer"
+    | "Electronic"
+    | "Hazmat"
+    | "Oversized";
 
-
-export type ContainerType = "General" | "Reefer" | "Electronic" | "Hazmat"| "Oversized";
-export type ContainerStatus = "Empty" | "Full" | "Reserved" | "Damaged"| "InTransit";
+export type ContainerStatusDto =
+    | "Empty"
+    | "Full"
+    | "Reserved"
+    | "Damaged"
+    | "InTransit";
 
 export interface ContainerDto {
     id: string;
     isoNumber: string;
     description: string;
-    containerType: ContainerType;
-    containerStatus: string;
+    containerType: ContainerTypeDto | string;
+    containerStatus: ContainerStatusDto | string;
     weight: number;
 }
