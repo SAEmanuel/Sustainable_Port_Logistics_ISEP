@@ -3,8 +3,8 @@ import { useTranslation } from "react-i18next";
 import { notifyLoading, notifySuccess } from "../../../utils/notify";
 import toast from "react-hot-toast";
 import { FaTimes, FaUser, FaPhoneAlt, FaCalendarAlt, FaEnvelope } from "react-icons/fa";
-import type { StaffMember } from "../types/staffMember";
-import { getWeekDayNames } from "../types/staffMember";
+import type { StaffMember } from "../domain/staffMember"; 
+import { getWeekDayNames } from "../helpers/staffMemberHelpers"; 
 import { toggleStaffMemberStatus } from "../services/staffMemberService";
 
 interface Props {

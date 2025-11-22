@@ -3,12 +3,12 @@ import { useTranslation } from "react-i18next";
 import { notifyError, notifyLoading, notifySuccess } from "../../../utils/notify";
 import toast from "react-hot-toast";
 import { FaEdit, FaTimes, FaCheckSquare, FaSquare } from "react-icons/fa";
-import type { StaffMember, CreateStaffMember, ShiftType, Schedule } from "../types/staffMember";
+import type { StaffMember } from "../domain/staffMember"; 
+import type { CreateStaffMemberRequest as CreateStaffMember, ShiftType, Schedule } from "../dtos/staffMember"; 
 import { createStaffMember } from "../services/staffMemberService";
 import { getQualifications } from "../../qualifications/services/qualificationService";
-import type { Qualification } from "../../qualifications/types/qualification";
-import { ShiftType as ShiftTypes, createSchedule, SHIFT_OPTIONS, WEEKDAY_OPTIONS } from "../types/staffMember";
-
+import type { Qualification } from "../../qualifications/domain/qualification"; 
+import { ShiftType as ShiftTypes, createSchedule, SHIFT_OPTIONS, WEEKDAY_OPTIONS } from "../helpers/staffMemberHelpers"; 
 interface Props {
     onClose: () => void;
     onSuccess: (created: StaffMember) => void;

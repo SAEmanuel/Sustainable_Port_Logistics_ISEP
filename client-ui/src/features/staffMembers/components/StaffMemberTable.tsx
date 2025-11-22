@@ -1,5 +1,5 @@
 import { useTranslation } from "react-i18next";
-import type { StaffMember } from "../types/staffMember";
+import type { StaffMember } from "../domain/staffMember"; 
 
 interface Props {
     items: StaffMember[];

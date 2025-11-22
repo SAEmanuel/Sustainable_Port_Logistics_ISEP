@@ -3,17 +3,18 @@ import { useTranslation } from "react-i18next";
 import { notifyError, notifyLoading, notifySuccess } from "../../../utils/notify";
 import toast from "react-hot-toast";
 import { FaEdit, FaTimes, FaCheckSquare, FaSquare } from "react-icons/fa";
-import type { StaffMember, UpdateStaffMember, ShiftType } from "../types/staffMember";
+import type { StaffMember } from "../domain/staffMember"; 
+import type { UpdateStaffMemberRequest as UpdateStaffMember, ShiftType } from "../dtos/staffMember";
 import { updateStaffMember } from "../services/staffMemberService";
 import { getQualifications } from "../../qualifications/services/qualificationService";
-import type { Qualification } from "../../qualifications/types/qualification";
+import type { Qualification } from "../../qualifications/domain/qualification";
 import {
     createSchedule,
     SHIFT_OPTIONS,
     WEEKDAY_OPTIONS,
     binaryToWeekDays,
     getWeekDayNames
-} from "../types/staffMember";
+} from "../helpers/staffMemberHelpers"; 
 
 interface Props {
     staffMember: StaffMember;

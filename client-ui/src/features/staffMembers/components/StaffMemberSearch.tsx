@@ -3,8 +3,8 @@ import { useTranslation } from "react-i18next";
 import { notifyError, notifyLoading, notifySuccess } from "../../../utils/notify";
 import toast from "react-hot-toast";
 import { FaSearch, FaCheckSquare, FaSquare } from "react-icons/fa";
-import type { StaffMember } from "../types/staffMember";
-import type { Qualification } from "../../qualifications/types/qualification";
+import type { StaffMember } from "../domain/staffMember";
+import type { Qualification } from "../../qualifications/domain/qualification";
 import {
     getStaffMemberByMecNumber,
     getStaffMembersByStatus,

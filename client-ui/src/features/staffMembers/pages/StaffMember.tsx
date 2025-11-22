@@ -4,7 +4,7 @@ import { notifyLoading, notifySuccess, notifyError } from "../../../utils/notify
 import toast from "react-hot-toast";
 import { FaUsers } from "react-icons/fa";
 import { Link } from "react-router-dom";
-import type { StaffMember } from "../types/staffMember";
+import type { StaffMember } from "../domain/staffMember"; 
 import { getStaffMembers } from "../services/staffMemberService";
 import StaffMemberTable from "../components/StaffMemberTable";
 import StaffMemberDetails from "../components/StaffMemberDetails";
