@@ -1,0 +1,31 @@
+[
+  {
+    "id": "1",
+    "mecanographicNumber": "M001",
+    "shortName": "Alice Johnson",
+    "email": "alice.johnson@example.com",
+    "phone": "+351912345600",
+    "schedule": {
+      "shift": "Morning",
+      "daysOfWeek": "0000011"
+    },
+    "isActive": true,
+    "qualificationCodes": [
+      "STS-001",
+      "MTN-001"
+    ]
+  },
+  {
+    "id": "2",
+    "mecanographicNumber": "M002",
+    "shortName": "Bob Smith",
+    "email": "bob.smith@example.com",
+    "phone": "+351912345601",
+    "schedule": {
+      "shift": "Evening",
+      "daysOfWeek": "0000100"
+    },
+    "isActive": true,
+    "qualificationCodes": []
+  }
+]
