@@ -1,0 +1,24 @@
+﻿[
+  {
+    "id": "1",
+    "code": "DK-0001",
+    "location": "Porto Sul",
+    "status": "Available",
+    "lengthM": 250,
+    "depthM": 15,
+    "maxDraftM": 12,
+    "physicalResourceCodes": ["PR1", "PR2"],
+    "allowedVesselTypeIds": ["VT1", "VT2"]
+  },
+  {
+    "id": "2",
+    "code": "DK-0002",
+    "location": "Terminal Norte",
+    "status": "Maintenance",
+    "lengthM": 180,
+    "depthM": 10,
+    "maxDraftM": 8,
+    "physicalResourceCodes": ["PR3"],
+    "allowedVesselTypeIds": ["VT1"]
+  }
+]
