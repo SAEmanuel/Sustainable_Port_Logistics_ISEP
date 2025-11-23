@@ -579,7 +579,9 @@
       "updateFailed": "Failed to update resource.",
       "deactivateFailed": "Failed to deactivate resource.",
       "activateFailed": "Failed to reactivate resource.",
-      "loadQualificationDetails": "Qualif. name unavailable"
+      "loadQualificationDetails": "Qualif. name unavailable",
+      "invalidCapacity": "Operational capacity must be a positive numeric value.",
+      "invalidSetupTime": "Setup time must be a non-negative numeric value."
     }
   },
 

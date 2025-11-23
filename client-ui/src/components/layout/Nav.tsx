@@ -9,7 +9,6 @@ import LogoutButton from "../LogoutButton";
 import {
     FiHome,
     FiBox,
-    FiShield,
     FiSettings,
     FiUsers,
     FiGrid,
