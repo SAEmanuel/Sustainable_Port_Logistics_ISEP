@@ -433,6 +433,11 @@
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
 
     animation: slideDown 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+
+    /* Altura automática para não ocupar tudo */
+    height: auto;
+    max-height: 90vh;
+    overflow-y: auto;
 }
 
 .pr-modal-content h2 {
@@ -537,6 +542,10 @@
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
     animation: slideDown 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.1);
     overflow: hidden;
+
+    height: auto;
+    max-height: 90vh;
+    overflow-y: auto;
 }
 
 .pr-details-hero {
@@ -673,7 +682,6 @@
 
 /* --- 10. CENTRO DE CONTROLO  --- */
 
-/* Keyframes para a animação dos cartões de estatística */
 @keyframes slideUpFade {
     from {
         opacity: 0;
@@ -697,7 +705,7 @@
 
 .pr-stats-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr); /* 3 colunas para os stats */
+    grid-template-columns: repeat(3, 1fr);
     gap: 1.5rem;
 }
 
@@ -754,7 +762,7 @@
 }
 
 
-/* --- Caixa de Ações (Pesquisa + Criar) --- */
+/* --- Caixa de Ações --- */
 .pr-action-box {
     display: flex;
     flex-direction: column;
@@ -764,7 +772,6 @@
     border-radius: 12px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
 
-    /* Animação */
     opacity: 0;
     animation: slideUpFade 0.6s ease-out forwards;
     animation-delay: 0.4s;
@@ -836,8 +843,6 @@
     background: none;
     box-shadow: none;
 }
-
-/* --- 11. NOVO MODAL DE CRIAÇÃO --- */
 
 @keyframes fadeInStep {
     from { opacity: 0; }
@@ -913,19 +918,23 @@
 
 .pr-wizard-progress {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: space-between;
     width: 100%;
     padding-bottom: 1.5rem;
     border-bottom: 1px solid #f1f3f5;
+    flex-wrap: nowrap;
 }
 
 .pr-wizard-step {
     display: flex;
     flex-direction: column;
     align-items: center;
-    color: #adb5bd; /* Cor de Inativo */
+    color: #adb5bd;
     transition: all 0.3s ease;
+    position: relative;
+    z-index: 2;
+    flex-shrink: 0;
 }
 
 .step-dot {
@@ -939,6 +948,8 @@
     justify-content: center;
     font-weight: 700;
     transition: all 0.3s ease;
+
+    box-sizing: border-box;
 }
 
 .step-label {
@@ -946,17 +957,24 @@
     font-size: 0.8rem;
     font-weight: 600;
     text-transform: uppercase;
+    text-align: center;
+    max-width: 120px;
 }
 
 .step-connector {
     flex-grow: 1;
     height: 4px;
     background-color: #e9ecef;
-    margin: 0 0.5rem;
-    margin-bottom: 1.5rem;
     border-radius: 2px;
+    margin: 0 10px;
+
+    min-width: 20px;
+    display: block;
+
+    margin-top: 13px;
 }
 
+/* Estado Completo */
 .pr-wizard-step.complete .step-dot {
     background-color: #28a745;
     border-color: #28a745;
@@ -969,6 +987,7 @@
     background-color: #28a745;
 }
 
+/* Estado Ativo */
 .pr-wizard-step.active .step-dot {
     background-color: #fff;
     border-color: #007bff;
@@ -1373,5 +1392,3 @@
 [data-theme="dark"] .info-card-input::placeholder {
     color: #777;
 }
-
-

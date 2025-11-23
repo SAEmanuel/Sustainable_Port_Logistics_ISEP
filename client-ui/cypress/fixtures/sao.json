@@ -1,0 +1,16 @@
+[
+{
+"shippingOrganizationCode": { "value": "SAO0000001" },
+"legalName": "TransGlobal Shipping",
+"altName": "TGS",
+"address": "Rua do Porto 123",
+"taxnumber": { "value": "PT508112233" }
+},
+{
+"shippingOrganizationCode": { "value": "SAO0000002" },
+"legalName": "Lusitania Cargo SA",
+"altName": "LCS",
+"address": "Avenida Atlântica 890",
+"taxnumber": { "value": "PT508112233" }
+}
+]

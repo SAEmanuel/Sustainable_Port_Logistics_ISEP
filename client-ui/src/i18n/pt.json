@@ -75,7 +75,8 @@
     "adminPanel": "Gestão de Utilizadores",
     "sao": "Organizações Agente de Transporte",
     "vvnResponse": "Responder VVN",
-    "docks" : "Docks"
+    "docks" : "Docks",
+    "sar": "Representates de Agentes de Transporte"
   },
 
   "layout": {
@@ -589,7 +590,9 @@
       "updateFailed": "Falha ao atualizar recurso.",
       "deactivateFailed": "Falha ao desativar recurso.",
       "activateFailed": "Falha ao reativar recurso.",
-      "loadQualificationDetails": "Nome da qualif. indisponível"
+      "loadQualificationDetails": "Nome da qualif. indisponível",
+      "invalidCapacity": "A capacidade operacional deve ser um valor numérico positivo.",
+      "invalidSetupTime": "O tempo de setup deve ser um valor numérico não negativo."
     }
   },
 
@@ -1025,6 +1028,7 @@
     "nationality":"Nacionalidade",
     "active":"Ativo",
     "inactive":"Inativo",
-    "deleted":"Representante eliminado com sucesso!"
+    "deleted":"Representante eliminado com sucesso!",
+    "searchMode":"Pesquisar por: "
   }
 }

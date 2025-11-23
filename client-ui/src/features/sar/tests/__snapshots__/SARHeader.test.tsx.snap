@@ -1,0 +1,31 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`SARHeader > snapshot - keeps structure stable 1`] = `
+<div>
+  <div
+    class="vt-title-area"
+  >
+    <div
+      class="vt-title-box"
+    >
+      <h2
+        class="vt-title"
+      >
+         
+        sar.title
+      </h2>
+      <p
+        class="vt-sub"
+      >
+        sar.count (10)
+      </p>
+    </div>
+    <button
+      class="vt-create-btn-top"
+    >
+      + 
+      sar.add
+    </button>
+  </div>
+</div>
+`;

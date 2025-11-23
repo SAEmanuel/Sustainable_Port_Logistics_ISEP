@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import toast from "react-hot-toast";
-import type { PhysicalResource } from "../types/physicalResource";
-import { PhysicalResourceType, PhysicalResourceStatus } from "../types/physicalResource";
+import type { PhysicalResource } from "../domain/physicalResource";
+import { PhysicalResourceType, PhysicalResourceStatus } from "../domain/physicalResource";
 import { activatePhysicalResource, deactivatePhysicalResource } from "../services/physicalResourceService";
 import "../style/physicalResource.css";
 import PhysicalResourceEditModal from "./PhysicalResourceEditModal";
@@ -78,6 +78,7 @@ function PhysicalResourceDetails({ resource, isOpen, onClose }: PhysicalResource
             setCurrentResource(updatedResource);
             toast.success(t("physicalResource.success.deactivated"));
             onClose();
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
         } catch (err) {
             toast.error(t("physicalResource.errors.deactivateFailed"));
         } finally {
@@ -94,6 +95,7 @@ function PhysicalResourceDetails({ resource, isOpen, onClose }: PhysicalResource
             setCurrentResource(updatedResource);
             toast.success(t("physicalResource.success.activated"));
             onClose();
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
         } catch (err) {
             toast.error(t("physicalResource.errors.activateFailed"));
         } finally {

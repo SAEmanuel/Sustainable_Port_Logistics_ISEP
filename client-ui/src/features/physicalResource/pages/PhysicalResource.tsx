@@ -15,8 +15,8 @@ import {
     searchPhysicalResourcesByDescription
 } from "../services/physicalResourceService";
 
-import { PhysicalResourceStatus, PhysicalResourceType } from "../types/physicalResource";
-import type { PhysicalResource } from "../types/physicalResource";
+import { PhysicalResourceStatus, PhysicalResourceType } from "../domain/physicalResource";
+import type { PhysicalResource } from "../domain/physicalResource";
 
 import PhysicalResourceTable from "../components/PhysicalResourceTable";
 import PhysicalResourceSearch from "../components/PhysicalResourceSearch";

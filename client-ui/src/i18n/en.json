@@ -579,7 +579,9 @@
       "updateFailed": "Failed to update resource.",
       "deactivateFailed": "Failed to deactivate resource.",
       "activateFailed": "Failed to reactivate resource.",
-      "loadQualificationDetails": "Qualif. name unavailable"
+      "loadQualificationDetails": "Qualif. name unavailable",
+      "invalidCapacity": "Operational capacity must be a positive numeric value.",
+      "invalidSetupTime": "Setup time must be a non-negative numeric value."
     }
   },
 
@@ -996,7 +998,39 @@
     },
     "loading":"Loading Shipping Agent Organizations",
     "loadSuccess":"Loaded {{count}} Shipping Agent Organizations successfully.",
-    "created":"Shipping Agent Organization created successfully!"
+    "created":"Shipping Agent Organization created successfully!",
+    "empty": "No Shipping Agent Organizations found.",
+    "searchMode":"Search by: ",
+    "delete":"Delete",
+    "deleted":"Shipping Agent Organization deleted successfully!"
+  },
+  "sar":{
+    "title": "Shipping Agent Representatives",
+    "loading":"Loading Shipping Agent Representatives",
+    "loadSuccess":"Loaded {{count}} Shipping Agent Representatives successfully.",
+    "created":"Shipping Agent Representatives created!",
+    "updated":"Shipping Agent Representatives updated!",
+    "count": "{{count}} registered Shipping Agent Representatives",
+    "empty": "No Shipping Agent Representatives found...",
+    "edit":"Edit",
+    "cancel":"Cancel",
+    "save":"Save",
+    "update":"Update",
+    "searchPlaceholder": "Search",
+    "searchByNameButton":"Nome",
+    "searchByEmailButton":"Email",
+    "add":"Add",
+    "email":"Email",
+    "status":"status",
+    "phone": "Phone Number",
+    "sao":"Shipping Agent Organization",
+    "delete":"Delete",
+    "name":"Name",
+    "citizenId":"Citizen ID",
+    "nationality":"Nationality",
+    "active":"Active",
+    "inactive":"Inactive",
+    "deleted":"Shipping Agent Representative deleted successfully!",
+    "searchMode":"Search by: "
   }
-
 }

@@ -1,0 +1,32 @@
+[
+  {
+    "id": "1",
+    "code": "TRUCK-001",
+    "description": "Volvo FH16 Truck",
+    "operationalCapacity": 25.5,
+    "setupTime": 10,
+    "physicalResourceType": "Truck",
+    "physicalResourceStatus": "Available",
+    "qualificationID": "TRK-001"
+  },
+  {
+    "id": "2",
+    "code": "RS-450",
+    "description": "Kalmar Reach Stacker RS450",
+    "operationalCapacity": 35.0,
+    "setupTime": 15,
+    "physicalResourceType": "RStacker",
+    "physicalResourceStatus": "UnderMaintenance",
+    "qualificationID": "STS-001"
+  },
+  {
+    "id": "3",
+    "code": "STS-600",
+    "description": "Liebherr STS Crane 600",
+    "operationalCapacity": 60.0,
+    "setupTime": 30,
+    "physicalResourceType": "STSCrane",
+    "physicalResourceStatus": "Available",
+    "qualificationID": "STS-001"
+  }
+]

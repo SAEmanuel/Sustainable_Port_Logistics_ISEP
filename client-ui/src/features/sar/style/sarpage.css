@@ -155,6 +155,7 @@
 .vt-table {
     width: 100%;
     border-collapse: collapse;
+    table-layout: fixed; /* colunas mais estáveis */
 }
 
 .vt-table thead {
@@ -162,28 +163,29 @@
     border-bottom: 1px solid var(--shadow);
 }
 
-.vt-table th {
+.vt-table th,
+.vt-table td {
     padding: 12px 14px;
     font-size: 13px;
-    text-transform: uppercase;
-    letter-spacing: .5px;
-    opacity: .7;
+    vertical-align: middle; /* previne desalinhamentos */
     text-align: left;
 }
 
-.vt-table td {
-    padding: 12px 14px;
-    border-bottom: 1px solid var(--shadow);
+.vt-table th {
+    text-transform: uppercase;
+    letter-spacing: .5px;
+    opacity: .7;
 }
 
 .vt-row {
     cursor: pointer;
-    transition: .2s ease;
+    transition: background .2s ease, box-shadow .2s ease;
 }
 
+/* removido o translateY que criava desalinhamento */
 .vt-row:hover {
     background: rgba(255,255,255,.05);
-    transform: translateY(-2px);
+    box-shadow: 0 2px 6px rgba(0,0,0,.25);
 }
 
 .vt-badge {
@@ -193,6 +195,8 @@
     border-radius: 8px;
     font-size: 12px;
     font-weight: 600;
+    display: inline-flex;
+    align-items: center;
 }
 
 /* SLIDE PANEL */
@@ -232,10 +236,6 @@
     font-weight: 600;
     font-size: 14px;
     transition: .2s ease;
-}
-
-
-.vt-btn-delete {
     background: #ff4d4d;
     color: white;
 }

@@ -1,0 +1,24 @@
+[
+  {
+    "id": "1",
+    "name": "Alice Martins",
+    "citizenId": { "passportNumber": "P123456" },
+    "nationality": "PT",
+    "email": { "address": "alice.martins@example.com" },
+    "phoneNumber": { "number": "912345678" },
+    "sao": "SAO-01",
+    "notifs": [],
+    "status": "activated"
+  },
+  {
+    "id": "2",
+    "name": "Bruno Esteves",
+    "citizenId": { "passportNumber": "P987654" },
+    "nationality": "ES",
+    "email": { "address": "bruno.esteves@example.com" },
+    "phoneNumber": { "number": "934567890" },
+    "sao": "SAO-02",
+    "notifs": [],
+    "status": "activated"
+  }
+]

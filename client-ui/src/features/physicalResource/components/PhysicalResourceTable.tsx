@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
-import type { PhysicalResource } from "../types/physicalResource";
-import { PhysicalResourceStatus } from "../types/physicalResource";
+import type { PhysicalResource } from "../domain/physicalResource";
+import { PhysicalResourceStatus } from "../domain/physicalResource";
 import "../style/physicalResource.css";
 
 interface PhysicalResourceTableProps {
