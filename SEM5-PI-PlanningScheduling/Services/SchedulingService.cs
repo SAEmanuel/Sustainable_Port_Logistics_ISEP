@@ -1,3 +1,9 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text.Json;
+using System.Threading.Tasks;
 using SEM5_PI_DecisionEngineAPI.DTOs;
 using SEM5_PI_DecisionEngineAPI.Exceptions;
 
@@ -5,8 +11,8 @@ namespace SEM5_PI_DecisionEngineAPI.Services;
 
 public class SchedulingService
 {
-    const float MinP = 0.4f;
-    const float MaxP = 0.8f;
+    const float MinP = 6f;
+    const float MaxP = 8f;
 
     private readonly QualificationServiceClient _qualificationService;
     private readonly VesselVisitNotificationServiceClient _vvnClient;
@@ -14,6 +20,7 @@ public class SchedulingService
     private readonly VesselServiceClient _vesselSClient;
     private readonly DockServiceClient _dockClient;
     private readonly PrologClient _prologClient;
+
 
     public SchedulingService(
         VesselVisitNotificationServiceClient vvnClient,
@@ -30,81 +37,150 @@ public class SchedulingService
         _vesselSClient = vesselClient;
         _prologClient = prologClient;
     }
-
-    public async Task<DailyScheduleResultDto> ComputeDailyScheduleAsync(DateOnly day)
+    public Task<DailyScheduleResultDto> ComputeDailyScheduleAsync(DateOnly day)
     {
-        var vvns = await _vvnClient.GetVisitNotifications();
-        var vvnsForDay = vvns
-            .Where(v => DateOnly.FromDateTime(v.EstimatedTimeArrival.Date) == day)
-            .ToList();
+        return ComputeDailyScheduleInternalAsync(day, useMultiCrane: true);
+    }
 
-        if (vvnsForDay.Count == 0)
-            throw new PlanningSchedulingException(
-                $"No accepted vessel visit notifications for chosen day: {day}"
-            );
+private async Task<DailyScheduleResultDto> ComputeDailyScheduleInternalAsync(
+    DateOnly day,
+    bool useMultiCrane)
+{
+    var vvns = await _vvnClient.GetVisitNotifications();
+    var vvnsForDay = vvns
+        .Where(v => DateOnly.FromDateTime(v.EstimatedTimeArrival.Date) == day)
+        .ToList();
 
-        if (vvnsForDay.Any(v => string.IsNullOrWhiteSpace(v.Dock)))
-            throw new PlanningSchedulingException(
-                "One or more vessel visit notifications have no assigned dock yet"
-            );
+    if (vvnsForDay.Count == 0)
+        throw new PlanningSchedulingException(
+            $"No accepted vessel visit notifications for chosen day: {day}"
+        );
 
-        var cranes = await GetCranesForVvnsAsync(vvnsForDay);
-        var craneQualifications = await GetCraneQualificationsAsync(cranes);
-        var staffByVvn = await GetQualifiedStaffForVvnsAsync(craneQualifications);
+    if (vvnsForDay.Any(v => string.IsNullOrWhiteSpace(v.Dock)))
+        throw new PlanningSchedulingException(
+            "One or more vessel visit notifications have no assigned dock yet"
+        );
 
-        var result = new DailyScheduleResultDto();
+    var cranes = await GetCranesForVvnsAsync(vvnsForDay);
+    var craneQualifications = await GetCraneQualificationsAsync(cranes);
+    var staffByVvn = await GetQualifiedStaffForVvnsAsync(craneQualifications);
 
-        foreach (var vvn in vvnsForDay)
+    var result = new DailyScheduleResultDto();
+
+    foreach (var vvn in vvnsForDay)
+    {
+        var crane = cranes[vvn.Id];
+        var staff = staffByVvn[vvn.Id];
+        var vessel = await _vesselSClient.GetVesselByImo(vvn.VesselImo);
+
+        var loadingDuration = TimeSpan.Zero;
+        var unloadingDuration = TimeSpan.Zero;
+
+        // 1) Determinar tempos de loading/unloading
+        if (vvn.LoadingCargoManifest is not null && vvn.UnloadingCargoManifest is null)
         {
-            var crane = cranes[vvn.Id];
-            var staff = staffByVvn[vvn.Id];
-            var vessel = await _vesselSClient.GetVesselByImo(vvn.VesselImo);
-
-            var loadingDuration = TimeSpan.Zero;
-            var unloadingDuration = TimeSpan.Zero;
-
-            if (vvn.LoadingCargoManifest is not null && vvn.UnloadingCargoManifest is null)
-            {
-                loadingDuration = GenerateRandomTime(vvn.EstimatedTimeArrival, vvn.EstimatedTimeDeparture);
-            }
-
-            if (vvn.LoadingCargoManifest is null && vvn.UnloadingCargoManifest is not null)
-            {
-                unloadingDuration = GenerateRandomTime(vvn.EstimatedTimeArrival, vvn.EstimatedTimeDeparture);
-            }
-
-            if (vvn.LoadingCargoManifest is not null && vvn.UnloadingCargoManifest is not null)
-            {
-                var (load, unload) = GenerateLoadingAndUnloading(vvn.EstimatedTimeArrival, vvn.EstimatedTimeDeparture);
-                loadingDuration = load;
-                unloadingDuration = unload;
-            }
-
-            var staffAssignments = BuildStaffAssignmentsForVvn(vvn, staff);
-
-            var eta = DateTimeToInteger(day, vvn.EstimatedTimeArrival);
-            var etd = DateTimeToInteger(day, vvn.EstimatedTimeDeparture);
-            var loadDuration = TimeSpanToInteger(loadingDuration);
-            var unloadDuration = TimeSpanToInteger(unloadingDuration);
-
-            var op = new SchedulingOperationDto
-            {
-                VvnId = vvn.Id,
-                Vessel = vessel!.Name,
-                Dock = vvn.Dock,
-                StartTime = eta,
-                EndTime = etd,
-                LoadingDuration = loadDuration,
-                UnloadingDuration = unloadDuration,
-                Crane = crane.Code.Value,
-                StaffAssignments = staffAssignments
-            };
-
-            result.Operations.Add(op);
+            loadingDuration = GenerateRandomTime(vvn.EstimatedTimeArrival, vvn.EstimatedTimeDeparture);
         }
 
-        return result;
+        if (vvn.LoadingCargoManifest is null && vvn.UnloadingCargoManifest is not null)
+        {
+            unloadingDuration = GenerateRandomTime(vvn.EstimatedTimeArrival, vvn.EstimatedTimeDeparture);
+        }
+
+        if (vvn.LoadingCargoManifest is not null && vvn.UnloadingCargoManifest is not null)
+        {
+            var (load, unload) = GenerateLoadingAndUnloading(
+                vvn.EstimatedTimeArrival,
+                vvn.EstimatedTimeDeparture);
+            loadingDuration = load;
+            unloadingDuration = unload;
+        }
+
+        var loadHours = TimeSpanToInteger(loadingDuration);
+        var unloadHours = TimeSpanToInteger(unloadingDuration);
+        var totalDuration = loadHours + unloadHours; // trabalho total
+
+        if (totalDuration <= 0)
+            totalDuration = 1;
+
+        var etaHours = DateTimeToInteger(day, vvn.EstimatedTimeArrival);
+        var plannedEtdHours = DateTimeToInteger(day, vvn.EstimatedTimeDeparture);
+
+        if (plannedEtdHours <= etaHours)
+            throw new PlanningSchedulingException(
+                $"Invalid time window for VVN {vvn.Id}: ETD before or equal to ETA."
+            );
+
+        var availableWindow = plannedEtdHours - etaHours;
+        if (availableWindow <= 0)
+            availableWindow = 1;
+
+        int craneCountUsed;
+        int optimizedOperationDuration;
+
+        if (useMultiCrane)
+        {
+          if (totalDuration <= availableWindow)
+            {
+                craneCountUsed = 1;
+                optimizedOperationDuration = totalDuration;
+            }
+            else
+            {
+                var totalCranesAvailable = await GetTotalCranesForVvnAsync(vvn);
+
+                if (totalCranesAvailable <= 1)
+                {
+                    craneCountUsed = 1;
+                    optimizedOperationDuration = totalDuration;
+                }
+                else
+                {
+                    var requiredCranes = (int)Math.Ceiling((double)totalDuration / availableWindow);
+                    craneCountUsed = Math.Min(requiredCranes, totalCranesAvailable);
+
+                    optimizedOperationDuration =
+                        (int)Math.Ceiling((double)totalDuration / craneCountUsed);
+                }
+            }
+        }
+        else
+        {
+            craneCountUsed = 1;
+            optimizedOperationDuration = totalDuration;
+        }
+
+        // 3) Saída real e atraso
+        var realDepartureTime = etaHours + optimizedOperationDuration;
+        var departureDelay = Math.Max(0, realDepartureTime - plannedEtdHours);
+
+        // 4) Staff assignments
+        var staffAssignments = BuildStaffAssignmentsForVvn(vvn, staff);
+
+        // 5) DTO final
+        var op = new SchedulingOperationDto
+        {
+            VvnId = vvn.Id,
+            Vessel = vessel!.Name,
+            Dock = vvn.Dock,
+            StartTime = etaHours,
+            EndTime = plannedEtdHours,
+            LoadingDuration = loadHours,
+            UnloadingDuration = unloadHours,
+            Crane = crane.Code.Value,
+            StaffAssignments = staffAssignments,
+
+            CraneCountUsed = craneCountUsed,
+            OptimizedOperationDuration = optimizedOperationDuration,
+            RealDepartureTime = realDepartureTime,
+            DepartureDelay = departureDelay
+        };
+
+        result.Operations.Add(op);
     }
+
+    return result;
+}
 
     public async Task<object?> SendScheduleToPrologOptimal(DailyScheduleResultDto schedule)
     {
@@ -121,6 +197,188 @@ public class SchedulingService
         return await _prologClient.SendToPrologAsync<object>("schedule/local_search", schedule);
     }
 
+    private int ExtractTotalDelay(object? prologResponse)
+    {
+        if (prologResponse is JsonElement json &&
+            json.ValueKind == JsonValueKind.Object &&
+            json.TryGetProperty("total_delay", out var tdProp) &&
+            tdProp.ValueKind == JsonValueKind.Number)
+        {
+            return tdProp.GetInt32();
+        }
+
+        return 0;
+    }
+
+    public async Task<MultiCraneComparisonResultDto> ComputeDailyScheduleWithPrologComparisonAsync(DateOnly day)
+    {
+        // 1) Gerar UM ÚNICO schedule base, com 1 grua por definição
+        var singleSchedule = await ComputeDailyScheduleInternalAsync(day, useMultiCrane: false);
+
+        // 2) Construir o plano multi-crane EM CIMA do mesmo schedule base
+        var multiCraneSchedule = await BuildMultiCraneScheduleFromSingleAsync(singleSchedule, day);
+
+        // 3) Enviar ambos para o Prolog
+        var singleProlog = await SendScheduleToPrologGreedy(singleSchedule);
+        var multiProlog  = await SendScheduleToPrologGreedy(multiCraneSchedule);
+
+        var singleTotalDelay = ExtractTotalDelay(singleProlog);
+        var multiTotalDelay  = ExtractTotalDelay(multiProlog);
+
+        // 4) Crane-hours agregados
+        var singleCraneHours = singleSchedule.Operations
+            .Sum(o => o.OptimizedOperationDuration * o.CraneCountUsed);
+
+        var multiCraneHours = multiCraneSchedule.Operations
+            .Sum(o => o.OptimizedOperationDuration * o.CraneCountUsed);
+
+        return new MultiCraneComparisonResultDto
+        {
+            SingleCraneSchedule = singleSchedule,
+            SingleCraneProlog   = singleProlog!,
+            MultiCraneSchedule  = multiCraneSchedule,
+            MultiCraneProlog    = multiProlog!,
+            SingleTotalDelay    = singleTotalDelay,
+            MultiTotalDelay     = multiTotalDelay,
+            SingleCraneHours    = singleCraneHours,
+            MultiCraneHours     = multiCraneHours
+        };
+    }
+    
+    private async Task<DailyScheduleResultDto> BuildMultiCraneScheduleFromSingleAsync(
+    DailyScheduleResultDto singleSchedule,
+    DateOnly day)
+{
+    var vvns = await _vvnClient.GetVisitNotifications();
+    var vvnsForDay = vvns
+        .Where(v => DateOnly.FromDateTime(v.EstimatedTimeArrival.Date) == day)
+        .ToDictionary(v => v.Id, v => v);
+
+    var multi = new DailyScheduleResultDto();
+
+    foreach (var op in singleSchedule.Operations)
+    {
+        if (!vvnsForDay.TryGetValue(op.VvnId, out var vvn))
+        {
+            multi.Operations.Add(op);
+            continue;
+        }
+
+        int work = op.LoadingDuration + op.UnloadingDuration;
+        if (work <= 0) work = 1;
+
+        int etaHours        = op.StartTime;
+        int plannedEtdHours = op.EndTime;
+
+        int availableWindow = plannedEtdHours - etaHours;
+        if (availableWindow <= 0) availableWindow = 1;
+
+        int singleDuration = work;
+        int singleRealEnd  = etaHours + singleDuration;
+        int singleDelay    = Math.Max(0, singleRealEnd - plannedEtdHours);
+
+        int craneCountUsed;
+        int optimizedOperationDuration;
+
+        if (singleDelay == 0)
+        {
+            craneCountUsed = 1;
+            optimizedOperationDuration = work;
+
+            Console.WriteLine("===== MULTI-CRANE ANALYSIS (SKIPPED) =====");
+            Console.WriteLine($"VVN: {op.VvnId} | Vessel: {op.Vessel} | Dock: {op.Dock}");
+            Console.WriteLine($"Work (1 crane)............: {work} h");
+            Console.WriteLine($"Available window..........: {availableWindow} h");
+            Console.WriteLine("Situação: ✅ Sem atraso com 1 crane. Multi-crane não aplicado.");
+            Console.WriteLine();
+        }
+        else
+        {
+            int requiredCranes = (int)Math.Ceiling((double)work / availableWindow);
+
+            var cranesAtDock = await _dockClient.GetDockCranesAsync(vvn.Dock);
+            int cranesAvailable = cranesAtDock.Count;
+
+            if (cranesAvailable <= 1)
+            {
+                craneCountUsed = 1;
+                optimizedOperationDuration = work;
+
+                int idealTime = (int)Math.Ceiling((double)work / requiredCranes);
+                int idealRealEnd = etaHours + idealTime;
+                int idealDelay = Math.Max(0, idealRealEnd - plannedEtdHours);
+
+                Console.WriteLine("===== MULTI-CRANE ANALYSIS (NO EXTRA RESOURCES) =====");
+                Console.WriteLine($"VVN: {op.VvnId} | Vessel: {op.Vessel} | Dock: {op.Dock}");
+                Console.WriteLine($"Work (1 crane)......................: {work} h");
+                Console.WriteLine($"Available window....................: {availableWindow} h");
+                Console.WriteLine();
+                Console.WriteLine($"Cranes necessárias p/ zero atraso...: {requiredCranes}");
+                Console.WriteLine($"Cranes disponíveis..................: {cranesAvailable}");
+                Console.WriteLine();
+                Console.WriteLine($"[SIMULAÇÃO IDEAL] Tempo com {requiredCranes} cranes: {idealTime} h");
+                Console.WriteLine($"[SIMULAÇÃO IDEAL] Delay com {requiredCranes} cranes: {idealDelay} h (esperado 0)");
+                Console.WriteLine();
+                Console.WriteLine("Situação: ⚠ Apenas 1 crane disponível. Multi-crane real não é possível.");
+                Console.WriteLine("          Usamos 1 crane, sem qualquer redução de atraso neste VVN.");
+                Console.WriteLine();
+            }
+            else
+            {
+                craneCountUsed = Math.Min(requiredCranes, cranesAvailable);
+
+                optimizedOperationDuration =
+                    (int)Math.Ceiling((double)work / craneCountUsed);
+
+                int multiRealEnd = etaHours + optimizedOperationDuration;
+                int multiDelay   = Math.Max(0, multiRealEnd - plannedEtdHours);
+
+                int savedDelay = singleDelay - multiDelay;
+
+                Console.WriteLine("===== MULTI-CRANE ANALYSIS (APPLIED) =====");
+                Console.WriteLine($"VVN: {op.VvnId} | Vessel: {op.Vessel} | Dock: {op.Dock}");
+                Console.WriteLine($"Work (1 crane)......................: {work} h");
+                Console.WriteLine($"Available window....................: {availableWindow} h");
+                Console.WriteLine($"Delay com 1 crane...................: {singleDelay} h");
+                Console.WriteLine();
+                Console.WriteLine($"Cranes necessárias p/ zero atraso...: {requiredCranes} (X)");
+                Console.WriteLine($"Cranes disponíveis no dock..........: {cranesAvailable} (limite físico)");
+                Console.WriteLine($"Cranes usadas neste plano...........: {craneCountUsed} (Y)");
+                Console.WriteLine();
+                Console.WriteLine($"Duração com {craneCountUsed} cranes: {optimizedOperationDuration} h");
+                Console.WriteLine($"Delay com multi-crane...............: {multiDelay} h");
+                Console.WriteLine($"Redução de atraso (single - multi)..: {savedDelay} h");
+                Console.WriteLine();
+            }
+        }
+
+        var multiOp = new SchedulingOperationDto
+        {
+            VvnId = op.VvnId,
+            Vessel = op.Vessel,
+            Dock = op.Dock,
+            StartTime = etaHours,
+            EndTime = plannedEtdHours,
+            LoadingDuration = op.LoadingDuration,
+            UnloadingDuration = op.UnloadingDuration,
+            Crane = op.Crane,
+            StaffAssignments = op.StaffAssignments,
+
+            CraneCountUsed = craneCountUsed,
+            OptimizedOperationDuration = optimizedOperationDuration,
+            RealDepartureTime = etaHours + optimizedOperationDuration,
+            DepartureDelay = Math.Max(0, etaHours + optimizedOperationDuration - plannedEtdHours)
+        };
+
+        multi.Operations.Add(multiOp);
+    }
+
+    return multi;
+}
+
+    // ============================================================
+    // Geração de tempos de loading/unloading
+    // ============================================================
 
     private TimeSpan GenerateRandomTime(DateTime start, DateTime end)
     {
@@ -176,6 +434,17 @@ public class SchedulingService
         return (loading, unloading);
     }
 
+    // ============================================================
+    // Cranes & Qualificações
+    // ============================================================
+
+    private async Task<int> GetTotalCranesForVvnAsync(VesselVisitNotificationPSDto vvn)
+    {
+        var cranes = await _dockClient.GetDockCranesAsync(vvn.Dock);
+        return cranes.Count;
+    }
+
+    
     private async Task<Dictionary<string, PhysicalResourceDto>> GetCranesForVvnsAsync
         (List<VesselVisitNotificationPSDto> vvns)
     {
@@ -221,7 +490,6 @@ public class SchedulingService
         return result;
     }
 
-    // Staff for VVN by qualifications
     private async Task<Dictionary<string, List<StaffMemberDto>>> GetQualifiedStaffForVvnsAsync(
         Dictionary<string, QualificationDto> craneQualifications)
     {
@@ -263,21 +531,23 @@ public class SchedulingService
         return result;
     }
 
-    // Shift windows
+    // ============================================================
+    // Shifts & Staff Assignments
+    // ============================================================
+
     private (DateTime Start, DateTime End) GetShiftWindow(DateOnly day, string shift)
     {
         var dayStart = day.ToDateTime(TimeOnly.MinValue);
 
         return shift switch
         {
-            "Night"   => (dayStart,          dayStart.AddHours(8)),
-            "Morning" => (dayStart.AddHours(8),  dayStart.AddHours(16)),
+            "Night"   => (dayStart,             dayStart.AddHours(8)),
+            "Morning" => (dayStart.AddHours(8), dayStart.AddHours(16)),
             "Evening" => (dayStart.AddHours(16), dayStart.AddDays(1)),
             _ => throw new ArgumentOutOfRangeException(nameof(shift), shift, null)
         };
     }
 
-    // Staff assignments
     private List<StaffAssignmentDto> BuildStaffAssignmentsForVvn(
         VesselVisitNotificationPSDto vvn,
         List<StaffMemberDto> staffForVvn)
@@ -402,6 +672,10 @@ public class SchedulingService
 
         return bits[indexInString] == '1';
     }
+
+    // ============================================================
+    // Utilitários de tempo
+    // ============================================================
 
     private int DateTimeToInteger(DateOnly init, DateTime actual)
     {

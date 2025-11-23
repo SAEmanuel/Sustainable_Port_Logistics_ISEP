@@ -15,7 +15,6 @@ public class ScheduleController : ControllerBase
         _schedulingService = schedulingService;
     }
 
-    
     [HttpGet("daily/optimal")]
     public async Task<IActionResult> GetDailyScheduleOptimal([FromQuery] DateOnly day)
     {
@@ -37,7 +36,6 @@ public class ScheduleController : ControllerBase
         }
     }
 
-   
     [HttpGet("daily/greedy")]
     public async Task<IActionResult> GetDailyScheduleGreedy([FromQuery] DateOnly day)
     {
@@ -59,7 +57,6 @@ public class ScheduleController : ControllerBase
         }
     }
 
-    
     [HttpGet("daily/local-search")]
     public async Task<IActionResult> GetDailyScheduleLocalSearch([FromQuery] DateOnly day)
     {
@@ -73,6 +70,42 @@ public class ScheduleController : ControllerBase
                 algorithm = "local_search",
                 schedule,
                 prolog = prologResponse
+            });
+        }
+        catch (PlanningSchedulingException e)
+        {
+            return BadRequest(new { error = e.Message });
+        }
+    }
+
+    [HttpGet("daily/greedy/multi-crane-comparison")]
+    public async Task<IActionResult> GetDailyScheduleGreedyMultiCraneComparison([FromQuery] DateOnly day)
+    {
+        try
+        {
+            var comparison = await _schedulingService
+                .ComputeDailyScheduleWithPrologComparisonAsync(day);
+
+            return Ok(new
+            {
+                algorithm = "greedy",
+                singleCrane = new
+                {
+                    totalDelay = comparison.SingleTotalDelay,
+                    totalCraneHours = comparison.SingleCraneHours
+                },
+                multiCrane = new
+                {
+                    totalDelay = comparison.MultiTotalDelay,
+                    totalCraneHours = comparison.MultiCraneHours
+                },
+                improvement = new
+                {
+                    delayReduced = comparison.DelayImprovement,
+                    delayReducedPercent = comparison.SingleTotalDelay > 0
+                        ? (double)comparison.DelayImprovement / comparison.SingleTotalDelay * 100.0
+                        : 0.0
+                }
             });
         }
         catch (PlanningSchedulingException e)
