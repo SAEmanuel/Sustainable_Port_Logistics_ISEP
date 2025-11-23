@@ -1,6 +1,5 @@
 import { describe, it, expect } from "vitest";
 
-// CORREÇÃO: Importamos os nomes novos com "Request" no fim
 import {
     mapToPhysicalResource,
     mapToCreatePhysicalResourceRequest,
@@ -11,7 +10,6 @@ import { PhysicalResourceType, PhysicalResourceStatus } from "../domain/physical
 
 describe('Physical Resource Mapper', () => {
 
-    // 1. Teste de mapeamento da API (Backend) para o Domínio (Frontend)
     it('deve mapear a resposta da API para o domínio PhysicalResource corretamente', () => {
         const apiResponse = {
             id: "res-123",
@@ -39,7 +37,6 @@ describe('Physical Resource Mapper', () => {
         });
     });
 
-    // 2. Teste de mapeamento para Criação (Frontend -> Backend DTO)
     it('deve mapear dados para CreatePhysicalResourceRequest', () => {
         const formData = {
             description: "Nova Empilhadeira",
@@ -49,7 +46,6 @@ describe('Physical Resource Mapper', () => {
             qualificationCode: "Q-DRIVER"
         };
 
-        // CORREÇÃO: Usar a nova função Request
         const result = mapToCreatePhysicalResourceRequest(formData);
 
         expect(result).toEqual({
@@ -61,16 +57,13 @@ describe('Physical Resource Mapper', () => {
         });
     });
 
-    // 3. Teste de mapeamento para Atualização (Frontend -> Backend DTO)
     it('deve mapear dados parciais para UpdatePhysicalResourceRequest', () => {
         const updateData = {
             description: "Descrição Atualizada",
             operationalCapacity: 200,
-            // Simular caso onde qualificationID vem da interface mas deve virar qualificationId no DTO
             qualificationID: "Q-OLD"
         };
 
-        // CORREÇÃO: Usar a nova função Request
         const result = mapToUpdatePhysicalResourceRequest(updateData);
 
         expect(result).toEqual({
