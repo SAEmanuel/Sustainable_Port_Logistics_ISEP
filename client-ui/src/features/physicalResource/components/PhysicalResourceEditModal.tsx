@@ -3,9 +3,10 @@ import { useTranslation } from "react-i18next";
 import toast from "react-hot-toast";
 import { updatePhysicalResource } from "../services/physicalResourceService";
 import { getQualifications } from "../../qualifications/services/qualificationService";
-import type { Qualification } from "../../qualifications/types/qualification";
-import type { PhysicalResource, UpdatePhysicalResource } from "../types/physicalResource";
-import { PhysicalResourceType } from "../types/physicalResource";
+import type { Qualification } from "../../qualifications/domain/qualification";
+import type { PhysicalResource } from "../domain/physicalResource";
+import type { UpdatePhysicalResourceRequest } from "../dtos/physicalResource";
+import { PhysicalResourceType } from "../domain/physicalResource";
 import "../style/physicalResource.css";
 
 const getResourceIcon = (type: PhysicalResourceType | string) => {
@@ -31,7 +32,7 @@ interface PhysicalResourceEditModalProps {
 
 function PhysicalResourceEditModal({ isOpen, onClose, onUpdated, resource }: PhysicalResourceEditModalProps) {
     const { t } = useTranslation();
-    const [formData, setFormData] = useState<UpdatePhysicalResource>({});
+    const [formData, setFormData] = useState<UpdatePhysicalResourceRequest>({});
     const [qualifications, setQualifications] = useState<Qualification[]>([]);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<Error | null>(null);
@@ -52,6 +53,7 @@ function PhysicalResourceEditModal({ isOpen, onClose, onUpdated, resource }: Phy
                 try {
                     const data = await getQualifications();
                     setQualifications(data);
+                    // eslint-disable-next-line @typescript-eslint/no-unused-vars
                 } catch (err) {
                     toast.error(t("physicalResource.errors.loadQualifications"));
                 }
@@ -83,7 +85,7 @@ function PhysicalResourceEditModal({ isOpen, onClose, onUpdated, resource }: Phy
                 throw new Error(t("physicalResource.errors.descriptionRequired"));
             }
 
-            const dto: UpdatePhysicalResource = {
+            const dto: UpdatePhysicalResourceRequest = {
                 description: formData.description,
                 operationalCapacity: formData.operationalCapacity,
                 setupTime: formData.setupTime,
@@ -116,25 +118,25 @@ function PhysicalResourceEditModal({ isOpen, onClose, onUpdated, resource }: Phy
 
     return (
         <div className={`pr-modal-overlay ${isAnimatingOut ? 'anim-out' : ''}`}>
-            {}
+            {/* Modal Content */}
             <form onSubmit={handleSubmit} className={`pr-details-modal-content ${isAnimatingOut ? 'anim-out' : ''}`}>
 
-                {}
+                {/* Hero Header */}
                 <div className="pr-details-hero">
                     <div className="hero-icon-wrapper">
                         {getResourceIcon(resource.physicalResourceType)}
                     </div>
                     <div className="hero-text">
                         <h2>{t("physicalResource.editModalTitle", { code: resource.code.value })}</h2>
-                        {}
+                        {/* Exibir o Tipo */}
                         <p className="details-description">{t(`physicalResource.types.${resource.physicalResourceType}`)}</p>
                     </div>
                 </div>
 
-                {}
+                {/* Grid de Inputs */}
                 <div className="pr-details-grid pr-edit-grid">
 
-                    {}
+                    {/* Descrição */}
                     <div className="info-card editable-card">
                         <div className="info-card-header">
                             <span>📝</span> {t("physicalResource.form.description")}
@@ -153,7 +155,7 @@ function PhysicalResourceEditModal({ isOpen, onClose, onUpdated, resource }: Phy
                         </div>
                     </div>
 
-                    {}
+                    {/* Qualificação */}
                     <div className="info-card editable-card">
                         <div className="info-card-header">
                             <span>🎓</span> {t("physicalResource.form.qualification")}
@@ -176,7 +178,7 @@ function PhysicalResourceEditModal({ isOpen, onClose, onUpdated, resource }: Phy
                         </div>
                     </div>
 
-                    {}
+                    {/* Capacidade */}
                     <div className="info-card editable-card">
                         <div className="info-card-header">
                             <span>⚙️</span> {t("physicalResource.form.operationalCapacity")}
@@ -191,11 +193,12 @@ function PhysicalResourceEditModal({ isOpen, onClose, onUpdated, resource }: Phy
                                 onChange={handleChange}
                                 placeholder={t("physicalResource.form.capacityPlaceholder")}
                                 min="0"
+                                step="any"
                             />
                         </div>
                     </div>
 
-                    {}
+                    {/* Setup Time */}
                     <div className="info-card editable-card">
                         <div className="info-card-header">
                             <span>⏱️</span> {t("physicalResource.form.setupTime")}
@@ -210,6 +213,7 @@ function PhysicalResourceEditModal({ isOpen, onClose, onUpdated, resource }: Phy
                                 onChange={handleChange}
                                 placeholder={t("physicalResource.form.setupTimePlaceholder")}
                                 min="0"
+                                step="any"
                             />
                         </div>
                     </div>
@@ -221,7 +225,7 @@ function PhysicalResourceEditModal({ isOpen, onClose, onUpdated, resource }: Phy
                     </div>
                 )}
 
-                {}
+                {/* Botões de Ação */}
                 <div className="pr-modal-actions">
                     <button type="button" onClick={handleClose} className="pr-cancel-button" disabled={isLoading}>
                         {t("physicalResource.actions.cancel")}

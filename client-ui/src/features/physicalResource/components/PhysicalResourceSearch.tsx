@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import toast from "react-hot-toast";
-import { PhysicalResourceType, PhysicalResourceStatus } from "../types/physicalResource";
+import { PhysicalResourceType, PhysicalResourceStatus } from "../domain/physicalResource";
 import "../style/physicalResource.css";
 
 type FilterType = "all" | "code" | "description" | "type" | "status";

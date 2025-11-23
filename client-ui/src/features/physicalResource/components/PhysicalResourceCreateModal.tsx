@@ -3,10 +3,10 @@ import { useTranslation } from "react-i18next";
 import toast from "react-hot-toast";
 import { createPhysicalResource } from "../services/physicalResourceService";
 import { getQualifications } from "../../qualifications/services/qualificationService";
-import type { Qualification } from "../../qualifications/types/qualification";
+import type { Qualification } from "../../qualifications/domain/qualification";
 
-import { PhysicalResourceType } from "../types/physicalResource";
-import type { CreatePhysicalResource } from "../types/physicalResource";
+import { PhysicalResourceType } from "../domain/physicalResource";
+import type { CreatePhysicalResourceRequest } from "../dtos/physicalResource";
 import "../style/physicalResource.css";
 
 const getResourceIcon = (type: PhysicalResourceType | string) => {
@@ -29,7 +29,7 @@ interface PhysicalResourceCreateModalProps {
     onCreated: () => void;
 }
 
-const initialState: CreatePhysicalResource = {
+const initialState: CreatePhysicalResourceRequest = {
     description: "",
     operationalCapacity: undefined,
     setupTime: undefined,
@@ -40,7 +40,7 @@ const initialState: CreatePhysicalResource = {
 function PhysicalResourceCreateModal({ isOpen, onClose, onCreated }: PhysicalResourceCreateModalProps) {
     const { t } = useTranslation();
     const [step, setStep] = useState(1);
-    const [formData, setFormData] = useState<CreatePhysicalResource>(initialState);
+    const [formData, setFormData] = useState<CreatePhysicalResourceRequest>(initialState);
     const [qualifications, setQualifications] = useState<Qualification[]>([]);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<Error | null>(null);
@@ -77,18 +77,54 @@ function PhysicalResourceCreateModal({ isOpen, onClose, onCreated }: PhysicalRes
         }));
     };
 
+    // Função auxiliar para bloquear caracteres não numéricos
+    const handleNumericKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+        // Permite: backspace, delete, tab, escape, enter, ponto, vírgula e setas
+        if (
+            ["Backspace", "Delete", "Tab", "Escape", "Enter", ".", ","].includes(e.key) ||
+            (e.key >= "0" && e.key <= "9") ||
+            (e.key.startsWith("Arrow"))
+        ) {
+            return;
+        }
+        e.preventDefault();
+    };
+
+
     const handleTypeSelect = (type: PhysicalResourceType) => {
         setFormData(prev => ({ ...prev, physicalResourceType: type }));
         setStep(2);
     };
 
     const handleNext = () => {
-        if (step === 2 && !formData.description) {
-            setError(new Error(t("physicalResource.errors.descriptionRequired")));
-            toast.error(t("physicalResource.errors.descriptionRequired"));
-            return;
-        }
         setError(null);
+
+        if (step === 2) {
+            // 1. Validação de Descrição
+            if (!formData.description) {
+                const msg = t("physicalResource.errors.descriptionRequired");
+                setError(new Error(msg));
+                toast.error(msg);
+                return;
+            }
+
+            // 2. Validação de Capacidade Operacional
+            if (formData.operationalCapacity === undefined || formData.operationalCapacity < 0) {
+                const msg = t("physicalResource.errors.invalidCapacity"); // Certifique-se de ter esta chave ou use string fixa
+                setError(new Error(msg || "Invalid Capacity"));
+                toast.error(msg || "Invalid Capacity: Must be a positive number.");
+                return;
+            }
+
+            // 3. Validação de Setup Time
+            if (formData.setupTime === undefined || formData.setupTime < 0) {
+                const msg = t("physicalResource.errors.invalidSetupTime");
+                setError(new Error(msg || "Invalid Setup Time"));
+                toast.error(msg || "Invalid Setup Time: Must be a positive number.");
+                return;
+            }
+        }
+
         setStep(step + 1);
     };
 
@@ -131,7 +167,7 @@ function PhysicalResourceCreateModal({ isOpen, onClose, onCreated }: PhysicalRes
         <div className={`pr-modal-overlay ${isAnimatingOut ? 'anim-out' : ''}`}>
             <div className={`pr-modal-content ${isAnimatingOut ? 'anim-out' : ''}`}>
 
-                {}
+                {/* Progress Bar */}
                 <div className="pr-wizard-progress">
                     <div className={`pr-wizard-step ${step === 1 ? 'active' : (step > 1 ? 'complete' : '')}`}>
                         <div className="step-dot">1</div>
@@ -149,10 +185,10 @@ function PhysicalResourceCreateModal({ isOpen, onClose, onCreated }: PhysicalRes
                     </div>
                 </div>
 
-                {}
+                {/* Form Content */}
                 <form onSubmit={handleSubmit} className="pr-form">
 
-                    {}
+                    {/* Step 1: Type Selection */}
                     {step === 1 && (
                         <div className="pr-wizard-step-content">
                             <h3 className="pr-wizard-prompt">{t("physicalResource.steps.selectTypePrompt")}</h3>
@@ -172,7 +208,7 @@ function PhysicalResourceCreateModal({ isOpen, onClose, onCreated }: PhysicalRes
                         </div>
                     )}
 
-                    {}
+                    {/* Step 2: Details */}
                     {step === 2 && (
                         <div className="pr-wizard-step-content">
                             <div className="pr-form-group">
@@ -195,8 +231,10 @@ function PhysicalResourceCreateModal({ isOpen, onClose, onCreated }: PhysicalRes
                                     name="operationalCapacity"
                                     value={formData.operationalCapacity ?? ""}
                                     onChange={handleChange}
+                                    onKeyDown={handleNumericKeyDown} /* BLOQUEIA LETRAS */
                                     placeholder={t("physicalResource.form.capacityPlaceholder")}
                                     min="0"
+                                    step="any"
                                 />
                             </div>
                             <div className="pr-form-group">
@@ -207,14 +245,16 @@ function PhysicalResourceCreateModal({ isOpen, onClose, onCreated }: PhysicalRes
                                     name="setupTime"
                                     value={formData.setupTime ?? ""}
                                     onChange={handleChange}
+                                    onKeyDown={handleNumericKeyDown} /* BLOQUEIA LETRAS */
                                     placeholder={t("physicalResource.form.setupTimePlaceholder")}
                                     min="0"
+                                    step="any"
                                 />
                             </div>
                         </div>
                     )}
 
-                    {}
+                    {/* Step 3: Assignment */}
                     {step === 3 && (
                         <div className="pr-wizard-step-content">
                             <div className="pr-form-group">
@@ -238,7 +278,7 @@ function PhysicalResourceCreateModal({ isOpen, onClose, onCreated }: PhysicalRes
 
                     {error && <p className="pr-error-message">{error.message}</p>}
 
-                    {}
+                    {/* Actions Wizard */}
                     <div className="pr-modal-actions-wizard">
                         {step === 1 && (
                             <button type="button" onClick={handleClose} className="pr-cancel-button">
