@@ -1,4 +1,9 @@
-export interface SAO {
+import type{
+    shippingOrganizationCode,
+    TaxNumber
+} from "../domain/valueObjects";
+
+export interface saoDTO {
     shippingOrganizationCode : shippingOrganizationCode
     legalName : string 
     altName : string 
@@ -6,19 +11,9 @@ export interface SAO {
     taxnumber : TaxNumber
 }
 
-export interface shippingOrganizationCode{
-    value : string
-}
-
-export interface TaxNumber{
-    value : string
-}
-
-
-export interface CreateSAORequest {
+export interface CreateSAODTO {
    legalName : string 
    altName : string  
    address : string  
    taxnumber : string  
 }
-

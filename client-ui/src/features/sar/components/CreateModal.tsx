@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { createSAR } from "../services/sarService";
 import { getSAOs } from "../../sao/services/saoService";
-import type { SAO } from "../../sao/types/sao";
+import type { SAO } from "../../sao/domain/sao";
 import type { CreateSARRequest} from "../domain/sar";
 import type { Status} from "../domain/valueObjects"
 import { NATIONALITIES } from "../constants/nationalities";
