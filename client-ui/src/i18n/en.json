@@ -1031,6 +1031,12 @@
     "active":"Active",
     "inactive":"Inactive",
     "deleted":"Shipping Agent Representative deleted successfully!",
-    "searchMode":"Search by: "
+    "searchMode":"Search by: ",
+    "nameRequired":"Name is required!",
+    "idRequired": "Citizen Id is required!",
+    "phoneRequired":"Phone number is required!",
+    "nationalityRequired":"Nationality is required!",
+    "saoRequired": "Representative must have an associated Organization!",
+    "emailRequired": "Email is required!"
   }
 }

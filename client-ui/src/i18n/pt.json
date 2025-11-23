@@ -1029,6 +1029,12 @@
     "active":"Ativo",
     "inactive":"Inativo",
     "deleted":"Representante eliminado com sucesso!",
-    "searchMode":"Pesquisar por: "
+    "searchMode":"Pesquisar por: ",
+    "nameRequired":"Nome não pode ser vazio!",
+    "idRequired": "Nº Cartão de Cidadão não pode ser vazio!",
+    "phoneRequired":"Nº de Telemóvel não pode ser vazio!",
+    "nationalityRequired":"Nacionalidade não pode ser vazia!",
+    "saoRequired": "Representante tem de ter uma Organização associdada!",
+    "emailRequired": "Email não pode ser vazio!"
   }
 }

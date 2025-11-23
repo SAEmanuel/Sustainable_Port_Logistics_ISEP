@@ -140,7 +140,6 @@ function CreateSARForm({
   );
 }
 
-/* ---------- Modal de criação ---------- */
 
 export default function CreateModal({
   setIsCreateOpen,
@@ -158,12 +157,44 @@ export default function CreateModal({
   });
 
   const submit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    await createSAR(form);
-    toast.success(t("sar.created"));
-    await refresh();
-    setIsCreateOpen(false);
-  };
+  e.preventDefault();
+
+  const errors: string[] = [];
+
+  if (!form.name.trim()) {
+    errors.push(t("sar.nameRequired"));
+  }
+
+  if (!form.citizenId.passportNumber.trim()) {
+    errors.push(t("sar.idRequired"));
+  }
+
+  if (!form.phoneNumber.number.trim()) {
+    errors.push(t("sar.phoneRequired"));
+  }
+
+  if (!form.nationality.trim()) {
+    errors.push(t("sar.nationalityRequired"));
+  }
+
+  if (!form.Sao.trim()) {
+    errors.push(t("sar.saoRequired"));
+  }
+
+  if (!form.email.address.trim()) {
+    errors.push(t("sar.emailRequired"));
+  }
+
+  if (errors.length > 0) {
+    errors.forEach((err) => toast.error(err));
+    return;
+  }
+
+  await createSAR(form);
+  toast.success(t("sar.created"));
+  await refresh();
+  setIsCreateOpen(false);
+};
 
   return (
     <div className="vt-modal-overlay">

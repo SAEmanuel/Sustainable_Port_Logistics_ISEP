@@ -122,11 +122,20 @@ export default function SAOPage() {
 
     // ---------- CRIAÇÃO ----------
     const handleCreate = async () => {
-        if (!legalName.trim())
-            return toast.error(t("sao.errors.legalNameRequired"));
+        let hasError = false;
 
-        if (!taxnumber.trim())
-            return toast.error(t("sao.errors.taxRequired"));
+        if (!legalName.trim()) {
+            toast.error(t("sao.errors.legalNameRequired"));
+            hasError = true;
+        }
+
+        if (!taxnumber.trim()) {
+            toast.error(t("sao.errors.taxRequired"));
+            hasError = true;
+        }
+
+        if (hasError) return;
+
 
         const payload = {
             legalName,
