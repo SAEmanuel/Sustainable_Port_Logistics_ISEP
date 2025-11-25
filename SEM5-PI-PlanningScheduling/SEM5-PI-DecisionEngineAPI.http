@@ -1,4 +1,4 @@
-@DecisionAddress = http://10.9.23.188/scheduling
+@DecisionAddress = http://localhost:5296
 
 
 ###
@@ -14,3 +14,9 @@ Accept: application/json
 ###
 GET {{DecisionAddress}}/api/schedule/daily/local-search?day=2025-12-01
 Accept: application/json
+
+
+###
+GET {{DecisionAddress}}/api/schedule/daily/greedy/multi-crane-comparison?day=2025-12-01
+Accept: application/json
+

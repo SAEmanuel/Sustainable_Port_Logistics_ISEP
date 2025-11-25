@@ -11,8 +11,8 @@ namespace SEM5_PI_DecisionEngineAPI.Services;
 
 public class SchedulingService
 {
-    const float MinP = 6f;
-    const float MaxP = 8f;
+    const float MinP = 0.6f;
+    const float MaxP = 0.8f;
 
     private readonly QualificationServiceClient _qualificationService;
     private readonly VesselVisitNotificationServiceClient _vvnClient;
