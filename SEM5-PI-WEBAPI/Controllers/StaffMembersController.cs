@@ -6,7 +6,7 @@ using SEM5_PI_WEBAPI.Domain.StaffMembers.DTOs;
 
 namespace SEM5_PI_WEBAPI.Controllers;
 
-//[Authorize(Roles = "LogisticsOperator")]
+[Authorize(Roles = "LogisticsOperator")]
 [Route("api/[controller]")]
 [ApiController]
 public class StaffMembersController : ControllerBase

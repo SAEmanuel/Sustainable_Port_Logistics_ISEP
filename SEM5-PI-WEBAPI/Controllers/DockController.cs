@@ -6,7 +6,7 @@ using SEM5_PI_WEBAPI.Domain.Shared;
 
 namespace SEM5_PI_WEBAPI.Controllers;
 
-//[Authorize(Roles = "PortAuthorityOfficer")]
+
 [ApiController]
 [Route("api/[controller]")]
 public class DockController : ControllerBase
@@ -37,6 +37,7 @@ public class DockController : ControllerBase
         }
     }
 
+    [Authorize(Roles = "PortAuthorityOfficer")]
     [HttpGet("id/{id:guid}")]
     public async Task<ActionResult<DockDto>> GetById(Guid id)
     {
@@ -54,6 +55,7 @@ public class DockController : ControllerBase
         }
     }
 
+    [Authorize(Roles = "PortAuthorityOfficer")]
     [HttpPost]
     public async Task<ActionResult<DockDto>> CreateAsync([FromBody] RegisterDockDto dto)
     {
@@ -71,6 +73,7 @@ public class DockController : ControllerBase
         }
     }
 
+    [Authorize(Roles = "PortAuthorityOfficer")]
     [HttpGet("code/{code}")]
     public async Task<ActionResult<DockDto>> GetByCodeAsync(string code)
     {
@@ -88,6 +91,7 @@ public class DockController : ControllerBase
         }
     }
 
+    [Authorize(Roles = "PortAuthorityOfficer")]
     [HttpGet("vesseltype/{vesselTypeId}")]
     public async Task<ActionResult<List<DockDto>>> GetByVesselTypeAsync(string vesselTypeId)
     {
@@ -105,6 +109,7 @@ public class DockController : ControllerBase
         }
     }
 
+    [Authorize(Roles = "PortAuthorityOfficer")]
     [HttpGet("filter")]
     public async Task<ActionResult<List<DockDto>>> GetByFilterAsync(
         [FromQuery] string? code,
@@ -127,6 +132,7 @@ public class DockController : ControllerBase
         }
     }
 
+    [Authorize(Roles = "PortAuthorityOfficer")]
     [HttpGet("location")]
     public async Task<ActionResult<List<DockDto>>> GetByLocationAsync([FromQuery] string value)
     {
@@ -141,6 +147,7 @@ public class DockController : ControllerBase
         }
     }
 
+    [Authorize(Roles = "PortAuthorityOfficer")]
     [HttpPatch("code/{code}")]
     public async Task<ActionResult<DockDto>> PatchByCodeAsync(string code, [FromBody] UpdateDockDto? dto)
     {
@@ -159,6 +166,7 @@ public class DockController : ControllerBase
         }
     }
     
+    [Authorize(Roles = "PortAuthorityOfficer")]
     [HttpGet("physical-code/{code}")]
     public async Task<ActionResult<DockDto>> GetByPhysicalResourceCode(string code)
     {
@@ -173,6 +181,7 @@ public class DockController : ControllerBase
         }
     }
 
+    [Authorize(Roles = "PortAuthorityOfficer")]
     [HttpGet("codes")]
     public async Task<ActionResult<List<string>>> GetAllCodes()
     {

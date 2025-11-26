@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SEM5_PI_WEBAPI.Domain.Shared;
 using SEM5_PI_WEBAPI.Domain.Users;
@@ -23,6 +24,7 @@ public class UserController : ControllerBase
         _emailSender = emailSender;
     }
 
+    
     [HttpGet]
     public async Task<ActionResult<IEnumerable<UserDto>>> GetAll()
     {
@@ -32,6 +34,7 @@ public class UserController : ControllerBase
         return Ok(list);
     }
 
+    
     [HttpGet("NotEliminated")]
     public async Task<ActionResult<IEnumerable<UserDto>>> GetAllNotEliminated()
     {
@@ -41,6 +44,7 @@ public class UserController : ControllerBase
         return Ok(list);
     }
 
+    
     [HttpGet("NonAuthorized")]
     public async Task<ActionResult<IEnumerable<UserDto>>> GetAllNonAuthorized()
     {
@@ -50,6 +54,7 @@ public class UserController : ControllerBase
         return Ok(list);
     }
 
+    
     [HttpGet("{id}")]
     public async Task<ActionResult<UserDto>> GetById(Guid id)
     {
@@ -73,6 +78,7 @@ public class UserController : ControllerBase
         }
     }
 
+    
     [HttpGet("email/{email}")]
     public async Task<ActionResult<UserDto>> GetByEmail(string email)
     {
@@ -97,6 +103,7 @@ public class UserController : ControllerBase
         }
     }
 
+    [Authorize(Roles = "Administrator")]
     [HttpPut("toggle/{id}")]
     public async Task<ActionResult<UserDto>> ToggleStatus(Guid id)
     {
@@ -120,6 +127,7 @@ public class UserController : ControllerBase
         }
     }
 
+    [Authorize(Roles = "Administrator")]
     [HttpPut("changeRole/{id}")]
     public async Task<ActionResult<UserDto>> ChangeRole(Guid id, Roles role)
     {
@@ -185,6 +193,7 @@ public class UserController : ControllerBase
         }
     }
 
+    
     [HttpPut("activate")]
     public async Task<IActionResult> ActivateUser([FromQuery] string email)
     {
@@ -202,6 +211,7 @@ public class UserController : ControllerBase
         return Ok("Account activated successfully");
     }
 
+    [Authorize(Roles = "Administrator")]
     [HttpPut("eliminate")]
     public async Task<IActionResult> EliminateUser([FromQuery] string email)
     {

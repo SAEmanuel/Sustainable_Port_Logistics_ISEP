@@ -68,7 +68,8 @@
     "sao": "Organizações Agente de Transporte",
     "vvnResponse": "Responder VVN",
     "docks": "Docks",
-    "sar": "Representates de Agentes de Transporte"
+    "sar": "Representates de Agentes de Transporte",
+    "planningScheduling" : "Planeamento"
   },
   "layout": {
     "light": "Modo claro",

@@ -27,7 +27,7 @@ public class VesselVisitNotificationController : ControllerBase
         _refrontend = refrontend;
     }
 
-    //[Authorize(Roles = "ShippingAgentRepresentative")]
+    [Authorize(Roles = "PortAuthorityOfficer,LogisticsOperator,ShippingAgentRepresentative")]
     [HttpPost]
     public async Task<ActionResult<VesselVisitNotificationDto>> CreateAsync(
         [FromBody] CreatingVesselVisitNotificationDto dto)
@@ -47,7 +47,7 @@ public class VesselVisitNotificationController : ControllerBase
         }
     }
 
-    //[Authorize(Roles = "PortAuthorityOfficer,LogisticsOperator,ShippingAgentRepresentative")]
+    [Authorize(Roles = "PortAuthorityOfficer,Administrator,ShippingAgentRepresentative")]
     [HttpGet("id/{id:guid}")]
     public async Task<ActionResult<VesselVisitNotificationDto>> GetById(Guid id)
     {
@@ -66,7 +66,7 @@ public class VesselVisitNotificationController : ControllerBase
     }
 
     // ===== Actions by ID/Code =====
-    // [Authorize(Roles = "PortAuthorityOfficer")]
+    [Authorize(Roles = "Administrator,ShippingAgentRepresentative")]
     [HttpPut("{id:guid}/withdraw")]
     public async Task<ActionResult<VesselVisitNotificationDto>> WithdrawByIdAsync(Guid id)
     {
@@ -90,7 +90,7 @@ public class VesselVisitNotificationController : ControllerBase
         }
     }
 
-    //[Authorize(Roles = "PortAuthorityOfficer")]
+    [Authorize(Roles = "Administrator,ShippingAgentRepresentative")]
     [HttpPut("{code}/withdraw")]
     public async Task<ActionResult<VesselVisitNotificationDto>> WithdrawByCodeAsync(string code)
     {
@@ -114,7 +114,7 @@ public class VesselVisitNotificationController : ControllerBase
         }
     }
 
-    //[Authorize(Roles = "ShippingAgentRepresentative")]
+    [Authorize(Roles = "Administrator,ShippingAgentRepresentative")]
     [HttpPut("{code}/submit")]
     public async Task<ActionResult<VesselVisitNotificationDto>> SubmitByCodeAsync(string code)
     {
@@ -138,7 +138,7 @@ public class VesselVisitNotificationController : ControllerBase
         }
     }
 
-    //[Authorize(Roles = "ShippingAgentRepresentative")]
+    [Authorize(Roles = "Administrator,ShippingAgentRepresentative")]
     [HttpPut("{id:guid}/submit")]
     public async Task<ActionResult<VesselVisitNotificationDto>> SubmitByIdAsync(Guid id)
     {
@@ -162,7 +162,7 @@ public class VesselVisitNotificationController : ControllerBase
         }
     }
 
-    //[Authorize(Roles = "ShippingAgentRepresentative")]
+    [Authorize(Roles = "Administrator,ShippingAgentRepresentative")]
     [HttpPut("{id:guid}/update")]
     public async Task<ActionResult<VesselVisitNotificationDto>> UpdateAsync(
         Guid id,
@@ -188,7 +188,7 @@ public class VesselVisitNotificationController : ControllerBase
         }
     }
 
-    //[Authorize(Roles = "PortAuthorityOfficer")]
+    [Authorize(Roles = "PortAuthorityOfficer")]
     [HttpPut("accept/id/{id:guid}")]
     public async Task<ActionResult<VesselVisitNotificationDto>> AcceptVvn(Guid id)
     {
@@ -214,7 +214,7 @@ public class VesselVisitNotificationController : ControllerBase
         }
     }
 
-    //[Authorize(Roles = "PortAuthorityOfficer")]
+    [Authorize(Roles = "PortAuthorityOfficer")]
     [HttpPut("reject/")]
     public async Task<ActionResult<VesselVisitNotificationDto>> RejectVvn(RejectVesselVisitNotificationDto dto)
     {
@@ -241,7 +241,7 @@ public class VesselVisitNotificationController : ControllerBase
     }
 
     // ===== Queries by SAR =====
-    //[Authorize(Roles = "ShippingAgentRepresentative")]
+    [Authorize(Roles = "Administrator,ShippingAgentRepresentative")]
     [HttpGet("shippingAgentRepresentative/inProgress-pendingInformation/{id:guid}")]
     public async Task<ActionResult<List<VesselVisitNotificationDto>>> GetInProgressOrPendingVvnsByFiltersAsync(
         [FromRoute(Name = "id")] Guid idSarWhoImAm,
@@ -284,7 +284,7 @@ public class VesselVisitNotificationController : ControllerBase
         }
     }
 
-    //[Authorize(Roles = "ShippingAgentRepresentative")]
+    [Authorize(Roles = "Administrator,ShippingAgentRepresentative")]
     [HttpGet("shippingAgentRepresentative/withDrawn/{id:guid}")]
     public async Task<ActionResult<List<VesselVisitNotificationDto>>> GetWithdrawnVvnsByFiltersAsync(
         [FromRoute(Name = "id")] Guid idSarWhoImAm,
@@ -327,7 +327,7 @@ public class VesselVisitNotificationController : ControllerBase
         }
     }
 
-    //[Authorize(Roles = "ShippingAgentRepresentative")]
+    [Authorize(Roles = "Administrator,ShippingAgentRepresentative")]
     [HttpGet("shippingAgentRepresentative/submitted/{id:guid}")]
     public async Task<ActionResult<List<VesselVisitNotificationDto>>> GetSubmittedVvnsByFiltersAsync(
         [FromRoute(Name = "id")] Guid idSarWhoImAm,
@@ -373,7 +373,7 @@ public class VesselVisitNotificationController : ControllerBase
         }
     }
 
-    //[Authorize(Roles = "ShippingAgentRepresentative")]
+    [Authorize(Roles = "Administrator,ShippingAgentRepresentative")]
     [HttpGet("shippingAgentRepresentative/accepted/{id:guid}")]
     public async Task<ActionResult<List<VesselVisitNotificationDto>>> GetAcceptedVvnsByFiltersAsync(
         [FromRoute(Name = "id")] Guid idSarWhoImAm,
@@ -423,6 +423,7 @@ public class VesselVisitNotificationController : ControllerBase
 
     // ===== ADMIN (ALL) =====
 
+    [Authorize(Roles = "Administrator,ShippingAgentRepresentative")]
     [HttpGet("all/inProgress-pendingInformation")]
     public async Task<ActionResult<List<VesselVisitNotificationDto>>> GetAllInProgressPendingAsync(
         [FromQuery] Guid? specificRepresentative,
@@ -448,6 +449,7 @@ public class VesselVisitNotificationController : ControllerBase
         return Ok(res);
     }
 
+    [Authorize(Roles = "Administrator,ShippingAgentRepresentative")]
     [HttpGet("all/withDrawn")]
     public async Task<ActionResult<List<VesselVisitNotificationDto>>> GetAllWithdrawnAsync(
         [FromQuery] Guid? specificRepresentative,
@@ -473,6 +475,7 @@ public class VesselVisitNotificationController : ControllerBase
         return Ok(res);
     }
 
+    [Authorize(Roles = "Administrator,ShippingAgentRepresentative")]
     [HttpGet("all/submitted")]
     public async Task<ActionResult<List<VesselVisitNotificationDto>>> GetAllSubmittedAsync(
         [FromQuery] Guid? specificRepresentative,
@@ -500,6 +503,7 @@ public class VesselVisitNotificationController : ControllerBase
         return Ok(res);
     }
 
+    
     [HttpGet("all/accepted")]
     public async Task<ActionResult<List<VesselVisitNotificationDto>>> GetAllAcceptedAsync(
         [FromQuery] Guid? specificRepresentative,
@@ -529,7 +533,7 @@ public class VesselVisitNotificationController : ControllerBase
 
         return Ok(res);
     }
-    
+
     [HttpGet]
     public async Task<ActionResult<IEnumerable<VesselVisitNotificationDto>>> GetAllAccepted()
     {

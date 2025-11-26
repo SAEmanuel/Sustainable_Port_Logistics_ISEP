@@ -8,7 +8,7 @@ using SEM5_PI_WEBAPI.utils;
 
 namespace SEM5_PI_WEBAPI.Controllers;
 
-//[Authorize(Roles = "PortAuthorityOfficer")]
+
 [ApiController]
 [Route("api/[controller]")]
 public class StorageAreasController : ControllerBase
@@ -43,6 +43,7 @@ public class StorageAreasController : ControllerBase
         }
     }
 
+    [Authorize(Roles = "PortAuthorityOfficer")]
     [HttpGet("id/{id:guid}", Name = "GetStorageAreaById")]
     public async Task<ActionResult<StorageAreaDto>> GetByIdAsync(Guid id)
     {
@@ -62,6 +63,7 @@ public class StorageAreasController : ControllerBase
         }
     }
 
+    [Authorize(Roles = "PortAuthorityOfficer")]
     [HttpGet("name/{name}")]
     public async Task<ActionResult<StorageAreaDto>> GetByNameAsync(string name)
     {
@@ -81,6 +83,7 @@ public class StorageAreasController : ControllerBase
         }
     }
 
+    [Authorize(Roles = "PortAuthorityOfficer")]
     [HttpGet("distances")]
     public async Task<ActionResult<List<StorageAreaDockDistanceDto>>> GetDistancesToDockAsync(
         [FromQuery] string? name, [FromQuery] Guid? id)
@@ -102,6 +105,7 @@ public class StorageAreasController : ControllerBase
         }
     }
 
+    [Authorize(Roles = "PortAuthorityOfficer")]
     [HttpGet("physicalresources")]
     public async Task<ActionResult<List<string>>> GetPhysicalResources([FromQuery] string? name, [FromQuery] Guid? id)
     {
@@ -126,7 +130,7 @@ public class StorageAreasController : ControllerBase
 
 
 
-
+    [Authorize(Roles = "PortAuthorityOfficer")]
     [HttpPost]
     public async Task<ActionResult<StorageAreaDto>> CreateAsync(CreatingStorageAreaDto dto)
     {
@@ -157,6 +161,7 @@ public class StorageAreasController : ControllerBase
         }
     }
 
+    [Authorize(Roles = "PortAuthorityOfficer")]
     [HttpGet("{id:guid}/grid")]
     public async Task<ActionResult<StorageAreaGridDto>> GetGrid(Guid id)
     {
@@ -174,6 +179,7 @@ public class StorageAreasController : ControllerBase
         }
     }
 
+    [Authorize(Roles = "PortAuthorityOfficer")]
     [HttpGet("{id:guid}/container")]
     public async Task<ActionResult<ContainerDto>> GetContainerInPositionX(Guid id,[FromQuery]int bay,[FromQuery]int row, [FromQuery]int tier)
     {

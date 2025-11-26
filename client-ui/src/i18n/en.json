@@ -71,7 +71,8 @@
     "logout": "Logout",
     "sao": "Shipping Agent Organizations",
     "vvnResponse": "VVN Response",
-    "docks" : "Docks"
+    "docks" : "Docks",
+    "planningScheduling" : "Planning"
   },
 
   "layout": {

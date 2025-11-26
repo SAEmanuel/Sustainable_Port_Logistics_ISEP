@@ -69,6 +69,7 @@ function useAccessibleLinksByRole(t: (k: string) => string, role?: "Administrato
                 break;
             case Roles.ProjectManager:
                 L.push({ label: t("dashboard.planning"), path: "/planning-scheduling", color, icon: routeIcon["/projects"] });
+                L.push({ label: t("dashboard.port3d"), path: "/3dSecene", color, icon: routeIcon["/3dSecene"] },);
                 break;
 
 
