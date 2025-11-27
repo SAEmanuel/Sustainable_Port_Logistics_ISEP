@@ -1063,7 +1063,7 @@
     "window": "Window (ETA/ETD)",
     "work": "Work (Loading/Unloading)",
     "craneUsed": "Crane Used",
-    "optimizedDuration": "Optimized Duration",
+    "optimizedDuration": "Total Duration",
     "realDeparture": "Real Departure",
     "delay": "Delay",
     "staffAssignments": "Staff Assignments",

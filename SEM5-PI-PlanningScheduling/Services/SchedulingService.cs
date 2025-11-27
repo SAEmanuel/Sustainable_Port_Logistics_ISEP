@@ -614,7 +614,7 @@ public class SchedulingService
                     
                     op.StartTime = pOp.StartTime; 
                     op.RealDepartureTime = pOp.EndTime;
-                    op.OptimizedOperationDuration = pOp.EndTime - pOp.StartTime; 
+                    op.OptimizedOperationDuration = (pOp.EndTime - pOp.StartTime) + 1;
                     
                     op.DepartureDelay = Math.Max(0, op.RealDepartureTime - op.EndTime);
                     
