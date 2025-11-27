@@ -1,4 +1,4 @@
-name: .NET CI/CD with Deployment
+name: .NET Backend Build & Test
 
 on:
   push:
@@ -8,8 +8,8 @@ on:
   schedule:
     - cron: '0 2 * * *'
   workflow_dispatch:
- 
-jobs: 
+
+jobs:
   build-webapi:
     runs-on: ubuntu-latest
     steps:
@@ -28,17 +28,8 @@ jobs:
         run: dotnet build ./SEM5-PI-WEBAPI/ --no-restore --configuration Release
 
       - name: Run Unit Tests
-        run: dotnet test ./SEM5-PI-WEBAPI/ --no-build --verbosity normal --configuration Release --logger "trx;LogFileName=test-results.trx"
+        run: dotnet test ./SEM5-PI-WEBAPI/ --no-build --verbosity normal --configuration Release --logger "trx;LogFileName=test-results-webapi.trx"
 
-      - name: Publish WEBAPI artifacts
-        run: dotnet publish ./SEM5-PI-WEBAPI/ -c Release -r linux-x64 --self-contained true -o ./webapi-publish
-
-      - name: Upload WEBAPI folder
-        uses: actions/upload-artifact@v4
-        with:
-          name: SEM5-PI-WEBAPI
-          path: ./webapi-publish/
-  
   build-scheduling:
     runs-on: ubuntu-latest
     steps:
@@ -57,37 +48,4 @@ jobs:
         run: dotnet build ./SEM5-PI-PlanningScheduling/ --no-restore --configuration Release
 
       - name: Run Unit Tests
-        run: dotnet test ./SEM5-PI-PlanningScheduling/ --no-build --verbosity normal --configuration Release --logger "trx;LogFileName=test-results.trx"
-
-      - name: Publish Scheduling artifacts
-        run: dotnet publish ./SEM5-PI-PlanningScheduling/ -c Release -r linux-x64 --self-contained true -o ./scheduling-publish
-
-      - name: Upload Scheduling folder
-        uses: actions/upload-artifact@v4
-        with:
-          name: SEM5-PI-PlanningScheduling
-          path: ./scheduling-publish/
-
-  build-frontend:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-
-      - name: Install dependencies and build (Bypass strict TS Check)
-        run: |
-          cd ./client-ui/
-          npm install
-          # Chamamos 'vite build' diretamente para ignorar 'tsc -b' que falha
-          npx vite build
-
-      - name: Upload Frontend Build folder
-        uses: actions/upload-artifact@v4
-        with:
-          name: frontend
-          path: ./client-ui/dist/
+        run: dotnet test ./SEM5-PI-PlanningScheduling/ --no-build --verbosity normal --configuration Release --logger "trx;LogFileName=test-results-scheduling.trx"
