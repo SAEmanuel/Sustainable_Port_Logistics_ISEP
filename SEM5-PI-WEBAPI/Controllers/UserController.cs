@@ -103,7 +103,7 @@ public class UserController : ControllerBase
         }
     }
 
-    [Authorize(Roles = "Administrator")]
+    
     [HttpPut("toggle/{id}")]
     public async Task<ActionResult<UserDto>> ToggleStatus(Guid id)
     {
@@ -127,7 +127,7 @@ public class UserController : ControllerBase
         }
     }
 
-    [Authorize(Roles = "Administrator")]
+    
     [HttpPut("changeRole/{id}")]
     public async Task<ActionResult<UserDto>> ChangeRole(Guid id, Roles role)
     {
@@ -211,7 +211,7 @@ public class UserController : ControllerBase
         return Ok("Account activated successfully");
     }
 
-    [Authorize(Roles = "Administrator")]
+    
     [HttpPut("eliminate")]
     public async Task<IActionResult> EliminateUser([FromQuery] string email)
     {
