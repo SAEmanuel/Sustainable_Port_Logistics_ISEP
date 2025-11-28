@@ -1,4 +1,3 @@
-// src/features/viewer3d/scene/PortScene.ts
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import type { SceneData, ContainerDto } from "../types";
@@ -7,7 +6,7 @@ import { makePortBase } from "./objects/PortBase";
 import type { PortLayout } from "./objects/PortBase";
 import { ASSETS_TEXTURES } from "./utils/assets";
 // @ts-ignore – util interno com tipos compatíveis
-import { computePortGrids /*, drawPortGridsDebug*/ } from "./objects/portGrids";
+import { computePortGrids /* , drawPortGridsDebug */ } from "./objects/portGrids";
 
 import { addRoadPoles } from "./objects/roadLights";
 import { makeStorageArea } from "./objects/StorageArea";
@@ -78,7 +77,12 @@ export class PortScene {
     pickables: THREE.Object3D[] = [];
     reqId = 0;
 
+    // seleção atual (para highlight & camera focus)
+    private selectedObj: THREE.Object3D | null = null;
+
+    // grelhas/rects de A/B/C (para layoutEngine)
     private _grids: ReturnType<typeof computePortGrids> | null = null;
+    // guarda o layout do cais/estradas (PortLayout) para o tráfego
     private _baseLayout!: PortLayout;
 
     constructor(container: HTMLDivElement) {
@@ -104,7 +108,10 @@ export class PortScene {
         );
         this.camera.position.set(180, 200, 420);
 
-        /* ------------ Luzes ------------ */
+        // this.renderer.toneMappingExposure = 0.7;
+        // this.loadSkyHDR();
+
+        /* ------------ Luzes (LightingController) ------------ */
         this.light = new LightingController(this.scene, this.renderer, {
             enableGUI: true,
             guiMount: container,
@@ -155,7 +162,7 @@ export class PortScene {
         this._baseLayout = baseLayout;
         this.scene.add(this.gBase);
 
-        /* ------------ PREPARAR GRUPOS 3D ------------ */
+        /* ------------ PREPARAR GRUPOS 3D E ANEXAR ------------ */
         this.gContainers.name = "containers";
         this.gStorage.name = "storage-areas";
         this.gDocks.name = "docks";
@@ -205,11 +212,15 @@ export class PortScene {
         this.fp.attachTo(this.worker.getCameraAnchor());
 
         this.scene.add(this.fp.controls.object);
-        (this.fp.controls.object as THREE.Object3D).position.copy(this.camera.position);
+        (this.fp.controls.object as THREE.Object3D).position.copy(
+            this.camera.position,
+        );
 
         window.addEventListener("keydown", (e) => {
             if (e.code === "KeyF") {
-                this.fp.controls.isLocked ? this.fp.unlock() : this.fp.lock();
+                this.fp.controls.isLocked
+                    ? this.fp.unlock()
+                    : this.fp.lock();
             }
         });
 
@@ -219,54 +230,28 @@ export class PortScene {
         this._grids = computePortGrids(W, D, 10);
         // drawPortGridsDebug(this.scene, this._grids, 1.1);
 
-        /* ------------ OBJETOS ESTÁTICOS via CONFIG ------------ */
-
-        // Faróis
+        /* ------------ OBJETOS “AMBIENTAIS” FIXOS ------------ */
+        // FARÓIS
         addRoadPoles(this.scene, this._baseLayout, portSceneConfig.roadLights);
 
-        // Árvores
+        // ÁRVORES
         addRoadTrees(this.scene, this._baseLayout, portSceneConfig.roadTrees);
 
-        // Pontes + cidade
+        // PONTES + CIDADE
         addBridges(this.gBridge, this._baseLayout, portSceneConfig.bridges);
 
-        // Tráfego
-        addRoadTraffic(this.gTraffic, this._baseLayout, portSceneConfig.traffic);
+        /* ------------ CONTROLOS ORBIT ------------ */
+        this.controls = new OrbitControls(
+            this.camera,
+            this.renderer.domElement,
+        );
 
-        // Parques C.1 / C.2
-        if (this._grids) {
-            addAngleParkingInC(this.gParking, this._grids, portSceneConfig.parking);
-            addWorkshopsInC34(this.gWorkshops, this._grids, portSceneConfig.workshops);
-            addExtrasRowInC34(this.gExtras, this._grids, portSceneConfig.extras);
-            addContainerYardsInC78910(this.gYards, this._grids, portSceneConfig.yards);
-
-            // toldos A.1 (estes ainda são hardcoded, mas podiam ir para o JSON também)
-            addModernAwningsInA1(this.gDecor, this._grids, {
-                fillWidthRatio: 0.87,
-                fillDepthRatio: 0.87,
-                marginX: 1.0,
-                marginZ: 1.0,
-                gapBetween: 1.2,
-                eaveHeight: 29.5,
-                ridgeExtra: 32,
-                postRadius: 0.5,
-                beamRadius: 0.5,
-                finishBarRadius: 0.5,
-                overhangX: 1.0,
-                overhangZ: 1.0,
-                colorFabric: 0xffffff,
-                fabricOpacity: 0.68,
-                softEdges: true,
-            });
-        }
-
-        /* ------------ ORBIT CONTROLS ------------ */
-        this.controls = new OrbitControls(this.camera, this.renderer.domElement);
         this.controls.mouseButtons = {
             LEFT: THREE.MOUSE.PAN,
             MIDDLE: THREE.MOUSE.DOLLY,
             RIGHT: THREE.MOUSE.ROTATE,
         };
+
         this.controls.enableDamping = true;
         this.controls.dampingFactor = 0.08;
         this.controls.rotateSpeed = 0.9;
@@ -280,6 +265,7 @@ export class PortScene {
         this.controls.maxDistance = sceneRadius * 3.0;
         this.controls.minPolarAngle = 0.1;
         this.controls.maxPolarAngle = Math.PI / 2.05;
+
         this.controls.target.set(0, 0, 0);
 
         this.renderer.domElement.addEventListener("contextmenu", (e) =>
@@ -290,6 +276,7 @@ export class PortScene {
         this.loop();
     }
 
+    /** Raio “seguro” da cena, calculado a partir das rects das zonas A/B/C. */
     private getSceneRadius(): number {
         const l: any = this._baseLayout;
         if (l?.zoneA?.rect && l?.zoneB?.rect && l?.zoneC?.rect) {
@@ -313,6 +300,7 @@ export class PortScene {
             const d = Math.max(...zs) - Math.min(...zs);
             return Math.hypot(w, d) * 0.5;
         }
+
         const W = 1200,
             D = 1000;
         return Math.hypot(W, D) * 0.5;
@@ -323,18 +311,21 @@ export class PortScene {
         const pmrem = new PMREMGenerator(this.renderer);
         pmrem.compileEquirectangularShader();
 
-        const tex = await new RGBELoader().loadAsync(ASSETS_TEXTURES.hdri.skybox);
+        const tex = await new RGBELoader().loadAsync(
+            ASSETS_TEXTURES.hdri.skybox,
+        );
         tex.mapping = EquirectangularReflectionMapping;
 
         this.scene.background = tex;
         const env = pmrem.fromEquirectangular(tex).texture;
         this.scene.environment = env;
+
         pmrem.dispose();
     }
 
     onResize = () => {
-        const w = this.container.clientWidth;
-        const h = this.container.clientHeight;
+        const w = this.container.clientWidth,
+            h = this.container.clientHeight;
         this.camera.aspect = w / h;
         this.camera.updateProjectionMatrix();
         this.renderer.setSize(w, h);
@@ -342,18 +333,76 @@ export class PortScene {
     };
 
     setLayers(vis: LayerVis) {
-        if (vis.containers !== undefined) this.gContainers.visible = vis.containers;
+        if (vis.containers !== undefined)
+            this.gContainers.visible = vis.containers;
         if (vis.storage !== undefined) this.gStorage.visible = vis.storage;
         if (vis.docks !== undefined) this.gDocks.visible = vis.docks;
         if (vis.vessels !== undefined) this.gVessels.visible = vis.vessels;
-        if (vis.resources !== undefined) this.gResources.visible = vis.resources;
+        if (vis.resources !== undefined)
+            this.gResources.visible = vis.resources;
         if ((vis as any).decoratives !== undefined)
             this.gDecor.visible = (vis as any).decoratives;
     }
 
-    /* ================= LOAD / BUILD ================= */
+    /* ===========================================================
+       HIGHLIGHT & CAMERA FOCUS
+       =========================================================== */
+
+    /** Remove o highlight da seleção anterior, se existir. */
+    private clearHighlight() {
+        if (!this.selectedObj) return;
+
+        this.selectedObj.traverse((o: any) => {
+            if (o.isMesh && o.userData.__origColor) {
+                const mat = o.material as THREE.MeshStandardMaterial;
+                mat.color.copy(o.userData.__origColor);
+            }
+        });
+
+        this.selectedObj = null;
+    }
+
+    /** Aplica highlight (cor misturada com amarelo) ao objeto selecionado. */
+    private applyHighlight(obj: THREE.Object3D) {
+        obj.traverse((o: any) => {
+            if (!o.isMesh) return;
+            const mat = o.material as THREE.MeshStandardMaterial;
+
+            if (!o.userData.__origColor) {
+                o.userData.__origColor = mat.color.clone();
+            }
+
+            mat.color.lerp(new THREE.Color(0xffff00), 0.5);
+        });
+
+        this.selectedObj = obj;
+    }
+
+    /** Recentra a câmara horizontalmente no centro do objeto. */
+    private focusCameraOnObject(obj: THREE.Object3D) {
+        const box = new THREE.Box3().setFromObject(obj);
+        const center = box.getCenter(new THREE.Vector3());
+
+        const currentTarget = this.controls.target.clone();
+        const cam = this.camera;
+
+        const offset = cam.position.clone().sub(currentTarget);
+        const height = cam.position.y;
+        const horizOffset = new THREE.Vector3(offset.x, 0, offset.z);
+
+        this.controls.target.copy(center);
+
+        cam.position.copy(center.clone().add(horizOffset));
+        cam.position.y = height;
+
+        cam.updateProjectionMatrix();
+    }
+
+    /* ===========================================================
+       LOAD / BUILD
+       =========================================================== */
     load(data: SceneData) {
-        // limpar apenas coisas que dependem do layout de dados
+        // 1) limpar grupos dinâmicos
         const disposeGroup = (g: THREE.Group) => {
             while (g.children.length) {
                 const o: any = g.children.pop();
@@ -367,36 +416,50 @@ export class PortScene {
         disposeGroup(this.gStorage);
         disposeGroup(this.gDocks);
         disposeGroup(this.gVessels);
-        // decor, tráfego, parking, workshops, extras, yards são “fixos” → não limpamos
+        disposeGroup(this.gDecor);
+        disposeGroup(this.gTraffic);
+        disposeGroup(this.gParking);
+        disposeGroup(this.gWorkshops);
+        disposeGroup(this.gExtras);
+        disposeGroup(this.gIndustry);
+        disposeGroup(this.gYards);
         disposeGroup(this.gResources);
         this.pickables = [];
+        this.clearHighlight();
 
+        // 2) calcular layout
         if (!this._grids) {
             console.warn("[PortScene] grids não inicializadas — fallback.");
             this._grids = computePortGrids(600, 500, 10);
         }
         const layoutResult = computeLayout(data, this._grids!);
 
+        // 3) construir nós 3D (facilities + decorativos)
         for (const sa of layoutResult.storage) {
             const node = makeStorageArea(sa);
             this.gStorage.add(node);
             this.pickables.push(node);
         }
+
         for (const d of layoutResult.docks) {
             const node = makeDock(d as any);
             this.gDocks.add(node);
             this.pickables.push(node);
         }
+
         for (const c of layoutResult.containers as ContainerDto[]) {
             const mesh = makeContainerPlaceholder(c, 3);
             this.gContainers.add(mesh);
             this.pickables.push(mesh);
         }
+
         for (const v of layoutResult.vessels) {
             const node = makeVessel(v as any);
             this.gVessels.add(node);
             this.pickables.push(node);
         }
+
+        // decor “layout-based”
         for (const deco of layoutResult.decoratives) {
             const mesh = makeDecorativeStorage(deco);
             this.gDecor.add(mesh);
@@ -408,6 +471,41 @@ export class PortScene {
             this.pickables.push(node);
         }
 
+        // 3.b) ambiente dependente da grelha/layout mas configurado por JSON
+        addRoadTraffic(this.gTraffic, this._baseLayout, portSceneConfig.traffic);
+        addAngleParkingInC(this.gParking, this._grids!, portSceneConfig.parking);
+        addWorkshopsInC34(
+            this.gWorkshops,
+            this._grids!,
+            portSceneConfig.workshops,
+        );
+        addExtrasRowInC34(this.gExtras!, this._grids!, portSceneConfig.extras);
+        addContainerYardsInC78910(
+            this.gYards,
+            this._grids!,
+            portSceneConfig.yards,
+        );
+
+        // toldos A.1 (ainda hardcoded, mas podes criar portSceneConfig.awnings se quiseres)
+        addModernAwningsInA1(this.gDecor, this._grids!, {
+            fillWidthRatio: 0.87,
+            fillDepthRatio: 0.87,
+            marginX: 1.0,
+            marginZ: 1.0,
+            gapBetween: 1.2,
+            eaveHeight: 29.5,
+            ridgeExtra: 32,
+            postRadius: 0.5,
+            beamRadius: 0.5,
+            finishBarRadius: 0.5,
+            overhangX: 1.0,
+            overhangZ: 1.0,
+            colorFabric: 0xffffff,
+            fabricOpacity: 0.68,
+            softEdges: true,
+        });
+
+        // physical resources (posicionados pelo layout)
         if ((layoutResult as any).resources) {
             for (const pr of (layoutResult as any).resources) {
                 const node = makePhysicalResource(pr);
@@ -416,7 +514,7 @@ export class PortScene {
             }
         }
 
-        // fit de câmara
+        // 4) fit de câmara ao conteúdo (apenas quando NÃO estiver em FP)
         if (!this.fp.controls.isLocked) {
             const box = new THREE.Box3();
             this.pickables.forEach((o) => box.expandByObject(o));
@@ -424,8 +522,8 @@ export class PortScene {
             box.expandByObject(this.gParking);
 
             if (!box.isEmpty()) {
-                const size = new THREE.Vector3();
-                const center = new THREE.Vector3();
+                const size = new THREE.Vector3(),
+                    center = new THREE.Vector3();
                 box.getSize(size);
                 box.getCenter(center);
                 const maxSize = Math.max(size.x, size.y, size.z);
@@ -444,6 +542,7 @@ export class PortScene {
         }
     }
 
+    /** Click → picking + highlight + focar câmara + callback para UI */
     raycastAt = (ev: MouseEvent, onPick?: (u: any) => void) => {
         const rect = this.renderer.domElement.getBoundingClientRect();
         const mouse = new THREE.Vector2(
@@ -454,11 +553,26 @@ export class PortScene {
         raycaster.setFromCamera(mouse, this.camera);
 
         const hits = raycaster.intersectObjects(this.pickables, true);
-        if (!hits.length) return;
+        if (!hits.length) {
+            // opcional: limpar seleção se clicares no "vazio"
+            this.clearHighlight();
+            return;
+        }
 
         let obj: THREE.Object3D | null = hits[0].object;
         while (obj && !obj.userData?.type) obj = obj.parent!;
-        onPick?.(obj?.userData ?? { type: "Unknown" });
+
+        if (!obj) return;
+
+        // 1) highlight visual
+        this.clearHighlight();
+        this.applyHighlight(obj);
+
+        // 2) focar câmara no centro do objeto (horizontalmente)
+        this.focusCameraOnObject(obj);
+
+        // 3) callback para React / UI
+        onPick?.(obj.userData ?? { type: "Unknown" });
     };
 
     /* =================== LOOP & DISPOSE =================== */
