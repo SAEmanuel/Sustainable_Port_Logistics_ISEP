@@ -1,4 +1,3 @@
-// src/features/viewer3d/components/InfoOverlay.tsx
 import type { SelectedEntityInfo, UserRole } from "../types/selection";
 import { Roles } from "../../../app/types";
 import type { ReactNode } from "react";
@@ -82,6 +81,8 @@ export function InfoOverlay({ visible, selected, roles }: Props) {
         case "vessel": {
             const v = selected.dto;
             title = v.name;
+
+            // dados gerais – sempre visíveis
             general.push(
                 <p key="imo">
                     <strong>IMO:</strong> {v.imoNumber}
@@ -90,7 +91,37 @@ export function InfoOverlay({ visible, selected, roles }: Props) {
                     <strong>Owner:</strong> {v.owner}
                 </p>,
             );
-            if (privileged) {
+
+            // se tivermos info de visita (VVN accepted), podemos mostrar ETA/ETD
+            const visit = v.visit;
+
+            if (visit && privileged) {
+                restricted.push(
+                    <p key="dims">
+                        <strong>Dimensions:</strong>{" "}
+                        {v.lengthMeters ?? "?"} m × {v.widthMeters ?? "?"} m
+                    </p>,
+                    <p key="eta">
+                        <strong>ETA:</strong>{" "}
+                        {new Date(visit.eta).toLocaleString()}
+                    </p>,
+                    <p key="etd">
+                        <strong>ETD:</strong>{" "}
+                        {new Date(visit.etd).toLocaleString()}
+                    </p>,
+                    visit.dockCode && (
+                        <p key="dock">
+                            <strong>Dock:</strong> {visit.dockCode}
+                        </p>
+                    ),
+                    <p key="tasks">
+                        <strong>Ongoing tasks:</strong>{" "}
+                        {visit.tasks.filter(t => t.status === "InProgress").length} /
+                        {visit.tasks.length}
+                    </p>,
+                );
+            } else if (privileged) {
+                // se não houver visit, pelo menos mostramos as dimensões
                 restricted.push(
                     <p key="dims">
                         <strong>Dimensions:</strong>{" "}

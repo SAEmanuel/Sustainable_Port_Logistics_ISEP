@@ -45,6 +45,9 @@ function clamp(n: number, min: number, max: number) {
 function snap(v: number, step = GRID) {
     return Math.round(v / step) * step;
 }
+function normalizeImo(x: any): string {
+    return str(x).replace(/\s+/g, "").toUpperCase();
+}
 
 /** -------- fetchers (mapeamento + LAYOUT alinhado) -------- */
 
@@ -140,8 +143,13 @@ export async function fetchStorageAreas(): Promise<StorageAreaDto[]> {
 
 export async function fetchVessels(): Promise<VesselDto[]> {
     try {
-        const { data } = await api.get("/api/vessel");
-        const items = (data as any[]).map((v) => ({
+        // 1) ir buscar TODOS os vessels + TODOS os VVNs accepted
+        const [vesselRes, vvnRes] = await Promise.all([
+            api.get("/api/vessel"),
+            api.get("/api/VesselVisitNotification/all/accepted"),
+        ]);
+
+        const allVessels: VesselDto[] = (vesselRes.data as any[]).map((v) => ({
             id: str(v.id),
             imoNumber: str(v.imoNumber),
             name: str(v.name),
@@ -154,28 +162,96 @@ export async function fetchVessels(): Promise<VesselDto[]> {
             rotationY: 0 as any,
         }));
 
-        let row0X = -items.reduce((s, x) => s + Math.max(30, x.lengthMeters), 0) / 2;
+        // 2) indexar VVNs accepted por IMO (normalizado)
+        type RawVvn = any; // vem do backend
+        const rawVvns = (vvnRes.data as RawVvn[]) ?? [];
+
+        const vvnByImo = new Map<string, RawVvn>();
+
+        for (const v of rawVvns) {
+            const imoKey = normalizeImo(v.vesselImo);
+            if (!imoKey) continue;
+
+            const existing = vvnByImo.get(imoKey);
+            if (!existing) {
+                vvnByImo.set(imoKey, v);
+                continue;
+            }
+
+            // se já existir uma visita para este navio, guardamos a com ETA mais recente
+            const etaExisting = Date.parse(existing.estimatedTimeArrival ?? "") || 0;
+            const etaNew      = Date.parse(v.estimatedTimeArrival ?? "") || 0;
+            if (etaNew > etaExisting) {
+                vvnByImo.set(imoKey, v);
+            }
+        }
+
+        // 3) construir lista de vessels APENAS com VVN accepted
+        const acceptedVessels: VesselDto[] = [];
+
+        for (const vessel of allVessels) {
+            const imoKey = normalizeImo(vessel.imoNumber);
+            const vvn = vvnByImo.get(imoKey);
+            if (!vvn) continue; // sem VVN accepted → não aparece na cena 3D
+
+            // mapear tasks (podem vir null/undefined)
+            const tasks = Array.isArray(vvn.tasks)
+                ? vvn.tasks.map((t: any) => ({
+                    id: str(t.id),
+                    code: str(t.code),
+                    type: str(t.type),       // TaskType enum -> string
+                    status: str(t.status),   // TaskStatus enum -> string
+                    startTime: t.startTime ?? null,
+                    endTime: t.endTime ?? null,
+                }))
+                : [];
+
+            (vessel as any).visit = {
+                vvnId: str(vvn.id),
+                vvnCode: str(vvn.code),
+                eta: String(vvn.estimatedTimeArrival),
+                etd: String(vvn.estimatedTimeDeparture),
+                actualArrival: vvn.actualTimeArrival ?? null,
+                actualDeparture: vvn.actualTimeDeparture ?? null,
+                acceptanceDate: vvn.acceptenceDate ?? null,
+                volume: num(vvn.volume, 0),
+                status: str(vvn.status),
+                dockCode: vvn.dock ?? null,
+                tasks,
+            };
+
+            acceptedVessels.push(vessel);
+        }
+
+        // 4) posicionamento no plano (igual ao que já tinhas, mas só para os aceites)
+        let row0X = -acceptedVessels.reduce((s, x) => s + Math.max(30, x.lengthMeters ?? 70), 0) / 2;
         let row1X = row0X;
 
-        items.forEach((v, idx) => {
-            const L = Math.max(30, v.lengthMeters);
+        acceptedVessels.forEach((v, idx) => {
+            const L = Math.max(30, v.lengthMeters ?? 70);
             const isRow1 = idx % 2 === 1;
             const cx = (isRow1 ? row1X : row0X) + L / 2;
 
             v.positionX = clamp(snap(cx), -WORLD_LIMIT, WORLD_LIMIT);
             v.positionY = 0;
-            v.positionZ = clamp(snap(QUAY_Z + VESSEL_ROW_OFFSET_Z + (isRow1 ? VESSEL_ROW_GAP_Z : 0)), -WORLD_LIMIT, WORLD_LIMIT);
+            v.positionZ = clamp(
+                snap(QUAY_Z + VESSEL_ROW_OFFSET_Z + (isRow1 ? VESSEL_ROW_GAP_Z : 0)),
+                -WORLD_LIMIT,
+                WORLD_LIMIT,
+            );
             (v as any).rotationY = 0;
 
-            if (isRow1) row1X += L + VESSEL_MARGIN; else row0X += L + VESSEL_MARGIN;
+            if (isRow1) row1X += L + VESSEL_MARGIN;
+            else row0X += L + VESSEL_MARGIN;
         });
 
-        return items;
+        return acceptedVessels;
     } catch (e: any) {
-        console.warn("fetchVessels failed:", e?.response?.status, e?.message);
+        console.warn("fetchVessels (accepted only) failed:", e?.response?.status, e?.message);
         return [];
     }
 }
+
 
 export async function fetchContainers(): Promise<ContainerDto[]> {
     try {

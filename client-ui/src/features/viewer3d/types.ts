@@ -65,12 +65,38 @@ export interface VesselDto {
     name: string;
     owner: string;
     vesselTypeId: string;   // unwrap VesselTypeId
-    // sem dimensões no DTO → defaults/estimados
+
     lengthMeters?: number;
     widthMeters?: number;
     draftMeters?: number;
     positionX?: number; positionY?: number; positionZ?: number;
+
+    /** Info da visita (VVN Accepted) associada a este navio, se existir */
+    visit?: {
+        vvnId: string;
+        vvnCode: string;
+
+        eta: string;   // EstimatedTimeArrival
+        etd: string;   // EstimatedTimeDeparture
+        actualArrival?: string | null;
+        actualDeparture?: string | null;
+        acceptanceDate?: string | null;
+
+        volume: number;
+        status: string;        // “Accepted” etc.
+        dockCode?: string | null;
+
+        tasks: {
+            id: string;
+            code: string;
+            type: string;      // TaskType
+            status: string;    // TaskStatus
+            startTime?: string | null;
+            endTime?: string | null;
+        }[];
+    };
 }
+
 
 export interface SceneData {
     docks: DockDto[];
