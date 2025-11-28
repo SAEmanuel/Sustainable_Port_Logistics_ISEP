@@ -372,7 +372,7 @@ export class PortScene {
         obj.traverse((o: any) => {
             if (!o.isMesh) return;
 
-            // 1) Se ainda não tiver material original guardado, guarda e clona
+            // Se ainda não tiver material original guardado, guarda e clona
             if (!o.userData.__origMat) {
                 if (Array.isArray(o.material)) {
                     o.userData.__origMat = o.material;
@@ -383,7 +383,7 @@ export class PortScene {
                 }
             }
 
-            // 2) Agora já é seguro mexer na cor (é um clone)
+            // seguro mexer na cor (é um clone)
             const mats = Array.isArray(o.material) ? o.material : [o.material];
             mats.forEach((m: any) => {
                 if (!m || !("color" in m)) return;

@@ -1,9 +1,12 @@
 /* src/features/viewer3d/style/viewer3d.css */
+
 .viewer3d-wrapper {
     display: flex;
     flex-direction: column;
     gap: 12px;
 }
+
+/* ===== HEADER ===== */
 
 .viewer3d-header {
     display: flex;
@@ -15,6 +18,77 @@
     padding: 12px 16px;
 }
 
+.viewer3d-header-main {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.viewer3d-header-main h2 {
+    margin: 0;
+}
+
+/* linha das stats (agora são botões toggle) */
+.viewer3d-stats-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 4px;
+}
+
+/* pill dark com contador – toggle dos layers */
+.viewer3d-stat-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 12px;
+    border-radius: 999px;
+    border: none;
+    cursor: pointer;
+    font-size: 13px;
+    background: radial-gradient(circle at 0 0, #1f2937, #020617);
+    color: #e5e7eb;
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.5);
+    transition:
+            transform 120ms ease,
+            box-shadow 120ms ease,
+            opacity 120ms ease,
+            filter 120ms ease;
+}
+
+.viewer3d-stat-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(15, 23, 42, 0.6);
+}
+
+.viewer3d-stat-btn:active {
+    transform: translateY(0);
+}
+
+/* estado “off” → layer escondido */
+.viewer3d-stat-btn.off {
+    opacity: 0.45;
+    filter: grayscale(0.2) saturate(0.4);
+}
+
+/* ícones & texto */
+.viewer3d-stat-icon {
+    font-size: 15px;
+}
+
+.viewer3d-stat-label {
+    font-weight: 500;
+}
+
+.viewer3d-stat-value {
+    font-weight: 600;
+    font-size: 12px;
+    padding: 2px 6px;
+    border-radius: 999px;
+    background: rgba(15, 118, 110, 0.1);
+}
+
+/* zona com o botão de fullscreen */
 .viewer3d-actions {
     display: flex;
     gap: 8px;
@@ -28,16 +102,33 @@
     border-radius: 999px;
     font-size: 12px;
     cursor: pointer;
-    transition: transform .15s ease, background-color .2s ease;
+    transition:
+            transform 0.15s ease,
+            background-color 0.2s ease;
 }
-.chip:hover { transform: translateY(-1px); }
-.chip.on { background: var(--accent, #4fa3ff); color: #fff; }
+
+.chip:hover {
+    transform: translateY(-1px);
+}
+
+.chip.on {
+    background: var(--accent, #4fa3ff);
+    color: #fff;
+}
+
+/* ===== STAGE / CANVAS ===== */
 
 .viewer3d-stage {
+    position: relative; /* para o overlay ficar ancorado aqui */
     display: grid;
     grid-template-columns: 1fr 320px;
     gap: 12px;
     min-height: 540px;
+}
+
+/* versão “full width” – só canvas, sem side panel */
+.viewer3d-stage-full {
+    grid-template-columns: 1fr;
 }
 
 .viewer3d-canvas {
@@ -48,8 +139,10 @@
     border: 1px solid var(--shadow);
     border-radius: 12px;
     overflow: hidden;
+    position: relative;
 }
 
+/* SIDE PANEL antigo – ainda aqui se um dia quiseres reutilizar */
 .viewer3d-side {
     background: var(--card-bg);
     border: 1px solid var(--shadow);
@@ -60,7 +153,9 @@
     gap: 12px;
 }
 
-.viewer3d-side h3 { margin: 0; }
+.viewer3d-side h3 {
+    margin: 0;
+}
 
 .viewer3d-side ul {
     margin: 0;
@@ -78,8 +173,17 @@
     padding: 10px;
     font-size: 13px;
 }
-.viewer3d-picked .k { opacity: .75; }
-.viewer3d-picked .v.small { font-size: 11px; word-break: break-all; }
+
+.viewer3d-picked .k {
+    opacity: 0.75;
+}
+
+.viewer3d-picked .v.small {
+    font-size: 11px;
+    word-break: break-all;
+}
+
+/* ===== FALLBACKS ===== */
 
 .viewer3d-fallback,
 .viewer3d-error {
@@ -89,14 +193,17 @@
     padding: 18px;
     text-align: center;
 }
-.viewer3d-error { color: #b00020; }
 
-/* contêiner posicionável para o botão */
+.viewer3d-error {
+    color: #b00020;
+}
+
+/* ===== FULLSCREEN FAB (se algum dia usares) ===== */
+
 .host-with-fs {
     position: relative;
 }
 
-/* Floating Action Button para fullscreen */
 .fs-btn {
     position: absolute;
     top: 12px;
@@ -111,31 +218,41 @@
     display: grid;
     place-items: center;
     cursor: pointer;
-    transition: transform 120ms ease, background 120ms ease, box-shadow 120ms ease;
-    box-shadow: 0 6px 16px rgba(0,0,0,0.35);
-    z-index: 5; /* acima do canvas */
+    transition:
+            transform 120ms ease,
+            background 120ms ease,
+            box-shadow 120ms ease;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.35);
+    z-index: 5;
 }
-.fs-btn:hover { transform: translateY(-1px); background: rgba(30,30,36,0.9); }
-.fs-btn:active { transform: translateY(0); }
-.fs-btn.active { background: rgba(0, 110, 255, 0.85); }
 
-/* quando em fullscreen, usa 100% do espaço (o canvas já reajusta no onResize) */
+.fs-btn:hover {
+    transform: translateY(-1px);
+    background: rgba(30, 30, 36, 0.9);
+}
+
+.fs-btn:active {
+    transform: translateY(0);
+}
+
+.fs-btn.active {
+    background: rgba(0, 110, 255, 0.85);
+}
+
+/* quando em fullscreen, usar 100% do espaço */
 :fullscreen .viewer3d-canvas,
 :-webkit-full-screen .viewer3d-canvas {
     width: 100vw !important;
     height: 100vh !important;
 }
-/* quando o host do Three.js está em fullscreen, tira os cantos */
+
 :fullscreen.viewer3d-canvas,
 :-webkit-full-screen.viewer3d-canvas {
     border-radius: 0 !important;
 }
 
-/* o host do Three já tem esta classe */
-.viewer3d-canvas { position: relative; }
-
-/* opcional: sombra e clique confortável no painel */
+/* painel do LightingController */
 .lil-gui {
     pointer-events: auto;
-    box-shadow: 0 8px 20px rgba(0,0,0,.25);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
 }

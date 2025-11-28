@@ -5,54 +5,63 @@ import { PortScene, type LayerVis } from "../scene/PortScene";
 type Props = {
     data: SceneData;
     visible: LayerVis;
-    onPick?: (payload: { type: string; id: string; label: string }) => void;
+    // agora recebemos o userData completo
+    onPick?: (userData: any) => void;
 };
 
 export type ThreeSceneHandle = {
-    /** devolve o DIV host (para requestFullscreen) */
     getHost: () => HTMLDivElement | null;
-    /** força reajuste do renderer/câmara (usar em fullscreenchange) */
     forceResize: () => void;
 };
 
-const ThreeScene = forwardRef<ThreeSceneHandle, Props>(({ data, visible, onPick }, ref) => {
-    const hostRef = useRef<HTMLDivElement | null>(null);
-    const sceneRef = useRef<PortScene | null>(null);
-    const initialized = useRef(false);
+const ThreeScene = forwardRef<ThreeSceneHandle, Props>(
+    ({ data, visible, onPick }, ref) => {
+        const hostRef = useRef<HTMLDivElement | null>(null);
+        const sceneRef = useRef<PortScene | null>(null);
+        const initialized = useRef(false);
 
-    useImperativeHandle(ref, () => ({
-        getHost: () => hostRef.current,
-        forceResize: () => sceneRef.current?.onResize(),
-    }));
+        useImperativeHandle(ref, () => ({
+            getHost: () => hostRef.current,
+            forceResize: () => sceneRef.current?.onResize(),
+        }));
 
-    useEffect(() => {
-        if (!hostRef.current || initialized.current) return;
-        initialized.current = true;
+        useEffect(() => {
+            if (!hostRef.current || initialized.current) return;
+            initialized.current = true;
 
-        while (hostRef.current.firstChild) hostRef.current.removeChild(hostRef.current.firstChild);
-        const s = new PortScene(hostRef.current);
-        sceneRef.current = s;
+            while (hostRef.current.firstChild)
+                hostRef.current.removeChild(hostRef.current.firstChild);
 
-        const click = (e: MouseEvent) =>
-            s.raycastAt(e, (u) => onPick?.({ type: u.type ?? "Unknown", id: u.id ?? "", label: u.label ?? "" }));
-        s.renderer.domElement.addEventListener("click", click);
+            const s = new PortScene(hostRef.current);
+            sceneRef.current = s;
 
-        s.setLayers(visible);
-        s.load(data);
+            const click = (e: MouseEvent) =>
+                s.raycastAt(e, (u) => onPick?.(u)); // passa userData cru
 
-        return () => {
-            s.renderer.domElement.removeEventListener("click", click);
-            s.dispose();
-            initialized.current = false;
-            sceneRef.current = null;
-        };
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+            s.renderer.domElement.addEventListener("click", click);
 
-    useEffect(() => { sceneRef.current?.load(data); }, [data]);
-    useEffect(() => { sceneRef.current?.setLayers(visible); }, [visible]);
+            s.setLayers(visible);
+            s.load(data);
 
-    return <div className="viewer3d-canvas" ref={hostRef} />;
-});
+            return () => {
+                s.renderer.domElement.removeEventListener("click", click);
+                s.dispose();
+                initialized.current = false;
+                sceneRef.current = null;
+            };
+            // eslint-disable-next-line react-hooks/exhaustive-deps
+        }, []);
+
+        useEffect(() => {
+            sceneRef.current?.load(data);
+        }, [data]);
+
+        useEffect(() => {
+            sceneRef.current?.setLayers(visible);
+        }, [visible]);
+
+        return <div className="viewer3d-canvas" ref={hostRef} />;
+    },
+);
 
 export default ThreeScene;
