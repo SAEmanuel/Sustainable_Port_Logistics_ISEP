@@ -353,30 +353,47 @@ export class PortScene {
         if (!this.selectedObj) return;
 
         this.selectedObj.traverse((o: any) => {
-            if (o.isMesh && o.userData.__origColor) {
-                const mat = o.material as THREE.MeshStandardMaterial;
-                mat.color.copy(o.userData.__origColor);
-            }
+            if (!o.isMesh || !o.userData.__origMat) return;
+
+            const current = o.material;
+            // libertar o clone
+            if (Array.isArray(current)) current.forEach((m: any) => m?.dispose?.());
+            else current?.dispose?.();
+
+            // restaurar material original
+            o.material = o.userData.__origMat;
+            delete o.userData.__origMat;
         });
 
         this.selectedObj = null;
     }
 
-    /** Aplica highlight (cor misturada com amarelo) ao objeto selecionado. */
     private applyHighlight(obj: THREE.Object3D) {
         obj.traverse((o: any) => {
             if (!o.isMesh) return;
-            const mat = o.material as THREE.MeshStandardMaterial;
 
-            if (!o.userData.__origColor) {
-                o.userData.__origColor = mat.color.clone();
+            // 1) Se ainda não tiver material original guardado, guarda e clona
+            if (!o.userData.__origMat) {
+                if (Array.isArray(o.material)) {
+                    o.userData.__origMat = o.material;
+                    o.material = o.material.map((m: THREE.Material) => m.clone());
+                } else if (o.material) {
+                    o.userData.__origMat = o.material;
+                    o.material = (o.material as THREE.Material).clone();
+                }
             }
 
-            mat.color.lerp(new THREE.Color(0xffff00), 0.5);
+            // 2) Agora já é seguro mexer na cor (é um clone)
+            const mats = Array.isArray(o.material) ? o.material : [o.material];
+            mats.forEach((m: any) => {
+                if (!m || !("color" in m)) return;
+                m.color.lerp(new THREE.Color(0xffff00), 0.5);
+            });
         });
 
         this.selectedObj = obj;
     }
+
 
     /** Recentra a câmara horizontalmente no centro do objeto. */
     private focusCameraOnObject(obj: THREE.Object3D) {
