@@ -36,7 +36,6 @@ import { portSceneConfig } from "../config/sceneConfigLoader";
 import { PMREMGenerator, EquirectangularReflectionMapping } from "three";
 import { RGBELoader } from "three/addons/loaders/RGBELoader.js";
 
-
 export type LayerVis = Partial<{
     containers: boolean;
     storage: boolean;
@@ -229,20 +228,32 @@ export class PortScene {
     private selectionSpotlightTarget: THREE.Object3D | null = null;
     private selectionCenter = new THREE.Vector3();
 
+    // animação do alvo do spotlight
+    private spotFromCenter = new THREE.Vector3();
+    private spotToCenter = new THREE.Vector3();
+    private spotElapsed = 0;
+    private spotDuration = 0.5;
+    private hasSpotTarget = false;
 
     // vista "overview" (porto inteiro)
     private overviewTarget = new THREE.Vector3(0, 0, 0);
     private overviewPosition = new THREE.Vector3(180, 200, 420);
 
-// animação de reset
+    // animação de reset
     private isResettingCamera = false;
     private resetFromPos = new THREE.Vector3();
     private resetFromTarget = new THREE.Vector3();
     private resetStartTime = 0;
-    private resetDuration = 1.2; // segundos (podes afinar)
+    private resetDuration = 1.2; // segundos
 
-    
-    
+    // animação de foco (seleção)
+    private isAnimatingFocus = false;
+    private focusStartTime = 0;
+    private focusDuration = 0.9;
+    private focusFromPos = new THREE.Vector3();
+    private focusFromTarget = new THREE.Vector3();
+    private focusToPos = new THREE.Vector3();
+    private focusToTarget = new THREE.Vector3();
 
     constructor(container: HTMLDivElement) {
         this.container = container;
@@ -323,22 +334,21 @@ export class PortScene {
             this.scene.add(spotLight.target);
         }
 
-        // === Spotlight dinâmico para o elemento selecionado ===
+        // Spotlight dinâmico para o elemento selecionado
         this.selectionSpotlightTarget = new THREE.Object3D();
         this.scene.add(this.selectionSpotlightTarget);
 
         this.selectionSpotlight = new THREE.SpotLight(
             0xff0000,
-            400,          // intensidade forte para sobressair
-            0,            // distance 0 → sem limite
+            400,          // intensidade forte
+            0,            // sem limite
             Math.PI / 6,  // cone ~30º
-            0.5,          // penumbra bem visível
-            1,            // decay
+            0.5,
+            1,
         );
         this.selectionSpotlight.castShadow = false;
-        this.selectionSpotlight.visible = false; // só liga com seleção
+        this.selectionSpotlight.visible = false;
         this.selectionSpotlight.target = this.selectionSpotlightTarget;
-
         this.scene.add(this.selectionSpotlight);
 
         const el = this.light.gui!.domElement as HTMLElement;
@@ -442,7 +452,6 @@ export class PortScene {
                 this.resetCameraToOverview();
             }
         });
-
 
         /* ------------ GRELHAS (A/B/C) ------------ */
         const W = this._baseLayout.zoneC.size.w;
@@ -579,6 +588,7 @@ export class PortScene {
         });
 
         this.selectedObj = null;
+        this.hasSpotTarget = false;
 
         if (this.selectionSpotlight) {
             this.selectionSpotlight.visible = false;
@@ -603,36 +613,41 @@ export class PortScene {
             mats.forEach((m: any) => {
                 if (!m) return;
 
-                const highlightColor = new THREE.Color(0xffff00); // amarelo bem forte
+                const highlightColor = new THREE.Color(0xffff00); // amarelo forte
 
-                // cor base → puxar muito para o amarelo
                 if ("color" in m && m.color) {
                     m.color.lerp(highlightColor, 0.7);
                 }
-                
+
                 if ("emissive" in m) {
                     if (!m.emissive) {
                         m.emissive = new THREE.Color(0x000000);
                     }
                     m.emissive.lerp(highlightColor, 0.8);
-                    // se o material suportar intensidade emissiva:
                     if ("emissiveIntensity" in m) {
                         m.emissiveIntensity = 1.5;
                     }
                 }
             });
-
         });
 
         this.selectedObj = obj;
 
-        // spotlight aponta para o centro do objeto
+        // configurar animação do spotlight para o novo centro
         if (this.selectionSpotlight && this.selectionSpotlightTarget) {
             const box = new THREE.Box3().setFromObject(obj);
-            box.getCenter(this.selectionCenter);
+            const newCenter = new THREE.Vector3();
+            box.getCenter(newCenter);
 
-            this.selectionSpotlightTarget.position.copy(this.selectionCenter);
-            this.selectionSpotlightTarget.updateMatrixWorld();
+            if (!this.hasSpotTarget) {
+                // primeira seleção
+                this.selectionCenter.copy(newCenter);
+            }
+
+            this.spotFromCenter.copy(this.selectionCenter);
+            this.spotToCenter.copy(newCenter);
+            this.spotElapsed = 0;
+            this.hasSpotTarget = true;
 
             this.selectionSpotlight.visible = true;
         }
@@ -660,27 +675,58 @@ export class PortScene {
         });
     }
 
-    /** Recentra a câmara horizontalmente no centro do objeto. */
+    /** Inicia animação de foco suave da câmara para o objeto selecionado. */
     private focusCameraOnObject(obj: THREE.Object3D) {
         const box = new THREE.Box3().setFromObject(obj);
-        const center = box.getCenter(new THREE.Vector3());
+        box.getCenter(this.focusToTarget);
 
-        const currentTarget = this.controls.target.clone();
         const cam = this.camera;
+        const curTarget = this.controls.target.clone();
 
-        const offset = cam.position.clone().sub(currentTarget);
+        const offset = cam.position.clone().sub(curTarget);
         const height = cam.position.y;
         const horizOffset = new THREE.Vector3(offset.x, 0, offset.z);
 
-        this.controls.target.copy(center);
+        this.focusToPos.copy(this.focusToTarget).add(horizOffset);
+        this.focusToPos.y = height;
 
-        cam.position.copy(center.clone().add(horizOffset));
-        cam.position.y = height;
+        // cancelar reset se estava a acontecer
+        this.isResettingCamera = false;
 
-        cam.updateProjectionMatrix();
+        this.isAnimatingFocus = true;
+        this.focusStartTime = performance.now() / 1000;
+
+        this.focusFromPos.copy(cam.position);
+        this.focusFromTarget.copy(curTarget);
     }
-    
-    /** Atualiza animação suave de reset da câmara (se ativa). */
+
+    /** Atualiza animação suave de foco da câmara. */
+    private updateFocusAnimation() {
+        if (!this.isAnimatingFocus) return;
+
+        const nowSec = performance.now() / 1000;
+        let t = (nowSec - this.focusStartTime) / this.focusDuration;
+
+        if (t >= 1) {
+            this.isAnimatingFocus = false;
+            this.camera.position.copy(this.focusToPos);
+            this.controls.target.copy(this.focusToTarget);
+            this.camera.updateProjectionMatrix();
+            return;
+        }
+
+        if (t < 0) t = 0;
+
+        const u = t < 0.5
+            ? 4 * t * t * t
+            : 1 - Math.pow(-2 * t + 2, 3) / 2;
+
+        this.camera.position.lerpVectors(this.focusFromPos, this.focusToPos, u);
+        this.controls.target.lerpVectors(this.focusFromTarget, this.focusToTarget, u);
+        this.camera.updateProjectionMatrix();
+    }
+
+    /** Atualiza animação suave de reset da câmara (vista overview). */
     private updateCameraResetAnimation() {
         if (!this.isResettingCamera) return;
 
@@ -688,7 +734,6 @@ export class PortScene {
         let t = (nowSec - this.resetStartTime) / this.resetDuration;
 
         if (t >= 1) {
-            // fim da animação
             this.isResettingCamera = false;
             this.camera.position.copy(this.overviewPosition);
             this.controls.target.copy(this.overviewTarget);
@@ -700,12 +745,10 @@ export class PortScene {
         if (t < 0) t = 0;
         if (t > 1) t = 1;
 
-        // easing suave (ease in-out cúbico)
         const u = t < 0.5
             ? 4 * t * t * t
             : 1 - Math.pow(-2 * t + 2, 3) / 2;
 
-        // interpolar posição e target
         this.camera.position.lerpVectors(
             this.resetFromPos,
             this.overviewPosition,
@@ -720,32 +763,60 @@ export class PortScene {
         this.camera.updateProjectionMatrix();
     }
 
+    /** Atualiza spotlight da seleção (target + posição da luz). */
+    private updateSelectionSpotlight(dt: number) {
+        if (!this.selectionSpotlight || !this.selectionSpotlightTarget) return;
+        if (!this.selectedObj || !this.hasSpotTarget) return;
+
+        // animar o centro (target) da luz
+        if (this.spotElapsed < this.spotDuration) {
+            this.spotElapsed += dt;
+            let t = Math.min(1, this.spotElapsed / this.spotDuration);
+
+            const u = t < 0.5
+                ? 4 * t * t * t
+                : 1 - Math.pow(-2 * t + 2, 3) / 2;
+
+            this.selectionCenter.lerpVectors(this.spotFromCenter, this.spotToCenter, u);
+        }
+
+        this.selectionSpotlightTarget.position.copy(this.selectionCenter);
+        this.selectionSpotlightTarget.updateMatrixWorld();
+
+        // posição da luz – um pouco atrás da direção câmara → centro
+        const dir = new THREE.Vector3()
+            .subVectors(this.selectionCenter, this.camera.position)
+            .normalize();
+
+        const lightPos = this.selectionCenter.clone().sub(dir.multiplyScalar(80));
+        lightPos.y += 40;
+
+        this.selectionSpotlight.position.copy(lightPos);
+    }
 
     /** Inicia animação suave para a vista overview (full port). */
     public resetCameraToOverview() {
-        // se estiver em First-Person, liberta para usar OrbitControls
         if (this.fp && this.fp.controls && this.fp.controls.isLocked) {
             this.fp.unlock();
         }
 
-        // 🔹 garantir que a vista overview não viola os limites de zoom
+        // garantir que overview não viola limites do OrbitControls
         const desiredRadius = this.overviewPosition
             .clone()
             .sub(this.overviewTarget)
             .length();
 
         if (desiredRadius > this.controls.maxDistance) {
-            // dá um bocadinho de margem
             this.controls.maxDistance = desiredRadius * 1.05;
         }
 
+        this.isAnimatingFocus = false; // cancela foco se estava a acontecer
         this.isResettingCamera = true;
         this.resetStartTime = performance.now() / 1000;
 
         this.resetFromPos.copy(this.camera.position);
         this.resetFromTarget.copy(this.controls.target);
     }
-
 
     /* ===========================================================
        LOAD / BUILD
@@ -813,10 +884,7 @@ export class PortScene {
         for (const v of layoutResult.vessels) {
             const node = makeVessel(v as any);
 
-            // info de visita (VVN accepted) com tasks
             const visit = (v as any).visit ?? null;
-
-            // userData já usado para picking
             node.userData.visit = visit;
 
             this.gVessels.add(node);
@@ -855,7 +923,7 @@ export class PortScene {
             this.pickables.push(node);
         }
 
-        // 3.b) ambiente dependente da grelha/layout mas configurado por JSON
+        // ambiente dependente da grelha/layout
         addRoadTraffic(this.gTraffic, this._baseLayout, portSceneConfig.traffic);
         addAngleParkingInC(this.gParking, this._grids!, portSceneConfig.parking);
         addWorkshopsInC34(
@@ -870,7 +938,6 @@ export class PortScene {
             portSceneConfig.yards,
         );
 
-        // toldos A.1
         addModernAwningsInA1(this.gDecor, this._grids!, {
             fillWidthRatio: 0.87,
             fillDepthRatio: 0.87,
@@ -889,7 +956,6 @@ export class PortScene {
             softEdges: true,
         });
 
-        // physical resources (posicionados pelo layout)
         if ((layoutResult as any).resources) {
             for (const pr of (layoutResult as any).resources) {
                 const node = makePhysicalResource(pr);
@@ -898,7 +964,7 @@ export class PortScene {
             }
         }
 
-        // 4) fit de câmara ao conteúdo (apenas quando NÃO estiver em FP)
+        // fit de câmara ao conteúdo (quando NÃO estiver em FP)
         if (!this.fp.controls.isLocked) {
             const box = new THREE.Box3();
             this.pickables.forEach((o) => box.expandByObject(o));
@@ -922,7 +988,7 @@ export class PortScene {
                 this.camera.near = Math.max(0.1, maxSize / 1000);
                 this.camera.far = Math.max(2000, distance * 10);
                 this.camera.updateProjectionMatrix();
-                
+
                 this.overviewTarget.copy(this.controls.target);
                 this.overviewPosition.copy(this.camera.position);
             }
@@ -948,7 +1014,6 @@ export class PortScene {
                 continue;
             }
 
-            // posição 3D um pouco acima do navio
             obj.getWorldPosition(world);
             world.y += 12;
 
@@ -983,7 +1048,6 @@ export class PortScene {
             `;
             el.title = getStatusTooltip(sim.status);
 
-            // atualizar cor emissiva/casco do navio
             this.applyVesselStatusVisual(obj, sim.status);
         }
     }
@@ -1009,14 +1073,10 @@ export class PortScene {
 
         if (!obj) return;
 
-        // 1) highlight visual
         this.clearHighlight();
         this.applyHighlight(obj);
-
-        // 2) focar câmara no centro do objeto (horizontalmente)
         this.focusCameraOnObject(obj);
 
-        // 3) callback para React / UI
         onPick?.(obj.userData ?? { type: "Unknown" });
     };
 
@@ -1028,31 +1088,11 @@ export class PortScene {
 
         if (!this.fp.controls.isLocked) this.controls.update();
         this.fp.update(dt);
-        
+
         this.updateVesselLabelsAndStatus();
+        this.updateFocusAnimation();
         this.updateCameraResetAnimation();
-        
-        this.updateVesselLabelsAndStatus();
-
-        // spotlight dinâmico segue a câmara e continua apontado ao centro da seleção
-        if (this.selectionSpotlight && this.selectionSpotlightTarget && this.selectedObj) {
-            const box = new THREE.Box3().setFromObject(this.selectedObj);
-            box.getCenter(this.selectionCenter);
-
-            this.selectionSpotlightTarget.position.copy(this.selectionCenter);
-            this.selectionSpotlightTarget.updateMatrixWorld();
-
-            // direção câmara → centro do objeto
-            const dir = new THREE.Vector3()
-                .subVectors(this.selectionCenter, this.camera.position)
-                .normalize();
-
-            // luz fica um pouco atrás dessa direção e mais alta
-            const lightPos = this.selectionCenter.clone().sub(dir.multiplyScalar(80));
-            lightPos.y += 40;
-
-            this.selectionSpotlight.position.copy(lightPos);
-        }
+        this.updateSelectionSpotlight(dt);
 
         this.renderer.render(this.scene, this.camera);
         this.reqId = requestAnimationFrame(this.loop);
