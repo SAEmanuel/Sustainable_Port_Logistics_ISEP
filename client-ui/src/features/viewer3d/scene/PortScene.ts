@@ -45,14 +45,131 @@ export type LayerVis = Partial<{
     decoratives?: boolean;
 }>;
 
-function vesselStatusColorHex(status?: string): number {
+/* ===========================================================
+   Simulação local de estado operacional (VVN + Tasks)
+   =========================================================== */
+
+type SimStatus =
+    | "Waiting"
+    | "Loading"
+    | "Unloading"
+    | "Loading & Unloading"
+    | "Completed";
+
+type VisitSimSummary = {
+    status: SimStatus;
+    ongoingCount: number;
+    totalTasks: number;
+    progress: number; // 0..1
+};
+
+function hashStringToInt(s: string): number {
+    let h = 0;
+    for (let i = 0; i < s.length; i++) {
+        h = (h * 31 + s.charCodeAt(i)) | 0;
+    }
+    return Math.abs(h);
+}
+
+/** Duração pseudo-aleatória por task [30s, 120s), mas determinística pelo id/código */
+function getTaskDurationSeconds(task: any): number {
+    const key = String(task.id ?? task.code ?? "");
+    const base = hashStringToInt(key);
+    const span = 120 - 30; // 90
+    return 30 + (base % span);
+}
+
+/**
+ * Dado um visit + tempo (seg desde início da sim), devolve:
+ *  - status textual
+ *  - nº de tasks em execução
+ *  - total de tasks
+ *  - progresso global [0..1]
+ */
+function computeVesselSimulation(visit: any, simNowSec: number): VisitSimSummary | null {
+    if (!visit || !Array.isArray(visit.tasks) || visit.tasks.length === 0) {
+        return null;
+    }
+
+    const tasks = visit.tasks as any[];
+
+    let cursor = 0;
+    let ongoingCount = 0;
+    const activeTypes = new Set<string>();
+    let lastEnd = 0;
+
+    for (const t of tasks) {
+        const dur = getTaskDurationSeconds(t);
+        const start = cursor;
+        const end = cursor + dur;
+
+        if (simNowSec >= start && simNowSec < end) {
+            ongoingCount++;
+            activeTypes.add(String(t.type));
+        }
+
+        cursor = end + 5; // ~5s de intervalo entre tasks
+        lastEnd = end;
+    }
+
+    const totalSpanEnd = lastEnd;
+    const clamped = Math.max(0, Math.min(simNowSec, totalSpanEnd || 1));
+    const progress = totalSpanEnd > 0 ? clamped / totalSpanEnd : 0;
+
+    let status: SimStatus;
+
+    if (ongoingCount === 0 && simNowSec < totalSpanEnd) {
+        status = "Waiting";
+    } else if (ongoingCount === 0 && simNowSec >= totalSpanEnd) {
+        status = "Completed";
+    } else {
+        const hasContainer = Array.from(activeTypes).some((t) => t === "ContainerHandling");
+        const hasYardOrStorage = Array.from(activeTypes).some(
+            (t) => t === "YardTransport" || t === "StoragePlacement",
+        );
+
+        if (hasContainer && hasYardOrStorage) status = "Loading & Unloading";
+        else if (hasContainer) status = "Unloading";
+        else status = "Loading";
+    }
+
+    return {
+        status,
+        ongoingCount,
+        totalTasks: tasks.length,
+        progress,
+    };
+}
+
+function vesselStatusColorHex(status?: SimStatus | string): number {
     switch (status) {
-        case "Loading":              return 0x22c55e; // verde
-        case "Unloading":            return 0xf97316; // laranja
-        case "Loading & Unloading":  return 0xa855f7; // roxo
-        case "Completed":            return 0x3b82f6; // azul
+        case "Loading":
+            return 0x22c55e; // verde
+        case "Unloading":
+            return 0xf97316; // laranja
+        case "Loading & Unloading":
+            return 0xa855f7; // roxo
+        case "Completed":
+            return 0x3b82f6; // azul
         case "Waiting":
-        default:                     return 0x9ca3af; // cinza
+        default:
+            return 0x9ca3af; // cinza
+    }
+}
+
+function getStatusTooltip(status?: SimStatus): string {
+    switch (status) {
+        case "Loading":
+            return "Vessel currently loading cargo.";
+        case "Unloading":
+            return "Vessel currently unloading cargo.";
+        case "Loading & Unloading":
+            return "Vessel loading and unloading cargo simultaneously.";
+        case "Completed":
+            return "All scheduled operations for this vessel are completed.";
+        case "Waiting":
+        default:
+            return "Vessel at dock, waiting for operations to start.";
     }
 }
 
@@ -96,8 +213,35 @@ export class PortScene {
     // guarda o layout do cais/estradas (PortLayout) para o tráfego
     private _baseLayout!: PortLayout;
 
+    // labels HTML acima dos navios
+    private labelsLayer: HTMLDivElement;
+    private vesselLabels: {
+        obj: THREE.Object3D;
+        visit: any | null;
+        el: HTMLDivElement;
+    }[] = [];
+
+    private simulationStartSec: number;
+
     constructor(container: HTMLDivElement) {
         this.container = container;
+
+        // camada de labels HTML por cima do canvas
+        if (!this.container.style.position) {
+            this.container.style.position = "relative";
+        }
+        this.labelsLayer = document.createElement("div");
+        Object.assign(this.labelsLayer.style, {
+            position: "absolute",
+            inset: "0",
+            pointerEvents: "none",
+            fontSize: "11px",
+            color: "#f9fafb",
+            zIndex: "4",
+        });
+        this.container.appendChild(this.labelsLayer);
+
+        this.simulationStartSec = performance.now() / 1000;
 
         /* ------------ RENDERER ------------ */
         this.renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -135,6 +279,32 @@ export class PortScene {
             castsShadows: true,
             shadowSize: 1024,
         });
+
+
+        const numLights = 6;      
+        const spacing = 100;       
+        const baseX = 50;        
+        const y = 45;
+        const width = 1000 / 2 / 2 / 2;
+        const z = -width;
+        
+        for (let i = 0; i < numLights; i++) {
+            const offset = spacing * i;
+            const x = baseX + offset;
+
+            const spotLight = new THREE.SpotLight(0xffffff, 150);
+            spotLight.position.set(x, y, z);
+            spotLight.target.position.set(x, 0, z);
+
+            spotLight.angle = Math.PI / 3;
+            spotLight.penumbra = 0.5;
+            spotLight.decay = 1;
+            spotLight.distance = 0; // ilimitado
+            
+            this.scene.add(spotLight);
+            this.scene.add(spotLight.target);
+            
+        }
 
         const el = this.light.gui!.domElement as HTMLElement;
         const host = this.renderer.domElement.parentElement!;
@@ -405,7 +575,7 @@ export class PortScene {
         this.selectedObj = obj;
     }
 
-    private applyVesselStatusVisual(node: THREE.Object3D, status?: string) {
+    private applyVesselStatusVisual(node: THREE.Object3D, status?: SimStatus) {
         if (!status) return;
 
         const col = new THREE.Color(vesselStatusColorHex(status));
@@ -476,6 +646,14 @@ export class PortScene {
         this.pickables = [];
         this.clearHighlight();
 
+        // limpar labels HTML de navios
+        this.vesselLabels.forEach((vl) => {
+            if (vl.el.parentElement === this.labelsLayer) {
+                this.labelsLayer.removeChild(vl.el);
+            }
+        });
+        this.vesselLabels = [];
+
         // 2) calcular layout
         if (!this._grids) {
             console.warn("[PortScene] grids não inicializadas — fallback.");
@@ -505,16 +683,35 @@ export class PortScene {
         for (const v of layoutResult.vessels) {
             const node = makeVessel(v as any);
 
-            const status = (v as any).visit?.operationalStatus as string | undefined;
-            this.applyVesselStatusVisual(node, status);
+            // info de visita (VVN accepted) com tasks
+            const visit = (v as any).visit ?? null;
 
-            // guardar também no userData (útil para overlay / debug)
-            node.userData.operationalStatus = status;
+            // userData já usado para picking
+            node.userData.visit = visit;
 
             this.gVessels.add(node);
             this.pickables.push(node);
-        }
 
+            if (visit && Array.isArray(visit.tasks) && visit.tasks.length > 0) {
+                const labelEl = document.createElement("div");
+                labelEl.className = "vessel-status-label";
+                Object.assign(labelEl.style, {
+                    position: "absolute",
+                    padding: "2px 6px",
+                    borderRadius: "999px",
+                    background: "rgba(15,23,42,0.9)",
+                    border: "1px solid rgba(148,163,184,0.6)",
+                    whiteSpace: "nowrap",
+                    pointerEvents: "none",
+                    transform: "translate(-50%, -100%)",
+                });
+
+                labelEl.innerText = "Waiting";
+
+                this.labelsLayer.appendChild(labelEl);
+                this.vesselLabels.push({ obj: node, visit, el: labelEl });
+            }
+        }
 
         // decor “layout-based”
         for (const deco of layoutResult.decoratives) {
@@ -599,6 +796,65 @@ export class PortScene {
         }
     }
 
+    /** Atualiza posição + conteúdo das labels e cor dos navios */
+    private updateVesselLabelsAndStatus() {
+        if (!this.vesselLabels.length) return;
+
+        const simNowSec = performance.now() / 1000 - this.simulationStartSec;
+        const width = this.renderer.domElement.clientWidth;
+        const height = this.renderer.domElement.clientHeight;
+
+        const world = new THREE.Vector3();
+
+        for (const item of this.vesselLabels) {
+            const { obj, visit, el } = item;
+
+            const sim = computeVesselSimulation(visit, simNowSec);
+            if (!sim) {
+                el.style.display = "none";
+                continue;
+            }
+
+            // posição 3D um pouco acima do navio
+            obj.getWorldPosition(world);
+            world.y += 12;
+
+            world.project(this.camera);
+
+            if (world.z < 0 || world.z > 1) {
+                el.style.display = "none";
+                continue;
+            }
+
+            const x = (world.x * 0.5 + 0.5) * width;
+            const y = (-world.y * 0.5 + 0.5) * height;
+
+            el.style.display = "block";
+            el.style.transform = `translate(-50%, -100%) translate(${x}px, ${y}px)`;
+
+            const pct = Math.round(sim.progress * 100);
+            const colorHex = vesselStatusColorHex(sim.status);
+            const colorCss = `#${colorHex.toString(16).padStart(6, "0")}`;
+            const showPct = sim.status === "Completed" ? "" : ` ${pct}%`;
+
+            el.innerHTML = `
+                <span style="
+                    display:inline-block;
+                    width:8px;
+                    height:8px;
+                    border-radius:999px;
+                    background:${colorCss};
+                    margin-right:4px;
+                "></span>
+                <span>${sim.status}${showPct}</span>
+            `;
+            el.title = getStatusTooltip(sim.status);
+
+            // atualizar cor emissiva/casco do navio
+            this.applyVesselStatusVisual(obj, sim.status);
+        }
+    }
+
     /** Click → picking + highlight + focar câmara + callback para UI */
     raycastAt = (ev: MouseEvent, onPick?: (u: any) => void) => {
         const rect = this.renderer.domElement.getBoundingClientRect();
@@ -641,6 +897,8 @@ export class PortScene {
         if (!this.fp.controls.isLocked) this.controls.update();
         this.fp.update(dt);
 
+        this.updateVesselLabelsAndStatus();
+
         this.renderer.render(this.scene, this.camera);
         this.reqId = requestAnimationFrame(this.loop);
     };
@@ -663,5 +921,10 @@ export class PortScene {
         if (this.container.contains(this.renderer.domElement)) {
             this.container.removeChild(this.renderer.domElement);
         }
+
+        if (this.labelsLayer && this.labelsLayer.parentElement === this.container) {
+            this.container.removeChild(this.labelsLayer);
+        }
+        this.vesselLabels = [];
     }
 }

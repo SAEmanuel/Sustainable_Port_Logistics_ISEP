@@ -1,16 +1,8 @@
-// src/features/viewer3d/components/InfoOverlay.tsx
 import type { SelectedEntityInfo, UserRole } from "../types/selection";
 import { Roles } from "../../../app/types";
 import type { ReactNode } from "react";
-import { useEffect, useRef, useState } from "react";
 
-type Props = {
-    visible: boolean;
-    selected: SelectedEntityInfo | null;
-    roles: UserRole[];
-};
-
-/* ========= SIMULAÇÃO LOCAL ========= */
+/* ========= tipos e helpers da simulação local ========= */
 
 type SimStatus =
     | "Waiting"
@@ -21,8 +13,10 @@ type SimStatus =
 
 type VisitSimSummary = {
     status: SimStatus;
+    doneCount: number;
     ongoingCount: number;
     totalTasks: number;
+    progress: number; // 0..1 (podes usar no futuro para barras de progresso)
 };
 
 function hashStringToInt(s: string): number {
@@ -33,30 +27,40 @@ function hashStringToInt(s: string): number {
     return Math.abs(h);
 }
 
-/**
- * Duração pseudo-aleatória e determinística para cada task,
- * entre 30s e 120s (usando o id/código).
- */
+/** duração pseudo-aleatória mas determinística por task: [30s, 120s) */
 function getTaskDurationSeconds(task: any): number {
     const key = String(task.id ?? task.code ?? "");
     const base = hashStringToInt(key);
     const span = 120 - 30; // 90
-    return 30 + (base % span); // [30,120)
+    return 30 + (base % span);
 }
 
 /**
- * Dado um visit + tempo de simulação (segundos desde epoch local),
- * devolve status atual e nº de tasks em execução.
+ * Simula linha temporal das tasks:
+ *  - tasks executadas em série (com ~5s de intervalo)
+ *  - devolve estado atual, nº concluídas, nº em progresso, total, progresso 0..1
  */
-function computeVesselSimulation(visit: any, simNowSec: number): VisitSimSummary | null {
+function simulateVisitState(visit: any): VisitSimSummary | null {
     if (!visit || !Array.isArray(visit.tasks) || visit.tasks.length === 0) {
         return null;
     }
 
     const tasks = visit.tasks as any[];
+    const totalTasks = tasks.length;
 
-    let cursor = 0; // início da primeira task
+    // relógio de simulação (s) – baseado no tempo real para irmos avançando
+    // + pequeno offset por navio, para não estarem todos sincronizados
+    const baseKey =
+        String(visit.vvnId ?? visit.vvnCode ?? visit.code ?? visit.eta ?? "");
+    const offset = hashStringToInt(baseKey) % 20; // até 20s de offset
+    const nowSec = performance.now() / 1000 + offset;
+
+    const GAP = 5; // ~5s de intervalo entre operações
+
+    let cursor = 0;
+    let doneCount = 0;
     let ongoingCount = 0;
+    let lastEnd = 0;
     const activeTypes = new Set<string>();
 
     for (const t of tasks) {
@@ -64,28 +68,33 @@ function computeVesselSimulation(visit: any, simNowSec: number): VisitSimSummary
         const start = cursor;
         const end = cursor + dur;
 
-        if (simNowSec >= start && simNowSec < end) {
+        if (nowSec >= end) {
+            // task já terminou
+            doneCount++;
+        } else if (nowSec >= start && nowSec < end) {
+            // task em execução
             ongoingCount++;
             activeTypes.add(String(t.type));
         }
 
-        cursor = end + 5; // 5s de pausa entre tasks
+        cursor = end + GAP;
+        lastEnd = end;
     }
 
-    const totalSpanEnd = cursor; // tempo em que todas as tasks já terminaram
+    const totalSpan = lastEnd || 1;
+    const clamped = Math.max(0, Math.min(nowSec, totalSpan));
+    const progress = totalSpan > 0 ? clamped / totalSpan : 0;
 
     let status: SimStatus;
-    if (ongoingCount === 0 && simNowSec < 0) {
-        status = "Waiting";
-    } else if (ongoingCount === 0 && simNowSec < totalSpanEnd) {
-        // antes da 1ª task começar
-        status = "Waiting";
-    } else if (ongoingCount === 0 && simNowSec >= totalSpanEnd) {
+
+    if (doneCount >= totalTasks && ongoingCount === 0) {
         status = "Completed";
+    } else if (ongoingCount === 0) {
+        status = "Waiting";
     } else {
-        // Há pelo menos uma task em execução → escolhemos com base nos tipos
-        const hasContainer =
-            Array.from(activeTypes).some((t) => t === "ContainerHandling");
+        const hasContainer = Array.from(activeTypes).some(
+            (t) => t === "ContainerHandling",
+        );
         const hasYardOrStorage = Array.from(activeTypes).some(
             (t) => t === "YardTransport" || t === "StoragePlacement",
         );
@@ -97,28 +106,30 @@ function computeVesselSimulation(visit: any, simNowSec: number): VisitSimSummary
 
     return {
         status,
+        doneCount,
         ongoingCount,
-        totalTasks: tasks.length,
+        totalTasks,
+        progress,
     };
 }
 
-function getStatusColor(status?: SimStatus): string {
+function getStatusColor(status?: SimStatus | string): string {
     switch (status) {
         case "Loading":
-            return "#22c55e"; // verde
+            return "#22c55e";
         case "Unloading":
-            return "#f97316"; // laranja
+            return "#f97316";
         case "Loading & Unloading":
-            return "#a855f7"; // roxo
+            return "#a855f7";
         case "Completed":
-            return "#3b82f6"; // azul
+            return "#3b82f6";
         case "Waiting":
         default:
-            return "#9ca3af"; // cinzento
+            return "#9ca3af";
     }
 }
 
-function getStatusTooltip(status?: SimStatus): string {
+function getStatusTooltip(status?: SimStatus | string): string {
     switch (status) {
         case "Loading":
             return "Vessel currently loading cargo.";
@@ -134,22 +145,15 @@ function getStatusTooltip(status?: SimStatus): string {
     }
 }
 
+/* ======================= OVERLAY ======================= */
+
+type Props = {
+    visible: boolean;
+    selected: SelectedEntityInfo | null;
+    roles: UserRole[];
+};
+
 export function InfoOverlay({ visible, selected, roles }: Props) {
-    // epoch local da simulação (segundos desde que o overlay montou)
-    const epochRef = useRef<number | null>(null);
-    const [, setTick] = useState(0); // só para forçar re-render
-
-    useEffect(() => {
-        if (epochRef.current == null) {
-            epochRef.current = Date.now();
-        }
-        const id = window.setInterval(() => {
-            setTick((t) => t + 1);
-        }, 1000); // atualiza 1x/segundo
-
-        return () => window.clearInterval(id);
-    }, []);
-
     if (!visible || !selected || selected.kind === "unknown") return null;
 
     const privileged =
@@ -233,85 +237,83 @@ export function InfoOverlay({ visible, selected, roles }: Props) {
                 </p>,
             );
 
-            const visit = v.visit;
-            let sim: VisitSimSummary | null = null;
+            const visit = (v as any).visit;
 
-            if (visit && epochRef.current != null) {
-                const nowSec = (Date.now() - epochRef.current) / 1000;
-                sim = computeVesselSimulation(visit, nowSec);
-            }
-
-            if (visit && privileged) {
-                // status operacional + dot de cor + tooltip
-                if (sim) {
+            // só PortAuthority / Logistics vê detalhes operacionais
+            if (privileged) {
+                if (v.lengthMeters || v.widthMeters) {
                     restricted.push(
-                        <p key="op-status">
-                            <strong>Operational status:</strong>{" "}
-                            <span
-                                style={{
-                                    display: "inline-flex",
-                                    alignItems: "center",
-                                    gap: 6,
-                                }}
-                                title={getStatusTooltip(sim.status)}
-                            >
+                        <p key="dims">
+                            <strong>Dimensions:</strong>{" "}
+                            {v.lengthMeters ?? "?"} m ×{" "}
+                            {v.widthMeters ?? "?"} m
+                        </p>,
+                    );
+                }
+
+                if (visit) {
+                    if (visit.eta || visit.eta) {
+                        restricted.push(
+                            <p key="eta">
+                                <strong>ETA:</strong>{" "}
+                                {visit.eta
+                                    ? new Date(
+                                        visit.eta,
+                                    ).toLocaleString()
+                                    : "—"}
+                            </p>,
+                            <p key="etd">
+                                <strong>ETD:</strong>{" "}
+                                {visit.etd
+                                    ? new Date(
+                                        visit.etd,
+                                    ).toLocaleString()
+                                    : "—"}
+                            </p>,
+                        );
+                    }
+
+                    if (visit.dockCode) {
+                        restricted.push(
+                            <p key="dock">
+                                <strong>Dock:</strong> {visit.dockCode}
+                            </p>,
+                        );
+                    }
+
+                    // simulação local de estado/tarefas
+                    const sim = simulateVisitState(visit);
+
+                    if (sim) {
+                        const dotColor = getStatusColor(sim.status);
+                        const tooltip = getStatusTooltip(sim.status);
+
+                        restricted.unshift(
+                            <p key="op-status">
+                                <strong>Operational status:</strong>{" "}
                                 <span
                                     style={{
+                                        display: "inline-block",
                                         width: 8,
                                         height: 8,
                                         borderRadius: "999px",
-                                        display: "inline-block",
-                                        backgroundColor: getStatusColor(sim.status),
+                                        background: dotColor,
+                                        marginRight: 4,
                                     }}
-                                />
-                                <span>{sim.status}</span>
-                            </span>
-                        </p>,
-                    );
+                                    title={tooltip}
+                                />{" "}
+                                {sim.status}
+                            </p>,
+                        );
+
+                        restricted.push(
+                            <p key="tasks">
+                                <strong>Tasks completed:</strong>{" "}
+                                {sim.doneCount} / {sim.totalTasks}
+                            </p>,
+                        );
+                    }
                 }
-
-                restricted.push(
-                    <p key="dims">
-                        <strong>Dimensions:</strong>{" "}
-                        {v.lengthMeters ?? "?"} m × {v.widthMeters ?? "?"} m
-                    </p>,
-                );
-
-                restricted.push(
-                    <p key="eta">
-                        <strong>ETA:</strong>{" "}
-                        {new Date(visit.eta).toLocaleString()}
-                    </p>,
-                    <p key="etd">
-                        <strong>ETD:</strong>{" "}
-                        {new Date(visit.etd).toLocaleString()}
-                    </p>,
-                );
-
-                if (visit.dockCode) {
-                    restricted.push(
-                        <p key="dock">
-                            <strong>Dock:</strong> {visit.dockCode}
-                        </p>,
-                    );
-                }
-
-                if (sim) {
-                    restricted.push(
-                        <p key="tasks">
-                            <strong>Ongoing tasks:</strong>{" "}
-                            {sim.ongoingCount} / {sim.totalTasks}
-                        </p>,
-                    );
-                }
-            } else if (privileged) {
-                // sem visit: pelo menos mostra as dimensões
-                restricted.push(
-                    <p key="dims">
-                        <strong>Dimensions:</strong>{" "}
-                        {v.lengthMeters ?? "?"} m × {v.widthMeters ?? "?"} m
-                    </p>,
-                );
             }
             break;
         }
@@ -409,7 +411,8 @@ export function InfoOverlay({ visible, selected, roles }: Props) {
                         style={{
                             marginTop: 8,
                             paddingTop: 6,
-                            borderTop: "1px solid rgba(148,163,184,0.35)",
+                            borderTop:
+                                "1px solid rgba(148,163,184,0.35)",
                             opacity: 0.9,
                         }}
                     >
