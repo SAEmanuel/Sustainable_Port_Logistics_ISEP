@@ -36,6 +36,7 @@ import { portSceneConfig } from "../config/sceneConfigLoader";
 import { PMREMGenerator, EquirectangularReflectionMapping } from "three";
 import { RGBELoader } from "three/addons/loaders/RGBELoader.js";
 
+
 export type LayerVis = Partial<{
     containers: boolean;
     storage: boolean;
@@ -227,6 +228,21 @@ export class PortScene {
     private selectionSpotlight: THREE.SpotLight | null = null;
     private selectionSpotlightTarget: THREE.Object3D | null = null;
     private selectionCenter = new THREE.Vector3();
+
+
+    // vista "overview" (porto inteiro)
+    private overviewTarget = new THREE.Vector3(0, 0, 0);
+    private overviewPosition = new THREE.Vector3(180, 200, 420);
+
+// animação de reset
+    private isResettingCamera = false;
+    private resetFromPos = new THREE.Vector3();
+    private resetFromTarget = new THREE.Vector3();
+    private resetStartTime = 0;
+    private resetDuration = 1.2; // segundos (podes afinar)
+
+    
+    
 
     constructor(container: HTMLDivElement) {
         this.container = container;
@@ -421,8 +437,12 @@ export class PortScene {
                 this.fp.controls.isLocked
                     ? this.fp.unlock()
                     : this.fp.lock();
+            } else if (e.code === "KeyR") {
+                e.preventDefault();
+                this.resetCameraToOverview();
             }
         });
+
 
         /* ------------ GRELHAS (A/B/C) ------------ */
         const W = this._baseLayout.zoneC.size.w;
@@ -659,6 +679,73 @@ export class PortScene {
 
         cam.updateProjectionMatrix();
     }
+    
+    /** Atualiza animação suave de reset da câmara (se ativa). */
+    private updateCameraResetAnimation() {
+        if (!this.isResettingCamera) return;
+
+        const nowSec = performance.now() / 1000;
+        let t = (nowSec - this.resetStartTime) / this.resetDuration;
+
+        if (t >= 1) {
+            // fim da animação
+            this.isResettingCamera = false;
+            this.camera.position.copy(this.overviewPosition);
+            this.controls.target.copy(this.overviewTarget);
+            this.camera.updateProjectionMatrix();
+            this.controls.update();
+            return;
+        }
+
+        if (t < 0) t = 0;
+        if (t > 1) t = 1;
+
+        // easing suave (ease in-out cúbico)
+        const u = t < 0.5
+            ? 4 * t * t * t
+            : 1 - Math.pow(-2 * t + 2, 3) / 2;
+
+        // interpolar posição e target
+        this.camera.position.lerpVectors(
+            this.resetFromPos,
+            this.overviewPosition,
+            u,
+        );
+        this.controls.target.lerpVectors(
+            this.resetFromTarget,
+            this.overviewTarget,
+            u,
+        );
+
+        this.camera.updateProjectionMatrix();
+    }
+
+
+    /** Inicia animação suave para a vista overview (full port). */
+    public resetCameraToOverview() {
+        // se estiver em First-Person, liberta para usar OrbitControls
+        if (this.fp && this.fp.controls && this.fp.controls.isLocked) {
+            this.fp.unlock();
+        }
+
+        // 🔹 garantir que a vista overview não viola os limites de zoom
+        const desiredRadius = this.overviewPosition
+            .clone()
+            .sub(this.overviewTarget)
+            .length();
+
+        if (desiredRadius > this.controls.maxDistance) {
+            // dá um bocadinho de margem
+            this.controls.maxDistance = desiredRadius * 1.05;
+        }
+
+        this.isResettingCamera = true;
+        this.resetStartTime = performance.now() / 1000;
+
+        this.resetFromPos.copy(this.camera.position);
+        this.resetFromTarget.copy(this.controls.target);
+    }
+
 
     /* ===========================================================
        LOAD / BUILD
@@ -835,6 +922,9 @@ export class PortScene {
                 this.camera.near = Math.max(0.1, maxSize / 1000);
                 this.camera.far = Math.max(2000, distance * 10);
                 this.camera.updateProjectionMatrix();
+                
+                this.overviewTarget.copy(this.controls.target);
+                this.overviewPosition.copy(this.camera.position);
             }
         }
     }
@@ -938,7 +1028,10 @@ export class PortScene {
 
         if (!this.fp.controls.isLocked) this.controls.update();
         this.fp.update(dt);
-
+        
+        this.updateVesselLabelsAndStatus();
+        this.updateCameraResetAnimation();
+        
         this.updateVesselLabelsAndStatus();
 
         // spotlight dinâmico segue a câmara e continua apontado ao centro da seleção
