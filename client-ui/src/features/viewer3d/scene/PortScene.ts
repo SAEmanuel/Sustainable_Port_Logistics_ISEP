@@ -36,6 +36,10 @@ import { portSceneConfig } from "../config/sceneConfigLoader";
 import { PMREMGenerator, EquirectangularReflectionMapping } from "three";
 import { RGBELoader } from "three/addons/loaders/RGBELoader.js";
 
+const BASE = import.meta.env.BASE_URL || "/";
+const BACKGROUND_MUSIC_URL = `${BASE}audio/ambient.mp3`;
+const CLICK_SOUND_URL = `${BASE}audio/select.mp3`;
+
 export type LayerVis = Partial<{
     containers: boolean;
     storage: boolean;
@@ -255,6 +259,31 @@ export class PortScene {
     private focusToPos = new THREE.Vector3();
     private focusToTarget = new THREE.Vector3();
 
+    // animação "pulse" na seleção
+    private selectionPulseElapsed = 0;
+    private selectionPulseDuration = 0.6;
+    private selectionBaseScale = new THREE.Vector3(1, 1, 1);
+
+    // 🎵 Áudio
+    private audioListener: THREE.AudioListener;
+    private bgMusic: THREE.Audio | null = null;
+    private clickSound: THREE.Audio | null = null;
+    private bgLoaded = false;
+    private clickLoaded = false;
+    private bgStartedOnce = false;
+
+    // 🐦 Aves
+    private birdsGroup = new THREE.Group();
+    private birds: {
+        mesh: THREE.Group;
+        radius: number;
+        angle: number;
+        speed: number;
+        height: number;
+        wingPhase: number;
+        wingSpeed: number;
+    }[] = [];
+
     constructor(container: HTMLDivElement) {
         this.container = container;
 
@@ -285,7 +314,14 @@ export class PortScene {
 
         /* ------------ SCENE & CAMERA ------------ */
         this.scene = new THREE.Scene();
-        this.scene.background = new THREE.Color(0x000000);
+
+        // fundo + fog mais realista (nítido perto, fecha no horizonte)
+        const fogColor = new THREE.Color(0x020617);
+        this.scene.background = fogColor;
+
+        const fogNear = 900;
+        const fogFar = 15000;
+        this.scene.fog = new THREE.Fog(fogColor.getHex(), fogNear, fogFar);
 
         this.camera = new THREE.PerspectiveCamera(
             20,
@@ -294,6 +330,44 @@ export class PortScene {
             8000,
         );
         this.camera.position.set(180, 200, 420);
+
+        /* ------------ ÁUDIO ------------ */
+        this.audioListener = new THREE.AudioListener();
+        this.camera.add(this.audioListener);
+
+        const audioLoader = new THREE.AudioLoader();
+
+        // música de fundo
+        this.bgMusic = new THREE.Audio(this.audioListener);
+        audioLoader.load(
+            BACKGROUND_MUSIC_URL,
+            (buffer) => {
+                this.bgMusic!.setBuffer(buffer);
+                this.bgMusic!.setLoop(true);
+                this.bgMusic!.setVolume(0.25);
+                this.bgLoaded = true;
+            },
+            undefined,
+            (err) => {
+                console.warn("[PortScene] Falha ao carregar BG music:", err);
+            },
+        );
+
+        // som de click
+        this.clickSound = new THREE.Audio(this.audioListener);
+        audioLoader.load(
+            CLICK_SOUND_URL,
+            (buffer) => {
+                this.clickSound!.setBuffer(buffer);
+                this.clickSound!.setLoop(false);
+                this.clickSound!.setVolume(0.6);
+                this.clickLoaded = true;
+            },
+            undefined,
+            (err) => {
+                console.warn("[PortScene] Falha ao carregar click sound:", err);
+            },
+        );
 
         /* ------------ Luzes (LightingController) ------------ */
         this.light = new LightingController(this.scene, this.renderer, {
@@ -319,16 +393,16 @@ export class PortScene {
 
         for (let i = 0; i < numLights; i++) {
             const offset = spacing * i;
-            const x = baseX + offset;
+            const lx = baseX + offset;
 
             const spotLight = new THREE.SpotLight(0xffffff, 150);
-            spotLight.position.set(x, y, z);
-            spotLight.target.position.set(x, 0, z);
+            spotLight.position.set(lx, y, z);
+            spotLight.target.position.set(lx, 0, z);
 
             spotLight.angle = Math.PI / 3;
             spotLight.penumbra = 0.5;
             spotLight.decay = 1;
-            spotLight.distance = 0; // ilimitado
+            spotLight.distance = 0;
 
             this.scene.add(spotLight);
             this.scene.add(spotLight.target);
@@ -340,9 +414,9 @@ export class PortScene {
 
         this.selectionSpotlight = new THREE.SpotLight(
             0xff0000,
-            400,          // intensidade forte
-            0,            // sem limite
-            Math.PI / 6,  // cone ~30º
+            400,
+            0,
+            Math.PI / 6,
             0.5,
             1,
         );
@@ -387,6 +461,11 @@ export class PortScene {
         this.gBase = base;
         this._baseLayout = baseLayout;
         this.scene.add(this.gBase);
+
+        /* ------------ GRUPO DAS AVES ------------ */
+        this.birdsGroup.name = "birds";
+        this.scene.add(this.birdsGroup);
+        this.initBirdsFlight();
 
         /* ------------ PREPARAR GRUPOS 3D E ANEXAR ------------ */
         this.gContainers.name = "containers";
@@ -500,6 +579,99 @@ export class PortScene {
         this.loop();
     }
 
+    /** Cria um pássaro simples: corpo + 2 asas animáveis */
+    private createBirdMesh(): THREE.Group {
+        const bird = new THREE.Group();
+
+        const bodyGeom = new THREE.SphereGeometry(0.8, 12, 12);
+        const wingGeom = new THREE.BoxGeometry(2.2, 0.12, 0.6);
+        const mat = new THREE.MeshStandardMaterial({
+            color: 0xf9fafb,
+            metalness: 0.1,
+            roughness: 0.5,
+            flatShading: true,
+        });
+
+        const body = new THREE.Mesh(bodyGeom, mat);
+        body.castShadow = false;
+        body.receiveShadow = false;
+        bird.add(body);
+
+        const wingLeft = new THREE.Mesh(wingGeom, mat);
+        wingLeft.position.set(-1.1, 0, 0);
+        bird.add(wingLeft);
+
+        const wingRight = new THREE.Mesh(wingGeom, mat);
+        wingRight.position.set(1.1, 0, 0);
+        bird.add(wingRight);
+
+        (bird.userData as any).wingLeft = wingLeft;
+        (bird.userData as any).wingRight = wingRight;
+
+        return bird;
+    }
+
+    /** Inicializa um pequeno conjunto de aves a voar em círculos acima do porto. */
+    private initBirdsFlight() {
+        const flockCount = 7;
+        for (let i = 0; i < flockCount; i++) {
+            const mesh = this.createBirdMesh();
+
+            const radius = 380 + Math.random() * 220;
+            const angle = Math.random() * Math.PI * 2;
+            const height = 130 + Math.random() * 90;
+            const speed = 0.25 + Math.random() * 0.35;
+
+            mesh.position.set(
+                Math.cos(angle) * radius,
+                height,
+                Math.sin(angle) * radius,
+            );
+
+            this.birdsGroup.add(mesh);
+            this.birds.push({
+                mesh,
+                radius,
+                angle,
+                speed,
+                height,
+                wingPhase: Math.random() * Math.PI * 2,
+                wingSpeed: 6 + Math.random() * 4,
+            });
+        }
+    }
+
+    /** Atualiza a animação das aves em voo circular + batimento de asas. */
+    private updateBirds(dt: number) {
+        if (!this.birds.length) return;
+
+        for (const b of this.birds) {
+            b.angle += b.speed * dt;
+            b.wingPhase += b.wingSpeed * dt;
+
+            const x = Math.cos(b.angle) * b.radius;
+            const z = Math.sin(b.angle) * b.radius;
+            const y = b.height + Math.sin(b.angle * 2) * 5;
+
+            b.mesh.position.set(x, y, z);
+
+            // orientar na direção do movimento
+            const dirAngle = b.angle + Math.PI / 2;
+            b.mesh.rotation.set(0, -dirAngle, 0);
+
+            // batimento das asas
+            const wingAngle = Math.sin(b.wingPhase) * 0.6 + 0.2;
+            const userData = b.mesh.userData as any;
+            const leftWing = userData.wingLeft as THREE.Mesh | undefined;
+            const rightWing = userData.wingRight as THREE.Mesh | undefined;
+
+            if (leftWing && rightWing) {
+                leftWing.rotation.z = wingAngle;
+                rightWing.rotation.z = -wingAngle;
+            }
+        }
+    }
+
     /** Raio “seguro” da cena, calculado a partir das rects das zonas A/B/C. */
     private getSceneRadius(): number {
         const l: any = this._baseLayout;
@@ -585,6 +757,8 @@ export class PortScene {
 
             o.material = o.userData.__origMat;
             delete o.userData.__origMat;
+
+            o.scale.set(1, 1, 1);
         });
 
         this.selectedObj = null;
@@ -613,7 +787,7 @@ export class PortScene {
             mats.forEach((m: any) => {
                 if (!m) return;
 
-                const highlightColor = new THREE.Color(0xffff00); // amarelo forte
+                const highlightColor = new THREE.Color(0xffff00);
 
                 if ("color" in m && m.color) {
                     m.color.lerp(highlightColor, 0.7);
@@ -633,14 +807,15 @@ export class PortScene {
 
         this.selectedObj = obj;
 
-        // configurar animação do spotlight para o novo centro
+        this.selectionBaseScale.copy(obj.scale);
+        this.selectionPulseElapsed = 0;
+
         if (this.selectionSpotlight && this.selectionSpotlightTarget) {
             const box = new THREE.Box3().setFromObject(obj);
             const newCenter = new THREE.Vector3();
             box.getCenter(newCenter);
 
             if (!this.hasSpotTarget) {
-                // primeira seleção
                 this.selectionCenter.copy(newCenter);
             }
 
@@ -690,7 +865,6 @@ export class PortScene {
         this.focusToPos.copy(this.focusToTarget).add(horizOffset);
         this.focusToPos.y = height;
 
-        // cancelar reset se estava a acontecer
         this.isResettingCamera = false;
 
         this.isAnimatingFocus = true;
@@ -700,7 +874,7 @@ export class PortScene {
         this.focusFromTarget.copy(curTarget);
     }
 
-    /** Atualiza animação suave de foco da câmara. */
+    /** Atualiza animação de foco da câmara. */
     private updateFocusAnimation() {
         if (!this.isAnimatingFocus) return;
 
@@ -726,7 +900,7 @@ export class PortScene {
         this.camera.updateProjectionMatrix();
     }
 
-    /** Atualiza animação suave de reset da câmara (vista overview). */
+    /** Atualiza animação de reset para a vista overview. */
     private updateCameraResetAnimation() {
         if (!this.isResettingCamera) return;
 
@@ -763,12 +937,11 @@ export class PortScene {
         this.camera.updateProjectionMatrix();
     }
 
-    /** Atualiza spotlight da seleção (target + posição da luz). */
+    /** Atualiza spotlight da seleção. */
     private updateSelectionSpotlight(dt: number) {
         if (!this.selectionSpotlight || !this.selectionSpotlightTarget) return;
         if (!this.selectedObj || !this.hasSpotTarget) return;
 
-        // animar o centro (target) da luz
         if (this.spotElapsed < this.spotDuration) {
             this.spotElapsed += dt;
             let t = Math.min(1, this.spotElapsed / this.spotDuration);
@@ -783,7 +956,6 @@ export class PortScene {
         this.selectionSpotlightTarget.position.copy(this.selectionCenter);
         this.selectionSpotlightTarget.updateMatrixWorld();
 
-        // posição da luz – um pouco atrás da direção câmara → centro
         const dir = new THREE.Vector3()
             .subVectors(this.selectionCenter, this.camera.position)
             .normalize();
@@ -794,13 +966,33 @@ export class PortScene {
         this.selectionSpotlight.position.copy(lightPos);
     }
 
+    /** Atualiza efeito de "pulse" na escala do objeto selecionado. */
+    private updateSelectionPulse(dt: number) {
+        if (!this.selectedObj) return;
+
+        this.selectionPulseElapsed += dt;
+        const t = this.selectionPulseElapsed / this.selectionPulseDuration;
+
+        if (t >= 1) {
+            this.selectedObj.scale.copy(this.selectionBaseScale);
+            return;
+        }
+
+        const s = 1 + 0.18 * Math.sin(t * Math.PI);
+
+        this.selectedObj.scale.set(
+            this.selectionBaseScale.x * s,
+            this.selectionBaseScale.y * s,
+            this.selectionBaseScale.z * s,
+        );
+    }
+
     /** Inicia animação suave para a vista overview (full port). */
     public resetCameraToOverview() {
         if (this.fp && this.fp.controls && this.fp.controls.isLocked) {
             this.fp.unlock();
         }
 
-        // garantir que overview não viola limites do OrbitControls
         const desiredRadius = this.overviewPosition
             .clone()
             .sub(this.overviewTarget)
@@ -810,7 +1002,7 @@ export class PortScene {
             this.controls.maxDistance = desiredRadius * 1.05;
         }
 
-        this.isAnimatingFocus = false; // cancela foco se estava a acontecer
+        this.isAnimatingFocus = false;
         this.isResettingCamera = true;
         this.resetStartTime = performance.now() / 1000;
 
@@ -818,11 +1010,32 @@ export class PortScene {
         this.resetFromTarget.copy(this.controls.target);
     }
 
+    private ensureBgMusic() {
+        if (!this.bgMusic || !this.bgLoaded || this.bgStartedOnce) return;
+        try {
+            this.bgMusic.play();
+            this.bgStartedOnce = true;
+        } catch {
+            // ignore
+        }
+    }
+
+    private playClickSound() {
+        if (!this.clickSound || !this.clickLoaded) return;
+        try {
+            if (this.clickSound.isPlaying) {
+                this.clickSound.stop();
+            }
+            this.clickSound.play();
+        } catch {
+            // ignore
+        }
+    }
+
     /* ===========================================================
        LOAD / BUILD
        =========================================================== */
     load(data: SceneData) {
-        // 1) limpar grupos dinâmicos
         const disposeGroup = (g: THREE.Group) => {
             while (g.children.length) {
                 const o: any = g.children.pop();
@@ -847,7 +1060,6 @@ export class PortScene {
         this.pickables = [];
         this.clearHighlight();
 
-        // limpar labels HTML de navios
         this.vesselLabels.forEach((vl) => {
             if (vl.el.parentElement === this.labelsLayer) {
                 this.labelsLayer.removeChild(vl.el);
@@ -855,14 +1067,12 @@ export class PortScene {
         });
         this.vesselLabels = [];
 
-        // 2) calcular layout
         if (!this._grids) {
             console.warn("[PortScene] grids não inicializadas — fallback.");
             this._grids = computePortGrids(600, 500, 10);
         }
         const layoutResult = computeLayout(data, this._grids!);
 
-        // 3) construir nós 3D (facilities + decorativos)
         for (const sa of layoutResult.storage) {
             const node = makeStorageArea(sa);
             this.gStorage.add(node);
@@ -883,7 +1093,6 @@ export class PortScene {
 
         for (const v of layoutResult.vessels) {
             const node = makeVessel(v as any);
-
             const visit = (v as any).visit ?? null;
             node.userData.visit = visit;
 
@@ -911,7 +1120,6 @@ export class PortScene {
             }
         }
 
-        // decor “layout-based”
         for (const deco of layoutResult.decoratives) {
             const mesh = makeDecorativeStorage(deco);
             this.gDecor.add(mesh);
@@ -923,7 +1131,6 @@ export class PortScene {
             this.pickables.push(node);
         }
 
-        // ambiente dependente da grelha/layout
         addRoadTraffic(this.gTraffic, this._baseLayout, portSceneConfig.traffic);
         addAngleParkingInC(this.gParking, this._grids!, portSceneConfig.parking);
         addWorkshopsInC34(
@@ -964,7 +1171,6 @@ export class PortScene {
             }
         }
 
-        // fit de câmara ao conteúdo (quando NÃO estiver em FP)
         if (!this.fp.controls.isLocked) {
             const box = new THREE.Box3();
             this.pickables.forEach((o) => box.expandByObject(o));
@@ -1052,7 +1258,7 @@ export class PortScene {
         }
     }
 
-    /** Click → picking + highlight + focar câmara + callback para UI */
+    /** Click → picking + highlight + animações + callback para UI */
     raycastAt = (ev: MouseEvent, onPick?: (u: any) => void) => {
         const rect = this.renderer.domElement.getBoundingClientRect();
         const mouse = new THREE.Vector2(
@@ -1068,6 +1274,8 @@ export class PortScene {
             return;
         }
 
+        this.ensureBgMusic();
+
         let obj: THREE.Object3D | null = hits[0].object;
         while (obj && !obj.userData?.type) obj = obj.parent!;
 
@@ -1076,6 +1284,7 @@ export class PortScene {
         this.clearHighlight();
         this.applyHighlight(obj);
         this.focusCameraOnObject(obj);
+        this.playClickSound();
 
         onPick?.(obj.userData ?? { type: "Unknown" });
     };
@@ -1086,6 +1295,12 @@ export class PortScene {
         const dt = Math.min(0.05, (now - this.lastT) / 1000);
         this.lastT = now;
 
+        // 🌊 atualizar animação da água (PortBase expõe em userData)
+        const updateWater = (this.gBase.userData as any)?.updateWater;
+        if (typeof updateWater === "function") {
+            updateWater(dt, now / 1000);
+        }
+
         if (!this.fp.controls.isLocked) this.controls.update();
         this.fp.update(dt);
 
@@ -1093,6 +1308,8 @@ export class PortScene {
         this.updateFocusAnimation();
         this.updateCameraResetAnimation();
         this.updateSelectionSpotlight(dt);
+        this.updateSelectionPulse(dt);
+        this.updateBirds(dt);
 
         this.renderer.render(this.scene, this.camera);
         this.reqId = requestAnimationFrame(this.loop);
@@ -1121,5 +1338,8 @@ export class PortScene {
             this.container.removeChild(this.labelsLayer);
         }
         this.vesselLabels = [];
+
+        if (this.bgMusic && this.bgMusic.isPlaying) this.bgMusic.stop();
+        if (this.clickSound && this.clickSound.isPlaying) this.clickSound.stop();
     }
 }

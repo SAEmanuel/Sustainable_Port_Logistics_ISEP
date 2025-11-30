@@ -1,4 +1,3 @@
-// src/features/viewer3d/scene/utils/assets.ts
 const BASE = import.meta.env.BASE_URL || "/"; // funciona em subpath
 
 const MODELS = `${BASE}3Dmodels`;
@@ -65,7 +64,9 @@ export const ASSETS_MODELS = {
 export const ASSETS_TEXTURES = {
     port: {
         paving: { paving: `${TEX}/paving.jpg` },
-        water:  { water: `${TEX}/water.jpg` },
+        water:  { water: `${TEX}/water.jpg` ,
+                  waterNormals: `${TEX}/waternormals.jpg`,
+        },
         road: {
             road: `${TEX}/road.jpg`,
             roadhorizontal: `${TEX}/road_horizontal.jpg`,

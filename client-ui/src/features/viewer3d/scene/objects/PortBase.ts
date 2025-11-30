@@ -108,8 +108,8 @@ export function makePortBase(opts: PortBaseOptions): { group: THREE.Group; layou
     };
 
     // ---------- ÁGUA ----------
-    const waterW = W + M * 7;
-    const waterD = D + M * 10;
+    const waterW = W + M * 40;
+    const waterD = D + M * 40;
     const waterTopY = slabHeight - waterGap;
     const waterCenterY = waterTopY - waterThickness / 2;
 
