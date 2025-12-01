@@ -19,4 +19,10 @@ public class PrivacyPolicyRepository : BaseRepository<PrivacyPolicy, PrivacyPoli
             .AsNoTracking()
             .FirstOrDefaultAsync(pp => pp.Version == version);
     }
+
+    public async Task<PrivacyPolicy?> GetCurrentPrivacyPolicy()
+    {
+        return await _context.PrivacyPolicy
+            .FirstOrDefaultAsync(pp => pp.IsCurrent == true);
+    }
 }

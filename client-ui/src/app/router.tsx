@@ -12,6 +12,7 @@ import PhysicalResource from "../features/physicalResource/pages/PhysicalResourc
 import GenericDashboard from "../pages/GenericDashboard";
 import VvnPage from "../features/vesselVisitNotification/pages/VvnListPage";
 import VvnResponse from "../features/vesselVisitNotification/pages/VvnSubmittedAdminPage";
+import PrivatePrivacy from "../features/privatePolicy/pages/PrivacyPolicyPage.tsx";
 import NotFound from "../pages/NotFound";
 import Forbidden from "../pages/Forbidden";
 import PendingApproval from "../pages/PendingApproval.tsx";
@@ -131,6 +132,11 @@ export const router = createBrowserRouter([
                                 path: "sar",
                                 element: <RequireRole roles={[Roles.PortAuthorityOfficer]} />,
                                 children: [{ index: true, element: <SAR /> }],
+                            },
+                            {
+                                path: "pp",
+                                element: <RequireRole roles={[Roles.Administrator]} />,
+                                children: [{ index: true, element: <PrivatePrivacy /> }],
                             },
                             { path: "forbidden", element: <Forbidden /> },
                         ],

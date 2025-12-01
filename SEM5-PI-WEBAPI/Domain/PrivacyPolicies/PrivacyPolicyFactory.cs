@@ -1,5 +1,5 @@
-using SEM5_PI_WEBAPI.Domain.PrivacyPolicies.DTOs;
 using SEM5_PI_WEBAPI.Domain.ValueObjects;
+using SEM5_PI_WEBAPI.Domain.PrivacyPolicies.DTOs;
 
 namespace SEM5_PI_WEBAPI.Domain.PrivacyPolicies;
 
@@ -7,12 +7,13 @@ public class PrivacyPolicyFactory
 {
     public static PrivacyPolicy Create(CreatePrivacyPolicyDto dto)
     {
+        if (dto == null) throw new ArgumentNullException(nameof(dto));
 
         var nowUtc = DateTime.UtcNow;
-
-        string version = $"PP_{nowUtc:yyyyMMdd_HHmm}";
+        var version = $"PP_{nowUtc:yyyyMMdd_HHmm}";
 
         var createdAt = new ClockTime(nowUtc);
+        var effectiveFrom = new ClockTime(dto.EffectiveFrom);
 
         return new PrivacyPolicy(
             version,
@@ -21,7 +22,7 @@ public class PrivacyPolicyFactory
             dto.ContentEn,
             dto.ContentPT,
             createdAt,
-            dto.EffectiveFrom,
+            effectiveFrom,
             dto.CreatedByAdmin
         );
     }

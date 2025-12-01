@@ -28,14 +28,21 @@ public class PrivacyPolicyService : IPrivacyPolicyService
             throw new BusinessRuleValidationException("Privacy Policy DTO is null");
 
         var pp = PrivacyPolicyFactory.Create(createPrivacyPolicyDto);
+
         var exist = await _repository.GetPrivacyPolicyByVersion(pp.Version);
-        
-        if ( exist == null)
+        if (exist != null)
             throw new BusinessRuleValidationException("Privacy Policy with this version already exist.");
+
+        var current = await _repository.GetCurrentPrivacyPolicy();
+        if (current != null)
+        {
+            current.MarKAsOld();
+        }
 
         await _repository.AddAsync(pp);
         await _unitOfWork.CommitAsync();
-        
+
         return PrivacyPolicyMappers.ProduceDto(pp);
     }
+
 }

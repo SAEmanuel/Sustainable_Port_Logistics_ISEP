@@ -33,6 +33,7 @@ export default function Nav({ isOpen }: NavProps) {
     const baseMenu = [
         { label: t("menu.home"), path: "/", icon: <FiHome /> },
         { label: t("menu.3dView"), path: "/3dSecene", icon: <FiLayers /> },
+        { label: t("menu.pp"), path: "/pp", icon: <FiSettings /> },
 
     ];
 
