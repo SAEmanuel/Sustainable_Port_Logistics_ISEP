@@ -61,7 +61,7 @@ export const MultiCraneAnalysis: React.FC<MultiCraneAnalysisProps> = ({ data }) 
                 const nextOp = ops[i + 1];
 
                 const currentCranes = currentOp.craneCountUsed || 1;
-                const availableCranes = currentOp.totalCranesOnDock || 1; // Usando o novo campo
+                const availableCranes = currentOp.totalCranesOnDock || 1;
 
                 const workLoad = currentOp.optimizedOperationDuration * currentCranes;
                 const durationWithMoreCranes = Math.ceil(workLoad / (currentCranes + 1));
@@ -121,7 +121,7 @@ export const MultiCraneAnalysis: React.FC<MultiCraneAnalysisProps> = ({ data }) 
                 <Tabs value={activeTab} onChange={setActiveTab} variant="pills" radius="md">
                     <Tabs.List>
                         <Tabs.Tab value="prediction" leftSection={<IconBulb size={16}/>}>
-                            Sugestão Inteligente
+                            Sugestão
                         </Tabs.Tab>
                         <Tabs.Tab value="comparison" leftSection={<IconChartBar size={16}/>}>
                             Comparação Direta
@@ -178,7 +178,6 @@ export const MultiCraneAnalysis: React.FC<MultiCraneAnalysisProps> = ({ data }) 
                             const isDirect = suggestion?.reason === 'DIRECT';
                             const needsAction = suggestion?.isBottleneck;
 
-                            // Visualização explícita da capacidade
                             const available = op.totalCranesOnDock || 1;
                             const used = op.craneCountUsed || 1;
                             const isMaxedOut = used >= available;

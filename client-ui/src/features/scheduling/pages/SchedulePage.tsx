@@ -31,7 +31,6 @@ import {
     IconClockHour3,
     IconShip,
     IconCpu,
-    IconAnalyze,
     IconSettings
 } from '@tabler/icons-react';
 
@@ -186,7 +185,7 @@ export default function SchedulePage() {
         {value: 'optimal', label: t('planningScheduling.optimal'), icon: IconStar},
         {value: 'greedy', label: t('planningScheduling.greedy'), icon: IconBolt},
         {value: 'local_search', label: t('planningScheduling.localSearch'), icon: IconSearch},
-        {value: 'multi_crane', label: 'Multi Crane (AI)', icon: IconCpu},
+        {value: 'multi_crane', label: 'Multi Crane', icon: IconCpu},
     ];
 
     const getAlgoName = useCallback(
@@ -363,8 +362,7 @@ export default function SchedulePage() {
                                     { value: 'standard', label: 'Visão Padrão' },
                                     { value: 'analysis', label: (
                                             <Group gap={6}>
-                                                <IconAnalyze size={16}/>
-                                                <Text fw={700} c="blue">Comparação & IA</Text>
+                                                <Text fw={700} c="blue">Comparação</Text>
                                             </Group>
                                         )}
                                 ]}
