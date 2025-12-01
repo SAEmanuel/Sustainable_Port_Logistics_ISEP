@@ -58,6 +58,9 @@ function isDefaultDateStr(x: any): boolean {
     return year < 2000;
 }
 
+class VesselOperationalStatus {
+}
+
 function computeOperationalStatus(vvn: any, tasks: { startTime?: string | null; endTime?: string | null; status: string; }[]): VesselOperationalStatus {
     const now = Date.now();
 
@@ -189,8 +192,8 @@ export async function fetchVessels(): Promise<VesselDto[]> {
     try {
         // 1) ir buscar TODOS os vessels + TODOS os VVNs accepted
         const [vesselRes, vvnRes] = await Promise.all([
-            webapi.get("/api/vessel"),
-            webapi.get("/api/VesselVisitNotification/all/accepted"),
+            webApi.get("/api/vessel"),
+            webApi.get("/api/VesselVisitNotification/all/accepted"),
         ]);
 
         const allVessels: VesselDto[] = (vesselRes.data as any[]).map((v) => ({

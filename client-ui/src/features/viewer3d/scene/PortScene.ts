@@ -1,3 +1,4 @@
+// src/features/viewer3d/scene/PortScene.ts
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import type { SceneData, ContainerDto } from "../types";
@@ -35,6 +36,10 @@ import { portSceneConfig } from "../config/sceneConfigLoader";
 
 import { PMREMGenerator, EquirectangularReflectionMapping } from "three";
 import { RGBELoader } from "three/addons/loaders/RGBELoader.js";
+
+// ⭐ Sky shader + GUI (do exemplo three.js)
+import { Sky } from "three/addons/objects/Sky.js";
+import { GUI } from "three/addons/libs/lil-gui.module.min.js";
 
 const BASE = import.meta.env.BASE_URL || "/";
 const BACKGROUND_MUSIC_URL = `${BASE}audio/ambient.mp3`;
@@ -284,6 +289,20 @@ export class PortScene {
         wingSpeed: number;
     }[] = [];
 
+    // 🌤 Sky shader
+    private sky!: Sky;
+    private sun = new THREE.Vector3();
+    private skyGui?: GUI;
+    private skyParams = {
+        turbidity: 10,
+        rayleigh: 3,
+        mieCoefficient: 0.005,
+        mieDirectionalG: 0.7,
+        elevation: 2,
+        azimuth: 180,
+        exposure: 0.5,
+    };
+
     constructor(container: HTMLDivElement) {
         this.container = container;
 
@@ -310,15 +329,17 @@ export class PortScene {
         this.renderer.setSize(container.clientWidth, container.clientHeight);
         this.renderer.shadowMap.enabled = true;
         this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+        // ACES como no exemplo do Sky
+        this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
+        this.renderer.toneMappingExposure = this.skyParams.exposure;
         container.appendChild(this.renderer.domElement);
 
         /* ------------ SCENE & CAMERA ------------ */
         this.scene = new THREE.Scene();
 
-        // fundo + fog mais realista (nítido perto, fecha no horizonte)
+        // fundo + fog (vai ser desligado quando ativarmos o Sky)
         const fogColor = new THREE.Color(0x020617);
         this.scene.background = fogColor;
-
         const fogNear = 900;
         const fogFar = 15000;
         this.scene.fog = new THREE.Fog(fogColor.getHex(), fogNear, fogFar);
@@ -437,6 +458,9 @@ export class PortScene {
             zIndex: "10",
         });
         host.appendChild(el);
+
+        /* ------------ SKY FÍSICO (shader do exemplo) ------------ */
+        this.initPhysicalSky();
 
         /* ------------ BASE DO PORTO ------------ */
         const { group: base, layout: baseLayout } = makePortBase({
@@ -577,6 +601,61 @@ export class PortScene {
 
         window.addEventListener("resize", this.onResize);
         this.loop();
+    }
+
+    /* ================= SKY DO EXEMPLO (shader) ================= */
+
+    private initPhysicalSky() {
+        this.sky = new Sky();
+        this.sky.scale.setScalar(450000);
+        this.scene.add(this.sky);
+
+        // desliga fog + background sólido para deixar só o Sky controlar o fundo
+        this.scene.fog = null;
+        this.scene.background = null;
+
+        const uniforms = this.sky.material.uniforms;
+
+        const updateSky = () => {
+            uniforms["turbidity"].value = this.skyParams.turbidity;
+            uniforms["rayleigh"].value = this.skyParams.rayleigh;
+            uniforms["mieCoefficient"].value = this.skyParams.mieCoefficient;
+            uniforms["mieDirectionalG"].value = this.skyParams.mieDirectionalG;
+
+            const phi = THREE.MathUtils.degToRad(90 - this.skyParams.elevation);
+            const theta = THREE.MathUtils.degToRad(this.skyParams.azimuth);
+
+            this.sun.setFromSphericalCoords(1, phi, theta);
+            uniforms["sunPosition"].value.copy(this.sun);
+
+            this.renderer.toneMappingExposure = this.skyParams.exposure;
+        };
+
+        updateSky();
+
+        // GUI tipo exemplo original
+        this.skyGui = new GUI({ title: "Sky" });
+        const guiEl = this.skyGui.domElement;
+        guiEl.style.position = "absolute";
+        guiEl.style.top = "8px";
+        guiEl.style.right = "8px";
+        guiEl.style.zIndex = "20";
+
+        const folder = this.skyGui.addFolder("Sky");
+        folder.add(this.skyParams, "turbidity", 0.0, 20.0, 0.1).onChange(updateSky);
+        folder.add(this.skyParams, "rayleigh", 0.0, 4, 0.001).onChange(updateSky);
+        folder
+            .add(this.skyParams, "mieCoefficient", 0.0, 0.1, 0.001)
+            .onChange(updateSky);
+        folder
+            .add(this.skyParams, "mieDirectionalG", 0.0, 1, 0.001)
+            .onChange(updateSky);
+        folder.add(this.skyParams, "elevation", 0, 90, 0.1).onChange(updateSky);
+        folder.add(this.skyParams, "azimuth", -180, 180, 0.1).onChange(updateSky);
+        folder.add(this.skyParams, "exposure", 0, 1, 0.0001).onChange(updateSky);
+
+        // montar GUI na mesma div do renderer
+        this.renderer.domElement.parentElement?.appendChild(guiEl);
     }
 
     /** Cria um pássaro simples: corpo + 2 asas animáveis */
@@ -1318,6 +1397,7 @@ export class PortScene {
     dispose() {
         cancelAnimationFrame(this.reqId);
         window.removeEventListener("resize", this.onResize);
+
         this.scene.traverse((o) => {
             const m = o as THREE.Mesh;
             (m.geometry as any)?.dispose?.();
@@ -1341,5 +1421,9 @@ export class PortScene {
 
         if (this.bgMusic && this.bgMusic.isPlaying) this.bgMusic.stop();
         if (this.clickSound && this.clickSound.isPlaying) this.clickSound.stop();
+
+        if (this.skyGui) {
+            this.skyGui.destroy();
+        }
     }
 }
