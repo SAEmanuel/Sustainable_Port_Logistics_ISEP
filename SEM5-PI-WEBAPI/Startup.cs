@@ -47,6 +47,8 @@ using SEM5_PI_WEBAPI.utils;
 using SEM5_PI_WEBAPI.Api.Config;
 using SEM5_PI_WEBAPI.Domain.ValueObjects;
 using SEM5_PI_WEBAPI.Api.Middleware;
+using SEM5_PI_WEBAPI.Domain.PrivacyPolicies;
+using SEM5_PI_WEBAPI.Infraestructure.PrivatePolicies;
 
 namespace SEM5_PI_WEBAPI
 {
@@ -211,6 +213,9 @@ namespace SEM5_PI_WEBAPI
 
             services.AddTransient<IVesselVisitNotificationRepository, VesselVisitNotificationRepository>();
             services.AddScoped<IVesselVisitNotificationService, VesselVisitNotificationService>();
+            
+            services.AddTransient<IPrivacyPolicyRepository, PrivacyPolicyRepository>();
+            services.AddScoped<IPrivacyPolicyService, PrivacyPolicyService>();
 
             services.AddTransient<ICrewMemberRepository, CrewMemberRepository>();
             services.AddTransient<ICrewManifestRepository, CrewManifestRepository>();
