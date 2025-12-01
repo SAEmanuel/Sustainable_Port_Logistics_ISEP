@@ -6,4 +6,5 @@ public interface IPrivacyPolicyService
 {
     Task<List<PrivacyPolicyDto>> GetAllPrivacyPolicies();
     Task<PrivacyPolicyDto> CreatePrivacyPolicy(CreatePrivacyPolicyDto createPrivacyPolicyDto);
+    Task<PrivacyPolicyDto?> GetCurrentPrivacyPolicy();
 }

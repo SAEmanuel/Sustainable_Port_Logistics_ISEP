@@ -45,4 +45,13 @@ public class PrivacyPolicyService : IPrivacyPolicyService
         return PrivacyPolicyMappers.ProduceDto(pp);
     }
 
+    public async Task<PrivacyPolicyDto?> GetCurrentPrivacyPolicy()
+    {
+        var ppFromDb =  await _repository.GetCurrentPrivacyPolicy();
+        
+        if (ppFromDb == null)
+            return null;
+        
+        return PrivacyPolicyMappers.ProduceDto(ppFromDb);
+    }
 }

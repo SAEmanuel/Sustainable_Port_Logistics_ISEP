@@ -33,6 +33,22 @@ public class PrivacyPolicyController: ControllerBase
         }
     }
 
+    [HttpGet("currentPrivacyPolicy")]
+    public async Task<ActionResult<PrivacyPolicyDto?>> GetCurrentPrivacyPolicyAsync()
+    {
+        try
+        {
+            var currentPrivacyPolicy = await _privacyPolicyService.GetCurrentPrivacyPolicy();
+            if (currentPrivacyPolicy == null)
+                return NotFound(null);
+            return Ok(currentPrivacyPolicy);
+        }
+        catch (Exception e)
+        {
+            return _refrontend.ProblemResponse("Not Found", e.Message, 404);
+        }
+    }
+
 
     [HttpPost]
     public async Task<ActionResult<PrivacyPolicyDto>> CreatePrivacyPolicyAsync(CreatePrivacyPolicyDto dto)
