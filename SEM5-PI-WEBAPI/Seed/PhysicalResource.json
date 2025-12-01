@@ -40,5 +40,12 @@
     "setupTime": 15,
     "physicalResourceType": "MCrane",
     "qualificationCode": "STS-001"
+  },
+  {
+    "description": "Mobile Harbor Crane for Dock 1 support",
+    "operationalCapacity": 500.0,
+    "setupTime": 30,
+    "physicalResourceType": "MCrane",
+    "qualificationCode": "STS-001"
   }
 ]

@@ -28,5 +28,35 @@
     "name": "Ever Majesty",
     "owner": "Evergreen Marine Corp.",
     "vesselTypeName": "Panamax"
+  },
+  {
+    "imoNumber": "IMO 1000021",
+    "name": "Pacific Pearl",
+    "owner": "TransPacific Lines",
+    "vesselTypeName": "Post-Panamax"
+  },
+  {
+    "imoNumber": "IMO 1000318",
+    "name": "Mediterranean Sky",
+    "owner": "Med Shipping Co.",
+    "vesselTypeName": "Post-Panamax"
+  },
+  {
+    "imoNumber": "IMO 1006300",
+    "name": "Baltic Bridge",
+    "owner": "Euro Cargo Systems",
+    "vesselTypeName": "Panamax"
+  },
+  {
+    "imoNumber": "IMO 1006702",
+    "name": "Asian Giant",
+    "owner": "Orient Logistics",
+    "vesselTypeName": "Handymax"
+  },
+  {
+    "imoNumber": "IMO 1009053",
+    "name": "Liberty Star",
+    "owner": "US Maritime Services",
+    "vesselTypeName": "Feedermax"
   }
 ]
