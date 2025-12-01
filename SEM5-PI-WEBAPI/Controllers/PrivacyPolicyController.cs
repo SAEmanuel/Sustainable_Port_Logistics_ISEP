@@ -20,7 +20,7 @@ public class PrivacyPolicyController: ControllerBase
 
 
     [HttpGet]
-    public async Task<ActionResult<List<PrivacyPolicyDto>>> GetPrivacyPolicy()
+    public async Task<ActionResult<List<PrivacyPolicyDto>>> GetPrivacyPolicyAsync()
     {
         try
         {
@@ -31,6 +31,20 @@ public class PrivacyPolicyController: ControllerBase
         {
             return _refrontend.ProblemResponse("Not Found", e.Message, 404);
         }
-        
+    }
+
+
+    [HttpPost]
+    public async Task<ActionResult<PrivacyPolicyDto>> CreatePrivacyPolicyAsync(CreatePrivacyPolicyDto dto)
+    {
+        try
+        {
+            var createdDto = await _privacyPolicyService.CreatePrivacyPolicy(dto);
+            return Ok(createdDto);
+        }
+        catch (Exception e)
+        {
+            return _refrontend.ProblemResponse("Validation Error", e.Message, 400);
+        }
     }
 }

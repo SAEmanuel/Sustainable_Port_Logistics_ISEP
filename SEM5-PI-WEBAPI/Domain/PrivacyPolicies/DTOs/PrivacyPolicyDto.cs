@@ -5,7 +5,7 @@ namespace SEM5_PI_WEBAPI.Domain.PrivacyPolicies.DTOs;
 public class PrivacyPolicyDto
 {
     public Guid Id { get; set; }
-    public int Version { get; set; }
+    public string Version { get; set; }
         
     public string TitleEn {get; set;}
     public string TitlePT {get; set;}

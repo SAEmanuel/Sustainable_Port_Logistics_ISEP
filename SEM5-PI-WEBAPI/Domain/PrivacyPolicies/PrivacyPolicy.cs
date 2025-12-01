@@ -3,32 +3,30 @@ using SEM5_PI_WEBAPI.Domain.ValueObjects;
 
 namespace SEM5_PI_WEBAPI.Domain.PrivacyPolicies
 {
-    public class PrivacyPolicy: Entity<PrivacyPolicyId> ,IAggregateRoot
+    public class PrivacyPolicy : Entity<PrivacyPolicyId>, IAggregateRoot
     {
-        public int Version { get; set; }
-        
-        public string TitleEn {get; set;}
-        public string TitlePT {get; set;}
-        
-        public string ContentEn {get; set;}
-        public string ContentPT {get; set;}
-        
-        public ClockTime CreatedAt {get; set;}
-        public ClockTime EffectiveFrom {get; set;}
-        public bool IsCurrent {get; set;}
-        public string CreatedByAdmin {get; set;}
-        
-        
-        private PrivacyPolicy (){ }
+        public string Version { get; set; }
 
-        public PrivacyPolicy (
-            int versionIn, 
-            string titleEnIn,  string titlePtIn, 
+        public string TitleEn { get; set; }
+        public string TitlePT { get; set; }
+
+        public string ContentEn { get; set; }
+        public string ContentPT { get; set; }
+
+        public ClockTime CreatedAt { get; set; }
+        public ClockTime? EffectiveFrom { get; set; }   // <- nullable
+        public bool IsCurrent { get; set; }
+        public string CreatedByAdmin { get; set; }
+
+        private PrivacyPolicy() { }
+
+        public PrivacyPolicy(
+            string versionIn,
+            string titleEnIn, string titlePtIn,
             string contentEnIn, string contentPtIn,
-            ClockTime createdAt,ClockTime? effectiveFrom,string createdByAdmin)
+            ClockTime createdAt, ClockTime? effectiveFrom, string createdByAdmin)
         {
-            
-            this.Id = new PrivacyPolicyId(new Guid());
+            this.Id = new PrivacyPolicyId(Guid.NewGuid());   // <- NewGuid, not new Guid()
             this.Version = versionIn;
             this.TitleEn = titleEnIn;
             this.TitlePT = titlePtIn;
@@ -38,13 +36,11 @@ namespace SEM5_PI_WEBAPI.Domain.PrivacyPolicies
             this.EffectiveFrom = effectiveFrom;
             this.CreatedByAdmin = createdByAdmin;
             this.IsCurrent = true;
-            
         }
-            
+
         public void MarKAsOld()
         {
             this.IsCurrent = false;
         }
-
     }
 }
