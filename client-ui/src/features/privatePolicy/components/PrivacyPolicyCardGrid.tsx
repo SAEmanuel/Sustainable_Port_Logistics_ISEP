@@ -66,7 +66,7 @@ export const PrivacyPolicyCardGrid: FC<PrivacyPolicyCardGridProps> = ({
               </span>
                             <span className="pp-chip">
                 {p.effectiveFrom
-                    ? p.effectiveFrom.toLocaleDateString()
+                    ? p.effectiveFrom.toLocaleString()
                     : "—"}
               </span>
                         </div>

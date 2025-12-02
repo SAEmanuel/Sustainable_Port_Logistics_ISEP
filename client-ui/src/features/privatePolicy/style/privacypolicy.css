@@ -138,9 +138,16 @@
    Overlay (selecionado/slide)
    ========================= */
 
+/* Ajuste importante:
+   top: 80px -> começa abaixo do header.
+   Altera 80px se o teu header tiver outra altura.
+*/
 .pp-overlay {
     position: fixed;
-    inset: 0;
+    left: 0;
+    right: 0;
+    top: 80px;
+    bottom: 0;
     background: rgba(15, 23, 42, 0.35);
     z-index: 20;
 }
@@ -321,6 +328,12 @@
     border: 1px solid rgba(22, 163, 74, 0.45);
 }
 
+.pp-pill-muted {
+    background: #f3f4f6;
+    color: #4b5563;
+    border: 1px solid #e5e7eb;
+}
+
 /* =========================
    Grid de Cards (Histórico)
    ========================= */
@@ -482,9 +495,13 @@
    Modal (criar política)
    ========================= */
 
+/* Também começa abaixo do header */
 .pp-modal-backdrop {
     position: fixed;
-    inset: 0;
+    left: 0;
+    right: 0;
+    top: 80px;
+    bottom: 0;
     background: rgba(15, 23, 42, 0.45);
     display: flex;
     align-items: center;
@@ -581,6 +598,190 @@
 }
 
 /* =========================
+   Barra de template nos conteúdos
+   ========================= */
+
+.pp-template-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin-top: 2px;
+    margin-bottom: 4px;
+    font-size: 11px;
+    color: #6b7280;
+}
+
+.pp-template-hint {
+    opacity: 0.9;
+}
+
+.pp-template-btn {
+    border-radius: 999px;
+    border: 1px solid #d1d5db;
+    background-color: #f9fafb;
+    padding: 4px 10px;
+    font-size: 11px;
+    cursor: pointer;
+    font-weight: 500;
+    color: #374151;
+    transition:
+            background-color 0.15s ease,
+            color 0.15s ease,
+            border-color 0.15s ease,
+            transform 0.05s ease;
+}
+
+.pp-template-btn:hover {
+    background-color: #eff6ff;
+    border-color: #bfdbfe;
+    color: #1d4ed8;
+    transform: translateY(-1px);
+}
+
+/* =========================
+   Slide Panel (detalhe política)
+   ========================= */
+
+/* Também começa a partir dos 80px */
+.pp-slide {
+    position: fixed;
+    top: 80px;
+    right: 0;
+    bottom: 0;
+    width: min(480px, 100%);
+    background: #ffffff;
+    box-shadow: -18px 0 40px rgba(15, 23, 42, 0.25);
+    z-index: 40;
+    display: flex;
+    flex-direction: column;
+    animation: pp-slide-in 0.25s ease-out forwards;
+}
+
+@keyframes pp-slide-in {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+.pp-slide-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 18px 18px 12px 18px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.pp-slide-close {
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    font-size: 18px;
+    line-height: 1;
+    color: #6b7280;
+    padding: 4px;
+    border-radius: 999px;
+    transition: background-color 0.15s ease, color 0.15s ease, transform 0.05s ease;
+}
+
+.pp-slide-close:hover {
+    background-color: #f3f4f6;
+    color: #111827;
+    transform: scale(1.03);
+}
+
+.pp-slide-header-main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.pp-slide-tag-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 2px;
+}
+
+.pp-slide-title {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+    color: #0f172a;
+}
+
+.pp-slide-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 8px;
+    font-size: 12px;
+    color: #6b7280;
+}
+
+/* Toggle PT/EN */
+
+.pp-slide-lang-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 10px 18px 8px 18px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.pp-lang-btn {
+    position: relative;
+    border-radius: 999px;
+    padding: 4px 12px;
+    font-size: 12px;
+    border: 1px solid transparent;
+    background: transparent;
+    color: #6b7280;
+    cursor: pointer;
+    transition:
+            background-color 0.15s ease,
+            color 0.15s ease,
+            border-color 0.15s ease,
+            transform 0.05s ease;
+}
+
+.pp-lang-btn--active {
+    background-color: #eff6ff;
+    color: #1d4ed8;
+    border-color: #bfdbfe;
+    font-weight: 500;
+}
+
+.pp-lang-btn:hover {
+    transform: translateY(-1px);
+}
+
+/* Corpo do slide */
+
+.pp-slide-body {
+    flex: 1;
+    padding: 12px 18px 18px 18px;
+    overflow-y: auto;
+}
+
+.pp-slide-text {
+    white-space: pre-wrap;
+    font-size: 14px;
+    line-height: 1.6;
+    color: #111827;
+}
+
+.pp-slide-empty {
+    font-size: 13px;
+    color: #6b7280;
+}
+
+/* =========================
    Animações base
    ========================= */
 
@@ -622,4 +823,44 @@
     .pp-search {
         width: 100%;
     }
+
+    .pp-slide {
+        width: 100%;
+    }
+}
+/* Overlay quando há policy selecionada */
+.pp-overlay {
+    position: fixed;
+    inset: 0;
+    backdrop-filter: blur(6px);
+    background: rgba(0, 0, 0, 0.25);
+    z-index: 1500; /* maior que o header */
+}
+
+/* Backdrop do modal de criação */
+.pp-modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    backdrop-filter: blur(8px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 3000; /* acima do header e do slide */
+}
+
+/* Slide panel de detalhe */
+.pp-slide {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: min(480px, 100%);
+    height: 100%;
+    background: #ffffff;
+    border-left: 1px solid #e5e7eb;
+    box-shadow: -18px 0 40px rgba(15, 23, 42, 0.25);
+    z-index: 2000; /* entre overlay e modal */
+    display: flex;
+    flex-direction: column;
+    animation: pp-slide-in 0.25s ease-out forwards;
 }
