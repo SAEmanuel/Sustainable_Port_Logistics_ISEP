@@ -22,17 +22,16 @@ public class PrivacyPolicyRepository
             .FirstOrDefaultAsync(pp => pp.Version == version);
     }
 
-    public async Task<PrivacyPolicy?> GetCurrentByTimePrivacyPolicy()
+    public async Task<PrivacyPolicy?> GetCurrentByStatusPrivacyPolicy()
     {
         return await _context.PrivacyPolicy.FirstOrDefaultAsync(pp => pp.IsCurrent);
     }
 
-    public async Task<PrivacyPolicy?> GetCurrentByStatusPrivacyPolicy()
+    public async Task<PrivacyPolicy?> GetCurrentByTimePrivacyPolicy()
     {
         var nowUtc = DateTime.UtcNow;
 
         return await _context.PrivacyPolicy
-            .AsNoTracking()
             .Where(pp => pp.EffectiveFrom != null && pp.EffectiveFrom.Value <= nowUtc)
             .OrderByDescending(pp => pp.EffectiveFrom!.Value)
             .FirstOrDefaultAsync();

@@ -53,14 +53,13 @@ public class PrivacyPolicyService : IPrivacyPolicyService
     }
 
     
-    
     private async Task SyncCurrentFlagsAsync()
     {
         var nowUtc = DateTime.UtcNow;
 
         var all = await _repository.GetAllTrackedAsync();
 
-        var newCurrent = _repository.GetCurrentByTimePrivacyPolicy().Result;
+        var newCurrent = await _repository.GetCurrentByTimePrivacyPolicy();
 
         foreach (var pp in all)
         {
