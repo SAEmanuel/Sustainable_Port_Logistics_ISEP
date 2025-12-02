@@ -4,11 +4,13 @@ using SEM5_PI_WEBAPI.Infraestructure.Shared;
 
 namespace SEM5_PI_WEBAPI.Infraestructure.PrivatePolicies;
 
-public class PrivacyPolicyRepository : BaseRepository<PrivacyPolicy, PrivacyPolicyId>, IPrivacyPolicyRepository
+public class PrivacyPolicyRepository 
+    : BaseRepository<PrivacyPolicy, PrivacyPolicyId>, IPrivacyPolicyRepository
 {
     private readonly DddSample1DbContext _context;
 
-    public PrivacyPolicyRepository(DddSample1DbContext context) : base(context.PrivacyPolicy)
+    public PrivacyPolicyRepository(DddSample1DbContext context) 
+        : base(context.PrivacyPolicy)
     {
         _context = context;
     }
@@ -20,9 +22,24 @@ public class PrivacyPolicyRepository : BaseRepository<PrivacyPolicy, PrivacyPoli
             .FirstOrDefaultAsync(pp => pp.Version == version);
     }
 
-    public async Task<PrivacyPolicy?> GetCurrentPrivacyPolicy()
+    public async Task<PrivacyPolicy?> GetCurrentByTimePrivacyPolicy()
     {
+        return await _context.PrivacyPolicy.FirstOrDefaultAsync(pp => pp.IsCurrent);
+    }
+
+    public async Task<PrivacyPolicy?> GetCurrentByStatusPrivacyPolicy()
+    {
+        var nowUtc = DateTime.UtcNow;
+
         return await _context.PrivacyPolicy
-            .FirstOrDefaultAsync(pp => pp.IsCurrent == true);
+            .AsNoTracking()
+            .Where(pp => pp.EffectiveFrom != null && pp.EffectiveFrom.Value <= nowUtc)
+            .OrderByDescending(pp => pp.EffectiveFrom!.Value)
+            .FirstOrDefaultAsync();
+    }
+
+    public async Task<List<PrivacyPolicy>> GetAllTrackedAsync()
+    {
+        return await _context.PrivacyPolicy.ToListAsync();
     }
 }

@@ -329,7 +329,7 @@ export default function PrivacyPolicyPage() {
                             <label>
                                 <span>Efetiva desde</span>
                                 <input
-                                    type="date"
+                                    type="datetime-local"
                                     value={createData.effectiveFrom}
                                     onChange={(e) =>
                                         setCreateData((p) => ({

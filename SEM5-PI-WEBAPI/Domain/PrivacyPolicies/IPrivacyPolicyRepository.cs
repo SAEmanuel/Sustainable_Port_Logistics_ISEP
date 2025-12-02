@@ -5,5 +5,7 @@ namespace SEM5_PI_WEBAPI.Domain.PrivacyPolicies;
 public interface IPrivacyPolicyRepository : IRepository<PrivacyPolicy, PrivacyPolicyId>
 {
     Task<PrivacyPolicy?> GetPrivacyPolicyByVersion(string version);
-    Task<PrivacyPolicy?> GetCurrentPrivacyPolicy();
+    Task<PrivacyPolicy?> GetCurrentByTimePrivacyPolicy();
+    Task<PrivacyPolicy?> GetCurrentByStatusPrivacyPolicy();
+    Task<List<PrivacyPolicy>> GetAllTrackedAsync(); 
 }

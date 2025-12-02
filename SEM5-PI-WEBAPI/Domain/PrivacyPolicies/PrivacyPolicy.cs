@@ -26,7 +26,7 @@ namespace SEM5_PI_WEBAPI.Domain.PrivacyPolicies
             string contentEnIn, string contentPtIn,
             ClockTime createdAt, ClockTime? effectiveFrom, string createdByAdmin)
         {
-            this.Id = new PrivacyPolicyId(Guid.NewGuid());   // <- NewGuid, not new Guid()
+            this.Id = new PrivacyPolicyId(Guid.NewGuid());
             this.Version = versionIn;
             this.TitleEn = titleEnIn;
             this.TitlePT = titlePtIn;
@@ -35,7 +35,7 @@ namespace SEM5_PI_WEBAPI.Domain.PrivacyPolicies
             this.CreatedAt = createdAt;
             this.EffectiveFrom = effectiveFrom;
             this.CreatedByAdmin = createdByAdmin;
-            this.IsCurrent = true;
+            this.IsCurrent = false;
         }
 
         public void MarKAsOld()

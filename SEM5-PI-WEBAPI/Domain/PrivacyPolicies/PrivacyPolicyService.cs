@@ -1,6 +1,5 @@
 using SEM5_PI_WEBAPI.Domain.PrivacyPolicies.DTOs;
 using SEM5_PI_WEBAPI.Domain.Shared;
-using SEM5_PI_WEBAPI.Domain.StorageAreas;
 
 namespace SEM5_PI_WEBAPI.Domain.PrivacyPolicies;
 
@@ -17,9 +16,12 @@ public class PrivacyPolicyService : IPrivacyPolicyService
     
     public async Task<List<PrivacyPolicyDto>> GetAllPrivacyPolicies()
     {
+        await SyncCurrentFlagsAsync();
+
         var listPrivacyPoliciesFromDb = await _repository.GetAllAsync();
-        
-        return listPrivacyPoliciesFromDb.Select( policy => PrivacyPolicyMappers.ProduceDto(policy)).ToList();
+        return listPrivacyPoliciesFromDb
+            .Select(policy => PrivacyPolicyMappers.ProduceDto(policy))
+            .ToList();
     }
 
     public async Task<PrivacyPolicyDto> CreatePrivacyPolicy(CreatePrivacyPolicyDto createPrivacyPolicyDto)
@@ -33,25 +35,40 @@ public class PrivacyPolicyService : IPrivacyPolicyService
         if (exist != null)
             throw new BusinessRuleValidationException("Privacy Policy with this version already exist.");
 
-        var current = await _repository.GetCurrentPrivacyPolicy();
-        if (current != null)
-        {
-            current.MarKAsOld();
-        }
-
         await _repository.AddAsync(pp);
-        await _unitOfWork.CommitAsync();
+        await SyncCurrentFlagsAsync();
 
         return PrivacyPolicyMappers.ProduceDto(pp);
     }
-
+    
     public async Task<PrivacyPolicyDto?> GetCurrentPrivacyPolicy()
     {
-        var ppFromDb =  await _repository.GetCurrentPrivacyPolicy();
-        
+        await SyncCurrentFlagsAsync();
+
+        var ppFromDb = await _repository.GetCurrentByStatusPrivacyPolicy();
         if (ppFromDb == null)
             return null;
-        
+
         return PrivacyPolicyMappers.ProduceDto(ppFromDb);
     }
+
+    
+    
+    private async Task SyncCurrentFlagsAsync()
+    {
+        var nowUtc = DateTime.UtcNow;
+
+        var all = await _repository.GetAllTrackedAsync();
+
+        var newCurrent = _repository.GetCurrentByTimePrivacyPolicy().Result;
+
+        foreach (var pp in all)
+        {
+            var shouldBeCurrent = newCurrent != null && pp.Id.Value.Equals(newCurrent.Id.Value);
+            pp.IsCurrent = shouldBeCurrent;
+        }
+
+        await _unitOfWork.CommitAsync();
+    }
+
 }
