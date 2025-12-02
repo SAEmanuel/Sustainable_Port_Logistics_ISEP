@@ -8,10 +8,13 @@
     max-width: 1200px;
     margin: 0 auto;
     font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    color: #1f2933;
+    color: #0f172a;
+    background: radial-gradient(circle at top left, #eff6ff 0, transparent 55%),
+    radial-gradient(circle at bottom right, #f5f3ff 0, transparent 55%);
+    min-height: 100vh;
 }
 
-/* Botão voltar (similar ao dk-back-btn) */
+/* Botão voltar */
 .pp-back-btn {
     border: none;
     background: transparent;
@@ -20,10 +23,12 @@
     margin-bottom: 12px;
     padding: 4px 0;
     color: #4b5563;
+    transition: color 0.15s ease, transform 0.1s ease;
 }
 
 .pp-back-btn:hover {
     color: #111827;
+    transform: translateX(-2px);
 }
 
 /* =========================
@@ -39,8 +44,8 @@
 }
 
 .pp-header h1 {
-    font-size: 24px;
-    font-weight: 600;
+    font-size: 26px;
+    font-weight: 650;
     margin: 0 0 4px 0;
 }
 
@@ -62,23 +67,30 @@
     font-weight: 500;
     cursor: pointer;
     border: 1px solid transparent;
-    transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease, transform 0.05s ease;
+    transition:
+            background-color 0.15s ease,
+            color 0.15s ease,
+            border-color 0.15s ease,
+            transform 0.05s ease,
+            box-shadow 0.15s ease;
 }
 
-/* Botão principal (ex: Nova Política) */
+/* Botão principal */
 .pp-primary-btn {
-    background-color: #2563eb;
+    background: linear-gradient(135deg, #2563eb, #6366f1);
     color: #ffffff;
     border-color: #2563eb;
+    box-shadow: 0 10px 25px rgba(37, 99, 235, 0.25);
 }
 
 .pp-primary-btn:hover {
-    background-color: #1d4ed8;
+    background: linear-gradient(135deg, #1d4ed8, #4f46e5);
     border-color: #1d4ed8;
     transform: translateY(-1px);
+    box-shadow: 0 14px 32px rgba(37, 99, 235, 0.35);
 }
 
-/* Botão secundário (ex: Cancelar) */
+/* Botão secundário */
 .pp-secondary-btn {
     background-color: #ffffff;
     color: #374151;
@@ -87,6 +99,39 @@
 
 .pp-secondary-btn:hover {
     background-color: #f3f4f6;
+}
+
+/* =========================
+   Loading bar
+   ========================= */
+
+.pp-loading-bar {
+    width: 100%;
+    height: 3px;
+    border-radius: 999px;
+    background: linear-gradient(90deg, #2563eb, #6366f1, #ec4899);
+    background-size: 200% 100%;
+    animation: pp-loading 1.2s linear infinite;
+    margin-bottom: 16px;
+}
+
+@keyframes pp-loading {
+    0% {
+        background-position: 0% 50%;
+    }
+    100% {
+        background-position: -200% 50%;
+    }
+}
+
+/* =========================
+   Layout das secções
+   ========================= */
+
+.pp-layout {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
 }
 
 /* =========================
@@ -101,7 +146,183 @@
 }
 
 /* =========================
-   Grid de Cards
+   Secções
+   ========================= */
+
+.pp-section-current,
+.pp-section-history {
+    position: relative;
+    padding: 20px;
+    border-radius: 18px;
+    background: rgba(255, 255, 255, 0.85);
+    box-shadow: 0 18px 40px rgba(15, 23, 42, 0.12);
+    backdrop-filter: blur(16px);
+}
+
+.pp-section-header {
+    margin-bottom: 16px;
+}
+
+.pp-section-header h2 {
+    margin: 0 0 4px 0;
+    font-size: 18px;
+    font-weight: 600;
+    color: #111827;
+}
+
+.pp-section-header p {
+    margin: 0;
+    font-size: 13px;
+    color: #6b7280;
+}
+
+.pp-section-header--row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+/* =========================
+   POLÍTICA ATUAL EM DESTAQUE
+   ========================= */
+
+.pp-current-card {
+    position: relative;
+    width: 100%;
+    text-align: left;
+    margin-top: 8px;
+    border-radius: 18px;
+    padding: 16px 18px;
+    border: 1px solid rgba(59, 130, 246, 0.15);
+    cursor: pointer;
+    overflow: hidden;
+    background: radial-gradient(circle at top left, #eff6ff 0, #ffffff 55%);
+    box-shadow:
+            0 20px 40px rgba(37, 99, 235, 0.15),
+            0 0 0 1px rgba(255, 255, 255, 0.7);
+    transition:
+            transform 0.15s ease,
+            box-shadow 0.15s ease,
+            border-color 0.15s ease,
+            background 0.25s ease;
+    animation: pp-fade-up 0.4s ease-out both;
+}
+
+.pp-current-card::before {
+    content: "";
+    position: absolute;
+    inset: -40%;
+    background: radial-gradient(circle at top left, rgba(59, 130, 246, 0.15), transparent 60%);
+    opacity: 0.9;
+    pointer-events: none;
+}
+
+.pp-current-card:hover {
+    transform: translateY(-2px);
+    box-shadow:
+            0 24px 60px rgba(37, 99, 235, 0.25),
+            0 0 0 1px rgba(219, 234, 254, 0.9);
+    border-color: rgba(59, 130, 246, 0.35);
+    background: radial-gradient(circle at top left, #dbeafe 0, #ffffff 65%);
+}
+
+.pp-current-card-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 6px;
+    position: relative;
+    z-index: 1;
+}
+
+.pp-current-version {
+    font-size: 13px;
+    font-weight: 500;
+    color: #1d4ed8;
+}
+
+.pp-current-title {
+    position: relative;
+    z-index: 1;
+    margin: 0 0 6px 0;
+    font-size: 18px;
+    font-weight: 600;
+    color: #0f172a;
+}
+
+.pp-current-meta {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 8px;
+    font-size: 12px;
+    color: #4b5563;
+    margin-bottom: 8px;
+}
+
+.pp-dot {
+    opacity: 0.5;
+}
+
+.pp-current-footer {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    font-size: 12px;
+}
+
+.pp-current-badge {
+    padding: 3px 10px;
+    border-radius: 999px;
+    background: rgba(37, 99, 235, 0.08);
+    color: #1d4ed8;
+    font-weight: 500;
+}
+
+.pp-current-arrow {
+    font-size: 16px;
+    transform: translateX(0);
+    transition: transform 0.15s ease;
+}
+
+.pp-current-card:hover .pp-current-arrow {
+    transform: translateX(3px);
+}
+
+.pp-empty-current {
+    margin-top: 8px;
+    font-size: 13px;
+    color: #6b7280;
+}
+
+/* Pills */
+
+.pp-pill {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 3px 9px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+}
+
+.pp-pill-live {
+    background: rgba(34, 197, 94, 0.1);
+    color: #15803d;
+    border: 1px solid rgba(22, 163, 74, 0.45);
+}
+
+/* =========================
+   Grid de Cards (Histórico)
    ========================= */
 
 .pp-card-grid {
@@ -118,13 +339,19 @@
     box-shadow: 0 4px 12px rgba(15, 23, 42, 0.06);
     border: 1px solid #e5e7eb;
     cursor: pointer;
-    transition: box-shadow 0.15s ease, transform 0.05s ease, border-color 0.15s ease;
+    transition:
+            box-shadow 0.15s ease,
+            transform 0.05s ease,
+            border-color 0.15s ease,
+            background 0.15s ease;
+    animation: pp-fade-up 0.4s ease-out both;
 }
 
 .pp-card:hover {
     box-shadow: 0 6px 18px rgba(15, 23, 42, 0.1);
     transform: translateY(-1px);
     border-color: #cbd5f5;
+    background: linear-gradient(135deg, #f9fafb, #eff6ff);
 }
 
 /* Header do Card */
@@ -201,6 +428,57 @@
 }
 
 /* =========================
+   Pesquisa (Histórico)
+   ========================= */
+
+.pp-search {
+    position: relative;
+    width: 260px;
+    max-width: 100%;
+}
+
+.pp-search::before {
+    content: "🔍";
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-52%);
+    font-size: 14px;
+    opacity: 0.7;
+    pointer-events: none;
+}
+
+.pp-search input {
+    width: 100%;
+    border-radius: 999px;
+    border: 1px solid #d1d5db;
+    padding: 7px 12px 7px 30px;
+    font-size: 13px;
+    outline: none;
+    background-color: rgba(249, 250, 251, 0.95);
+    transition:
+            border-color 0.15s ease,
+            box-shadow 0.15s ease,
+            background-color 0.15s ease;
+}
+
+.pp-search input:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 1px rgba(37, 99, 235, 0.25);
+    background-color: #ffffff;
+}
+
+/* =========================
+   Mensagens de vazio
+   ========================= */
+
+.pp-empty-history {
+    margin-top: 8px;
+    font-size: 13px;
+    color: #6b7280;
+}
+
+/* =========================
    Modal (criar política)
    ========================= */
 
@@ -223,6 +501,7 @@
     max-height: 90vh;
     overflow-y: auto;
     box-shadow: 0 20px 40px rgba(15, 23, 42, 0.2);
+    animation: pp-fade-up 0.25s ease-out both;
 }
 
 .pp-modal h2 {
@@ -264,16 +543,19 @@
     transition: border-color 0.15s ease, box-shadow 0.15s ease;
     font-family: inherit;
     resize: vertical;
+    background-color: #f9fafb;
 }
 
 .pp-form input:focus,
 .pp-form textarea:focus {
     border-color: #2563eb;
     box-shadow: 0 0 0 1px rgba(37, 99, 235, 0.25);
+    background-color: #ffffff;
 }
 
 /* Campo date mais consistente */
-.pp-form input[type="date"] {
+.pp-form input[type="date"],
+.pp-form input[type="datetime-local"] {
     padding-right: 6px;
 }
 
@@ -283,6 +565,12 @@
     font-size: 11px;
 }
 
+/* Info "Criada por" no modal */
+.pp-created-by-hint {
+    font-size: 12px;
+    color: #4b5563;
+}
+
 /* Ações do modal (botões) */
 
 .pp-modal-actions {
@@ -290,6 +578,21 @@
     justify-content: flex-end;
     gap: 8px;
     margin-top: 8px;
+}
+
+/* =========================
+   Animações base
+   ========================= */
+
+@keyframes pp-fade-up {
+    from {
+        opacity: 0;
+        transform: translateY(6px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 /* =========================
@@ -309,5 +612,14 @@
     .pp-modal {
         margin: 0 12px;
         padding: 16px;
+    }
+
+    .pp-section-header--row {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .pp-search {
+        width: 100%;
     }
 }
