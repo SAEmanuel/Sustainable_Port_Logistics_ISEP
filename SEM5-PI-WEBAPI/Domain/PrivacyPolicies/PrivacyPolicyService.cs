@@ -53,7 +53,7 @@ public class PrivacyPolicyService : IPrivacyPolicyService
     }
 
     
-    private async Task SyncCurrentFlagsAsync()
+    public async Task SyncCurrentFlagsAsync()
     {
         var nowUtc = DateTime.UtcNow;
 

@@ -12,7 +12,10 @@ public class ConfirmationRepository : BaseRepository<ConfirmationPrivacyPolicy,C
     {
         _context = context.ConfirmationPrivacyPolicies;
     }
-    
-    
-    
+
+
+    public async Task<ConfirmationPrivacyPolicy?> FindByUserEmailAsync(string email)
+    {
+        return await _context.FirstOrDefaultAsync(c => c.UserEmail.Equals(email));
+    }
 }

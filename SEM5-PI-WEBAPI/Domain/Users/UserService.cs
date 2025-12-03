@@ -1,3 +1,5 @@
+using SEM5_PI_WEBAPI.Domain.ConfirmationsUserReadPPs;
+using SEM5_PI_WEBAPI.Domain.PrivacyPolicies;
 using SEM5_PI_WEBAPI.Domain.Shared;
 using SEM5_PI_WEBAPI.Domain.Users.DTOs;
 using SEM5_PI_WEBAPI.Domain.ValueObjects;
@@ -9,12 +11,15 @@ public class UserService : IUserService
     private readonly IUnitOfWork _unitOfWork;
     private readonly IUserRepository _repo;
     private readonly ILogger<UserService> _logger;
-
-    public UserService(IUserRepository repo, IUnitOfWork unitOfWork, ILogger<UserService> logger)
+    private readonly IPrivacyPolicyService _privacyPolicyService;
+    private readonly IConfirmationRepository  _confirmationRepository;
+    public UserService(IUserRepository repo, IUnitOfWork unitOfWork, ILogger<UserService> logger, IPrivacyPolicyService service, IConfirmationRepository confirmationRepository)
     {
         _repo = repo;
         _unitOfWork = unitOfWork;
         _logger = logger;
+        _privacyPolicyService = service;
+        _confirmationRepository = confirmationRepository;
     }
 
     public async Task<UserDto> ToggleAsync(UserId id)
@@ -159,11 +164,35 @@ public class UserService : IUserService
         _logger.LogInformation("Adding user status with email: {Email}", userDto.Email);
         await EnsureNotRepeatedEmail(userDto.Email);
         var user = await UserFactory.CreateUser(userDto.Auth0UserId, userDto.Email, userDto.Name, userDto.Picture);
+        await CreateConfirmationEntity4User(userDto.Email);
         await _repo.AddAsync(user);
         await _unitOfWork.CommitAsync();
         var resultDto = UserMapper.ToDto(user);
         _logger.LogInformation("User created with ID: {Id}", resultDto.Id);
         return resultDto;
+    }
+
+    private async Task CreateConfirmationEntity4User(string userEmail)
+    {
+        //---- Privacy Policy!
+        var currentPrivatePolicy = await _privacyPolicyService.GetCurrentPrivacyPolicy();
+
+        if (currentPrivatePolicy == null)  throw new BusinessRuleValidationException($"Cannot create user because no privacy policy exists on system.");
+
+        //---- Start confirmation entity creation
+        var existConfirmationWithEmail = await _confirmationRepository.FindByUserEmailAsync(userEmail);
+
+        if (existConfirmationWithEmail != null) // Se ja existe, declina tudo para voltar a pedir confirmacao
+        {
+            existConfirmationWithEmail.Decline(currentPrivatePolicy.Version);
+        }
+        else // Se nao existir, cria uma nova associada a ultima versao do PP
+        {
+            var confirmationPp = new ConfirmationPrivacyPolicy(userEmail, currentPrivatePolicy.Version);
+        
+            if(!confirmationPp.UserEmail.Equals(userEmail, StringComparison.InvariantCultureIgnoreCase)) throw new BusinessRuleValidationException($"Cannot create user because confirmation entity for PPs cannot be created.");
+            await _confirmationRepository.AddAsync(confirmationPp);
+        }
     }
 
     public async Task<UserDto?> TryGetByEmailAsync(string email)

@@ -9,7 +9,7 @@ public class PrivacyPolicyEntityTypeConfiguration : IEntityTypeConfiguration<Pri
     public void Configure(EntityTypeBuilder<PrivacyPolicy> builder)
     {
         // Nome da tabela (opcional, mas costuma ser boa prática)
-        builder.ToTable("PrivacyPolicies");
+        builder.ToTable("PrivacyPolicies", t => t.ExcludeFromMigrations());
 
         // Chave primária
         builder.HasKey(p => p.Id);
