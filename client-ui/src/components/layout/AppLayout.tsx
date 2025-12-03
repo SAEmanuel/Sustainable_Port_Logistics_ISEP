@@ -1,5 +1,13 @@
 import { Outlet } from "react-router-dom";
-import { FaShip, FaSun, FaMoon, FaBars, FaTimes } from "react-icons/fa";
+import {
+    FaShip,
+    FaSun,
+    FaMoon,
+    FaBars,
+    FaTimes,
+    FaShieldAlt, 
+} from "react-icons/fa";
+
 import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import Nav from "./Nav";
@@ -7,8 +15,14 @@ import "./layout.css";
 import { useAppStore } from "../../app/store";
 import { Roles } from "../../app/types";
 import RoleLauncher from "../RoleLaucher";
-import { getCurrentPrivacyPolicy } from "../../features/privatePolicy/services/privacyPolicyService";
 import type { PrivacyPolicy } from "../../features/privatePolicy/domain/privacyPolicy";
+import type { Confirmation } from "../../features/privatePolicy/domain/confirmation";
+import {
+    getCurrentPrivacyPolicy,
+    getConfirmationByUser,
+    acceptConfirmationByUser,
+    rejectConfirmationByUser,
+} from "../../features/privatePolicy/services/privacyPolicyService";
 
 export default function AppLayout() {
     const [menuOpen, setMenuOpen] = useState(false);
@@ -17,11 +31,16 @@ export default function AppLayout() {
 
     const theme = useAppStore((state) => state.theme);
     const toggleTheme = useAppStore((state) => state.toggleTheme);
-    const isDarkMode = theme === "dark"; 
+    const isDarkMode = theme === "dark";
 
     // PP
     const [privacyPolicy, setPrivacyPolicy] = useState<PrivacyPolicy | null>(null);
     const [showPrivacy, setShowPrivacy] = useState(false);
+
+    // Confirmação da PP do utilizador
+    const [confirmation, setConfirmation] = useState<Confirmation | null>(null);
+    const [checkingConfirmation, setCheckingConfirmation] = useState(false);
+
 
     const toggleMenu = () => setMenuOpen(!menuOpen);
 
@@ -53,6 +72,50 @@ export default function AppLayout() {
         loadPrivacyPolicy();
     }, []);
 
+    // carregar confirmação da PP para o utilizador atual
+    useEffect(() => {
+        async function loadConfirmation() {
+            if (!user?.email) return; // se não há user, não faz nada
+
+            try {
+                setCheckingConfirmation(true);
+                const conf = await getConfirmationByUser(user.email);
+                setConfirmation(conf);
+                
+            } catch (e) {
+                console.error("Erro a carregar confirmação de privacidade", e);
+            } finally {
+                setCheckingConfirmation(false);
+            }
+        }
+
+        loadConfirmation();
+    }, [user?.email]);
+
+    const handleAcceptPrivacy = async () => {
+        if (!user?.email) return;
+        try {
+            const updated = await acceptConfirmationByUser(user.email);
+            setConfirmation(updated);
+            setShowPrivacy(false);
+        } catch (e) {
+            console.error("Erro ao aceitar política de privacidade", e);
+        }
+    };
+
+    const handleRejectPrivacy = async () => {
+        if (!user?.email) return;
+        try {
+            const updated = await rejectConfirmationByUser(user.email);
+            setConfirmation(updated);
+            setShowPrivacy(false);
+            // aqui podias, por exemplo, fazer logout ou mostrar aviso
+            // tipo: "Não pode usar a plataforma sem aceitar a política."
+        } catch (e) {
+            console.error("Erro ao rejeitar política de privacidade", e);
+        }
+    };
+
     return (
         <div className="app">
             {/* HEADER */}
@@ -64,6 +127,20 @@ export default function AppLayout() {
                     </div>
 
                     <div className="header-right">
+                        {/* Aviso de Política de Privacidade pendente */}
+                        {confirmation && !confirmation.isAccepted && (
+                            <button
+                                type="button"
+                                className="pp-notification-btn"
+                                onClick={() => setShowPrivacy(true)}
+                                title={t("layout.privacyPending", "Ação Necessária: Rever Política de Privacidade")}
+                            >
+                                <FaShieldAlt className="pp-notification-icon" />
+                                {/* O ponto animado fica aqui dentro */}
+                                <span className="pp-notification-dot" />
+                            </button>
+                        )}
+
                         {/* Lang Switch */}
                         <span className="lang-switch" onClick={changeLang}>
                             {i18n.language === "en" ? "EN | PT" : "PT | EN"}
@@ -133,9 +210,9 @@ export default function AppLayout() {
 
             {/* FOOTER */}
             <footer className="footer">
-    <span className="footer-text">
-        © 2025 ThPA S.A. — Smart Port Operations Platform
-    </span>
+                <span className="footer-text">
+                    © 2025 ThPA S.A. — Smart Port Operations Platform
+                </span>
 
                 {privacyPolicy && (
                     <>
@@ -168,13 +245,36 @@ export default function AppLayout() {
                                             : privacyPolicy.contentEn}
                                     </div>
 
-                                    <button
-                                        type="button"
-                                        className="pp-close-btn"
-                                        onClick={() => setShowPrivacy(false)}
-                                    >
-                                        {t("common.close", "Fechar")}
-                                    </button>
+                                    {/* Se o utilizador ainda não aceitou, mostra botões de ação */}
+                                    {confirmation && !confirmation.isAccepted ? (
+                                        <div className="pp-actions">
+                                            <button
+                                                type="button"
+                                                className="pp-accept-btn"
+                                                onClick={handleAcceptPrivacy}
+                                                disabled={checkingConfirmation}
+                                            >
+                                                {t("layout.acceptPrivacy", "Aceitar")}
+                                            </button>
+                                            <button
+                                                type="button"
+                                                className="pp-reject-btn"
+                                                onClick={handleRejectPrivacy}
+                                                disabled={checkingConfirmation}
+                                            >
+                                                {t("layout.rejectPrivacy", "Rejeitar")}
+                                            </button>
+                                        </div>
+                                    ) : (
+                                        // Caso já esteja aceite ou não haja confirmação, apenas botão fechar
+                                        <button
+                                            type="button"
+                                            className="pp-close-btn"
+                                            onClick={() => setShowPrivacy(false)}
+                                        >
+                                            {t("common.close", "Fechar")}
+                                        </button>
+                                    )}
                                 </div>
                             </div>
                         )}

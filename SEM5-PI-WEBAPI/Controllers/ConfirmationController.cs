@@ -19,7 +19,7 @@ public class ConfirmationController: ControllerBase
     }
 
     [HttpGet("user/email/{email}")]
-    public async Task<ActionResult<ConfirmationDto>> GetUserEmail(string email)
+    public async Task<ActionResult<ConfirmationDto>> GetConfirmationByUserEmail(string email)
     {
         try
         {

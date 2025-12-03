@@ -649,3 +649,254 @@ html, body {
 .content {
     flex: 1;
 }
+/* === TOAST DE AVISO (Política de Privacidade pendente) === */
+.footer-alert {
+    position: fixed;
+    right: 20px;
+    bottom: 20px;
+    z-index: 1300;
+
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+
+    padding: 10px 16px;
+    border-radius: 999px;
+
+    background: linear-gradient(135deg, #f97316, #facc15);
+    color: #111827;
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.2px;
+
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
+    backdrop-filter: blur(8px);
+
+    animation: toastSlideUp 0.35s ease-out, toastPulse 1.4s ease-in-out 0.35s infinite;
+}
+
+/* Dark mode: cores ligeiramente ajustadas */
+[data-theme="dark"] .footer-alert {
+    background: linear-gradient(135deg, #f97316, #facc15);
+    color: #020617;
+}
+
+/* Animação de entrada do toast */
+@keyframes toastSlideUp {
+    from {
+        opacity: 0;
+        transform: translateY(14px) translateX(4px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) translateX(0);
+    }
+}
+
+/* Leve “pulsar” para chamar atenção */
+@keyframes toastPulse {
+    0% {
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
+        transform: translateY(0);
+    }
+    50% {
+        box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5);
+        transform: translateY(-1px);
+    }
+    100% {
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
+        transform: translateY(0);
+    }
+}
+/* === AÇÕES NA MODAL DA POLÍTICA DE PRIVACIDADE === */
+.pp-actions {
+    margin-top: 18px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+/* Botão base (shared) */
+.pp-accept-btn,
+.pp-reject-btn {
+    min-width: 110px;
+    padding: 7px 16px;
+    border-radius: 999px;
+    border: none;
+    cursor: pointer;
+
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.2px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    transition:
+            background-color 0.2s ease,
+            transform 0.15s ease,
+            box-shadow 0.2s ease,
+            opacity 0.2s ease;
+}
+
+/* Aceitar = cor de sucesso/accent */
+.pp-accept-btn {
+    background: linear-gradient(135deg, #16a34a, #22c55e);
+    color: #f9fafb;
+    box-shadow: 0 8px 20px rgba(22, 163, 74, 0.45);
+}
+
+.pp-accept-btn:hover:not(:disabled) {
+    background: linear-gradient(135deg, #22c55e, #4ade80);
+    transform: translateY(-1px);
+    box-shadow: 0 11px 28px rgba(22, 163, 74, 0.6);
+}
+
+.pp-accept-btn:disabled {
+    opacity: 0.6;
+    cursor: default;
+    box-shadow: none;
+}
+
+/* Rejeitar = mais “peligroso” */
+.pp-reject-btn {
+    background: linear-gradient(135deg, #b91c1c, #ef4444);
+    color: #fee2e2;
+    box-shadow: 0 8px 20px rgba(185, 28, 28, 0.5);
+}
+
+.pp-reject-btn:hover:not(:disabled) {
+    background: linear-gradient(135deg, #dc2626, #f97373);
+    transform: translateY(-1px);
+    box-shadow: 0 11px 28px rgba(185, 28, 28, 0.65);
+}
+
+.pp-reject-btn:disabled {
+    opacity: 0.6;
+    cursor: default;
+    box-shadow: none;
+}
+
+/* Dark theme pequenos ajustes (se quiseres afinar) */
+[data-theme="dark"] .pp-accept-btn,
+[data-theme="dark"] .pp-reject-btn {
+    color: #f9fafb;
+}/* === AVISO DE POLÍTICA DE PRIVACIDADE NO HEADER (MODERNO) === */
+
+.pp-notification-btn {
+    position: relative;
+    border: 1px solid rgba(239, 68, 68, 0.3); /* Borda vermelha subtil */
+    outline: none;
+    cursor: pointer;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    /* Tamanho e Forma */
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+
+    /* Fundo Glass com tom de alerta */
+    background: rgba(239, 68, 68, 0.08);
+    color: #f87171; /* Cor do ícone (vermelho claro) */
+
+    backdrop-filter: blur(4px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Efeito Hover: O botão "acende" */
+.pp-notification-btn:hover {
+    background: rgba(239, 68, 68, 0.2);
+    border-color: rgba(239, 68, 68, 0.8);
+    color: #fff; /* Ícone fica branco */
+    transform: translateY(-2px);
+    box-shadow:
+            0 6px 20px rgba(239, 68, 68, 0.25),
+            inset 0 0 10px rgba(239, 68, 68, 0.1);
+}
+
+.pp-notification-icon {
+    font-size: 1.1rem;
+    filter: drop-shadow(0 0 2px rgba(239, 68, 68, 0.4));
+    transition: transform 0.3s ease;
+}
+
+.pp-notification-btn:hover .pp-notification-icon {
+    transform: scale(1.1);
+}
+
+/* O ponto de notificação (Red Dot) */
+.pp-notification-dot {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: #ef4444;
+    box-shadow: 0 0 8px #ef4444;
+    pointer-events: none;
+}
+
+/* Animação de Onda (Ping) que sai do ponto */
+.pp-notification-dot::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 100%;
+    height: 100%;
+    background-color: inherit;
+    border-radius: inherit;
+    transform: translate(-50%, -50%);
+    opacity: 0.6;
+    animation: pp-ping 2s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+@keyframes pp-ping {
+    0% {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 0.8;
+    }
+    75%, 100% {
+        transform: translate(-50%, -50%) scale(3);
+        opacity: 0;
+    }
+}
+
+/* Ajuste Dark Mode */
+[data-theme="dark"] .pp-notification-btn {
+    background: rgba(239, 68, 68, 0.15);
+    border-color: rgba(239, 68, 68, 0.4);
+}
+
+[data-theme="dark"] .pp-notification-btn:hover {
+    background: rgba(239, 68, 68, 0.3);
+    box-shadow: 0 0 25px rgba(239, 68, 68, 0.4);
+}
+/* === CORREÇÃO DA MODAL EM DARK MODE === */
+[data-theme="dark"] .pp-modal {
+    /* Força o fundo escuro (cinza muito escuro/azulado) */
+    background-color: #1e293b;
+    /* Ou podes usar a tua variável: background-color: var(--card-bg); */
+
+    /* Garante que o texto fica bem claro */
+    color: #e2e8f0;
+
+    /* Adiciona uma borda subtil para separar a modal do fundo escuro */
+    border: 1px solid rgba(255, 255, 255, 0.1);
+
+    /* Sombra mais forte para dar profundidade no escuro */
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+}
+
+/* Opcional: Destacar o título a branco puro */
+[data-theme="dark"] .pp-title {
+    color: #ffffff;
+}

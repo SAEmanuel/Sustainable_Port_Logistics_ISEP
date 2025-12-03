@@ -19,3 +19,11 @@ export interface CreatePrivacyPolicyRequestDto {
     effectiveFrom: string;
     createdByAdmin: string;
 }
+
+export interface ConfirmationDto {
+    id: string;
+    userEmail: string;
+    versionPrivacyPolicy: string;
+    isAccepted: boolean;
+    accpetedAtTime: string | null;
+}

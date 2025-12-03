@@ -1,5 +1,5 @@
 import type { PrivacyPolicyDto } from "../dto/privacyPolicyDtos";
-import type { PrivacyPolicy } from "../domain/PrivacyPolicy";
+import type { PrivacyPolicy } from "../domain/privacyPolicy";
 
 export function mapPrivacyPolicyDto(dto: PrivacyPolicyDto): PrivacyPolicy {
     return {
