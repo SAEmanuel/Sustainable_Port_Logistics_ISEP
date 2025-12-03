@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using SEM5_PI_WEBAPI.Domain.CargoManifestEntries;
 using SEM5_PI_WEBAPI.Domain.CargoManifests;
+using SEM5_PI_WEBAPI.Domain.ConfirmationsUserReadPPs;
 using SEM5_PI_WEBAPI.Domain.Containers;
 using SEM5_PI_WEBAPI.Domain.CrewManifests;
 using SEM5_PI_WEBAPI.Domain.CrewMembers;
@@ -19,6 +20,7 @@ using SEM5_PI_WEBAPI.Domain.VesselsTypes;
 using SEM5_PI_WEBAPI.Domain.VVN;
 using SEM5_PI_WEBAPI.Infraestructure.CargoManifestEntries;
 using SEM5_PI_WEBAPI.Infraestructure.CargoManifests;
+using SEM5_PI_WEBAPI.Infraestructure.ConfirmationsPrivacyPolicies;
 using SEM5_PI_WEBAPI.Infraestructure.Containers;
 using SEM5_PI_WEBAPI.Infraestructure.CrewManifests;
 using SEM5_PI_WEBAPI.Infraestructure.CrewMembers;
@@ -57,6 +59,7 @@ namespace SEM5_PI_WEBAPI.Infraestructure
         public DbSet<EntityTask> Tasks { get; set; }
         public DbSet<VesselVisitNotification> VesselVisitNotification { get; set; }
         public DbSet<PrivacyPolicy>  PrivacyPolicy { get; set; }
+        public DbSet<ConfirmationPrivacyPolicy>  ConfirmationPrivacyPolicies { get; set; }
         public DbSet<User> Users { get; set; }
 
 
@@ -84,6 +87,7 @@ namespace SEM5_PI_WEBAPI.Infraestructure
             modelBuilder.ApplyConfiguration(new TaskEntityTypeConfiguration());
             modelBuilder.ApplyConfiguration(new UserEntityTypeConfiguration());
             modelBuilder.ApplyConfiguration(new PrivacyPolicyEntityTypeConfiguration());
+            modelBuilder.ApplyConfiguration(new ConfirmationEntityTypeConfiguration());
         }
     }
 }
