@@ -14,11 +14,11 @@ import { PrivacyPolicyCardGrid } from "../components/PrivacyPolicyCardGrid";
 import { useAppStore } from "../../../app/store";
 import "../style/privacypolicy.css";
 import { PrivacyPolicySlidePanel } from "../components/PrivacyPolicySlidePanel";
-import {PRIVACY_TEMPLATE_EN, PRIVACY_TEMPLATE_PT,} from "../config/privacyPolicyTemplates";
+import {
+    PRIVACY_TEMPLATE_EN,
+    PRIVACY_TEMPLATE_PT,
+} from "../config/privacyPolicyTemplates";
 import { validatePrivacyContent } from "../utils/privacyPolicyValidation";
-
-
-
 
 const MIN_LOADING_TIME = 500;
 
@@ -140,8 +140,11 @@ export default function PrivacyPolicyPage() {
                 defaultValue: "Data de entrada em vigor é obrigatória",
             });
 
-        const {missingPt, missingEn} = validatePrivacyContent(createData.contentPT,createData.contentEn);
-        
+        const { missingPt, missingEn } = validatePrivacyContent(
+            createData.contentPT,
+            createData.contentEn
+        );
+
         if (missingPt.length > 0) {
             next.contentPT =
                 t("PrivacyPolicy.errors.contentPtStructure", {
@@ -171,7 +174,6 @@ export default function PrivacyPolicyPage() {
 
         const email = await getCurrentAdminEmail();
         if (!email) {
-            // já mostrámos toast em getCurrentAdminEmail
             return;
         }
 
@@ -181,7 +183,7 @@ export default function PrivacyPolicyPage() {
             contentEn: "",
             contentPT: "",
             effectiveFrom: "",
-            createdByAdmin: email, // preenchido automaticamente
+            createdByAdmin: email,
         });
 
         setIsCreateOpen(true);
@@ -257,9 +259,7 @@ export default function PrivacyPolicyPage() {
                 p.titlePT ?? "",
                 titleEn,
                 p.createdByAdmin ?? "",
-                p.effectiveFrom
-                    ? p.effectiveFrom.toLocaleDateString()
-                    : "",
+                p.effectiveFrom ? p.effectiveFrom.toLocaleDateString() : "",
             ]
                 .join(" ")
                 .toLowerCase();
@@ -298,10 +298,7 @@ export default function PrivacyPolicyPage() {
                         })}
                     </p>
                 </div>
-                <button
-                    className="pp-primary-btn"
-                    onClick={handleOpenCreate}
-                >
+                <button className="pp-primary-btn" onClick={handleOpenCreate}>
                     {t("PrivacyPolicy.actions.add", {
                         defaultValue: "Nova Política",
                     })}
@@ -350,9 +347,7 @@ export default function PrivacyPolicyPage() {
                                 </span>
                             </div>
 
-                            <h3 className="pp-current-title">
-                                {currentPolicy.titlePT}
-                            </h3>
+                            <h3 className="pp-current-title">{currentPolicy.titlePT}</h3>
 
                             <div className="pp-current-meta">
                                 <span>
@@ -377,8 +372,7 @@ export default function PrivacyPolicyPage() {
                             <div className="pp-current-footer">
                                 <span className="pp-current-badge">
                                     {t("PrivacyPolicy.currentHint", {
-                                        defaultValue:
-                                            "Clique para ver a política completa",
+                                        defaultValue: "Clique para ver a política completa",
                                     })}
                                 </span>
                                 <span className="pp-current-arrow">↗</span>
@@ -406,8 +400,7 @@ export default function PrivacyPolicyPage() {
                             <p>
                                 {t("PrivacyPolicy.historySubtitle", {
                                     count: filteredHistory.length,
-                                    defaultValue:
-                                        "A ver {{count}} versão(ões) anterior(es).",
+                                    defaultValue: "A ver {{count}} versão(ões) anterior(es).",
                                 })}
                             </p>
                         </div>
@@ -415,13 +408,9 @@ export default function PrivacyPolicyPage() {
                         <div className="pp-search">
                             <input
                                 type="search"
-                                placeholder={t(
-                                    "PrivacyPolicy.searchPlaceholder",
-                                    {
-                                        defaultValue:
-                                            "Procurar por título, versão ou autor...",
-                                    }
-                                )}
+                                placeholder={t("PrivacyPolicy.searchPlaceholder", {
+                                    defaultValue: "Procurar por título, versão ou autor...",
+                                })}
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
                             />
@@ -436,8 +425,7 @@ export default function PrivacyPolicyPage() {
                                         "Nenhuma política encontrada para essa pesquisa.",
                                 })
                                 : t("PrivacyPolicy.noHistory", {
-                                    defaultValue:
-                                        "Ainda não existem versões anteriores.",
+                                    defaultValue: "Ainda não existem versões anteriores.",
                                 })}
                         </p>
                     ) : (
@@ -462,7 +450,11 @@ export default function PrivacyPolicyPage() {
 
                         <div className="pp-form">
                             <label>
-                                <span>Título EN</span>
+                                <span>
+                                    {t("PrivacyPolicy.modal.titleEn", {
+                                        defaultValue: "Título EN",
+                                    })}
+                                </span>
                                 <input
                                     value={createData.titleEn}
                                     onChange={(e) =>
@@ -473,14 +465,16 @@ export default function PrivacyPolicyPage() {
                                     }
                                 />
                                 {createErrors.titleEn && (
-                                    <small className="pp-error">
-                                        {createErrors.titleEn}
-                                    </small>
+                                    <small className="pp-error">{createErrors.titleEn}</small>
                                 )}
                             </label>
 
                             <label>
-                                <span>Título PT</span>
+                                <span>
+                                    {t("PrivacyPolicy.modal.titlePt", {
+                                        defaultValue: "Título PT",
+                                    })}
+                                </span>
                                 <input
                                     value={createData.titlePT}
                                     onChange={(e) =>
@@ -491,19 +485,23 @@ export default function PrivacyPolicyPage() {
                                     }
                                 />
                                 {createErrors.titlePT && (
-                                    <small className="pp-error">
-                                        {createErrors.titlePT}
-                                    </small>
+                                    <small className="pp-error">{createErrors.titlePT}</small>
                                 )}
                             </label>
 
                             <label>
-                                <span>Conteúdo EN</span>
+                                <span>
+                                    {t("PrivacyPolicy.modal.contentEn", {
+                                        defaultValue: "Conteúdo EN",
+                                    })}
+                                </span>
 
                                 <div className="pp-template-bar">
-        <span className="pp-template-hint">
-            Use the base model with sections 1–8.
-        </span>
+                                    <span className="pp-template-hint">
+                                        {t("PrivacyPolicy.modal.templateHintEn", {
+                                            defaultValue: "Use the base model with sections 1–8.",
+                                        })}
+                                    </span>
                                     <button
                                         type="button"
                                         className="pp-template-btn"
@@ -514,14 +512,19 @@ export default function PrivacyPolicyPage() {
                                             }))
                                         }
                                     >
-                                        Use base template
+                                        {t("PrivacyPolicy.modal.useTemplate", {
+                                            defaultValue: "Use base template",
+                                        })}
                                     </button>
                                 </div>
 
                                 <textarea
                                     value={createData.contentEn}
                                     onChange={(e) =>
-                                        setCreateData((p) => ({ ...p, contentEn: e.target.value }))
+                                        setCreateData((p) => ({
+                                            ...p,
+                                            contentEn: e.target.value,
+                                        }))
                                     }
                                     rows={10}
                                 />
@@ -530,14 +533,19 @@ export default function PrivacyPolicyPage() {
                                 )}
                             </label>
 
-
                             <label>
-                                <span>Conteúdo PT</span>
+                                <span>
+                                    {t("PrivacyPolicy.modal.contentPt", {
+                                        defaultValue: "Conteúdo PT",
+                                    })}
+                                </span>
 
                                 <div className="pp-template-bar">
-                        <span className="pp-template-hint">
-                            Segue o modelo base com as secções 1–8.
-                        </span>
+                                    <span className="pp-template-hint">
+                                        {t("PrivacyPolicy.modal.templateHintPt", {
+                                            defaultValue: "Segue o modelo base com as secções 1–8.",
+                                        })}
+                                    </span>
                                     <button
                                         type="button"
                                         className="pp-template-btn"
@@ -548,14 +556,19 @@ export default function PrivacyPolicyPage() {
                                             }))
                                         }
                                     >
-                                        Usar template base
+                                        {t("PrivacyPolicy.modal.useTemplate", {
+                                            defaultValue: "Usar template base",
+                                        })}
                                     </button>
                                 </div>
 
                                 <textarea
                                     value={createData.contentPT}
                                     onChange={(e) =>
-                                        setCreateData((p) => ({ ...p, contentPT: e.target.value }))
+                                        setCreateData((p) => ({
+                                            ...p,
+                                            contentPT: e.target.value,
+                                        }))
                                     }
                                     rows={10}
                                 />
@@ -564,9 +577,12 @@ export default function PrivacyPolicyPage() {
                                 )}
                             </label>
 
-
                             <label>
-                                <span>Efetiva desde</span>
+                                <span>
+                                    {t("PrivacyPolicy.effectiveFrom", {
+                                        defaultValue: "Efetiva desde",
+                                    })}
+                                </span>
                                 <input
                                     type="datetime-local"
                                     value={createData.effectiveFrom}
@@ -602,10 +618,7 @@ export default function PrivacyPolicyPage() {
                             >
                                 {t("common.cancel", { defaultValue: "Cancelar" })}
                             </button>
-                            <button
-                                className="pp-primary-btn"
-                                onClick={handleCreate}
-                            >
+                            <button className="pp-primary-btn" onClick={handleCreate}>
                                 {t("common.save", { defaultValue: "Guardar" })}
                             </button>
                         </div>

@@ -69,8 +69,8 @@
     "vvnResponse": "Responder VVN",
     "docks": "Docks",
     "sar": "Representates de Agentes de Transporte",
-    "planningScheduling" : "Planeamento",
-    "pp" : "Políticas de Privacidade"
+    "planningScheduling": "Planeamento",
+    "pp": "Políticas de Privacidade"
   },
   "layout": {
     "light": "Modo claro",
@@ -91,7 +91,7 @@
     "lastLogin": "Último acesso",
     "justNow": "agora mesmo",
     "roles": "Perfis",
-    "vvn" : "VVN",
+    "vvn": "VVN",
     "physicalResources": "Gerir Recursos Físicos",
     "physicalResourcesDesc": "Gira guindastes, camiões e outros equipamentos usados nas operações portuárias.",
     "qualifications": "Gerir Qualificações",
@@ -111,7 +111,7 @@
     "storage-areas": "Gerir Áreas de Armazenamento",
     "sao": "Gerir Organizações Agente de Transporte",
     "port3d": "Visualização 3D",
-    "planning" : "Planeamento",
+    "planning": "Planeamento",
     "announcement": {
       "title": "Avisos do sistema",
       "body": "Manutenção agendada hoje às 23:00 — alguns módulos poderão ficar indisponíveis."
@@ -1039,15 +1039,15 @@
     "scheduleLoading": "A carregar agendamento...",
     "scheduleSuccess": "Agendamento calculado com sucesso!",
     "scheduleFail": "Falha ao carregar o agendamento.",
-    "computeScheduleFor" : "Gerar",
-    "algorithm" : "Algoritmo",
-    "totalCraneHours" : "Total de horas/gruas",
-    "computationalTime" : "Tempo Computacional",
-    "notComputed" : "Não gerado ainda...",
-    "comparisonTitle" : "Tabela de comparação",
+    "computeScheduleFor": "Gerar",
+    "algorithm": "Algoritmo",
+    "totalCraneHours": "Total de horas/gruas",
+    "computationalTime": "Tempo Computacional",
+    "notComputed": "Não gerado ainda...",
+    "comparisonTitle": "Tabela de comparação",
     "prologSequenceTitle": "Sequencia de operações",
-    "startTime" : "Entrada",
-    "endTime" : "Saída",
+    "startTime": "Entrada",
+    "endTime": "Saída",
     "duration": "Duração"
   },
   "footer": {
@@ -1063,5 +1063,55 @@
     "operations": "Operações",
     "schedule": "Escalas",
     "reports": "Relatórios"
+  },
+  "PrivacyPolicy": {
+    "titlePt": "Título (PT)",
+    "old": "Antiga",
+    "createdAt": "Criada em",
+    "noContentForLang": "Não há conteúdo disponível neste idioma.",
+    "title": "Gestão de Políticas de Privacidade",
+    "count": "{{count}} políticas registadas",
+    "current": "Atual",
+    "version": "Versão",
+    "effectiveFrom": "Efetiva desde",
+    "createdBy": "Criada por",
+    "currentHint": "Clique para ver a política completa",
+    "noCurrent": "Ainda não existe nenhuma política marcada como atual.",
+    "historyTitle": "Histórico de versões",
+    "historySubtitle": "A ver {{count}} versão(ões) anterior(es).",
+    "searchPlaceholder": "Procurar por título, versão ou autor...",
+    "noSearchResults": "Nenhuma política encontrada para essa pesquisa.",
+    "noHistory": "Ainda não existem versões anteriores.",
+    "currentSectionTitle": "Política atual em vigor",
+    "currentSectionSubtitle": "Esta é a versão mostrada aos utilizadores no portal.",
+    "messages": {
+      "loading": "A carregar políticas...",
+      "loaded": "Encontradas {{count}} políticas",
+      "loadError": "Erro ao carregar políticas",
+      "created": "Política criada"
+    },
+    "errors": {
+      "titleEnRequired": "Título EN é obrigatório",
+      "titlePtRequired": "Título PT é obrigatório",
+      "contentEnRequired": "Conteúdo EN é obrigatório",
+      "contentPtRequired": "Conteúdo PT é obrigatório",
+      "effectiveFromRequired": "Data de entrada em vigor é obrigatória",
+      "contentPtStructure": "O conteúdo PT deve seguir o modelo base (faltam algumas secções obrigatórias).",
+      "contentEnStructure": "O conteúdo EN deve seguir o modelo base (faltam algumas secções obrigatórias).",
+      "formFix": "Corrige os erros do formulário."
+    },
+    "modal": {
+      "addTitle": "Criar Política de Privacidade",
+      "titleEn": "Título EN",
+      "titlePt": "Título PT",
+      "contentEn": "Conteúdo EN",
+      "contentPt": "Conteúdo PT",
+      "templateHintEn": "Use o modelo base com as secções 1–8.",
+      "templateHintPt": "Segue o modelo base com as secções 1–8.",
+      "useTemplate": "Usar template base"
+    },
+    "actions": {
+      "add": "Nova Política"
+    }
   }
 }

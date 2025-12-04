@@ -13,22 +13,19 @@
   "rolesTitle": "Multi-role Access",
   "rolesText": "Designed for agents, operators, and admins with role-based security.",
   "bannerText": "Connecting Sea and Technology 🌊",
-
   "login": {
     "title": "Welcome to the ThPA System ⚓",
     "subtitle": "Select a profile to access the portal:",
     "devNotice": "Development mode — real authentication (OAuth/JWT) will be enabled later"
   },
-
   "roles": {
     "administrator": "Administrator",
     "officer": "Port Authority Officer",
     "operator": "Logistics Operator",
     "agent": "Shipping Agent Representative",
-    "projectManager" : "Project Manager",
-    "none" : "No Role"
+    "projectManager": "Project Manager",
+    "none": "No Role"
   },
-
   "auth": {
     "loading": "Authenticating...",
     "success": "Session started successfully ✅",
@@ -36,24 +33,20 @@
     "signIn": "Sign In",
     "signOut": "Sign Out"
   },
-
   "logout": {
     "title": "Logging out...",
     "subtitle": "Please wait a moment",
     "success": "Session ended 👋"
   },
-
   "notFound": {
     "title": "404 — Page not found",
     "text": "The resource you're looking for doesn't exist."
   },
-
   "forbidden": {
     "title": "403 — Access Denied",
     "text": "You do not have permission to view this page.",
     "back": "Back to home"
   },
-
   "menu": {
     "home": "Home",
     "vvn": "VVNs",
@@ -71,11 +64,10 @@
     "logout": "Logout",
     "sao": "Shipping Agent Organizations",
     "vvnResponse": "VVN Response",
-    "docks" : "Docks",
-    "planningScheduling" : "Planning",
-    "pp" : "Privacy Policies"
+    "docks": "Docks",
+    "planningScheduling": "Planning",
+    "pp": "Privacy Policies"
   },
-  
   "layout": {
     "light": "Light mode",
     "dark": "Dark mode",
@@ -86,7 +78,6 @@
     "acceptPrivacy": "Accept",
     "rejectPrivacy": "Reject"
   },
-
   "dashboard": {
     "welcome": "Welcome, Logistics Operator",
     "subtitle": "Select an area to manage",
@@ -96,7 +87,7 @@
     "lastLogin": "Last login",
     "justNow": "just now",
     "roles": "Roles",
-    "vvn" : "VVN",
+    "vvn": "VVN",
     "physicalResources": "Manage Physical Resources",
     "physicalResourcesDesc": "Manage cranes, trucks, and other equipment used in port operations.",
     "qualifications": "Manage Qualifications",
@@ -107,16 +98,16 @@
     "noModules": "No modules available for your profile yet.",
     "recentActivity": "Recent activity",
     "quickActions": "Quick actions",
-    "vessels" : "Manage Vessels",
-    "docks" : "Manage Docks",
-    "responsevvn" : "Validate VVN",
-    "vessel-types" : "Manage Vessel Types",
-    "storage-areas" : "Manage Storage Areas",
-    "sao" : "Manage Shipping Agent Organizations",
-    "adminPanel" : "Users administration",
-    "planning" : "Planning",
-    "accessModules" : "Access Modules",
-    "port3d" : "3D Visualization",
+    "vessels": "Manage Vessels",
+    "docks": "Manage Docks",
+    "responsevvn": "Validate VVN",
+    "vessel-types": "Manage Vessel Types",
+    "storage-areas": "Manage Storage Areas",
+    "sao": "Manage Shipping Agent Organizations",
+    "adminPanel": "Users administration",
+    "planning": "Planning",
+    "accessModules": "Access Modules",
+    "port3d": "3D Visualization",
     "announcement": {
       "title": "System notices",
       "body": "Scheduled maintenance today at 23:00 — some modules may be unavailable."
@@ -139,7 +130,6 @@
       "resourceMaintenance": "Resource sent to maintenance"
     }
   },
-
   "vesselTypes": {
     "title": "Vessel Types",
     "count": "{{count}} registered types.",
@@ -170,7 +160,6 @@
     "edit": "Edit",
     "delete": "Delete"
   },
-
   "Vessel": {
     "title": "Vessel Management",
     "count": "{{count}} registered vessels.",
@@ -223,7 +212,6 @@
       "type": "Type"
     }
   },
-
   "storageAreas": {
     "create": {
       "title": "New Storage Area",
@@ -348,7 +336,6 @@
       "listLoadingError": "Error loading storage areas."
     }
   },
-
   "qualifications": {
     "title": "Qualifications",
     "count": "{{count}} qualifications registered",
@@ -403,7 +390,6 @@
     "editRequired": "Mandatory field*",
     "create": "Create"
   },
-
   "staffMembers": {
     "title": "Staff Members",
     "count": "{{count}} staff members",
@@ -460,7 +446,7 @@
       "currentQualifications": "Current qualifications",
       "changeQualificationsDescription": "Add all staff qualifications",
       "addQualificationsDescription": "Add all staff qualifications to current ones",
-      "noQualifications" : "No qualifications"
+      "noQualifications": "No qualifications"
     },
     "details": {
       "name": "Name",
@@ -471,7 +457,6 @@
       "qualifications": "Qualifications"
     }
   },
-
   "shiftType": {
     "Morning": "Morning",
     "Evening": "Afternoon",
@@ -479,7 +464,6 @@
     "Night": "Night",
     "NonStop": "Non Stop"
   },
-
   "weekDay": {
     "Monday": "Monday",
     "Tuesday": "Tuesday",
@@ -489,7 +473,6 @@
     "Saturday": "Saturday",
     "Sunday": "Sunday"
   },
-
   "physicalResource": {
     "title": "Physical Resource Management",
     "loading": "Loading resources...",
@@ -526,9 +509,9 @@
       "UnderMaintenance": "Under Maintenance"
     },
     "stats": {
-      "total": "Total Resources",
+      "total": "Total Resources",
       "available": "Available",
-      "maintenance": "Under Maintenance"
+      "maintenance": "Under Maintenance"
     },
     "types": {
       "STSCrane": "Ship-to-Shore Crane (STS)",
@@ -594,11 +577,9 @@
       "invalidSetupTime": "Setup time must be a non-negative numeric value."
     }
   },
-
   "navExit": {
-    "logout" : "Sair"
+    "logout": "Sair"
   },
-
   "common": {
     "optional": "optional",
     "cancel": "Cancel",
@@ -638,12 +619,10 @@
       "accepted": "✅ Accepted: {{count}}",
       "withdrawn": "🗂️ Withdrawn: {{count}}"
     },
-
     "submittedAll": {
       "title": "All Submitted VVNs",
       "subtitle": "Review and accept/reject submitted notifications"
     },
-
     "list": {
       "empty": "No results."
     },
@@ -732,14 +711,12 @@
       "updateSuccess": "VVN updated."
     }
   },
-
   "roleLauncher": {
     "titleAuthorized": "Go to {{role}}",
     "awaitingTitle": "Awaiting authorization",
     "awaitingHeader": "Waiting for approval",
     "awaitingMessage": "Your account has been registered and is awaiting role assignment by an Administrator."
   },
-
   "pending": {
     "title": "Waiting for approval",
     "subtitle": "Your account has been successfully registered.",
@@ -755,7 +732,6 @@
     },
     "contactHelp": "If you believe this is a mistake, please contact a system Administrator."
   },
-
   "delete": {
     "title": "Irreversible Action",
     "message": "Are you sure you want to permanently delete the user {{email}}? This person will lose all access to the platform. This action cannot be undone."
@@ -856,91 +832,80 @@
     "id": "Id",
     "auth0UserId": "Auth0_Id"
   },
-
   "Dock": {
-  "title": "Dock Management",
-  "count": "{{count}} docks registered",
-  "searchPlaceholder": "Search...",
-
-  "fields": {
-    "code": "Code *",
-    "location": "Location *",
-    "status": "Status",
-    "physicalResource": "Physical Resources (available)",
-    "vesselType": "Allowed Vessel Types",
-    "length": "Length (m)",
-    "depth": "Depth (m)",
-    "maxdraft": "Maximum Draft (m)"
+    "title": "Dock Management",
+    "count": "{{count}} docks registered",
+    "searchPlaceholder": "Search...",
+    "fields": {
+      "code": "Code *",
+      "location": "Location *",
+      "status": "Status",
+      "physicalResource": "Physical Resources (available)",
+      "vesselType": "Allowed Vessel Types",
+      "length": "Length (m)",
+      "depth": "Depth (m)",
+      "maxdraft": "Maximum Draft (m)"
+    },
+    "buttons": {
+      "add": "Add Dock",
+      "search": "Search",
+      "clear": "Clear",
+      "cancel": "Cancel",
+      "save": "Save",
+      "edit": "Edit"
+    },
+    "modal": {
+      "addTitle": "Add Dock",
+      "editTitle": "Edit Dock"
+    },
+    "messages": {
+      "loading": "Loading...",
+      "searchSuccess": "Results: {{count}}",
+      "noResults": "No results",
+      "created": "Dock created",
+      "updated": "Dock updated",
+      "fillSomething": "Fill in a field to edit",
+      "noAvailablePR": "No available resources"
+    },
+    "errors": {
+      "required": "Required",
+      "codeRequired": "Code is required",
+      "codeFormat": "Format DK-0000",
+      "codeDuplicate": "A dock with this code already exists",
+      "locationRequired": "Location is required.",
+      "locationInvalid": "Location contains invalid characters.",
+      "lengthRequired": "Length is required",
+      "depthRequired": "Depth is required",
+      "maxdraftRequired": "Draft is required",
+      "numberInvalid": "Invalid number",
+      "mustBePositive": "Must be bigger than 0",
+      "chooseVesselType": "Select at least one vessel type.",
+      "formFix": "Fix the form errors."
+    },
+    "details": {
+      "code": "Code",
+      "location": "Location",
+      "status": "Status",
+      "vesselType": "Vessel Types",
+      "physicalResource": "Physical Resources",
+      "dimensions": "Dimensions (m)",
+      "length": "Length",
+      "depth": "Depth",
+      "maxdraft": "Maximum Draft"
+    },
+    "status": {
+      "Available": "Available",
+      "Unavailable": "Unavailable",
+      "Maintenance": "Maintenance"
+    },
+    "chips": {
+      "summary": "{{pr}} PR selected • {{vt}} vessel type(s)"
+    }
   },
-
-  "buttons": {
-    "add": "Add Dock",
-    "search": "Search",
-    "clear": "Clear",
-    "cancel": "Cancel",
-    "save": "Save",
-    "edit": "Edit"
-  },
-
-  "modal": {
-    "addTitle": "Add Dock",
-    "editTitle": "Edit Dock"
-  },
-
-  "messages": {
-    "loading": "Loading...",
-    "searchSuccess": "Results: {{count}}",
-    "noResults": "No results",
-    "created": "Dock created",
-    "updated": "Dock updated",
-    "fillSomething": "Fill in a field to edit",
-    "noAvailablePR": "No available resources"
-  },
-
-  "errors": {
-    "required": "Required",
-    "codeRequired": "Code is required",
-    "codeFormat": "Format DK-0000",
-    "codeDuplicate": "A dock with this code already exists",
-    "locationRequired": "Location is required.",
-    "locationInvalid": "Location contains invalid characters.",
-    "lengthRequired": "Length is required",
-    "depthRequired": "Depth is required",
-    "maxdraftRequired": "Draft is required",
-    "numberInvalid": "Invalid number",
-    "mustBePositive": "Must be bigger than 0",
-    "chooseVesselType": "Select at least one vessel type.",
-    "formFix": "Fix the form errors."
-  },
-
-  "details": {
-    "code": "Code",
-    "location": "Location",
-    "status": "Status",
-    "vesselType": "Vessel Types",
-    "physicalResource": "Physical Resources",
-    "dimensions": "Dimensions (m)",
-    "length": "Length",
-    "depth": "Depth",
-    "maxdraft": "Maximum Draft"
-  },
-
-  "status": {
-    "Available": "Available",
-    "Unavailable": "Unavailable",
-    "Maintenance": "Maintenance"
-  },
-
-  "chips": {
-    "summary": "{{pr}} PR selected • {{vt}} vessel type(s)"
-  }
-},
-
   "activation": {
     "titleLoading": "⏳ Please wait",
     "titleSuccess": "✅ Account Activated",
     "titleError": "❌ Activation Failed",
-
     "loading": "🔄 Activating your account...",
     "missingLink": "⚠️ Invalid or missing activation link.",
     "invalidLink": "⚠️ This activation link is invalid or expired (user not found).",
@@ -950,7 +915,6 @@
     "unexpectedError": "❌ An unexpected error occurred while activating your account.",
     "goHome": "Go to Home"
   },
-
   "deleted": {
     "title": "❌ Account Deleted",
     "message": "Your account has been permanently deleted and you no longer have access to the system.",
@@ -986,69 +950,68 @@
     "selection": "Selection",
     "clickHint": "Click an object in the scene."
   },
-  "sao":{
+  "sao": {
     "title": "Shipping Agent Organization",
     "searchPlaceholder": "Search",
-    "details":{
-      "code":"Code",
-      "legalName":"Legal Name",
-      "altName":"Name",
-      "address":"Address",
-      "taxnumber":"Tax Number"
+    "details": {
+      "code": "Code",
+      "legalName": "Legal Name",
+      "altName": "Name",
+      "address": "Address",
+      "taxnumber": "Tax Number"
     },
-    "add":"Add",
-    "cancel":"Cancel",
-    "save":"Save",
+    "add": "Add",
+    "cancel": "Cancel",
+    "save": "Save",
     "count": "{{count}} Shipping Agent Organizations registered",
-    "errors":{
-    "legalNameRequired": "Legal name is required",
-    "codeRequired" :"Code is required",
-    "taxRequired":"Tax Number is required"
+    "errors": {
+      "legalNameRequired": "Legal name is required",
+      "codeRequired": "Code is required",
+      "taxRequired": "Tax Number is required"
     },
-    "loading":"Loading Shipping Agent Organizations",
-    "loadSuccess":"Loaded {{count}} Shipping Agent Organizations successfully.",
-    "created":"Shipping Agent Organization created successfully!",
+    "loading": "Loading Shipping Agent Organizations",
+    "loadSuccess": "Loaded {{count}} Shipping Agent Organizations successfully.",
+    "created": "Shipping Agent Organization created successfully!",
     "empty": "No Shipping Agent Organizations found.",
-    "searchMode":"Search by: ",
-    "delete":"Delete",
-    "deleted":"Shipping Agent Organization deleted successfully!"
+    "searchMode": "Search by: ",
+    "delete": "Delete",
+    "deleted": "Shipping Agent Organization deleted successfully!"
   },
-  "sar":{
+  "sar": {
     "title": "Shipping Agent Representatives",
-    "loading":"Loading Shipping Agent Representatives",
-    "loadSuccess":"Loaded {{count}} Shipping Agent Representatives successfully.",
-    "created":"Shipping Agent Representatives created!",
-    "updated":"Shipping Agent Representatives updated!",
+    "loading": "Loading Shipping Agent Representatives",
+    "loadSuccess": "Loaded {{count}} Shipping Agent Representatives successfully.",
+    "created": "Shipping Agent Representatives created!",
+    "updated": "Shipping Agent Representatives updated!",
     "count": "{{count}} registered Shipping Agent Representatives",
     "empty": "No Shipping Agent Representatives found...",
-    "edit":"Edit",
-    "cancel":"Cancel",
-    "save":"Save",
-    "update":"Update",
+    "edit": "Edit",
+    "cancel": "Cancel",
+    "save": "Save",
+    "update": "Update",
     "searchPlaceholder": "Search",
-    "searchByNameButton":"Nome",
-    "searchByEmailButton":"Email",
-    "add":"Add",
-    "email":"Email",
-    "status":"status",
+    "searchByNameButton": "Nome",
+    "searchByEmailButton": "Email",
+    "add": "Add",
+    "email": "Email",
+    "status": "status",
     "phone": "Phone Number",
-    "sao":"Shipping Agent Organization",
-    "delete":"Delete",
-    "name":"Name",
-    "citizenId":"Citizen ID",
-    "nationality":"Nationality",
-    "active":"Active",
-    "inactive":"Inactive",
-    "deleted":"Shipping Agent Representative deleted successfully!",
-    "searchMode":"Search by: ",
-    "nameRequired":"Name is required!",
+    "sao": "Shipping Agent Organization",
+    "delete": "Delete",
+    "name": "Name",
+    "citizenId": "Citizen ID",
+    "nationality": "Nationality",
+    "active": "Active",
+    "inactive": "Inactive",
+    "deleted": "Shipping Agent Representative deleted successfully!",
+    "searchMode": "Search by: ",
+    "nameRequired": "Name is required!",
     "idRequired": "Citizen Id is required!",
-    "phoneRequired":"Phone number is required!",
-    "nationalityRequired":"Nationality is required!",
+    "phoneRequired": "Phone number is required!",
+    "nationalityRequired": "Nationality is required!",
     "saoRequired": "Representative must have an associated Organization!",
     "emailRequired": "Email is required!"
   },
-
   "planningScheduling": {
     "title": "Daily Schedule Calculation",
     "selectDay": "Select Day",
@@ -1079,14 +1042,14 @@
     "scheduleLoading": "Loading schedule...",
     "scheduleSuccess": "Schedule calculated successfully!",
     "scheduleFail": "Failed to load schedule.",
-    "computeScheduleFor" : "Generate",
-    "algorithm" : "Algorithm",
-    "totalCraneHours" : "Total of hours/crane",
-    "notComputed" : "Not generated yet...",
-    "comparisonTitle" : "Comparison table",
+    "computeScheduleFor": "Generate",
+    "algorithm": "Algorithm",
+    "totalCraneHours": "Total of hours/crane",
+    "notComputed": "Not generated yet...",
+    "comparisonTitle": "Comparison table",
     "prologSequenceTitle": "Operations sequence",
-    "startTime" : "Entrace",
-    "endTime" : "Departure",
+    "startTime": "Entrace",
+    "endTime": "Departure",
     "duration": "Duration"
   },
   "footer": {
@@ -1102,5 +1065,55 @@
     "operations": "Operations",
     "schedule": "Schedules",
     "reports": "Reports"
+  },
+  "PrivacyPolicy": {
+    "titlePt": "Title (PT)",
+    "old": "Archived",
+    "createdAt": "Created on",
+    "noContentForLang": "No content available in this language.",
+    "title": "Privacy Policy Management",
+    "count": "{{count}} registered policies",
+    "messages": {
+      "loading": "Loading policies...",
+      "loaded": "Found {{count}} policies",
+      "loadError": "Error loading policies",
+      "created": "Policy created"
+    },
+    "errors": {
+      "titleEnRequired": "Title EN is required",
+      "titlePtRequired": "Title PT is required",
+      "contentEnRequired": "Content EN is required",
+      "contentPtRequired": "Content PT is required",
+      "effectiveFromRequired": "Effective date is required",
+      "contentPtStructure": "PT content must follow the base model (some mandatory sections are missing).",
+      "contentEnStructure": "EN content must follow the base model (some mandatory sections are missing).",
+      "formFix": "Please fix form errors."
+    },
+    "modal": {
+      "addTitle": "Create Privacy Policy",
+      "titleEn": "Title EN",
+      "titlePt": "Title PT",
+      "contentEn": "Content EN",
+      "contentPt": "Content PT",
+      "templateHintEn": "Use the base model with sections 1–8.",
+      "templateHintPt": "Follows the base model with sections 1–8.",
+      "useTemplate": "Use base template"
+    },
+    "actions": {
+      "add": "New Policy"
+    },
+    "currentSectionTitle": "Current Active Policy",
+    "currentSectionSubtitle": "This is the version shown to users on the portal.",
+    "current": "Current",
+    "version": "Version",
+    "effectiveFrom": "Effective from",
+    "createdBy": "Created by",
+    "currentHint": "Click to view full policy",
+    "noCurrent": "There is no policy marked as current yet.",
+    "historyTitle": "Version History",
+    "historySubtitle": "Viewing {{count}} previous version(s).",
+    "searchPlaceholder": "Search by title, version or author...",
+    "noSearchResults": "No policies found for this search.",
+    "noHistory": "No previous versions yet."
   }
 }
