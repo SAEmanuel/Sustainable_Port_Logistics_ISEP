@@ -29,7 +29,6 @@ import { DockCardGrid } from "../components/DockCardGrid";
 import { DockSearchBar } from "../components/DockSearchBar";
 import { DockSlidePanel } from "../components/DockSlidePanel";
 import { val, vals } from "../utils/dockValueHelpers";
-import {webApi} from "../../../services/api.tsx";
 
 const MIN_LOADING_TIME = 500;
 const guidRegex =
@@ -79,15 +78,16 @@ type RegisterDockDtoFE = {
 };
 
 async function checkDockCodeExists(code: string): Promise<boolean> {
-    const res = await fetch(
-        `${webApi}/api/Dock/code/${encodeURIComponent(code)}`,
-        { credentials: "include" }
-    );
+    try {
+        await getDockByCode(code);
+        return true;
+    } catch (err: any) {
+        const status = err?.response?.status;
 
-    if (res.ok) return true;
-    if (res.status === 404) return false;
+        if (status === 404) return false;
 
-    throw new Error("Erro ao validar código da dock");
+        return false;
+    }
 }
 
 // sugere o próximo DK-0001 livre
@@ -536,8 +536,8 @@ export default function DockPage() {
         if (!validateCreate()) return;
 
         const code = createData.code.trim().toUpperCase();
-        const ok = await assertCodeAvailableOrWarn(code);
-        if (!ok) return;
+        //const ok = await assertCodeAvailableOrWarn(code);
+        //if (!ok) return;
 
         const payload: RegisterDockDtoFE = {
             code,
