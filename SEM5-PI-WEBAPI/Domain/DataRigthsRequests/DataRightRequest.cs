@@ -5,7 +5,7 @@ namespace SEM5_PI_WEBAPI.Domain.DataRigthsRequests;
 
 public enum RequestStatus
 {
-   StandBy,
+    WaitingForAssignment,
    InProgress,
    Completed,
    Rejected, 
@@ -51,7 +51,9 @@ public class DataRightRequest : Entity<DataRightRequestId>, IAggregateRoot
         this.UserEmail = userEmail;
         
         this.Type = requestType;
-        this.Status = RequestStatus.StandBy;
+        this.Status = RequestStatus.WaitingForAssignment;
+        
+        if(Type == RequestType.Access && payload != null) throw new BusinessRuleValidationException("An 'Access' type request does not accept payload information.");
         
         this.Payload = payload;
         
@@ -77,21 +79,39 @@ public class DataRightRequest : Entity<DataRightRequestId>, IAggregateRoot
 
     public void MarkAsCompleted()
     {
+        if (ProcessedBy == null) throw new BusinessRuleValidationException("Cannot mark as 'Completed' because an admin must be assigned to this request first.");
+        
+        if (Status == RequestStatus.Rejected) throw new BusinessRuleValidationException("Cannot complete a request that is already rejected.");
+        
         this.Status = RequestStatus.Completed;
         this.UpdatedOn = new ClockTime(DateTime.UtcNow);
     }
 
     public void MarkAsRejected()
     {
+        if (ProcessedBy == null) throw new BusinessRuleValidationException("Cannot mark as 'rejected' because an admin must be assigned to this request first");
+        
+        if (Status == RequestStatus.Completed) throw new BusinessRuleValidationException("Cannot reject a request that is already completed.");
+        
         this.Status = RequestStatus.Rejected;
         this.UpdatedOn = new ClockTime(DateTime.UtcNow);
     }
 
     public void MarkAsInProgress()
     {
+        if (ProcessedBy == null)
+            throw new BusinessRuleValidationException("Cannot mark as 'InProgress' because an admin must be assigned to this request first.");
+    
+        if (Status == RequestStatus.Completed)
+            throw new BusinessRuleValidationException("Cannot mark as 'InProgress' a request that is already completed.");
+    
+        if (Status == RequestStatus.Rejected)
+            throw new BusinessRuleValidationException("Cannot mark as 'InProgress' a request that is already rejected.");
+
         this.Status = RequestStatus.InProgress;
         this.UpdatedOn = new ClockTime(DateTime.UtcNow);
     }
+
 
     public string AssignResponsibleToRequest(string processedBy)
     {
@@ -99,8 +119,8 @@ public class DataRightRequest : Entity<DataRightRequestId>, IAggregateRoot
             throw new BusinessRuleValidationException("ProcessedBy cannot be empty.");
 
         this.ProcessedBy = processedBy;
-        this.UpdatedOn = new ClockTime(DateTime.UtcNow);
-
+        MarkAsInProgress();
+        
         return this.RequestId;
     }
 
