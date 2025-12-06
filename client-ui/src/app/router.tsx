@@ -25,6 +25,7 @@ import DeletedAccount from "../pages/DeletedAccount.tsx";
 import Dock from "../features/docks/pages/Dock";
 import SAO from "../features/sao/pages/sao.tsx";
 import SAR from "../features/sar/pages/sar.tsx";
+import DR from "../features/dataRightsRequests/pages/DataRightsRequestsPage.tsx";
 // IMPORTAÇÃO DA NOVA PÁGINA DE AGENDAMENTO
 import SchedulePage from "../features/scheduling/pages/SchedulePage.tsx";
 
@@ -56,7 +57,11 @@ export const router = createBrowserRouter([
                                 element: <RequireRole roles={[Roles.ProjectManager]} />,
                                 children: [{ index: true, element: <SchedulePage /> }],
                             },
-
+                            {
+                                path: "datarights",
+                                element: <RequireRole roles={[Roles.Administrator]} />,
+                                children: [{ index: true, element: <DR /> }],
+                            },
                             {
                                 path: "3dSecene",
                                 element: (<RequireRole roles={[Roles.Administrator, Roles.PortAuthorityOfficer, Roles.ShippingAgentRepresentative, Roles.LogisticsOperator,  Roles.ProjectManager]}/>),

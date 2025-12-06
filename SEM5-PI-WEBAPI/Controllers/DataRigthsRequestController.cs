@@ -10,9 +10,9 @@ namespace SEM5_PI_WEBAPI.Controllers;
 public class DataRigthsRequestController : ControllerBase
 {
     private readonly IDataRightRequestService _service;
-    private readonly ResponsesToFrontend _responsesToFrontend;
+    private readonly IResponsesToFrontend _responsesToFrontend;
     
-    public DataRigthsRequestController(IDataRightRequestService service,  ResponsesToFrontend responsesToFrontend)
+    public DataRigthsRequestController(IDataRightRequestService service,  IResponsesToFrontend responsesToFrontend)
     {
         _service = service;
         _responsesToFrontend = responsesToFrontend;
