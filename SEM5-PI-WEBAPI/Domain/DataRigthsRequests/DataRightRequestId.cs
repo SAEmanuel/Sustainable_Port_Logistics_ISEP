@@ -19,4 +19,8 @@ public class DataRightRequestId : EntityId
         Guid obg = (Guid)base.ObjValue;
         return obg.ToString();
     }
+    
+    public Guid AsGuid(){
+        return (Guid) base.ObjValue;
+    }
 }

@@ -5,7 +5,7 @@ namespace SEM5_PI_WEBAPI.Domain.DataRigthsRequests;
 
 public enum RequestStatus
 {
-    WaitingForAssignment,
+   WaitingForAssignment,
    InProgress,
    Completed,
    Rejected, 
