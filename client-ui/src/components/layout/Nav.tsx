@@ -34,6 +34,7 @@ export default function Nav({ isOpen }: NavProps) {
         { label: t("menu.home"), path: "/", icon: <FiHome /> },
         { label: t("menu.3dView"), path: "/3dSecene", icon: <FiLayers /> },
         { label: t("menu.dataRigths"), path: "/datarights", icon: <FiSettings /> },
+        { label: t("menu.dataRigthsAdmin"), path: "/datarightsAdmin", icon: <FiSettings /> },
     ];
 
     const adminMenu = user?.role?.includes(Roles.Administrator)

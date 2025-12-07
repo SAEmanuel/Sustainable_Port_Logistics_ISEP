@@ -7,6 +7,8 @@ export function mapRequestDto(dto: DataRightsRequestDto): DataRightsRequest {
     };
 }
 
-export function mapRequestsDto(dtos: DataRightsRequestDto[]): DataRightsRequest[] {
+export function mapRequestsDto(
+    dtos: DataRightsRequestDto[],
+): DataRightsRequest[] {
     return dtos.map(mapRequestDto);
 }

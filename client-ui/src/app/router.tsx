@@ -26,6 +26,7 @@ import Dock from "../features/docks/pages/Dock";
 import SAO from "../features/sao/pages/sao.tsx";
 import SAR from "../features/sar/pages/sar.tsx";
 import DR from "../features/dataRightsRequests/pages/DataRightsRequestsPage.tsx";
+import DRAdmin from "../features/dataRightsRequests/pages/AdminDataRightsRequestsPage";
 // IMPORTAÇÃO DA NOVA PÁGINA DE AGENDAMENTO
 import SchedulePage from "../features/scheduling/pages/SchedulePage.tsx";
 
@@ -61,6 +62,11 @@ export const router = createBrowserRouter([
                                 path: "datarights",
                                 element: <RequireRole roles={[Roles.Administrator]} />,
                                 children: [{ index: true, element: <DR /> }],
+                            },
+                            {
+                                path: "datarightsAdmin",
+                                element: <RequireRole roles={[Roles.Administrator]} />,
+                                children: [{ index: true, element: <DRAdmin /> }],
                             },
                             {
                                 path: "3dSecene",

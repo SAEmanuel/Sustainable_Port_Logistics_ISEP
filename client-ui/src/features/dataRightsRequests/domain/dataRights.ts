@@ -7,6 +7,10 @@ export type RequestStatus =
     | "Completed"
     | "Rejected";
 
+export interface ClockTimeDto {
+    value: string;
+}
+
 export interface DataRightsRequest {
     id: string;
     requestId: string;
@@ -15,9 +19,9 @@ export interface DataRightsRequest {
     type: RequestType;
     status: RequestStatus;
     payload?: string | null;
-    createdOn: { value: string }; // ou Date string; depende do ClockTime
-updatedOn?: { value: string } | null;
-processedBy?: string | null;
+    createdOn: ClockTimeDto;
+    updatedOn?: ClockTimeDto | null;
+    processedBy?: string | null;
 }
 
 /** Payload que o USER envia num pedido de rectificação */
@@ -34,7 +38,7 @@ export interface RectificationPayload {
     reason?: string | null;
 }
 
-/** Modelo de criação no frontend */
+/** Modelo de criação no frontend (lado do user) */
 export interface CreatingDataRightsRequest {
     type: RequestType;
     rectification: RectificationPayload;
