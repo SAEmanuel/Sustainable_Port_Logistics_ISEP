@@ -54,9 +54,9 @@ export default {
     },
 
     services: {
-        role: {
-            name: "RoleService",
-            path: "../services/roleService"
+        user: {
+            name: "UserService",
+            path: "../services/userService"
         }
     },
 };
