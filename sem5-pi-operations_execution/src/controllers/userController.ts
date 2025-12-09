@@ -7,41 +7,39 @@ import { IUserDTO } from "../dto/IUserDTO";
 import { Result } from "../core/logic/Result";
 import config from "../config";
 
-@Service("UserController")
+@Service()
 export default class UserController extends BaseController implements IUserController {
 
     constructor(
-        @Inject(config.services.user.name)
+        @Inject("UserService")
         private userServiceInstance: IUserService
     ) {
         super();
     }
 
-    public async createOrSyncUser(
-        req: Request,
-        res: Response,
-        next: NextFunction
-    ): Promise<Response | void> {
+    public async createOrSyncUser(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
         try {
             const dto = req.body as IUserDTO;
 
-            const existingOrError = await this.userServiceInstance.getUser(dto.email);
+            const userExists = await this.userServiceInstance.getUser(dto.email);
 
             let result;
 
-            if (existingOrError.isFailure) {
-                result = await this.userServiceInstance.createUser(dto);
-            } else {
+            if (userExists.isSuccess) {
                 result = await this.userServiceInstance.updateUser(dto);
+            } else {
+                result = await this.userServiceInstance.createUser(dto);
             }
 
             if (result.isFailure) {
-                return res.status(400).json({ error: result.errorValue() });
+                const msg = result.errorValue()?.toString() ?? "Unknown error";
+                return res.status(400).json({ error: msg });
             }
 
             return res.status(200).json(result.getValue());
 
         } catch (e) {
+            console.error("OEM error:", e);
             return next(e);
         }
     }

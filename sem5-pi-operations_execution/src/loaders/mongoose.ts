@@ -1,9 +1,12 @@
-import mongoose from 'mongoose';
-import { Db } from 'mongodb';
-import config from '../config';
+import mongoose from "mongoose";
+import config from "../config";
 
-export default async (): Promise<Db | undefined> => {
-    const connection = await mongoose.connect(config.databaseURL);
-
-    return connection.connection.db;
+export default async () => {
+    try {
+        await mongoose.connect(config.databaseURL);
+        return mongoose.connection;
+    } catch (e) {
+        console.error("Could not connect to Mongo:", e);
+        throw e;
+    }
 };

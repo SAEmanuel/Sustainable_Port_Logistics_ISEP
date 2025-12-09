@@ -1,18 +1,19 @@
 import { Service, Inject } from "typedi";
 import IUserService from "../services/IServices/IUserService";
-import IUserRepo from "../repos/IRepos/IUserRepo";
+import IUserRepo from "../services/IRepos/IUserRepo";
 import { User } from "../domain/user";
 import { UserMap } from "../mappers/UserMap";
 import { IUserDTO } from "../dto/IUserDTO";
 import { Result } from "../core/logic/Result";
 import { GenericAppError } from "../core/logic/AppError";
 import { Role } from "../domain/role";
+import config from "../config";
 
-@Service("UserService")
+@Service()
 export default class UserService implements IUserService {
 
     constructor(
-        @Inject('UserRepo') private userRepo: IUserRepo,
+        @Inject("UserRepo") private userRepo: IUserRepo,
     ) {}
 
 
@@ -28,7 +29,7 @@ export default class UserService implements IUserService {
                 name: userDTO.name,
                 email: userDTO.email,
                 role: userDTO.role as Role,
-                auth0Id: userDTO.auth0Id
+                auth0UserId: userDTO.auth0UserId
             });
 
             if (userOrError.isFailure) {
@@ -37,8 +38,10 @@ export default class UserService implements IUserService {
 
             const user = userOrError.getValue();
             const userSaved = await this.userRepo.save(user);
+            if (!userSaved) {
+                return Result.fail<IUserDTO>("Error saving user.");
+            }
 
-            // @ts-ignore
             const userDTOSaved = UserMap.toDTO(userSaved);
             return Result.ok<IUserDTO>(userDTOSaved);
 
@@ -61,7 +64,10 @@ export default class UserService implements IUserService {
             user.role = userDTO.role as Role;
 
             const userSaved = await this.userRepo.save(user);
-            // @ts-ignore
+            if (!userSaved) {
+                return Result.fail<IUserDTO>("Error updating user.");
+            }
+
             const userDTOSaved = UserMap.toDTO(userSaved);
 
             return Result.ok<IUserDTO>(userDTOSaved);

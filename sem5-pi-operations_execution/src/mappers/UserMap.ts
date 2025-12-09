@@ -8,7 +8,7 @@ export class UserMap extends Mapper<User> {
     public static toDTO(user: User): IUserDTO {
         return {
             name: user.name,
-            auth0Id: user.auth0id,
+            auth0UserId: user.auth0userid,
             email: user.email,
             role: user.role
         };
@@ -19,7 +19,7 @@ export class UserMap extends Mapper<User> {
         const userOrError = User.create(
             {
                 name: raw.name,
-                auth0Id: raw.auth0Id,
+                auth0UserId: raw.auth0UserId,
                 email: raw.email,
                 role: raw.role
             },
@@ -39,7 +39,7 @@ export class UserMap extends Mapper<User> {
             domainId: user.id.toString(),
             email: user.email,
             name: user.name,
-            auth0Id: user.auth0id,
+            auth0UserId: user.auth0userid,
             role: user.role
         };
     }

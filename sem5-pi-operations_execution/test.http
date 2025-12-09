@@ -1,0 +1,12 @@
+###
+POST http://localhost:3000/api/users/sync
+Content-Type: application/json
+x-user-email: test@example.com
+x-user-role: Admin
+
+{
+  "auth0UserId": "auth0|123456789",
+  "email": "test@example.com",
+  "name": "John Doey",
+  "role": "PortAuthorityOfficer"
+}

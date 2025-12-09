@@ -6,7 +6,7 @@ import {Role} from "./role";
 import {Guard} from "../core/logic/Guard";
 
 interface UserProps {
-    auth0Id: string;
+    auth0UserId: string;
     email: string;
     name: string;
     role: Role;
@@ -34,8 +34,8 @@ export class User extends AggregateRoot<UserProps> {
         return this.props.role;
     }
 
-    get auth0id() : string {
-        return this.props.auth0Id;
+    get auth0userid() : string {
+        return this.props.auth0UserId;
     }
 
     set role(value: Role) {
@@ -50,7 +50,6 @@ export class User extends AggregateRoot<UserProps> {
 
         const guardedProps = [
             { argument: props.name, argumentName: 'name' },
-            { argument: props.auth0Id, argumentName: 'auth0Id' },
             { argument: props.email, argumentName: 'email' },
             { argument: props.role, argumentName: 'role' }
         ];

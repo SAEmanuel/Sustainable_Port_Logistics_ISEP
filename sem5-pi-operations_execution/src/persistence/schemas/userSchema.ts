@@ -14,9 +14,9 @@ const User = new mongoose.Schema(
             index: true,
         },
 
-        auth0Id: {
+        auth0UserId: {
             type: String,
-            required: [true, 'Please enter auth0Id'],
+            required: [true, 'Please enter authUser0Id'],
             index: true,
         },
 
@@ -32,7 +32,10 @@ const User = new mongoose.Schema(
             default: 'NoRole',
         },
     },
-    { timestamps: true },
+    {
+        timestamps: false,
+        versionKey: false,
+    }
 );
 
 export default mongoose.model<IUserPersistence & mongoose.Document>('User', User);
