@@ -1,8 +1,7 @@
 import { useAuth0 } from "@auth0/auth0-react";
 import { useAppStore } from "../app/store";
 import { useEffect, useRef } from "react";
-import {API_WEBAPI} from "../config/api.ts";
-
+import { API_WEBAPI, API_OEM } from "../config/api.ts";
 
 export default function SyncUser() {
     const { user, isAuthenticated, getAccessTokenSilently } = useAuth0();
@@ -11,21 +10,33 @@ export default function SyncUser() {
 
     useEffect(() => {
         const sync = async () => {
-            if (!isAuthenticated || !user || hasSynced.current) return;
+
+            if (
+                !isAuthenticated ||
+                !user ||
+                !user.email ||
+                !user.sub ||
+                !user.name ||
+                hasSynced.current
+            ) {
+                return;
+            }
+
             hasSynced.current = true;
 
             try {
                 const token = await getAccessTokenSilently();
 
+
                 const payload = {
-                    Auth0UserId: user.sub,
-                    Email: user.email,
-                    Name: user.name,
-                    Role: null,
-                    Picture: user.picture,
+                    auth0UserId: user.sub,
+                    email: user.email,
+                    name: user.name,
+                    role: null,
+                    picture: user.picture,
                 };
 
-                const response = await fetch(`${API_WEBAPI}/api/user/sync`, {
+                const responseMain = await fetch(`${API_WEBAPI}/api/user/sync`, {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
@@ -34,12 +45,8 @@ export default function SyncUser() {
                     body: JSON.stringify(payload),
                 });
 
-                if (!response.ok) {
-                    console.error("❌ Erro ao sincronizar utilizador:", response.statusText);
-                    return;
-                }
+                const userData = await responseMain.json();
 
-                const userData = await response.json();
                 setUser({
                     id: userData.id,
                     auth0UserId: userData.auth0UserId,
@@ -49,7 +56,28 @@ export default function SyncUser() {
                     role: userData.role,
                     isActive: userData.isActive,
                 });
-                localStorage.setItem("sarId", "eb1fab4f-de0d-49e0-bcfd-8454c1f15307");
+
+                const payloadOEM = {
+                    auth0UserId: payload,
+                    email: user.email,
+                    name: user.name,
+                    role: userData.role || "NoRole",
+                };
+
+                const responseOEM = await fetch(`${API_OEM}/api/users/sync`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "x-user-email": user.email!,
+                        "x-user-role": userData.role ?? "NoRole",
+                    },
+                    body: JSON.stringify(payloadOEM),
+                });
+
+                if (!responseOEM.ok) {
+                    console.error("❌ Erro ao sincronizar utilizador no backend OEM");
+                }
+
             } catch (err) {
                 console.error("⚠️ Falha ao sincronizar utilizador:", err);
             }

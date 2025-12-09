@@ -1,7 +1,7 @@
 import 'reflect-metadata';
 import app from './app';
 import loaders from './loaders';
-import config from './config'; // Importar o config para usar a porta definida lá
+import config from './config';
 
 async function startServer() {
 
