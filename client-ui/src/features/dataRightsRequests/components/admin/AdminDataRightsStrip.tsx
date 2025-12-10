@@ -101,8 +101,7 @@ export function AdminDataRightsStrip({
                                         <span className="dr-admin-chip">
                                             {r.type === "Access" && "📄 "}
                                             {r.type === "Deletion" && "🧹 "}
-                                            {r.type === "Rectification" &&
-                                                "✏️ "}
+                                            {r.type === "Rectification" && "✏️ "}
                                             {r.type}
                                         </span>
                                     </div>

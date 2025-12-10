@@ -37,7 +37,10 @@ export function AdminRequestDetailsModal({
     const canRespond =
         request.status === "InProgress" &&
         !!request.processedBy &&
-        (request.type === "Access" || request.type === "Deletion");
+        (request.type === "Access" ||
+            request.type === "Deletion" ||
+            request.type === "Rectification");
+
 
     // timeline – que passos estão done/active
     const step1Class =
@@ -265,10 +268,15 @@ export function AdminRequestDetailsModal({
                                     "dataRights.admin.respondAccess",
                                     "Generate access response",
                                 )
-                                : t(
-                                    "dataRights.admin.respondDeletion",
-                                    "Perform deletion",
-                                )}
+                                : request.type === "Deletion"
+                                    ? t(
+                                        "dataRights.admin.respondDeletion",
+                                        "Perform deletion",
+                                    )
+                                    : t(
+                                        "dataRights.admin.respondRectification",
+                                        "Open rectification decision",
+                                    )}
                         </button>
                     )}
 

@@ -1,4 +1,3 @@
-// src/features/dataRightsRequests/components/RectificationDecisionModal.tsx
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import toast from "react-hot-toast";
@@ -6,10 +5,10 @@ import toast from "react-hot-toast";
 import type {
     RectificationApplyDto,
     RectificationPayloadDto,
-} from "../dto/dataRightsDtos";
-import type { DataRightsRequest } from "../domain/dataRights";
-import dataRightsAdminService from "../service/dataRightsAdminService";
-import { mapRequestDto } from "../mappers/dataRightsMapper";
+} from "../../dto/dataRightsDtos";
+import type { DataRightsRequest } from "../../domain/dataRights";
+import dataRightsAdminService from "../../service/dataRightsAdminService";
+import { mapRequestDto } from "../../mappers/dataRightsMapper";
 
 type Props = {
     open: boolean;
@@ -18,6 +17,40 @@ type Props = {
     onApplied: (updated: DataRightsRequest) => void;
 };
 
+/** constrói um form “vazio” para um dado requestId */
+function buildInitialForm(requestId: string): RectificationApplyDto {
+    return {
+        requestId,
+        rejectEntireRequest: false,
+        globalReason: null,
+        finalName: null,
+        finalNameReason: null,
+        finalEmail: null,
+        finalEmailReason: null,
+        finalPicture: null,
+        finalPictureReason: null,
+        finalIsActive: null,
+        finalIsActiveReason: null,
+        finalPhoneNumber: null,
+        finalPhoneNumberReason: null,
+        finalNationality: null,
+        finalNationalityReason: null,
+        finalCitizenId: null,
+        finalCitizenIdReason: null,
+        adminGeneralComment: null,
+    };
+}
+
+/** "" -> null, senão devolve a própria string */
+function emptyToNull(v?: string | null): string | null {
+    // aceita undefined, null ou string
+    if (v == null) return null; // cobre null e undefined
+
+    const trimmed = v.trim();
+    return trimmed === "" ? null : trimmed;
+}
+
+
 export function RectificationDecisionModal({
                                                open,
                                                request,
@@ -25,14 +58,17 @@ export function RectificationDecisionModal({
                                                onApplied,
                                            }: Props) {
     const { t } = useTranslation();
-    const [form, setForm] = useState<RectificationApplyDto | null>(null);
+
+    // Agora o form NUNCA é null; começamos com um dummy requestId ""
+    const [form, setForm] = useState<RectificationApplyDto>(
+        () => buildInitialForm(""),
+    );
     const [originalPayload, setOriginalPayload] =
         useState<RectificationPayloadDto | null>(null);
     const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         if (!open || !request) {
-            setForm(null);
             setOriginalPayload(null);
             return;
         }
@@ -51,41 +87,25 @@ export function RectificationDecisionModal({
             setOriginalPayload(null);
         }
 
-        setForm({
-            requestId: request.requestId,
-            rejectEntireRequest: false,
-            globalReason: "",
-            finalName: "",
-            finalNameReason: "",
-            finalEmail: "",
-            finalEmailReason: "",
-            finalPicture: "",
-            finalPictureReason: "",
-            finalIsActive: null,
-            finalIsActiveReason: "",
-            finalPhoneNumber: "",
-            finalPhoneNumberReason: "",
-            finalNationality: "",
-            finalNationalityReason: "",
-            finalCitizenId: "",
-            finalCitizenIdReason: "",
-            adminGeneralComment: "",
-        });
+        // repõe o form com base no request atual
+        setForm(buildInitialForm(request.requestId));
     }, [open, request]);
 
-    if (!open || !request || !form) return null;
+    // se não está aberto ou não há request → nada a renderizar
+    if (!open || !request) return null;
 
     function updateForm(partial: Partial<RectificationApplyDto>) {
-        setForm(prev => ({ ...prev!, ...partial }));
+        setForm(prev => ({ ...prev, ...partial }));
     }
 
     async function handleSubmit(e: React.FormEvent) {
         e.preventDefault();
+
         try {
             setLoading(true);
+
             const dtoToSend: RectificationApplyDto = {
                 ...form,
-                // limpar strings vazias → null
                 globalReason: emptyToNull(form.globalReason),
                 finalName: emptyToNull(form.finalName),
                 finalNameReason: emptyToNull(form.finalNameReason),
@@ -108,8 +128,7 @@ export function RectificationDecisionModal({
                 adminGeneralComment: emptyToNull(form.adminGeneralComment),
             };
 
-            const updatedDto =
-                await dataRightsAdminService.applyRectification(dtoToSend);
+            const updatedDto = await dataRightsAdminService.applyRectification(dtoToSend);
             const mapped = mapRequestDto(updatedDto);
 
             toast.success(
@@ -159,7 +178,10 @@ export function RectificationDecisionModal({
                     </button>
                 </header>
 
-                <form onSubmit={handleSubmit} className="dr-modal-body dr-grid-2">
+                <form
+                    onSubmit={handleSubmit}
+                    className="dr-modal-body dr-grid-2"
+                >
                     {/* COLUNA ESQUERDA – Pedido original */}
                     <div className="dr-rect-original">
                         <h3 className="dr-label">
@@ -410,9 +432,7 @@ export function RectificationDecisionModal({
                                         <select
                                             className="dr-input"
                                             value={
-                                                form.finalIsActive === null ||
-                                                form.finalIsActive ===
-                                                undefined
+                                                form.finalIsActive === null
                                                     ? ""
                                                     : form.finalIsActive
                                                         ? "true"
@@ -488,7 +508,6 @@ export function RectificationDecisionModal({
                             </>
                         )}
                     </div>
-
                 </form>
 
                 <footer className="dr-modal-footer">
@@ -502,7 +521,7 @@ export function RectificationDecisionModal({
                     </button>
                     <button
                         type="submit"
-                        form="__fake" // só para não dar warning, o submit real é no form
+                        form={undefined} // o submit real é o do form acima
                         className="dr-primary-btn"
                         onClick={handleSubmit}
                         disabled={loading}
@@ -521,9 +540,4 @@ export function RectificationDecisionModal({
             </div>
         </div>
     );
-}
-
-function emptyToNull(v?: string | null): string | null | undefined {
-    if (v === "" || v === undefined) return null;
-    return v;
 }

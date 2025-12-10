@@ -16,7 +16,7 @@ import {
     FiUserCheck,
     FiFileText,
     FiAnchor,
-    FiLayers, FiMapPin,
+    FiLayers, FiMapPin,FiTablet,FiShuffle
 } from "react-icons/fi";
 import {FaShip} from "react-icons/fa";
 import { FaCalendarAlt } from 'react-icons/fa';
@@ -33,12 +33,12 @@ export default function Nav({ isOpen }: NavProps) {
     const baseMenu = [
         { label: t("menu.home"), path: "/", icon: <FiHome /> },
         { label: t("menu.3dView"), path: "/3dSecene", icon: <FiLayers /> },
-        { label: t("menu.dataRigths"), path: "/datarights", icon: <FiSettings /> },
-        { label: t("menu.dataRigthsAdmin"), path: "/datarightsAdmin", icon: <FiSettings /> },
+        { label: t("menu.dataRigths"), path: "/datarights", icon: <FiTablet /> },
     ];
 
     const adminMenu = user?.role?.includes(Roles.Administrator)
         ? [
+            { label: t("menu.dataRigthsAdmin"), path: "/datarightsAdmin", icon: <FiShuffle /> },
             { label: t("menu.admin"), path: "/users", icon: <FiSettings /> },
             { label: t("menu.vvn"), path: "/vvn", icon: <FiFileText /> },
             { label: t("menu.pp"), path: "/pp", icon: <FaCalendarAlt /> },

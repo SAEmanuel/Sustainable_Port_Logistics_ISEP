@@ -70,7 +70,9 @@
     "docks": "Docks",
     "sar": "Representates de Agentes de Transporte",
     "planningScheduling": "Planeamento",
-    "pp": "Políticas de Privacidade"
+    "pp": "Políticas de Privacidade",
+    "dataRigths": "Direitos de Dados\n",
+    "dataRigthsAdmin" : "Gerir DDs"
   },
   "layout": {
     "light": "Modo claro",

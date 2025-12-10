@@ -305,30 +305,57 @@
 /* =========================================================
  *  MODAIS (detalhe + rectification)
  * =======================================================*/
-
+/* Modal overlay – ADMIN */
 .dr-modal-overlay {
     position: fixed;
     inset: 0;
-    background: rgba(15, 23, 42, 0.45);
-    backdrop-filter: blur(6px);
+    background: rgba(15, 23, 42, 0.55);       /* escuro translúcido */
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 60;
+    z-index: 1300;                             /* MAIOR que o header */
+    animation: dr-fadeIn 0.25s ease-out;
 }
 
 /* modal base para admin */
+/* ===== MODAL BASE ===== */
 .dr-modal {
-    width: 100%;
-    max-width: 900px;
-    max-height: 90vh;
-    overflow: hidden;
     background: #ffffff;
     border-radius: 24px;
+    width: 90%;
+    max-width: 900px;
+
+    /* altura dinâmica mas com limite */
+    max-height: 90vh;
+
+    /* scroll interno */
+    overflow-y: auto;
+    overflow-x: hidden;
+
     box-shadow: 0 30px 80px rgba(15, 23, 42, 0.35);
+    padding: 1.75rem 2rem 1.75rem;
     display: flex;
     flex-direction: column;
+    gap: 1rem;
+
+    animation: dr-slideUp 0.3s ease-out;
+    z-index: 1400;
 }
+
+/* scrollbar mais discreta e moderna */
+.dr-modal::-webkit-scrollbar {
+    width: 8px;
+}
+.dr-modal::-webkit-scrollbar-thumb {
+    background-color: rgba(100, 116, 139, 0.4);
+    border-radius: 6px;
+}
+.dr-modal::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(100, 116, 139, 0.7);
+}
+
 
 .dr-admin-modal {
     /* apenas alias sem alterar dimensões */

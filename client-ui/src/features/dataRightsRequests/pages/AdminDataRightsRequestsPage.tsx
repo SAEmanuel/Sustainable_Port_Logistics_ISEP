@@ -12,6 +12,7 @@ import type { DataRightsRequest } from "../domain/dataRights";
 import { AdminDataRightsHeader } from "../components/admin/AdminDataRightsHeader";
 import { AdminDataRightsStrip } from "../components/admin/AdminDataRightsStrip";
 import { AdminRequestDetailsModal } from "../components/admin/AdminRequestDetailsModal";
+import { RectificationDecisionModal } from "../components/admin/RectificationDecisionModal";
 
 export default function DataRightsAdminPage() {
     const { t } = useTranslation();
@@ -24,7 +25,8 @@ export default function DataRightsAdminPage() {
     const [query, setQuery] = useState("");
     const [selected, setSelected] = useState<DataRightsRequest | null>(null);
     const [isDetailsOpen, setIsDetailsOpen] = useState(false);
-
+    const [isRectificationOpen, setIsRectificationOpen] = useState(false);
+    
     const email = user?.email ?? "";
 
     async function reload() {
@@ -144,6 +146,11 @@ export default function DataRightsAdminPage() {
     async function handleRespond() {
         if (!selected) return;
 
+        if (selected.type === "Rectification"){
+            setIsRectificationOpen(true);
+            return;
+        }
+        
         try {
             setBusyAction(true);
 
@@ -205,7 +212,7 @@ export default function DataRightsAdminPage() {
                     <span className="label">
                         {t(
                             "dataRights.metrics.waiting",
-                            "Waiting for assignment",
+                            "Waiting",
                         )}
                     </span>
                     <span className="value">{stats.waiting}</span>
@@ -257,6 +264,21 @@ export default function DataRightsAdminPage() {
                 onAssignToMe={handleAssignToMe}
                 onRespond={handleRespond}
                 isBusy={busyAction}
+            />
+
+            <RectificationDecisionModal
+                open={isRectificationOpen}
+                request={selected}
+                onClose={() => setIsRectificationOpen(false)}
+                onApplied={updated => {
+                    // atualizar lista e request selecionado depois de aplicar rectificação
+                    setItems(prev =>
+                        prev.map(r => (r.id === updated.id ? updated : r)),
+                    );
+                    setSelected(updated);
+                    setIsRectificationOpen(false);
+                    setIsDetailsOpen(false);
+                }}
             />
         </div>
     );

@@ -1,5 +1,5 @@
 import { webApi } from "../../../services/api";
-import type { DataRightsRequestDto } from "../dto/dataRightsDtos";
+import type { DataRightsRequestDto, RectificationApplyDto } from "../dto/dataRightsDtos";
 
 /** Pedidos à espera de atribuição */
 export async function getWaitingForAssignment(): Promise<DataRightsRequestDto[]> {
@@ -72,12 +72,19 @@ export async function respondDeletion(
     };
 }
 
+export async function applyRectification(rectificationRequest: RectificationApplyDto,): Promise<DataRightsRequestDto> {
+    const res = await webApi.patch<DataRightsRequestDto>("/api/DataRigthsRequest/response/request/status/rectification", rectificationRequest,);
+    return res.data;
+}
+
+
 const adminDataRightsService = {
     getWaitingForAssignment,
     getForResponsible,
     assignResponsible,
     respondAccess,
     respondDeletion,
+    applyRectification
 };
 
 export default adminDataRightsService;
