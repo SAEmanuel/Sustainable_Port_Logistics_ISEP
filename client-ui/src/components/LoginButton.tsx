@@ -13,9 +13,11 @@ export default function LoginPort() {
 
     return (
         <div className="port-container">
+            <div className="background-grid"></div>
+
             <div className="radar-scope">
                 <div className="radar-sweep"></div>
-                <div className="radar-grid"></div>
+                <div className="radar-center-dot"></div>
             </div>
 
             <div className="shipping-lane">
@@ -37,16 +39,27 @@ export default function LoginPort() {
             <div className="interface-layer">
                 <div className="glass-panel">
                     <h1 className="system-title">Port<span>Logistics</span></h1>
-                    <p className="system-status">SYSTEM READY // WAITING FOR AUTH</p>
+                    <div className="status-container">
+                        <span className="status-light pulse"></span>
+                        <p className="system-status">SYSTEM READY // WAITING FOR AUTH</p>
+                    </div>
+
+                    <div className="monitoring-data">
+                        <p className="data-line">Developed with &lt;3</p>
+                        <p className="data-line team-flicker">MakeItSimple</p>
+                        <p className="data-line">v3.1.0</p>
+                    </div>
 
                     <button onClick={handleLogin} className="activate-btn">
-                        <span className="btn-text">Login</span>
+                        <span className="btn-text">SECURE LOGIN</span>
                         <div className="btn-glitch"></div>
+                        <div className="btn-border-pulse"></div>
                     </button>
                 </div>
             </div>
 
             <div className="noise-overlay"></div>
+            <div className="scanlines-overlay"></div>
         </div>
     );
 }

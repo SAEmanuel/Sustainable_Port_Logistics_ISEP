@@ -4,7 +4,7 @@ html, body {
     width: 100%;
     height: 100%;
     background-color: #050f14;
-    font-family: 'Courier New', monospace;
+    font-family: 'Share Tech Mono', 'Courier New', monospace;
 }
 
 #root {
@@ -13,11 +13,14 @@ html, body {
 }
 
 :root {
-    --deep-sea: #050f14;
+    --deep-sea: #02070a;
     --radar-green: #00ffaa;
-    --radar-dim: rgba(0, 255, 170, 0.1);
-    --glass: rgba(255, 255, 255, 0.05);
     --neon-blue: #00ccff;
+    --neon-purple: #9d00ff;
+    --radar-dim: rgba(0, 255, 170, 0.05);
+    --glass: rgba(255, 255, 255, 0.03);
+    --glass-border: rgba(0, 204, 255, 0.3);
+    --glitch-color: #ff33cc;
 }
 
 .port-container {
@@ -27,7 +30,24 @@ html, body {
     display: flex;
     justify-content: center;
     align-items: center;
-    background: radial-gradient(circle at center, #0a1f2b 0%, #020608 100%);
+    overflow: hidden;
+    background: radial-gradient(circle at 50% 50%, #031018 0%, #020608 100%);
+}
+
+.background-grid {
+    position: absolute;
+    inset: 0;
+    background-image: linear-gradient(to right, rgba(0, 204, 255, 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(0, 204, 255, 0.05) 1px, transparent 1px);
+    background-size: 50px 50px;
+    opacity: 0.5;
+    animation: grid-pulse 60s linear infinite;
+    z-index: 1;
+}
+
+@keyframes grid-pulse {
+    0% { background-position: 0 0; }
+    100% { background-position: -50px -50px; }
 }
 
 .radar-scope {
@@ -35,15 +55,17 @@ html, body {
     width: 150vmax;
     height: 150vmax;
     border-radius: 50%;
-    border: 1px solid var(--radar-dim);
+    border: 2px solid var(--radar-dim);
+    box-shadow: 0 0 50px var(--neon-blue);
     background: repeating-radial-gradient(
             transparent 0,
-            transparent 148px,
-            var(--radar-dim) 149px,
-            transparent 150px
+            transparent 198px,
+            var(--radar-dim) 199px,
+            transparent 200px
     );
-    opacity: 0.3;
+    opacity: 0.2;
     pointer-events: none;
+    z-index: 2;
 }
 
 .radar-sweep {
@@ -54,10 +76,28 @@ html, body {
             from 0deg,
             transparent 0deg,
             rgba(0, 255, 170, 0.1) 60deg,
-            rgba(0, 255, 170, 0.5) 90deg,
+            rgba(0, 255, 170, 0.6) 90deg,
             transparent 91deg
     );
-    animation: radar-spin 8s linear infinite;
+    animation: radar-spin 6s linear infinite;
+    filter: blur(1px);
+}
+
+.radar-center-dot {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 10px;
+    height: 10px;
+    background-color: var(--radar-green);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 0 15px var(--radar-green);
+}
+
+@keyframes radar-spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
 }
 
 .interface-layer {
@@ -67,24 +107,32 @@ html, body {
 
 .glass-panel {
     background: var(--glass);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    padding: 3rem 4rem;
-    border-radius: 4px;
+    backdrop-filter: blur(15px) brightness(1.2);
+    -webkit-backdrop-filter: blur(15px) brightness(1.2);
+    border: 1px solid var(--glass-border);
+    padding: 3.5rem 5rem;
+    border-radius: 0;
     text-align: center;
-    box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 0 40px rgba(0, 204, 255, 0.5);
     position: relative;
+    clip-path: polygon(5% 0, 100% 0, 95% 100%, 0 100%);
+    transition: all 0.5s ease-in-out;
+}
+
+.glass-panel:hover {
+    box-shadow: 0 0 60px var(--neon-blue);
 }
 
 .glass-panel::before,
 .glass-panel::after {
     content: '';
     position: absolute;
-    width: 20px;
-    height: 20px;
-    border: 2px solid var(--neon-blue);
+    width: 25px;
+    height: 25px;
+    border: 2px solid var(--neon-purple);
     transition: all 0.3s ease;
+    box-shadow: 0 0 10px var(--neon-purple);
+    z-index: 11;
 }
 
 .glass-panel::before {
@@ -92,6 +140,7 @@ html, body {
     left: -2px;
     border-right: none;
     border-bottom: none;
+    transform: skewX(-20deg);
 }
 
 .glass-panel::after {
@@ -99,62 +148,201 @@ html, body {
     right: -2px;
     border-left: none;
     border-top: none;
+    transform: skewX(-20deg);
 }
 
 .system-title {
     color: white;
-    font-size: 3rem;
-    margin: 0;
-    letter-spacing: 5px;
-    font-weight: 700;
+    font-size: 3.8rem;
+    margin: 0 0 0.5rem 0;
+    letter-spacing: 8px;
+    font-weight: 900;
     text-transform: uppercase;
+    text-shadow: 0 0 10px var(--neon-blue), 0 0 20px rgba(0, 204, 255, 0.5);
 }
 
 .system-title span {
     color: var(--neon-blue);
 }
 
+.status-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 2rem;
+}
+
+.status-light {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: var(--radar-green);
+    box-shadow: 0 0 8px var(--radar-green);
+    margin-right: 10px;
+}
+
+.pulse {
+    animation: pulse-light 1.5s infinite alternate;
+}
+
+@keyframes pulse-light {
+    from { opacity: 0.5; box-shadow: 0 0 5px var(--radar-green); }
+    to { opacity: 1; box-shadow: 0 0 15px var(--radar-green); }
+}
+
 .system-status {
     color: var(--radar-green);
-    font-size: 0.8rem;
-    margin-bottom: 3rem;
-    letter-spacing: 2px;
+    font-size: 1rem;
+    margin: 0;
+    letter-spacing: 3px;
+    opacity: 1;
+}
+
+.monitoring-data {
+    width: 100%;
+    max-width: 350px;
+    margin: 0 auto 3.5rem auto;
+    font-size: 0.75rem;
+    color: var(--neon-blue);
     opacity: 0.8;
+    letter-spacing: 1px;
+    padding: 10px 0;
+    border-top: 1px dashed var(--glass-border);
+    border-bottom: 1px dashed var(--glass-border);
+    text-align: center; /* ALTERADO PARA CENTER */
+}
+
+.data-line {
+    margin: 5px 0;
+    padding-left: 0; /* REMOVIDO PARA CENTRAR */
+}
+
+.team-flicker {
+    color: var(--neon-purple);
+    font-weight: bold;
+    animation: team-data-flicker 2s step-end infinite;
+}
+
+@keyframes team-data-flicker {
+    0%, 15%, 17%, 20%, 50%, 52%, 100% {
+        text-shadow: 0 0 5px var(--neon-purple), 0 0 10px var(--neon-blue);
+        opacity: 1;
+    }
+    16%, 51% {
+        text-shadow: none;
+        opacity: 0.3;
+        color: var(--glitch-color);
+    }
 }
 
 .activate-btn {
     position: relative;
     background: transparent;
-    border: 2px solid var(--neon-blue);
+    border: none;
     color: var(--neon-blue);
-    padding: 15px 40px;
-    font-size: 1.2rem;
+    padding: 18px 50px;
+    font-size: 1.3rem;
     font-family: inherit;
     font-weight: bold;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: color 0.4s ease-in-out, background 0.4s ease-in-out, box-shadow 0.4s ease-in-out;
     text-transform: uppercase;
-    letter-spacing: 2px;
+    letter-spacing: 3px;
+    overflow: hidden;
+    z-index: 10;
 }
 
 .activate-btn:hover {
     background: var(--neon-blue);
     color: var(--deep-sea);
-    box-shadow: 0 0 20px var(--neon-blue);
+    box-shadow: 0 0 30px var(--neon-blue), 0 0 50px var(--neon-purple);
 }
 
-@keyframes radar-spin {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
+.btn-text {
+    position: relative;
+    z-index: 2;
+}
+
+.btn-border-pulse {
+    position: absolute;
+    inset: 0;
+    border: 2px solid var(--neon-blue);
+    z-index: 1;
+    pointer-events: none;
+    animation: static-neon-pulse 2s infinite alternate;
+}
+
+.activate-btn:hover .btn-border-pulse {
+    animation: none;
+    box-shadow: 0 0 15px var(--neon-blue), 0 0 30px var(--neon-blue), 0 0 40px var(--neon-purple);
+}
+
+@keyframes static-neon-pulse {
+    from {
+        box-shadow: 0 0 10px var(--neon-blue), 0 0 20px rgba(0, 204, 255, 0.7);
+        opacity: 0.9;
+    }
+    to {
+        box-shadow: 0 0 15px var(--neon-blue), 0 0 30px rgba(0, 204, 255, 0.9);
+        opacity: 1;
+    }
+}
+
+.btn-glitch {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--glitch-color);
+    opacity: 0;
+    z-index: 1;
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+}
+
+.activate-btn:hover .btn-glitch {
+    animation: glitch-effect 0.3s linear infinite alternate;
+}
+
+@keyframes glitch-effect {
+    0% {
+        opacity: 0.2;
+        transform: translate(2px, 2px);
+    }
+    33% {
+        opacity: 0.4;
+        transform: translate(-3px, -3px);
+    }
+    66% {
+        opacity: 0.6;
+        transform: translate(4px, -1px);
+    }
+    100% {
+        opacity: 0.8;
+        transform: translate(-1px, 3px);
+    }
 }
 
 .noise-overlay {
     position: fixed;
     inset: 0;
     pointer-events: none;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E");
-    opacity: 0.4;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.08'/%3E%3C/svg%3E");
+    opacity: 0.5;
     z-index: 20;
+}
+
+.scanlines-overlay {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    background: repeating-linear-gradient(
+            to bottom,
+            rgba(0, 0, 0, 0) 0px,
+            rgba(0, 0, 0, 0.3) 1px,
+            rgba(0, 0, 0, 0.3) 2px
+    );
+    z-index: 25;
 }
 
 .shipping-lane {
@@ -165,41 +353,46 @@ html, body {
     height: 100%;
     pointer-events: none;
     z-index: 5;
+    perspective: 800px;
 }
 
 .ship-silhouette {
     position: absolute;
-    opacity: 0.8;
-    filter: drop-shadow(0 0 8px rgba(0, 204, 255, 0.3));
+    opacity: 0.6;
+    filter: drop-shadow(0 0 15px rgba(0, 204, 255, 0.4));
+    transition: all 0.5s ease-in-out;
 }
 
 .ship-body, .ship-bridge, .ship-cargo {
-    fill: #030c11;
-    stroke: rgba(0, 204, 255, 0.1);
+    fill: #010406;
+    stroke: var(--neon-blue);
     stroke-width: 1;
+    filter: drop-shadow(0 0 5px rgba(0, 204, 255, 0.3));
 }
 
 .cargo-ship-large {
     bottom: 30%;
-    width: 500px;
-    left: -500px;
-    animation: sailRight 90s linear infinite;
+    width: 600px;
+    left: -600px;
+    animation: sailRight 80s linear infinite;
+    transform: rotateY(-10deg) scale(1.1);
 }
 
 .tanker-ship-small {
-    bottom: 45%;
-    width: 300px;
-    right: -300px;
-    opacity: 0.6;
-    animation: sailLeft 60s linear infinite;
+    bottom: 50%;
+    width: 350px;
+    right: -350px;
+    opacity: 0.4;
+    animation: sailLeft 70s linear infinite;
+    transform: rotateY(10deg) scale(0.9);
 }
 
 @keyframes sailRight {
-    0% { transform: translateX(0); }
-    100% { transform: translateX(calc(100vw + 500px)); }
+    0% { transform: translateX(0) scale(1.1); }
+    100% { transform: translateX(calc(100vw + 600px)) scale(1.1); }
 }
 
 @keyframes sailLeft {
-    0% { transform: translateX(0); }
-    100% { transform: translateX(calc(-100vw - 300px)); }
+    0% { transform: translateX(0) scale(0.9); }
+    100% { transform: translateX(calc(-100vw - 350px)) scale(0.9); }
 }
