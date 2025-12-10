@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import {webApi} from "../services/api";
+import {API_WEBAPI} from "../config/api.ts";
 
 export default function ActivateAccount() {
     const { t } = useTranslation();
@@ -21,7 +21,7 @@ export default function ActivateAccount() {
         const verifyAndActivate = async () => {
             try {
                 const userRes = await fetch(
-                    `${webApi}/api/user/email/${encodeURIComponent(email)}`
+                    `${API_WEBAPI}/api/user/email/${encodeURIComponent(email)}`
                 );
 
                 if (!userRes.ok) {
@@ -39,7 +39,7 @@ export default function ActivateAccount() {
                 }
 
                 const activateRes = await fetch(
-                    `${webApi}/api/user/activate?email=${encodeURIComponent(email)}`,
+                    `${API_WEBAPI}/api/user/activate?email=${encodeURIComponent(email)}`,
                     { method: "PUT" }
                 );
 

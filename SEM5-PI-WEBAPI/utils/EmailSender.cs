@@ -1,35 +1,33 @@
-using System.Net;
-using System.Net.Mail;
-
 namespace SEM5_PI_WEBAPI.utils;
 
-public class EmailSender(IConfiguration config) : IEmailSender
+using SendGrid;
+using SendGrid.Helpers.Mail;
+
+public class EmailSender : IEmailSender
 {
-    private readonly IConfiguration _config = config;
+    private readonly IConfiguration _config;
 
-    public Task SendEmailAsync(string email, string subject, string message)
+    public EmailSender(IConfiguration config)
     {
-        var fromEmail = _config["EmailSettings:FromEmail"];
-        var apiKey = _config["EmailSettings:Password"]; 
-        var smtpServer = _config["EmailSettings:SmtpServer"] ?? "smtp.sendgrid.net";
-        var port = int.Parse(_config["EmailSettings:Port"] ?? "587");
+        _config = config;
+    }
 
-        var client = new SmtpClient(smtpServer, port)
+    public async Task SendEmailAsync(string email, string subject, string message)
+    {
+        var apiKey = _config["EmailSettings:ApiKey"];
+        var client = new SendGridClient(apiKey);
+
+        var from = new EmailAddress(_config["EmailSettings:FromEmail"], "No Reply");
+        var to = new EmailAddress(email);
+
+        var msg = MailHelper.CreateSingleEmail(from, to, subject, null, message);
+
+        var response = await client.SendEmailAsync(msg);
+
+        if (!response.IsSuccessStatusCode)
         {
-            EnableSsl = true,
-            Credentials = new NetworkCredential("apikey", apiKey)
-        };
-
-        var mailMessage = new MailMessage
-        {
-            From = new MailAddress(fromEmail!, "No Reply"),
-            Subject = subject,
-            Body = message,
-            IsBodyHtml = true
-        };
-
-        mailMessage.To.Add(email);
-
-        return client.SendMailAsync(mailMessage);
+            var body = await response.Body.ReadAsStringAsync();
+            throw new Exception($"SendGrid send error: {response.StatusCode} - {body}");
+        }
     }
 }
