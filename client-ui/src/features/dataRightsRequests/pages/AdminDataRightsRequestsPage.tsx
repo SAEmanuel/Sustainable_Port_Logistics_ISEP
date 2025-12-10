@@ -1,4 +1,4 @@
-import "../style/dataRightsStyle.css";
+import "../style/dataRightsAdminStyle.css";
 
 import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";

@@ -1,5 +1,4 @@
 // src/features/dataRightsRequests/admin/components/AdminDataRightsStrip.tsx
-
 import { useTranslation } from "react-i18next";
 import type { DataRightsRequest } from "../../domain/dataRights";
 
@@ -30,22 +29,27 @@ export function AdminDataRightsStrip({
     const { t } = useTranslation();
 
     return (
-        <div className="dr-strip dr-admin-strip">
-            <div className="dr-strip-inner">
-                {loading ? (
-                    Array.from({ length: 4 }).map((_, i) => (
-                        <div className="dr-strip-skeleton" key={i} />
-                    ))
-                ) : items.length === 0 ? (
-                    <div className="dr-empty">
-                        😴{" "}
-                        {t(
-                            "dataRights.admin.empty",
-                            "No data rights requests to show.",
-                        )}
-                    </div>
-                ) : (
-                    items.map(r => {
+        <div className="dr-admin-grid-wrapper">
+            {loading ? (
+                <div className="dr-admin-grid">
+                    {Array.from({ length: 4 }).map((_, i) => (
+                        <div
+                            key={i}
+                            className="dr-admin-card dr-admin-card-skeleton"
+                        />
+                    ))}
+                </div>
+            ) : items.length === 0 ? (
+                <div className="dr-empty dr-admin-empty">
+                    😴{" "}
+                    {t(
+                        "dataRights.admin.empty",
+                        "No data rights requests to show.",
+                    )}
+                </div>
+            ) : (
+                <div className="dr-admin-grid">
+                    {items.map(r => {
                         const active = selectedId === r.id;
                         const created = new Date(
                             (r.createdOn as any).value ?? r.createdOn,
@@ -54,49 +58,86 @@ export function AdminDataRightsStrip({
                         return (
                             <button
                                 key={r.id}
+                                type="button"
                                 className={cn(
-                                    "dr-card-mini dr-card-mini-admin",
+                                    "dr-admin-card",
+                                    `dr-admin-card-${r.status}`,
                                     active && "active",
                                 )}
                                 onClick={() => onSelect(r)}
                             >
-                                <div className="dr-card-mini-top">
-                                    <span className="dr-card-mini-id">
+                                <div className="dr-admin-card-header">
+                                    <span className="dr-admin-card-id">
                                         #{r.requestId}
                                     </span>
+
                                     <span
-                                        className={`dr-badge-type ${r.type}`}
+                                        className={cn(
+                                            "dr-admin-status-pill",
+                                            `dr-${r.status}`,
+                                        )}
                                     >
-                                        {r.type === "Access" && "📄 "}
-                                        {r.type === "Deletion" && "🧹 "}
-                                        {r.type === "Rectification" &&
-                                            "✏️ "}
-                                        {r.type}
+                                        {statusEmoji[r.status]} {r.status}
                                     </span>
                                 </div>
 
-                                <div className="dr-card-mini-middle">
-                                    <span className="dr-mini-email">
-                                        {r.userEmail}
-                                    </span>
-                                </div>
+                                <div className="dr-admin-card-body">
+                                    <div className="dr-admin-row">
+                                        <span className="dr-admin-label">
+                                            {t(
+                                                "dataRights.admin.userEmail",
+                                                "User",
+                                            )}
+                                        </span>
+                                        <span className="dr-admin-value">
+                                            {r.userEmail}
+                                        </span>
+                                    </div>
 
-                                <div className="dr-card-mini-bottom">
-                                    <span
-                                        className={`dr-status dr-${r.status}`}
-                                    >
-                                        {statusEmoji[r.status]}{" "}
-                                        {r.status}
-                                    </span>
-                                    <span className="dr-date">
-                                        {created}
-                                    </span>
+                                    <div className="dr-admin-row">
+                                        <span className="dr-admin-label">
+                                            {t("dataRights.main.type", "Type")}
+                                        </span>
+                                        <span className="dr-admin-chip">
+                                            {r.type === "Access" && "📄 "}
+                                            {r.type === "Deletion" && "🧹 "}
+                                            {r.type === "Rectification" &&
+                                                "✏️ "}
+                                            {r.type}
+                                        </span>
+                                    </div>
+
+                                    <div className="dr-admin-row dr-admin-row-meta">
+                                        <span className="dr-admin-label">
+                                            {t(
+                                                "dataRights.main.createdOn",
+                                                "Created at",
+                                            )}
+                                        </span>
+                                        <span className="dr-admin-meta">
+                                            {created}
+                                        </span>
+                                    </div>
+
+                                    {r.processedBy && (
+                                        <div className="dr-admin-row dr-admin-row-meta">
+                                            <span className="dr-admin-label">
+                                                {t(
+                                                    "dataRights.main.processedBy",
+                                                    "Processed by",
+                                                )}
+                                            </span>
+                                            <span className="dr-admin-meta">
+                                                {r.processedBy}
+                                            </span>
+                                        </div>
+                                    )}
                                 </div>
                             </button>
                         );
-                    })
-                )}
-            </div>
+                    })}
+                </div>
+            )}
         </div>
     );
 }

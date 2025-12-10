@@ -49,7 +49,7 @@ export function DataRightsHeader({
                     className="dr-cta-btn dr-cta-pulse"
                     onClick={onToggleCreate}
                 >
-                    {isCreateOpen ? "✖️ " : "✨ "}
+                    {isCreateOpen ? "" : ""}
                     {t("dataRights.newRequest", "New request")}
                 </button>
             </div>
