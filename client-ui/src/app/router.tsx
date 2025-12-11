@@ -60,7 +60,7 @@ export const router = createBrowserRouter([
                             },
                             {
                                 path: "datarights",
-                                element: <RequireRole roles={[Roles.Administrator, Roles.PortAuthorityOfficer,Roles.ProjectManager,Roles.ShippingAgentRepresentative]} />,
+                                element: <RequireRole roles={[Roles.Administrator, Roles.PortAuthorityOfficer,Roles.ProjectManager,Roles.ShippingAgentRepresentative, Roles.LogisticsOperator]} />,
                                 children: [{ index: true, element: <DR /> }],
                             },
                             {

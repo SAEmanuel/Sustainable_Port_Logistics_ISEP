@@ -1,9 +1,10 @@
-import {type JSX, useMemo } from "react";
+import { type JSX, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAppStore } from "../app/store";
 import { Roles, type Role } from "../app/types";
 import { useTranslation } from "react-i18next";
 import { useAuth0 } from "@auth0/auth0-react";
+import { useCurrentAvatar } from "../components/hooks/useCurrentAvatar";
 import {
     FaUsers,
     FaCogs,
@@ -11,8 +12,11 @@ import {
     FaUniversity,
     FaShip,
     FaProjectDiagram,
-    FaRoute,
+    FaRoute
 } from "react-icons/fa";
+import {
+FiShuffle,FiTablet
+} from "react-icons/fi";
 import "./css/genericDashboard.css";
 import {FiAnchor, FiBox, FiFileText, FiMapPin} from "react-icons/fi";
 
@@ -38,6 +42,8 @@ const routeIcon: Record<string, JSX.Element> = {
     "/vesselTypes": <FiAnchor size={44} />,
     "/vvnResponse": <FiFileText size={44} />,
     "/sao": <FiFileText size={44} />,
+    "/DR": <FiTablet size={44} />,
+    "/DRAdmin": <FiShuffle size={44} />,
 };
 
 function useAccessibleLinksByRole(t: (k: string) => string, role?: "Administrator" | "PortAuthorityOfficer" | "LogisticsOperator" | "ShippingAgentRepresentative" | "ProjectManager" | null | undefined) {
@@ -53,9 +59,13 @@ function useAccessibleLinksByRole(t: (k: string) => string, role?: "Administrato
                     { label: t("dashboard.staffMembers"), path: "/staff-members", color, icon: routeIcon["/staff-members"] },
                     { label: t("dashboard.port3d"), path: "/3dSecene", color, icon: routeIcon["/3dSecene"] },
                 );
+                L.push({ label: t("dashboard.dd"), path: "/DR", color, icon: routeIcon["/DR"] },);
+
                 break;
             case Roles.ShippingAgentRepresentative:
                 L.push({ label: t("dashboard.vvn"), path: "/vvn", color, icon: routeIcon["/vvn"] });
+                L.push({ label: t("dashboard.dd"), path: "/DR", color, icon: routeIcon["/DR"] },);
+
                 break;
             case Roles.PortAuthorityOfficer:
                 L.push({ label: t("dashboard.docks"), path: "/docks", color, icon: routeIcon["/docks"] });
@@ -65,11 +75,13 @@ function useAccessibleLinksByRole(t: (k: string) => string, role?: "Administrato
                 L.push({ label: t("dashboard.storage-areas"), path: "/storage-areas", color, icon: routeIcon["/storageArea"] });
                 L.push({ label: t("dashboard.sao"), path: "/sao", color, icon: routeIcon["/sao"] },);
                 L.push({ label: t("dashboard.port3d"), path: "/3dSecene", color, icon: routeIcon["/3dSecene"] },);
+                L.push({ label: t("dashboard.dd"), path: "/DR", color, icon: routeIcon["/DR"] },);
 
                 break;
             case Roles.ProjectManager:
                 L.push({ label: t("dashboard.planning"), path: "/planning-scheduling", color, icon: routeIcon["/projects"] });
                 L.push({ label: t("dashboard.port3d"), path: "/3dSecene", color, icon: routeIcon["/3dSecene"] },);
+                L.push({ label: t("dashboard.dd"), path: "/DR", color, icon: routeIcon["/DR"] },);
                 break;
 
 
@@ -77,6 +89,8 @@ function useAccessibleLinksByRole(t: (k: string) => string, role?: "Administrato
                 L.push({ label: t("dashboard.adminPanel"), path: "/users", color, icon: <FaCogs size={44} /> });
                 L.push({ label: t("menu.vvn"), path: "/vvn", color, icon: <FiFileText size={44} /> });
                 L.push({ label: t("dashboard.port3d"), path: "/3dSecene", color, icon: routeIcon["/3dSecene"] },);
+                L.push({ label: t("dashboard.dd"), path: "/DR", color, icon: routeIcon["/DR"] },);
+                L.push({ label: t("dashboard.ddAdmin"), path: "/DRAdmin", color, icon: routeIcon["/DRAdmin"] },);
                 break;
         }
         return L;
@@ -92,16 +106,22 @@ export default function GenericDashboard() {
     const role = storeUser?.role;
     const links = useAccessibleLinksByRole(t, role);
 
-    const displayName = authUser?.name ?? storeUser?.name ?? "";
-    const email = authUser?.email ?? storeUser?.email ?? "";
-    const picture = authUser?.picture ?? "";
+    const displayName = storeUser?.name ?? authUser?.name ?? ""; 
+    const email = storeUser?.email ?? authUser?.email ?? ""; 
+
+    const picture = useCurrentAvatar();
 
     return (
         <div className="gd-container fade-in">
             <header className="gd-header-light" data-role={role ?? "none"}>
                 <div className="gd-profile">
                     {picture ? (
-                        <img src={picture} alt={displayName || "avatar"} className="gd-avatar-img" />
+                        <img
+                            src={picture}
+                            alt={displayName || "avatar"}
+                            className="gd-avatar-img"
+                            style={{ objectFit: "cover" }} // Garante que não fica distorcida
+                        />
                     ) : (
                         <div className="gd-avatar-placeholder">
                             {(displayName || "U")

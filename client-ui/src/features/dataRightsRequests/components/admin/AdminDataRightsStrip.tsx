@@ -1,4 +1,3 @@
-// src/features/dataRightsRequests/admin/components/AdminDataRightsStrip.tsx
 import { useTranslation } from "react-i18next";
 import type { DataRightsRequest } from "../../domain/dataRights";
 
@@ -27,6 +26,14 @@ export function AdminDataRightsStrip({
                                          onSelect,
                                      }: Props) {
     const { t } = useTranslation();
+
+    // Mapeamento de traduções para os estados
+    const statusLabels: Record<string, string> = {
+        WaitingForAssignment: t("dataRights.filters.waiting", "Waiting"),
+        InProgress: t("dataRights.filters.inProgress", "In Progress"),
+        Completed: t("dataRights.filters.completed", "Completed"),
+        Rejected: t("dataRights.filters.rejected", "Rejected"),
+    };
 
     return (
         <div className="dr-admin-grid-wrapper">
@@ -77,17 +84,14 @@ export function AdminDataRightsStrip({
                                             `dr-${r.status}`,
                                         )}
                                     >
-                                        {statusEmoji[r.status]} {r.status}
+                                        {statusEmoji[r.status]} {statusLabels[r.status] ?? r.status}
                                     </span>
                                 </div>
 
                                 <div className="dr-admin-card-body">
                                     <div className="dr-admin-row">
                                         <span className="dr-admin-label">
-                                            {t(
-                                                "dataRights.admin.userEmail",
-                                                "User",
-                                            )}
+                                            {t("dataRights.admin.userEmail", "User")}
                                         </span>
                                         <span className="dr-admin-value">
                                             {r.userEmail}
@@ -99,19 +103,15 @@ export function AdminDataRightsStrip({
                                             {t("dataRights.main.type", "Type")}
                                         </span>
                                         <span className="dr-admin-chip">
-                                            {r.type === "Access" && "📄 "}
-                                            {r.type === "Deletion" && "🧹 "}
-                                            {r.type === "Rectification" && "✏️ "}
-                                            {r.type}
+                                            {r.type === "Access" && `📄 ${t("dataRights.filters.access")}`}
+                                            {r.type === "Deletion" && `🧹 ${t("dataRights.filters.deletion")}`}
+                                            {r.type === "Rectification" && `✏️ ${t("dataRights.filters.rectification")}`}
                                         </span>
                                     </div>
 
                                     <div className="dr-admin-row dr-admin-row-meta">
                                         <span className="dr-admin-label">
-                                            {t(
-                                                "dataRights.main.createdOn",
-                                                "Created at",
-                                            )}
+                                            {t("dataRights.main.createdOn", "Created at")}
                                         </span>
                                         <span className="dr-admin-meta">
                                             {created}
@@ -121,10 +121,7 @@ export function AdminDataRightsStrip({
                                     {r.processedBy && (
                                         <div className="dr-admin-row dr-admin-row-meta">
                                             <span className="dr-admin-label">
-                                                {t(
-                                                    "dataRights.main.processedBy",
-                                                    "Processed by",
-                                                )}
+                                                {t("dataRights.main.processedBy", "Processed by")}
                                             </span>
                                             <span className="dr-admin-meta">
                                                 {r.processedBy}

@@ -81,6 +81,8 @@
     "rejectPrivacy": "Reject"
   },
   "dashboard": {
+    "dd": "Data Rights",
+    "ddAdmin": "Manage Data Rights",
     "welcome": "Welcome, Logistics Operator",
     "subtitle": "Select an area to manage",
     "welcomeUser": "Welcome, {{name}}",
@@ -1224,6 +1226,65 @@
       "inProgress": "In Progress",
       "completed": "Completed",
       "rejected": "Rejected"
+    },
+    "admin": {
+      "title": "Data Rights – Admin",
+      "subtitle": "Manage GDPR / privacy requests, assign yourself and respond.",
+      "search_PH": "Search by ID, email, type or status...",
+      "loadError": "Error loading requests.",
+      "empty": "No data rights requests to show.",
+      "userEmail": "User (request owner)",
+      "detailsTitle": "Request details",
+
+      "assignToMe": "Assign to me",
+      "assignSuccess": "Request assigned to you",
+      "assignError": "Error assigning request",
+
+      "respondAccess": "Generate access response",
+      "respondAccessSuccess": "Access response generated and emailed",
+
+      "respondDeletion": "Perform deletion",
+      "respondDeletionSuccess": "Deletion request processed",
+
+      "respondRectification": "Review & Approve Changes",
+      "rectificationTitle": "Review & Approve Changes",
+
+      "rejectEntire": "Reject entire request (no changes will be applied)",
+      "globalReason": "Global reason (optional)",
+      "globalReason_PH": "Why are you rejecting this request?",
+
+      "sectionIdentity": "Profile Identity",
+      "sectionDetails": "Details & Status",
+
+      "finalName": "Final name",
+      "finalEmail": "Final email",
+      "finalPhone": "Final phone number",
+      "finalNationality": "Final nationality",
+      "finalCitizenId": "Final citizen ID",
+      "finalIsActive": "Final account status",
+
+      "reasonField_PH": "Reason (optional)",
+
+      "discardImage": "Discard Image",
+      "noPictureChange": "No picture change requested",
+      "noChange": "No change",
+
+      "keepAsIs": "Keep as is",
+      "setActive": "Active ✅",
+      "setInactive": "Inactive ⛔",
+
+      "adminComment": "Admin Internal Note / Response to User",
+      "commentPlaceholder": "Optional comment...",
+
+      "processing": "Processing...",
+      "confirmReject": "Reject Request",
+      "applyDecision": "Apply Changes",
+      "rectificationApplied": "Decision applied successfully.",
+      "rectificationError": "Error applying decision.",
+      "respondError": "Error responding to request",
+
+      "originalRequest": "Original requested changes",
+      "noOriginalPayload": "No rectification payload was found."
     }
   }
 }

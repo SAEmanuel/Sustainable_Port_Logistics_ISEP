@@ -85,6 +85,8 @@
     "rejectPrivacy": "Rejeitar"
   },
   "dashboard": {
+    "dd": "Direitos de Dados",
+    "ddAdmin": "Gerir Direitos de Dados",
     "welcome": "Bem-vindo, Operador Logístico",
     "subtitle": "Selecione uma área para gerir",
     "welcomeUser": "Bem-vindo, {{name}}",
@@ -1222,7 +1224,66 @@
       "inProgress": "Em Progresso",
       "completed": "Concluído",
       "rejected": "Rejeitado"
+    },
+    "admin": {
+      "title": "Direitos de Dados – Admin",
+      "subtitle": "Gira pedidos de privacidade/RGPD, atribua a si mesmo e responda.",
+      "search_PH": "Pesquisar por ID, email, tipo ou estado...",
+      "loadError": "Erro ao carregar pedidos.",
+      "empty": "Não há pedidos para mostrar.",
+      "userEmail": "Utilizador (dono do pedido)",
+      "detailsTitle": "Detalhes do pedido",
+
+      "assignToMe": "Atribuir a mim",
+      "assignSuccess": "Pedido atribuído a si com sucesso",
+      "assignError": "Erro ao atribuir pedido",
+
+      "respondAccess": "Gerar resposta de acesso",
+      "respondAccessSuccess": "Resposta de acesso gerada e enviada por email",
+
+      "respondDeletion": "Executar eliminação",
+      "respondDeletionSuccess": "Pedido de eliminação processado",
+
+      "respondRectification": "Rever e Aprovar Alterações",
+      "rectificationTitle": "Rever e Aprovar Alterações",
+
+      "rejectEntire": "Rejeitar pedido completo (nenhuma alteração será aplicada)",
+      "globalReason": "Motivo global (opcional)",
+      "globalReason_PH": "Qual o motivo da rejeição?",
+
+      "sectionIdentity": "Identidade do Perfil",
+      "sectionDetails": "Detalhes e Estado",
+
+      "finalName": "Nome final",
+      "finalEmail": "Email final",
+      "finalPhone": "Telemóvel final",
+      "finalNationality": "Nacionalidade final",
+      "finalCitizenId": "Cartão Cidadão final",
+      "finalIsActive": "Estado da conta final",
+
+      "reasonField_PH": "Motivo (opcional)",
+
+      "discardImage": "Descartar Imagem",
+      "noPictureChange": "Sem alteração de imagem",
+      "noChange": "Sem alteração",
+
+      "keepAsIs": "Manter como está",
+      "setActive": "Ativo ✅",
+      "setInactive": "Inativo ⛔",
+
+      "adminComment": "Nota Interna / Resposta ao Utilizador",
+      "commentPlaceholder": "Comentário opcional...",
+
+      "processing": "A processar...",
+      "confirmReject": "Rejeitar Pedido",
+      "applyDecision": "Aplicar Alterações",
+      "rectificationApplied": "Decisão aplicada com sucesso.",
+      "rectificationError": "Erro ao aplicar decisão.",
+      "respondError": "Erro ao responder ao pedido",
+
+      "originalRequest": "Alterações solicitadas originalmente",
+      "noOriginalPayload": "Nenhum dado de retificação encontrado."
     }
   }
-  
+
 }
