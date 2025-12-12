@@ -16,7 +16,7 @@ export default class UserController extends BaseController implements IUserContr
     public async createOrSyncUser(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
         try {
             const dto = req.body as IUserDTO;
-            //onsole.log("REQ BODY:", req.body);
+            //console.log("REQ BODY:", req.body);
 
             const userExists = await this.userServiceInstance.getUser(dto.email);
 

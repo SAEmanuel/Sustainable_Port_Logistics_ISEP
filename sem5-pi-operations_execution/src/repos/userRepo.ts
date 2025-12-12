@@ -1,64 +1,93 @@
-import IUserRepo from "../services/IRepos/IUserRepo";
 import { Inject, Service } from "typedi";
-import { User } from "../domain/user/user";
-import { IUserPersistence } from "../dataschema/IUserPersistence";
-import { Document, Model } from "mongoose";
-import { UserMap } from "../mappers/UserMap";
+import { BaseController } from "../core/infra/BaseController";
+import IUserService from "../services/IServices/IUserService";
+import { NextFunction, Request, Response } from "express";
+import { IUserDTO } from "../dto/IUserDTO";
+import { Logger } from "winston";
+import IUserController from "../controllers/IControllers/IUserController";
 
 @Service()
-export default class UserRepo implements IUserRepo {
+export default class UserController extends BaseController implements IUserController {
 
     constructor(
-        @Inject("userSchema")
-        private userSchema: Model<IUserPersistence & Document>,
-
-        @Inject("UserMap")
-        private userMap: UserMap,
-
-        @Inject("logger")
-        private logger: any
-    ) {}
-
-    public async exists(user: User): Promise<boolean> {
-        const id = user.id.toString();
-        const record = await this.userSchema.findOne({ domainId: id });
-        return !!record;
+        @Inject("UserService") private userService: IUserService,
+        @Inject("logger") private logger: Logger
+    ) {
+        super();
     }
 
-    public async save(user: User): Promise<User | null> {
+    public async createOrSyncUser(
+        req: Request,
+        res: Response,
+        next: NextFunction
+    ): Promise<Response | void> {
+
+        const dto = req.body as IUserDTO;
+
+        this.logger.info("HTTP POST /users/sync", {
+            email: dto?.email
+        });
+
         try {
-            const rawUser = this.userMap.toPersistence(user);
+            const userExists = await this.userService.getUser(dto.email);
 
-            const existing = await this.userSchema.findOne({ email: rawUser.email });
+            this.logger.debug("User existence check", {
+                email: dto.email,
+                exists: userExists.isSuccess
+            });
 
-            let persistedDoc;
+            const result = userExists.isSuccess
+                ? await this.userService.updateUser(dto)
+                : await this.userService.createUser(dto);
 
-            if (existing) {
-                existing.name = rawUser.name;
-                existing.role = rawUser.role;
-                existing.auth0UserId = rawUser.auth0UserId;
-                existing.email = rawUser.email;
-                existing.isActive = rawUser.isActive;
-                existing.isEliminated = rawUser.isEliminated;
+            if (result.isFailure) {
+                this.logger.warn("User sync failed", {
+                    email: dto.email,
+                    reason: result.errorValue()
+                });
 
-                await existing.save();
-                persistedDoc = existing;
-            } else {
-                const created = await this.userSchema.create(rawUser);
-                persistedDoc = created;
+                return res.status(400).json({
+                    error: result.errorValue()?.toString() ?? "Unknown error"
+                });
             }
 
-            return this.userMap.toDomain(persistedDoc);
+            this.logger.info("User synced successfully", {
+                email: dto.email
+            });
 
-        } catch (err) {
-            this.logger.error("Error in UserRepo.save:", err);
-            throw err;
+            return res.status(200).json(result.getValue());
+
+        } catch (e) {
+            this.logger.error("Unhandled error in UserController.createOrSyncUser", {
+                error: e
+            });
+
+            return next(e);
         }
     }
 
-    public async findByEmail(email: string): Promise<User | null> {
-        const userRecord = await this.userSchema.findOne({ email });
+    public async getMe(req: Request, res: Response, next: NextFunction): Promise<void> {
+        try {
+            const userDTO = (req as any).currentUser;
 
-        return userRecord ? this.userMap.toDomain(userRecord) : null;
+            if (!userDTO) {
+                this.logger.warn("GET /users/me called without authenticated user");
+                this.unauthorized("No user info available.");
+                return;
+            }
+
+            this.ok(res, userDTO);
+
+        } catch (e: any) {
+            this.logger.error("Unhandled error in UserController.getMe", {
+                error: e
+            });
+
+            this.fail(e instanceof Error ? e.message : String(e));
+        }
+    }
+
+    protected executeImpl(): Promise<void> {
+        throw new Error("Method not implemented.");
     }
 }
