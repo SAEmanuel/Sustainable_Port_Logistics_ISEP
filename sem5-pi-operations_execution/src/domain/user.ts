@@ -48,6 +48,10 @@ export class User extends AggregateRoot<UserProps> {
         return this.props.isEliminated;
     }
 
+    set name (value: string) {
+        this.props.name = value;
+    }
+
     set role(value: Role) {
         this.props.role = value;
     }

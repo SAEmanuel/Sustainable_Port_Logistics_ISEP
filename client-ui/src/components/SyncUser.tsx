@@ -58,7 +58,7 @@ export default function SyncUser() {
                 });
 
                 const payloadOEM = {
-                    name: user.name,
+                    name: userData.name,
                     auth0UserId: user.sub,
                     email: user.email,
                     role: userData.role || "NoRole",

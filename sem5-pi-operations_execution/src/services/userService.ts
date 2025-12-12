@@ -66,6 +66,7 @@ export default class UserService implements IUserService {
             user.role = userDTO.role as Role;
             user.isActive = userDTO.isActive as boolean;
             user.isEliminated = userDTO.isEliminated as boolean;
+            user.name = userDTO.name as string;
 
             const userSaved = await this.userRepo.save(user);
             if (!userSaved) {
