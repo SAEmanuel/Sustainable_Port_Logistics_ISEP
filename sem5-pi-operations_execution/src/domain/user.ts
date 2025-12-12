@@ -69,7 +69,7 @@ export class User extends AggregateRoot<UserProps> {
     }
 
     public static create(props: UserProps, id?: UniqueEntityID): Result<User> {
-        console.log("USER.CREATE INPUT:", props);
+        //console.log("USER.CREATE INPUT:", props);
         const guardedProps = [
             {argument: props.name, argumentName: 'name'},
             {argument: props.email, argumentName: 'email'},
