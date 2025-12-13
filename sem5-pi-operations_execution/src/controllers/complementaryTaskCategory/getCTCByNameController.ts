@@ -15,13 +15,14 @@ export default class GetCTCByNameController extends BaseController {
         super();
     }
 
-    protected async executeImpl(): Promise<void> {
+    protected async executeImpl(): Promise<any> {
         const name = this.req.query.name as string;
 
         try {
             const result = await this.ctcService.getByNameAsync(name);
 
-            this.ok(this.res, result);
+            return this.ok(this.res, result.getValue());
+
         } catch (e) {
 
             if (e instanceof BusinessRuleValidationError) {
@@ -30,13 +31,12 @@ export default class GetCTCByNameController extends BaseController {
                     details: e.details
                 });
 
-                this.clientError(e.message);
-                return;
+                return this.clientError(e.message);
             }
 
             this.logger.error("Unexpected error getting CTC by name", { e });
 
-            this.fail("Internal server error");
+            return this.fail("Internal server error");
         }
     }
 }

@@ -3,9 +3,46 @@ POST http://localhost:3000/api/complementary-task-categories
 Content-Type: application/json
 
 {
-  "code": "CTC003",
+  "code": "CTC002",
   "name": "Onboard Security Check",
   "description": "Security inspection performed onboard the vessel",
-  "category": "Safety and Securityw",
+  "category": "Safety and Security",
   "defaultDuration": 60
 }
+
+
+
+###
+PUT http://localhost:3000/api/complementary-task-categories/CTC001
+Content-Type: application/json
+
+{
+  "name": "Onboard Security Check - Updated",
+  "description": "Updated security inspection description",
+  "category": "Safety and Security",
+  "defaultDuration": 90
+}
+
+
+###
+GET http://localhost:3000/api/complementary-task-categories/CTC001
+
+
+###
+GET http://localhost:3000/api/complementary-task-categories/search/name?name=Onboard Security Check
+
+
+###
+GET http://localhost:3000/api/complementary-task-categories/search/description?description=Security inspection
+
+
+###
+GET http://localhost:3000/api/complementary-task-categories/search/category?category=Safety and Security
+
+
+###
+PATCH http://localhost:3000/api/complementary-task-categories/CTC001/deactivate
+
+
+###
+PATCH http://localhost:3000/api/complementary-task-categories/CTC001/activate

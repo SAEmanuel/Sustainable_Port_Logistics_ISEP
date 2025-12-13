@@ -17,13 +17,13 @@ export default class DeactivateComplementaryTaskCategoryController
         super();
     }
 
-    protected async executeImpl(): Promise<void> {
-        try {
-            const code = this.req.params.code;
+    protected async executeImpl(): Promise<any> {
+        const code = this.req.params.code;
 
+        try {
             const result = await this.ctcService.deactivateAsync(code);
 
-            this.ok(this.res, result);
+            return this.ok(this.res, result.getValue());
 
         } catch (e) {
 
@@ -33,12 +33,15 @@ export default class DeactivateComplementaryTaskCategoryController
                     details: e.details
                 });
 
-                this.clientError(e.message);
-                return;
+                return this.clientError(e.message);
             }
 
-            this.logger.error("Unexpected error deactivating ComplementaryTaskCategory", { e });
-            this.fail("Internal server error");
+            this.logger.error(
+                "Unexpected error deactivating ComplementaryTaskCategory",
+                { e }
+            );
+
+            return this.fail("Internal server error");
         }
     }
 }

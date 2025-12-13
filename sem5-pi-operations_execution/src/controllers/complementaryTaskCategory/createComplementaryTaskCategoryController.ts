@@ -17,14 +17,13 @@ export default class CreateComplementaryTaskCategoryController
         super();
     }
 
-    protected async executeImpl(): Promise<void> {
+    protected async executeImpl(): Promise<any> {
         const dto = this.req.body as IComplementaryTaskCategoryDTO;
 
         try {
-            const created = await this.ctcService.createAsync(dto);
+            const result = await this.ctcService.createAsync(dto);
 
-            this.ok(this.res, created);
-            return;
+            return this.ok(this.res, result.getValue());
 
         } catch (e) {
 
@@ -34,13 +33,15 @@ export default class CreateComplementaryTaskCategoryController
                     details: e.details
                 });
 
-                this.clientError(e.message);
-                return;
+                return this.clientError(e.message);
             }
 
-            this.logger.error("Unexpected error creating ComplementaryTaskCategory", { e });
+            this.logger.error(
+                "Unexpected error creating ComplementaryTaskCategory",
+                { e }
+            );
 
-            this.fail("Internal server error");
+            return this.fail("Internal server error");
         }
     }
 }

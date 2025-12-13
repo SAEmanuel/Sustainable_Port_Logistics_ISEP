@@ -16,31 +16,31 @@ export default class ActivateComplementaryTaskCategoryController
         super();
     }
 
-    protected async executeImpl(): Promise<void> {
+    protected async executeImpl(): Promise<any> {
         const code = this.req.params.code;
 
         try {
-            const dto = await this.ctcService.activateAsync(code);
+            const result = await this.ctcService.activateAsync(code);
 
-            this.ok(this.res, dto);
-            return;
+            return this.ok(this.res, result.getValue());
 
         } catch (e) {
 
             if (e instanceof BusinessRuleValidationError) {
-                this.logger.warn("Business rule violation", {
+                this.logger.warn("Business rule violation on activate", {
                     message: e.message,
                     details: e.details
                 });
 
-                this.clientError(e.message);
-                return;
+                return this.clientError(e.message);
             }
 
-            this.logger.error("Unexpected error activating category", { e });
+            this.logger.error("Unexpected error activating ComplementaryTaskCategory", {
+                code,
+                e
+            });
 
-            this.fail("Internal server error");
-            return;
+            return this.fail("Internal server error");
         }
     }
 }

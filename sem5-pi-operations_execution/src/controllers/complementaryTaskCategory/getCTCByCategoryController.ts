@@ -1,13 +1,12 @@
-import IComplementaryTaskCategoryService from "../../services/IServices/IComplementaryTaskCategoryService";
-import { BaseController } from "../../core/infra/BaseController";
 import { Inject, Service } from "typedi";
+import { BaseController } from "../../core/infra/BaseController";
+import IComplementaryTaskCategoryService from "../../services/IServices/IComplementaryTaskCategoryService";
 import { Logger } from "winston";
-import { IComplementaryTaskCategoryDTO } from "../../dto/IComplementaryTaskCategoryDTO";
 import { BusinessRuleValidationError } from "../../core/logic/BusinessRuleValidationError";
+import {Category, CategoryFactory} from "../../domain/complementaryTaskCategory/category";
 
 @Service()
-export default class CreateComplementaryTaskCategoryController
-    extends BaseController {
+export default class GetCTCByCategoryController extends BaseController {
 
     constructor(
         @Inject("ComplementaryTaskCategoryService")
@@ -17,26 +16,32 @@ export default class CreateComplementaryTaskCategoryController
         super();
     }
 
-    protected async executeImpl(): Promise<void> {
-        const dto = this.req.body as IComplementaryTaskCategoryDTO;
+    protected async executeImpl(): Promise<any> {
+        const category = this.req.query.category as Category;
 
         try {
-            const result = await this.ctcService.createAsync(dto);
-            this.ok(this.res, result);
+            const result = await this.ctcService.getByCategoryAsync(CategoryFactory.fromString(category));
+
+            return this.ok(this.res, result.getValue());
+
         } catch (e) {
 
             if (e instanceof BusinessRuleValidationError) {
-                this.logger.warn("Business rule violation on create CTC", {
+                this.logger.warn("Business rule violation getting CTC by category", {
                     message: e.message,
-                    details: e.details
+                    details: e.details,
+                    category
                 });
 
-                this.clientError(e.message);
-                return;
+                return this.clientError(e.message);
             }
 
-            this.logger.error("Unexpected error creating ComplementaryTaskCategory", { e });
-            this.fail("Internal server error");
+            this.logger.error("Unexpected error getting CTC by category", {
+                category,
+                error: e
+            });
+
+            return this.fail("Internal server error");
         }
     }
 }

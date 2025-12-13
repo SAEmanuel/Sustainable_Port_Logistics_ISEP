@@ -15,26 +15,31 @@ export default class GetCTCByDescriptionController extends BaseController {
         super();
     }
 
-    protected async executeImpl(): Promise<void> {
+    protected async executeImpl(): Promise<any> {
         const description = this.req.query.description as string;
 
         try {
             const result = await this.ctcService.getByDescriptionAsync(description);
-            this.ok(this.res, result.getValue());
+
+            return this.ok(this.res, result.getValue());
 
         } catch (e) {
 
             if (e instanceof BusinessRuleValidationError) {
                 this.logger.warn("Business rule violation on getByDescription", {
-                    message: e.message
+                    message: e.message,
+                    details: e.details
                 });
 
-                this.clientError({ message: e.message });
-                return;
+                return this.clientError(e.message);
             }
 
-            this.logger.error("Unexpected error fetching categories by description", { e });
-            this.fail("Internal server error");
+            this.logger.error(
+                "Unexpected error fetching categories by description",
+                { e }
+            );
+
+            return this.fail("Internal server error");
         }
     }
 }

@@ -17,15 +17,14 @@ export default class UpdateComplementaryTaskCategoryController
         super();
     }
 
-    protected async executeImpl(): Promise<void> {
+    protected async executeImpl(): Promise<any> {
         const code = this.req.params.code;
         const dto = this.req.body as IComplementaryTaskCategoryDTO;
 
         try {
-            const updated = await this.ctcService.updateAsync(code, dto);
+            const result = await this.ctcService.updateAsync(code, dto);
 
-            this.ok(this.res, updated);
-            return;
+            return this.ok(this.res, result.getValue());
 
         } catch (e) {
 
@@ -36,8 +35,7 @@ export default class UpdateComplementaryTaskCategoryController
                     code
                 });
 
-                this.clientError(e.message);
-                return;
+                return this.clientError(e.message);
             }
 
             this.logger.error("Unexpected error updating ComplementaryTaskCategory", {
@@ -45,7 +43,7 @@ export default class UpdateComplementaryTaskCategoryController
                 error: e
             });
 
-            this.fail("Internal server error");
+            return this.fail("Internal server error");
         }
     }
 }
