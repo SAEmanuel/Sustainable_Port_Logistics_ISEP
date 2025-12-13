@@ -209,7 +209,18 @@ Nos termos do RGPD e da legislação nacional de proteção de dados, os titular
 
 O exercício destes direitos pode ser solicitado através dos contactos indicados na secção 7. Em regra, os pedidos são tratados sem custos para o titular, salvo quando sejam manifestamente infundados ou excessivos, casos em que poderá ser cobrada uma taxa razoável ou recusado o pedido, nos termos do RGPD.
 
-Em determinadas situações, o exercício de alguns direitos pode ser limitado, por exemplo, quando esteja em causa o cumprimento de obrigações legais, a proteção de segredos comerciais ou direitos de terceiros, ou a existência de deveres de segredo legalmente impostos ao responsável pelo tratamento ou ao subcontratante.
+6.1. Exercício de direitos por titulares que não utilizam diretamente a Plataforma
+
+O disposto nesta secção aplica-se tanto a utilizadores registados como a titulares de dados cujos dados foram introduzidos na Plataforma de forma indireta (por exemplo, membros de tripulação, passageiros, contactos de entidades externas ou outros intervenientes nas operações portuárias) e que não possuem conta de acesso à aplicação.
+
+Os titulares não utilizadores que pretendam exercer os seus direitos de acesso, retificação ou apagamento devem contactar o Operador através dos contactos indicados na secção 7, indicando, na medida do possível:
+- Os seus dados de identificação básicos (por exemplo, nome completo, nacionalidade);
+- O contexto em que consideram que os seus dados foram tratados na Plataforma (por exemplo, identificação do navio, data aproximada da escala, agente de navegação ou entidade com quem se relacionam);
+- O tipo de pedido que pretendem formular (acesso, retificação, apagamento, limitação ou oposição) e uma descrição sucinta do respetivo fundamento.
+
+Sempre que razoavelmente necessário para proteger a segurança e a confidencialidade dos dados, o Operador poderá solicitar informações adicionais para confirmar a identidade do titular ou para clarificar o âmbito do pedido, em conformidade com o RGPD.
+
+Nos casos em que o tratamento decorra de obrigações legais específicas ou do exercício de funções de interesse público ou autoridade pública, o Operador poderá ter de manter determinados dados, informando o titular dos motivos pelos quais não é possível o apagamento imediato ou integral dos mesmos, bem como da possibilidade de apresentar reclamação à autoridade de controlo competente.
 
 7. Contactos e reclamações
 Para qualquer questão relacionada com a proteção de dados pessoais ou para exercer os direitos referidos na secção anterior, os titulares podem contactar:
@@ -447,7 +458,18 @@ Under the GDPR and applicable national data protection laws, data subjects have,
 
 These rights can be exercised using the contact details set out in section 7. As a rule, requests are handled free of charge, unless they are manifestly unfounded or excessive, in which case a reasonable fee may be charged or the request refused in accordance with the GDPR.
 
-In certain situations, the exercise of some rights may be restricted, for example where necessary to comply with overriding legal obligations, protect trade secrets or the rights of third parties, or where a legal duty of confidentiality applies to the controller or processor.
+6.1. Exercising rights by individuals who do not use the Platform directly
+
+The provisions in this section apply both to registered users and to individuals whose personal data have been entered into the Platform indirectly (for example, vessel crew members, passengers, contact persons at external entities or other actors in port operations) and who do not have a user account on the application.
+
+Non-user data subjects wishing to exercise their rights of access, rectification or erasure should contact the Operator using the contact details provided in section 7 and, as far as possible, indicate:
+- Their basic identification data (for example, full name, nationality);
+- The context in which they believe their data may have been processed in the Platform (for example, vessel name, approximate date of call, shipping agent or company they are associated with);
+- The type of request they wish to make (access, rectification, erasure, restriction or objection) and a brief description of the underlying reasons.
+
+Where reasonably necessary to protect the security and confidentiality of personal data, the Operator may request additional information in order to confirm the data subject’s identity or to clarify the scope of the request, in line with the GDPR.
+
+In cases where processing is based on specific legal obligations or on the performance of tasks carried out in the public interest or in the exercise of official authority, the Operator may be required to retain certain data. In such situations, the data subject will be informed of the reasons why immediate or full erasure is not possible and of their right to lodge a complaint with the competent supervisory authority.
 
 7. Contacts and complaints
 For any questions related to personal data protection or to exercise the above-mentioned rights, data subjects may contact:
