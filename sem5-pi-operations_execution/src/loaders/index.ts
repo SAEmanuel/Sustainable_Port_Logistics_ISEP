@@ -12,16 +12,27 @@ export default async ({ expressApp }: { expressApp: express.Application }) => {
 
     dependencyInjectorLoader({
         schemas: [
-            { name: "userSchema", path: "../persistence/schemas/userSchema" }
+            { name: "userSchema", path: "../persistence/schemas/userSchema" },
+            { name: "complementaryTaskCategorySchema", path: "../persistence/schemas/complementaryTaskCategorySchema" }
         ],
         controllers: [
-            config.controllers.user
+            config.controllers.user,
+            config.controllers.complementaryTaskCategory.create,
+            config.controllers.complementaryTaskCategory.update,
+            config.controllers.complementaryTaskCategory.getByCode,
+            config.controllers.complementaryTaskCategory.getByName,
+            config.controllers.complementaryTaskCategory.getByDescription,
+            config.controllers.complementaryTaskCategory.getByCategory,
+            config.controllers.complementaryTaskCategory.activate,
+            config.controllers.complementaryTaskCategory.deactivate
         ],
         repos: [
-            config.repos.user
+            config.repos.user,
+            config.repos.complementaryTaskCategory
         ],
         services: [
-            config.services.user
+            config.services.user,
+            config.services.complementaryTaskCategory
         ]
     });
 

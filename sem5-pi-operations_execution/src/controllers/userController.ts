@@ -14,6 +14,7 @@ export default class UserController extends BaseController {
         super();
     }
 
+
     protected async executeImpl(): Promise<void> {
         const dto = this.req.body as IUserDTO;
 

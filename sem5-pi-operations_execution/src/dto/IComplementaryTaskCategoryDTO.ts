@@ -1,7 +1,11 @@
 import { Category } from "../domain/complementaryTaskCategory/category";
 
-export interface IComplementaryTaskCategoryDTO{
-    code:string,
-    category: Category,
-    duration: number
+export interface IComplementaryTaskCategoryDTO {
+    id?: string;
+    code: string;
+    category: Category;
+    name: string;
+    description: string;
+    defaultDuration: number | null;
+    isActive?: boolean;
 }

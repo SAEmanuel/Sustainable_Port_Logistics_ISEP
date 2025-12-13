@@ -1,37 +1,63 @@
-import { IComplementaryTaskCategoryPersistance } from '../../dataschema/IComplementaryTaskCategoryPersistance';
+import {IComplementaryTaskCategoryPersistence} from '../../dataschema/IComplementaryTaskCategoryPersistance';
 import mongoose from 'mongoose';
 
-const ComplementaryTaskCategory = new mongoose.Schema(
+const ComplementaryTaskCategorySchema = new mongoose.Schema(
     {
         domainId: {
             type: String,
-            unique: true
+            unique: true,
+            index: true,
+            required: true
         },
 
         code: {
             type: String,
-            required: [true, 'Please enter name'],
+            required: true,
             unique: true,
-            index: true,
+            index: true
         },
 
         category: {
             type: String,
-            lowercase: true,
-            unique: true,
-            index: true,
+            required: true,
+            index: true
         },
 
-        duration: {
+        name: {
+            type: String,
+            required: true
+        },
+
+        description: {
+            type: String,
+            required: true
+        },
+
+        defaultDuration: {
             type: Number,
-            required: false,
+            required: false
         },
 
+        isActive: {
+            type: Boolean,
+            required: true,
+            default: true
+        },
+
+        createdAt: {
+            type: Date,
+            required: true
+        },
+
+        updatedAt: {
+            type: Date,
+            required: false
+        }
     },
     {
         timestamps: false,
-        versionKey: false,
+        versionKey: false
     }
 );
 
-export default mongoose.model<IComplementaryTaskCategoryPersistance & mongoose.Document>('ComplementaryTaskCategory', ComplementaryTaskCategory);
+export default mongoose.model<IComplementaryTaskCategoryPersistence & mongoose.Document>('ComplementaryTaskCategory', ComplementaryTaskCategorySchema);

@@ -33,8 +33,13 @@ export abstract class BaseController {
         return res.sendStatus(201);
     }
 
-    public clientError (message?: string) {
-        return BaseController.jsonResponse(this.res, 400, message ? message : 'Unauthorized');
+    public clientError (error?: string | { message: string }) {
+        const message =
+            typeof error === "string"
+                ? error
+                : error?.message ?? "Bad request";
+
+        return BaseController.jsonResponse(this.res, 400, message);
     }
 
     public unauthorized (message?: string) {

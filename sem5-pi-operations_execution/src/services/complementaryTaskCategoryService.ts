@@ -6,88 +6,168 @@ import { ComplementaryTaskCategoryMap } from "../mappers/ComplementaryTaskCatego
 import { IComplementaryTaskCategoryDTO } from "../dto/IComplementaryTaskCategoryDTO";
 import { Result } from "../core/logic/Result";
 import { GenericAppError } from "../core/logic/AppError";
+import { Category } from "../domain/complementaryTaskCategory/category";
+import { Logger } from "winston";
 
 @Service()
-export default class ComplementaryTaskCategoryService implements IComplementaryTaskCategoryService {
+export default class ComplementaryTaskCategoryService
+    implements IComplementaryTaskCategoryService {
 
     constructor(
-        @Inject("ComplementaryTaskRepo") private complementaryTaskCategoryRepo: IComplementaryTaskCategoryRepo
+        @Inject("ComplementaryTaskCategoryRepo")
+        private repo: IComplementaryTaskCategoryRepo,
+
+        @Inject("ComplementaryTaskCategoryMap")
+        private categoryMap: ComplementaryTaskCategoryMap,
+
+        @Inject("logger")
+        private logger: Logger
     ) {}
 
-    public async createComplementaryTaskCategory(categoryDTO: IComplementaryTaskCategoryDTO): Promise<Result<IComplementaryTaskCategoryDTO>> {
-        try {
-            const categoryExists = await this.complementaryTaskCategoryRepo.findByCode(categoryDTO.code);
 
-            if (categoryExists) {
-                return Result.fail<IComplementaryTaskCategoryDTO>("Complementary task category with this code already exists.");
+    public async createAsync(dto: IComplementaryTaskCategoryDTO): Promise<Result<IComplementaryTaskCategoryDTO>> {
+
+        this.logger.info("Creating ComplementaryTaskCategory", {
+            code: dto.code
+        });
+
+        try {
+            const exists = await this.repo.findByCode(dto.code);
+
+            if (exists) {
+                this.logger.warn("ComplementaryTaskCategory already exists", {
+                    code: dto.code
+                });
+
+                return Result.fail<IComplementaryTaskCategoryDTO>(
+                    "Complementary task category already exists."
+                );
             }
 
             const categoryOrError = ComplementaryTaskCategory.create({
-                code: categoryDTO.code,
-                category: categoryDTO.category,
-                duration: categoryDTO.duration
+                code: dto.code,
+                name: dto.name,
+                description: dto.description,
+                category: dto.category,
+                defaultDuration: dto.defaultDuration ?? null,
+                isActive: true,
+                createdAt: new Date(),
+                updatedAt: null
             });
 
             if (categoryOrError.isFailure) {
-                return Result.fail<IComplementaryTaskCategoryDTO>(String(categoryOrError.errorValue()));
+                this.logger.warn("Domain validation failed on create", {
+                    code: dto.code,
+                    reason: categoryOrError.errorValue()
+                });
+
+                return Result.fail<IComplementaryTaskCategoryDTO>(
+                    String(categoryOrError.errorValue())
+                );
             }
 
-            const category = categoryOrError.getValue();
-            const categorySaved = await this.complementaryTaskCategoryRepo.save(category);
+            const saved = await this.repo.save(categoryOrError.getValue());
 
-            if (!categorySaved) {
-                return Result.fail<IComplementaryTaskCategoryDTO>("Error saving complementary task category.");
+            if (!saved) {
+                this.logger.error("Failed to persist ComplementaryTaskCategory", {
+                    code: dto.code
+                });
+
+                return Result.fail<IComplementaryTaskCategoryDTO>(
+                    "Error saving complementary task category."
+                );
             }
 
-            const categoryDTOSaved = ComplementaryTaskCategoryMap.toDTO(categorySaved);
-            return Result.ok<IComplementaryTaskCategoryDTO>(categoryDTOSaved);
+            this.logger.info("ComplementaryTaskCategory created successfully", {
+                code: dto.code
+            });
+
+            return Result.ok(
+                this.categoryMap.toDTO(saved)
+            );
 
         } catch (e) {
+            this.logger.error("Unexpected error creating category", { e });
+
             return Result.fail<IComplementaryTaskCategoryDTO>(
                 String(new GenericAppError.UnexpectedError(e).errorValue())
             );
         }
     }
 
-    public async updateComplementaryTaskCategory(categoryDTO: IComplementaryTaskCategoryDTO): Promise<Result<IComplementaryTaskCategoryDTO>> {
+
+    public async updateAsync(code: string, dto: IComplementaryTaskCategoryDTO): Promise<Result<IComplementaryTaskCategoryDTO>> {
+
+        this.logger.info("Updating ComplementaryTaskCategory", { code });
+
         try {
-            const category = await this.complementaryTaskCategoryRepo.findByCode(categoryDTO.code);
+            const category = await this.repo.findByCode(code);
 
             if (!category) {
-                return Result.fail<IComplementaryTaskCategoryDTO>("Complementary task category not found.");
+                this.logger.warn("Category not found for update", { code });
+
+                return Result.fail<IComplementaryTaskCategoryDTO>(
+                    "Complementary task category not found."
+                );
             }
 
-            category.category = categoryDTO.category;
-            category.duration = categoryDTO.duration;
+            category.changeDetails(
+                dto.name,
+                dto.description,
+                dto.defaultDuration ?? null,
+                dto.category
+            );
 
-            const categorySaved = await this.complementaryTaskCategoryRepo.save(category);
+            const saved = await this.repo.save(category);
 
-            if (!categorySaved) {
-                return Result.fail<IComplementaryTaskCategoryDTO>("Error updating complementary task category.");
+            if (!saved) {
+                this.logger.error("Failed to update ComplementaryTaskCategory", {
+                    code
+                });
+
+                return Result.fail<IComplementaryTaskCategoryDTO>(
+                    "Error updating complementary task category."
+                );
             }
 
-            const categoryDTOSaved = ComplementaryTaskCategoryMap.toDTO(categorySaved);
-            return Result.ok<IComplementaryTaskCategoryDTO>(categoryDTOSaved);
+            this.logger.info("ComplementaryTaskCategory updated", { code });
+
+            return Result.ok(
+                this.categoryMap.toDTO(saved)
+            );
 
         } catch (e) {
+            this.logger.error("Unexpected error updating category", { code, e });
+
             return Result.fail<IComplementaryTaskCategoryDTO>(
                 String(new GenericAppError.UnexpectedError(e).errorValue())
             );
         }
     }
 
-    public async getComplementaryTaskCategory(code: string): Promise<Result<IComplementaryTaskCategoryDTO>> {
+
+    public async getByCodeAsync(code: string): Promise<Result<IComplementaryTaskCategoryDTO>> {
+
+        this.logger.debug("Fetching ComplementaryTaskCategory by code", { code });
+
         try {
-            const category = await this.complementaryTaskCategoryRepo.findByCode(code);
+            const category = await this.repo.findByCode(code);
 
             if (!category) {
-                return Result.fail<IComplementaryTaskCategoryDTO>(`Complementary task category not found for code: ${code}`);
+                this.logger.warn("Category not found", { code });
+
+                return Result.fail<IComplementaryTaskCategoryDTO>(
+                    "Complementary task category not found."
+                );
             }
 
-            const categoryDTO = ComplementaryTaskCategoryMap.toDTO(category);
-            return Result.ok<IComplementaryTaskCategoryDTO>(categoryDTO);
+            return Result.ok(
+                this.categoryMap.toDTO(category)
+            );
 
         } catch (e) {
+            this.logger.error("Unexpected error fetching category", { code, e });
+
             return Result.fail<IComplementaryTaskCategoryDTO>(
                 String(new GenericAppError.UnexpectedError(e).errorValue())
             );
@@ -95,13 +175,154 @@ export default class ComplementaryTaskCategoryService implements IComplementaryT
     }
 
 
-    public async getTotalCategories(): Promise<Result<number>> {
+    public async getByNameAsync(name: string): Promise<Result<IComplementaryTaskCategoryDTO[]>> {
+
+        this.logger.debug("Fetching categories by name", { name });
+
         try {
-            const total = await this.complementaryTaskCategoryRepo.getTotalCategories();
-            return Result.ok<number>(total); // <-- wrap in Result.ok
+            const categories = await this.repo.findByName(name);
+            return Result.ok(categories.map(c => this.categoryMap.toDTO(c)));
         } catch (e) {
-            console.error("Error getting total categories:", e);
-            return Result.fail<number>("Failed to get total categories");
+            this.logger.error("Error fetching categories by name", { name, e });
+
+            return Result.fail<IComplementaryTaskCategoryDTO[]>(
+                String(new GenericAppError.UnexpectedError(e).errorValue())
+            );
+        }
+    }
+
+    public async getByDescriptionAsync(description: string): Promise<Result<IComplementaryTaskCategoryDTO[]>> {
+
+        this.logger.debug("Fetching categories by description", { description });
+
+        try {
+            const categories = await this.repo.findByDescription(description);
+            return Result.ok(categories.map(c => this.categoryMap.toDTO(c)));
+        } catch (e) {
+            this.logger.error("Error fetching categories by description", {
+                description,
+                e
+            });
+
+            return Result.fail<IComplementaryTaskCategoryDTO[]>(
+                String(new GenericAppError.UnexpectedError(e).errorValue())
+            );
+        }
+    }
+
+    public async getByCategoryAsync(category: Category): Promise<Result<IComplementaryTaskCategoryDTO[]>> {
+
+        this.logger.debug("Fetching categories by category", { category });
+
+        try {
+            const categories = await this.repo.findByCategory(category);
+            return Result.ok(categories.map(c => this.categoryMap.toDTO(c)));
+        } catch (e) {
+            this.logger.error("Error fetching categories by category", {
+                category,
+                e
+            });
+
+            return Result.fail<IComplementaryTaskCategoryDTO[]>(
+                String(new GenericAppError.UnexpectedError(e).errorValue())
+            );
+        }
+    }
+
+
+    public async activateAsync(code: string): Promise<Result<IComplementaryTaskCategoryDTO>> {
+
+        this.logger.info("Activating ComplementaryTaskCategory", { code });
+
+        try {
+            const category = await this.repo.findByCode(code);
+
+            if (!category) {
+                this.logger.warn("Category not found for activation", { code });
+
+                return Result.fail<IComplementaryTaskCategoryDTO>(
+                    "Complementary task category not found."
+                );
+            }
+
+            category.activate();
+            const saved = await this.repo.save(category);
+
+            if (!saved) {
+                this.logger.error("Failed to activate category", { code });
+
+                return Result.fail<IComplementaryTaskCategoryDTO>(
+                    "Error activating complementary task category."
+                );
+            }
+
+            return Result.ok(
+                this.categoryMap.toDTO(saved)
+            );
+
+        } catch (e) {
+            this.logger.error("Unexpected error activating category", { code, e });
+
+            return Result.fail<IComplementaryTaskCategoryDTO>(
+                String(new GenericAppError.UnexpectedError(e).errorValue())
+            );
+        }
+    }
+
+    public async deactivateAsync(code: string): Promise<Result<IComplementaryTaskCategoryDTO>> {
+
+        this.logger.info("Deactivating ComplementaryTaskCategory", { code });
+
+        try {
+            const category = await this.repo.findByCode(code);
+
+            if (!category) {
+                this.logger.warn("Category not found for deactivation", { code });
+
+                return Result.fail<IComplementaryTaskCategoryDTO>(
+                    "Complementary task category not found."
+                );
+            }
+
+            category.deactivate();
+            const saved = await this.repo.save(category);
+
+            if (!saved) {
+                this.logger.error("Failed to deactivate category", { code });
+
+                return Result.fail<IComplementaryTaskCategoryDTO>(
+                    "Error deactivating complementary task category."
+                );
+            }
+
+            return Result.ok(
+                this.categoryMap.toDTO(saved)
+            );
+
+        } catch (e) {
+            this.logger.error("Unexpected error deactivating category", {
+                code,
+                e
+            });
+
+            return Result.fail<IComplementaryTaskCategoryDTO>(
+                String(new GenericAppError.UnexpectedError(e).errorValue())
+            );
+        }
+    }
+
+    public async getTotalCategoriesAsync(): Promise<Result<number>> {
+        this.logger.debug("Fetching total number of ComplementaryTaskCategories");
+
+        try {
+            const total = await this.repo.getTotalCategories();
+            return Result.ok(total);
+        } catch (e) {
+            this.logger.error("Error fetching total categories", { e });
+
+            return Result.fail<number>(
+                String(new GenericAppError.UnexpectedError(e).errorValue())
+            );
         }
     }
 }

@@ -37,19 +37,61 @@ export default {
         prefix: "/api",
     },
 
-    operationsApiUrl: process.env.OPERATIONS_URL || "",
-    planningApiUrl: process.env.PLANNING_URL || "",
-    webApiUrl: process.env.WEBAPI_URL || "",
-
     controllers: {
-        user: { name: "UserController", path: "../controllers/userController" }
+        user: {
+            name: "UserController",
+            path: "../controllers/userController"
+        },
+
+        complementaryTaskCategory: {
+            create: {
+                name: "CreateComplementaryTaskCategoryController",
+                path: "../controllers/complementaryTaskCategory/createComplementaryTaskCategoryController"
+            },
+            update: {
+                name: "UpdateComplementaryTaskCategoryController",
+                path: "../controllers/complementaryTaskCategory/updateComplementaryTaskCategoryController"
+            },
+            getByCode: {
+                name: "GetCTCByCodeController",
+                path: "../controllers/complementaryTaskCategory/getCTCByCodeController"
+            },
+            getByName: {
+                name: "GetCTCByNameController",
+                path: "../controllers/complementaryTaskCategory/getCTCByNameController"
+            },
+            getByDescription: {
+                name: "GetCTCByDescriptionController",
+                path: "../controllers/complementaryTaskCategory/getCTCByDescriptionController"
+            },
+            getByCategory: {
+                name: "GetCTCByCategoryController",
+                path: "../controllers/complementaryTaskCategory/getCTCByCategoryController"
+            },
+            activate: {
+                name: "ActivateComplementaryTaskCategoryController",
+                path: "../controllers/complementaryTaskCategory/activateComplementaryTaskCategoryController"
+            },
+            deactivate: {
+                name: "DeactivateComplementaryTaskCategoryController",
+                path: "../controllers/complementaryTaskCategory/deactivateComplementaryTaskCategoryController"
+            }
+        }
     },
 
     repos: {
-        user: { name: "UserRepo", path: "../repos/userRepo" }
+        user: { name: "UserRepo", path: "../repos/userRepo" },
+        complementaryTaskCategory: {
+            name: "ComplementaryTaskCategoryRepo",
+            path: "../repos/complementaryTaskCategoryRepo"
+        }
     },
 
     services: {
-        user: { name: "UserService", path: "../services/userService" }
+        user: { name: "UserService", path: "../services/userService" },
+        complementaryTaskCategory: {
+            name: "ComplementaryTaskCategoryService",
+            path: "../services/complementaryTaskCategoryService"
+        }
     }
 };

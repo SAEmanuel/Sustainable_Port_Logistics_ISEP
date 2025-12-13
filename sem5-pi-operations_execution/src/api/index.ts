@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import userRoute from "./routes/userRoute";
+import complementaryTaskCategoryRoute from "./routes/complementaryTaskCategoryRoute";
 
 export default () => {
     const app = Router();
@@ -10,5 +11,6 @@ export default () => {
     });
 
     userRoute(app);
+    complementaryTaskCategoryRoute(app);
     return app;
 }

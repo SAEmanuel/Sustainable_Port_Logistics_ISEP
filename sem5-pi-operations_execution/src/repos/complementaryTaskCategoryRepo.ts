@@ -1,58 +1,164 @@
+import {Inject, Service} from "typedi";
+import {Model, Document} from "mongoose";
 import IComplementaryTaskCategoryRepo from "../services/IRepos/IComplementaryTaskCategoryRepo";
-import { Inject, Service } from "typedi";
-import { ComplementaryTaskCategory } from "../domain/complementaryTaskCategory/complementaryTaskCategory";
-import { IComplementaryTaskCategoryPersistance } from "../dataschema/IComplementaryTaskCategoryPersistance"
-import { Document, Model } from "mongoose";
-import { ComplementaryTaskCategoryMap } from "../mappers/ComplementaryTaskCategoryMap";
+import {ComplementaryTaskCategory} from "../domain/complementaryTaskCategory/complementaryTaskCategory";
+import {IComplementaryTaskCategoryPersistence} from "../dataschema/IComplementaryTaskCategoryPersistance";
+import {ComplementaryTaskCategoryMap} from "../mappers/ComplementaryTaskCategoryMap";
+import {Category} from "../domain/complementaryTaskCategory/category";
+import {User} from "../domain/user/user";
 
 @Service()
 export default class ComplementaryTaskCategoryRepo implements IComplementaryTaskCategoryRepo {
-    constructor(
-        @Inject("complementaryTaskCategorySchema") private complementaryTaskCategorySchema: Model<IComplementaryTaskCategoryPersistance & Document>,
-        @Inject("logger") private logger: any
-    ) {}
 
-    public async exists(category: ComplementaryTaskCategory): Promise<boolean> {
-        const id = category.id.toString();
-        const record = await this.complementaryTaskCategorySchema.findOne({ domainId: id });
+    constructor(
+        @Inject("complementaryTaskCategorySchema")
+        private complementaryTaskCategorySchema: Model<IComplementaryTaskCategoryPersistence & Document>,
+
+        @Inject("ComplementaryTaskCategoryMap")
+        private categoryMap: ComplementaryTaskCategoryMap,
+
+        @Inject("logger")
+        private logger: any
+    ) {
+    }
+
+    public async exists(ctc: ComplementaryTaskCategory): Promise<boolean> {
+        const record = await this.complementaryTaskCategorySchema.findOne({ domainId: ctc.id.toString() });
         return !!record;
     }
 
     public async save(category: ComplementaryTaskCategory): Promise<ComplementaryTaskCategory | null> {
+
+        const rawPersistence = this.categoryMap.toPersistence(category);
+
+        this.logger.debug("Saving ComplementaryTaskCategory", {
+            code: category.code
+        });
+
         try {
-            const rawCategory = ComplementaryTaskCategoryMap.toPersistence(category);
-            const existing = await this.complementaryTaskCategorySchema.findOne({ code: rawCategory.code });
-            let persistedDoc;
+            const existing =
+                await this.complementaryTaskCategorySchema.findOne({
+                    domainId: rawPersistence.domainId
+                });
 
             if (existing) {
-                existing.category = rawCategory.category;
-                existing.duration = rawCategory.duration;
+                existing.set(rawPersistence);
                 await existing.save();
-                persistedDoc = existing;
-            } else {
-                const created = await this.complementaryTaskCategorySchema.create(rawCategory);
-                persistedDoc = created;
+
+                this.logger.info("ComplementaryTaskCategory updated", {
+                    code: category.code
+                });
+
+                return this.categoryMap.toDomain(existing);
             }
 
-            return ComplementaryTaskCategoryMap.toDomain(persistedDoc);
-        } catch (err) {
-            this.logger.error("Error in ComplementaryTaskCategoryRepo.save:", err);
-            throw err;
+            const created =
+                await this.complementaryTaskCategorySchema.create(
+                    rawPersistence
+                );
+
+            this.logger.info("ComplementaryTaskCategory created", {
+                code: category.code
+            });
+
+            return this.categoryMap.toDomain(created);
+
+        } catch (e) {
+            this.logger.error(
+                "Error saving ComplementaryTaskCategory",
+                {error: e}
+            );
+            return null;
         }
     }
 
+
     public async findByCode(code: string): Promise<ComplementaryTaskCategory | null> {
-        const categoryRecord = await this.complementaryTaskCategorySchema.findOne({ code });
-        return categoryRecord ? ComplementaryTaskCategoryMap.toDomain(categoryRecord) : null;
+
+        this.logger.debug("Finding ComplementaryTaskCategory by code", {
+            code
+        });
+
+        try {
+            const record = await this.complementaryTaskCategorySchema.findOne({code});
+
+            if (!record) {
+                this.logger.warn(
+                    "ComplementaryTaskCategory not found by code",
+                    {code}
+                );
+                return null;
+            }
+
+            return this.categoryMap.toDomain(record);
+
+        } catch (e) {
+            this.logger.error(
+                "Error finding ComplementaryTaskCategory by code",
+                {code, error: e}
+            );
+            return null;
+        }
+    }
+
+    public async findByName(name: string): Promise<ComplementaryTaskCategory[]> {
+
+        this.logger.debug("Finding ComplementaryTaskCategory by name", {
+            name
+        });
+
+        const records =
+            await this.complementaryTaskCategorySchema.find({
+                name: {$regex: name, $options: "i"}
+            });
+
+        return records
+            .map(r => this.categoryMap.toDomain(r))
+            .filter((c): c is ComplementaryTaskCategory => c !== null);
+    }
+
+    public async findByDescription(description: string): Promise<ComplementaryTaskCategory[]> {
+
+        this.logger.debug(
+            "Finding ComplementaryTaskCategory by description",
+            {description}
+        );
+
+        const records =
+            await this.complementaryTaskCategorySchema.find({
+                description: {$regex: description, $options: "i"}
+            });
+
+        return records
+            .map(r => this.categoryMap.toDomain(r))
+            .filter((c): c is ComplementaryTaskCategory => c !== null);
+    }
+
+    public async findByCategory(category: Category): Promise<ComplementaryTaskCategory[]> {
+
+        this.logger.debug(
+            "Finding ComplementaryTaskCategory by category",
+            {category}
+        );
+
+        const records = await this.complementaryTaskCategorySchema.find({category});
+
+        return records
+            .map(r => this.categoryMap.toDomain(r))
+            .filter((c): c is ComplementaryTaskCategory => c !== null);
     }
 
 
     public async getTotalCategories(): Promise<number> {
+        this.logger.debug("Counting ComplementaryTaskCategories");
+
         try {
-            const count = await this.complementaryTaskCategorySchema.countDocuments({});
-            return count;
-        } catch (err) {
-            this.logger.error("Error in ComplementaryTaskCategoryRepo.getTotalCategories:", err);
+            return await this.complementaryTaskCategorySchema.countDocuments();
+        } catch (e) {
+            this.logger.error(
+                "Error counting ComplementaryTaskCategories",
+                {error: e}
+            );
             return 0;
         }
     }

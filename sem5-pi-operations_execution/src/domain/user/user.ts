@@ -81,7 +81,9 @@ export class User extends AggregateRoot<UserProps> {
         const guardResult = Guard.againstNullOrUndefinedBulk(guardedProps);
 
         if (!guardResult.succeeded) {
-            return Result.fail<User>(guardResult.message)
+            return Result.fail<User>(
+                guardResult.message ?? "Invalid input"
+            )
         } else {
             const user = new User({
                 ...props

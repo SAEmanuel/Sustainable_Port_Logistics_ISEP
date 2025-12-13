@@ -1,6 +1,6 @@
 export const CTStatus = {
    Scheduled : "Scheduled",
-   Ongoing : "In Progress",
+   InProgress : "In Progress",
    Completed: "Completed"
 } as const;
 

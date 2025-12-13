@@ -1,6 +1,7 @@
 import { Container } from 'typedi';
 import Logger from './logger';
 import {UserMap} from "../mappers/UserMap";
+import {ComplementaryTaskCategoryMap} from "../mappers/ComplementaryTaskCategoryMap";
 
 interface SchemaConfig {
     name: string;
@@ -23,6 +24,7 @@ export default ({ schemas, controllers, repos, services }: DependencyInjectorInp
     try {
         Container.set("logger", Logger);
         Container.set("UserMap", new UserMap());
+        Container.set("ComplementaryTaskCategoryMap", new ComplementaryTaskCategoryMap());
 
         // Load schemas
         schemas.forEach((s: SchemaConfig) => {

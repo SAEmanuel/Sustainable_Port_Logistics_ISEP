@@ -1,19 +1,18 @@
 export const Category = {
-  SafetyAndSecurity: {
-    label: "Safety and Security",
-    sub: ["Onboard Security Check", "Customs Inspection"]
-  },
-  Maintenance: {
-    label: "Maintenance",
-    sub: ["Hull Repair", "Equipment Calibration"]
-  },
-  CleaningAndHousekeeping: {
-    label: "Cleaning and HouseKeeping",
-    sub: ["Deck Cleaning", "Waste Removal"]
-  }
+    SafetyAndSecurity: "Safety and Security",
+    Maintenance: "Maintenance",
+    CleaningAndHousekeeping: "Cleaning and Housekeeping"
 } as const;
 
-export type CategoryKey = keyof typeof Category;        
-export type Category = (typeof Category)[CategoryKey];    
-export type Subcategory =
-  (typeof Category)[CategoryKey]["sub"][number];           
+
+export type Category = typeof Category[keyof typeof Category];
+
+export class CategoryFactory {
+    static fromString(value: string): Category {
+        if (Object.values(Category).includes(value as Category)) {
+            return value as Category;
+        }
+
+        throw new Error(`Invalid Category: ${value}`);
+    }
+}
