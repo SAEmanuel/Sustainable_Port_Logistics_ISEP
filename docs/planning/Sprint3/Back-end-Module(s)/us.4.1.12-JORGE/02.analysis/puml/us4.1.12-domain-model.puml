@@ -1,0 +1,35 @@
+@startuml
+skinparam monochrome true
+skinparam shadowing false
+title Domain Model Excerpt – Incident Type Catalog
+
+class IncidentType <<Aggregate Root>> {
+  +code: IncidentTypeCode
+  +name: string
+  +description: string
+  +severity: Severity
+  +parentCode: IncidentTypeCode?  ' nullable for root nodes
+}
+
+class IncidentTypeCode <<Value Object>> {
+  +value: string  ' e.g., T-INC001
+}
+
+enum Severity {
+  Minor
+  Major
+  Critical
+}
+
+IncidentType "0..*" --> "0..1" IncidentType : parentCode
+
+IncidentType --> IncidentTypeCode
+IncidentType --> Severity
+
+note right of IncidentType
+- code is unique and immutable
+- parentCode must reference existing IncidentType (if set)
+- cycles are forbidden
+end note
+
+@enduml
