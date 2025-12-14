@@ -241,6 +241,8 @@ export default function AppLayout() {
                                                     return "role-badge--agent";
                                                 case Roles.ProjectManager:
                                                     return "role-badge--manager";
+                                                case Roles.PortOperationsSupervisor:
+                                                    return "role-badge--supervisor";
                                                 default:
                                                     return "role-badge--unknown";
                                             }

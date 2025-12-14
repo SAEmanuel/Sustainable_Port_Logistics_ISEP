@@ -28,6 +28,7 @@ const roleColor: Record<Role, string> = {
     [Roles.ShippingAgentRepresentative]: "#f3722c",
     [Roles.PortAuthorityOfficer]: "#2a9d8f",
     [Roles.ProjectManager]: "#9b59b6",
+    [Roles.PortOperationsSupervisor]: "#ded418",
 };
 
 const routeIcon: Record<string, JSX.Element> = {
@@ -46,7 +47,7 @@ const routeIcon: Record<string, JSX.Element> = {
     "/DRAdmin": <FiShuffle size={44} />,
 };
 
-function useAccessibleLinksByRole(t: (k: string) => string, role?: "Administrator" | "PortAuthorityOfficer" | "LogisticsOperator" | "ShippingAgentRepresentative" | "ProjectManager" | null | undefined) {
+function useAccessibleLinksByRole(t: (k: string) => string, role?: "Administrator" | "PortAuthorityOfficer" | "LogisticsOperator" | "ShippingAgentRepresentative" | "ProjectManager" | "PortOperationsSupervisor" | null | undefined) {
     return useMemo<LinkItem[]>(() => {
         if (!role) return [];
         const color = roleColor[role];
@@ -59,12 +60,18 @@ function useAccessibleLinksByRole(t: (k: string) => string, role?: "Administrato
                     { label: t("dashboard.staffMembers"), path: "/staff-members", color, icon: routeIcon["/staff-members"] },
                     { label: t("dashboard.port3d"), path: "/3dSecene", color, icon: routeIcon["/3dSecene"] },
                 );
-                L.push({ label: t("dashboard.dd"), path: "/DR", color, icon: routeIcon["/DR"] },);
+                L.push({ label: t("dashboard.dd"), path: "/datarights", color, icon: routeIcon["/DR"] },);
 
                 break;
             case Roles.ShippingAgentRepresentative:
                 L.push({ label: t("dashboard.vvn"), path: "/vvn", color, icon: routeIcon["/vvn"] });
-                L.push({ label: t("dashboard.dd"), path: "/DR", color, icon: routeIcon["/DR"] },);
+                L.push({ label: t("dashboard.dd"), path: "/datarights", color, icon: routeIcon["/DR"] },);
+
+                break;
+
+            case Roles.PortOperationsSupervisor:
+                L.push({ label: t("dashboard.ctc"), path: "/ctc", color, icon: routeIcon["/ctc"] },);
+                L.push({ label: t("dashboard.dd"), path: "/datarights", color, icon: routeIcon["/DR"] },);
 
                 break;
             case Roles.PortAuthorityOfficer:
@@ -75,13 +82,13 @@ function useAccessibleLinksByRole(t: (k: string) => string, role?: "Administrato
                 L.push({ label: t("dashboard.storage-areas"), path: "/storage-areas", color, icon: routeIcon["/storageArea"] });
                 L.push({ label: t("dashboard.sao"), path: "/sao", color, icon: routeIcon["/sao"] },);
                 L.push({ label: t("dashboard.port3d"), path: "/3dSecene", color, icon: routeIcon["/3dSecene"] },);
-                L.push({ label: t("dashboard.dd"), path: "/DR", color, icon: routeIcon["/DR"] },);
+                L.push({ label: t("dashboard.dd"), path: "/datarights", color, icon: routeIcon["/DR"] },);
 
                 break;
             case Roles.ProjectManager:
                 L.push({ label: t("dashboard.planning"), path: "/planning-scheduling", color, icon: routeIcon["/projects"] });
                 L.push({ label: t("dashboard.port3d"), path: "/3dSecene", color, icon: routeIcon["/3dSecene"] },);
-                L.push({ label: t("dashboard.dd"), path: "/DR", color, icon: routeIcon["/DR"] },);
+                L.push({ label: t("dashboard.dd"), path: "/datarights", color, icon: routeIcon["/DR"] },);
                 break;
 
 
@@ -92,6 +99,8 @@ function useAccessibleLinksByRole(t: (k: string) => string, role?: "Administrato
                 L.push({ label: t("dashboard.dd"), path: "/DR", color, icon: routeIcon["/DR"] },);
                 L.push({ label: t("dashboard.ddAdmin"), path: "/DRAdmin", color, icon: routeIcon["/DRAdmin"] },);
                 break;
+
+
         }
         return L;
     }, [role, t]);

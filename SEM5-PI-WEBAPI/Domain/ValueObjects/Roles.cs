@@ -6,5 +6,6 @@ public enum Roles
     LogisticsOperator,
     PortAuthorityOfficer,
     ProjectManager,
-    ShippingAgentRepresentative
+    ShippingAgentRepresentative,
+    PortOperationsSupervisor
 }

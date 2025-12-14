@@ -10,27 +10,24 @@ import { API_WEBAPI } from "../config/api.ts";
 export default function RoleLauncher() {
     const { t } = useTranslation();
     const { user: authUser, getAccessTokenSilently, isAuthenticated } = useAuth0();
-    const { user, setUser } = useAppStore(); // 'user' é o estado global vindo do backend
+    const { user, setUser } = useAppStore();
     const [open, setOpen] = useState(false);
     const [loading, setLoading] = useState(false);
     const menuRef = useRef<HTMLDivElement>(null);
     const navigate = useNavigate();
 
-    // 1. LÓGICA DE IMAGEM CORRIGIDA
-    // Tenta usar a imagem do Backend primeiro.
-    // Nota: O backend deve enviar a string "data:image/png;base64,..." pronta, 
-    // ou tens de adicionar o prefixo aqui se vier apenas em bytes puros.
+
     const avatar = useMemo(() => {
-        if (user?.picture) return user.picture; // Prioridade 1: Backend
-        if (authUser?.picture) return authUser.picture; // Prioridade 2: Auth0
+        if (user?.picture) return user.picture;
+        if (authUser?.picture) return authUser.picture;
         return null;
     }, [user, authUser]);
 
     const displayName = user?.name ?? authUser?.name ?? "User";
 
-    // 2. BUSCAR DADOS AO INICIAR (MOUNT)
+
     useEffect(() => {
-        // Se estiver autenticado e ainda não tivermos tentado buscar ou quisermos garantir frescura
+
         if (isAuthenticated && authUser?.email) {
             fetchUserFromBackend();
         }
@@ -65,14 +62,12 @@ export default function RoleLauncher() {
 
             const freshUser = await res.json();
 
-            // TRATAMENTO DA IMAGEM VINDA DO BACKEND
-            // Se o backend enviar bytes puros ou base64 sem cabeçalho,
-            // garante que está formatado para o <img src>
+
             if (freshUser.picture && !freshUser.picture.startsWith('http') && !freshUser.picture.startsWith('data:')) {
                 freshUser.picture = `data:image/png;base64,${freshUser.picture}`;
             }
 
-            setUser(freshUser); // Isto atualiza o estado global e força o re-render com a nova foto
+            setUser(freshUser);
             setLoading(false);
             return freshUser;
         } catch (err) {
@@ -88,6 +83,7 @@ export default function RoleLauncher() {
             case Roles.ShippingAgentRepresentative:
             case Roles.PortAuthorityOfficer:
             case Roles.ProjectManager:
+            case Roles.PortOperationsSupervisor:
                 navigate("/dashboard");
                 break;
             default:
@@ -147,7 +143,7 @@ export default function RoleLauncher() {
                             width: 32,
                             height: 32,
                             borderRadius: "50%",
-                            objectFit: "cover", // Garante que a imagem não fica distorcida
+                            objectFit: "cover",
                             opacity: loading ? 0.6 : 1,
                             cursor: loading ? "not-allowed" : "pointer",
                             border:

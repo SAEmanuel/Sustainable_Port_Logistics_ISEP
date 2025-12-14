@@ -91,6 +91,7 @@ export default function Home() {
             case Roles.LogisticsOperator:
             case Roles.ShippingAgentRepresentative:
             case Roles.ProjectManager:
+            case Roles.PortOperationsSupervisor:
                 navigate("/dashboard");
                 break;
             default:
