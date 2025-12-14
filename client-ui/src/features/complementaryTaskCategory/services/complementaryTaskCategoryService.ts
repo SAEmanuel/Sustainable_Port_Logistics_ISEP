@@ -16,6 +16,11 @@ export async function updateCTC(code: string, dto: UpdateComplementaryTaskCatego
     return mapToCTCDomain(res.data);
 }
 
+export async function getAllCTC(): Promise<ComplementaryTaskCategory[]> {
+    const res = await operationsApi.get("/api/complementary-task-categories");
+    return res.data.map(mapToCTCDomain);
+}
+
 
 export async function getCTCByCode(code: string): Promise<ComplementaryTaskCategory> {
     const res = await operationsApi.get(`/api/complementary-task-categories/${code}`);

@@ -27,8 +27,10 @@ import SAO from "../features/sao/pages/sao.tsx";
 import SAR from "../features/sar/pages/sar.tsx";
 import DR from "../features/dataRightsRequests/pages/DataRightsRequestsPage.tsx";
 import DRAdmin from "../features/dataRightsRequests/pages/AdminDataRightsRequestsPage";
-// IMPORTAÇÃO DA NOVA PÁGINA DE AGENDAMENTO
+
 import SchedulePage from "../features/scheduling/pages/SchedulePage.tsx";
+import ComplementaryTaskCategoryPage
+    from "../features/complementaryTaskCategory/pages/ComplementaryTaskCategoryPage.tsx";
 
 export const router = createBrowserRouter([
     {
@@ -60,7 +62,7 @@ export const router = createBrowserRouter([
                             },
                             {
                                 path: "datarights",
-                                element: <RequireRole roles={[Roles.Administrator, Roles.PortAuthorityOfficer,Roles.ProjectManager,Roles.ShippingAgentRepresentative, Roles.LogisticsOperator]} />,
+                                element: <RequireRole roles={[Roles.Administrator, Roles.PortAuthorityOfficer,Roles.ProjectManager,Roles.ShippingAgentRepresentative, Roles.LogisticsOperator, Roles.PortOperationsSupervisor]} />,
                                 children: [{ index: true, element: <DR /> }],
                             },
                             {
@@ -68,6 +70,13 @@ export const router = createBrowserRouter([
                                 element: <RequireRole roles={[Roles.Administrator]} />,
                                 children: [{ index: true, element: <DRAdmin /> }],
                             },
+
+                            {
+                                path: "ctc",
+                                element: <RequireRole roles={[Roles.PortOperationsSupervisor]} />,
+                                children: [{ index: true, element: <ComplementaryTaskCategoryPage /> }],
+                            },
+
                             {
                                 path: "3dSecene",
                                 element: (<RequireRole roles={[Roles.Administrator, Roles.PortAuthorityOfficer, Roles.ShippingAgentRepresentative, Roles.LogisticsOperator,  Roles.ProjectManager]}/>),

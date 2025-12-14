@@ -4,6 +4,8 @@ export const Roles = {
     LogisticsOperator: "LogisticsOperator",
     ShippingAgentRepresentative: "ShippingAgentRepresentative",
     ProjectManager: "ProjectManager",
+    PortOperationsSupervisor: "PortOperationsSupervisor"
+
 } as const;
 
 export type Role = typeof Roles[keyof typeof Roles];
