@@ -1,5 +1,5 @@
 import type { StaffMember, Schedule } from "../domain/staffMember";
-import type { UpdateStaffMemberRequest, CreateStaffMemberRequest } from "../dtos/staffMember";
+
 
 
 export function mapToStaffMemberDomain(apiResponse: any): StaffMember {

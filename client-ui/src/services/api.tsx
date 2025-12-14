@@ -86,6 +86,8 @@ function buildClient(baseURL: string) {
 
 const PLANNING_URL = import.meta.env.VITE_PLANNING_URL;
 const WEBAPI_URL = import.meta.env.VITE_WEBAPI_URL;
+const OPERATIONS_URL = import.meta.env.VITE_OPERATIONS_URL;
 
 export const planningApi = buildClient(PLANNING_URL);
 export const webApi = buildClient(WEBAPI_URL);
+export const operationsApi = buildClient(OPERATIONS_URL)
