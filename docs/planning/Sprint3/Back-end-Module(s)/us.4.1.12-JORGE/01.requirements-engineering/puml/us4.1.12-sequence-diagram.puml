@@ -1,0 +1,50 @@
+
+@startuml
+skinparam monochrome true
+skinparam shadowing false
+title System Sequence Diagram – Manage Incident Types
+
+actor "Port Authority Officer" as Officer
+boundary "Incident Types Management API" as System
+
+== List Root Incident Types ==
+Officer -> System : GET /api/incident-types?parentCode=null&search=&severity=
+System --> Officer : 200 OK\nBody: IncidentTypeDto[]
+
+== Expand Parent (Load Children) ==
+Officer -> System : GET /api/incident-types?parentCode={code}
+System --> Officer : 200 OK\nBody: IncidentTypeDto[]
+
+== Create Incident Type ==
+Officer -> System : POST /api/incident-types\nBody: CreateIncidentTypeDto(code,name,description,severity,parentCode?)
+alt Valid request
+  System --> Officer : 201 Created\nBody: IncidentTypeDto
+else Invalid data / constraints violated
+  System --> Officer : 400 Bad Request\nBody: ProblemDetails (validation)\n(e.g., invalid severity, missing fields, cycle)
+else Duplicate code
+  System --> Officer : 409 Conflict\nBody: ProblemDetails (code already exists)
+else Parent not found
+  System --> Officer : 404 Not Found\nBody: ProblemDetails (parentCode)
+end
+
+== Update Incident Type ==
+Officer -> System : PUT /api/incident-types/{code}\nBody: UpdateIncidentTypeDto(name?,description?,severity?,parentCode?)
+alt Valid update
+  System --> Officer : 200 OK\nBody: IncidentTypeDto (updated)
+else Incident type not found
+  System --> Officer : 404 Not Found\nBody: ProblemDetails
+else Invalid update / constraints violated
+  System --> Officer : 400 Bad Request\nBody: ProblemDetails (validation)\n(e.g., cycle, invalid severity)
+end
+
+== Delete Incident Type ==
+Officer -> System : DELETE /api/incident-types/{code}
+alt Deleted successfully
+  System --> Officer : 204 No Content
+else Incident type not found
+  System --> Officer : 404 Not Found\nBody: ProblemDetails
+else Deletion not allowed (e.g., has children / in use)
+  System --> Officer : 409 Conflict\nBody: ProblemDetails
+end
+
+@enduml
