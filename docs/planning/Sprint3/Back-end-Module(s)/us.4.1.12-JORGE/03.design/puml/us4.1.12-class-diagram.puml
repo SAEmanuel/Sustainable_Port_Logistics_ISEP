@@ -1,0 +1,68 @@
+@startuml
+skinparam monochrome true
+skinparam shadowing false
+title Class Diagram – US4.1.12 Manage Incident Types
+
+class IncidentType <<Aggregate Root>> {
+  - props: IncidentTypeProps
+  + id: UniqueEntityID
+  + code: string
+  + name: string
+  + description: string
+  + severity: Severity
+  + parentCode: string?
+  + createdAt: Date
+  + updatedAt: Date?
+  + changeName(name)
+  + changeDescription(desc)
+  + changeSeverity(severity)
+  + changeParent(parentCode?)
+  + clearParent()
+  + creat(props, id?)
+}
+
+class SeverityFactory <<Value Object Factory>> {
+  + fromString(value: string): Severity
+}
+
+interface IIncidentTypeService {
+  + createAsync(dto)
+  + updateAsync(code, dto)
+  + getByCode(code)
+  + getByName(name)
+  + getRootTypes()
+  + getDirectChilds(parentCode)
+  + getSubTreeFromParentNode(parentCode)
+}
+
+class IncidentTypeService <<Application Service>> implements IIncidentTypeService
+
+interface IIncidentTypeRepository {
+  + save(it)
+  + findByCode(code)
+  + findByName(name)
+  + getRootTypes()
+  + getDirectChilds(parentCode)
+  + getSubTreeFromParentNode(parentCode)
+}
+
+class IncidentTypeRepo <<Repository>> implements IIncidentTypeRepository
+
+class IncidentTypeMap <<Mapper>> {
+  + toDTO(domain): IIncidentTypeDTO
+  + toDomain(persistence): IncidentType
+  + toPersistence(domain): IIncidentTypePersistence
+}
+
+class "IncidentType Controllers" <<Controller>> {
+  + execute(req,res)
+}
+
+IncidentTypeService --> IIncidentTypeRepository
+IncidentTypeRepo --> IncidentTypeMap
+IncidentTypeService --> IncidentTypeMap
+IncidentTypeService --> IncidentType
+IncidentTypeService --> SeverityFactory
+"IncidentType Controllers" --> IIncidentTypeService
+
+@enduml

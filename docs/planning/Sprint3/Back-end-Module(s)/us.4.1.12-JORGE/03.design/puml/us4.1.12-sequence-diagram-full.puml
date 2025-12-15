@@ -1,0 +1,192 @@
+```plantuml
+@startuml
+skinparam monochrome true
+skinparam shadowing false
+title Sequence Diagram (Full) – US4.1.12 Manage Incident Types
+
+actor "Port Authority Officer" as Officer
+boundary "SPA" as SPA
+boundary "IncidentType Routes" as Routes
+control "IncidentType Controllers" as Ctrl
+control "IncidentTypeService" as Svc
+entity "IncidentTypeRepo" as Repo
+entity "IncidentTypeMap" as Map
+database "MongoDB (Mongoose)" as DB
+
+== Create Incident Type ==
+Officer -> SPA : Fill form + Submit
+SPA -> Routes : POST /api/incidentTypes\n(Create IncidentType DTO)
+Routes -> Ctrl : execute(req,res)
+Ctrl -> Svc : createAsync(dto)
+
+Svc -> Repo : findByCode(dto.code)
+Repo -> DB : findOne({code})
+DB --> Repo : record/null
+Repo --> Svc : IncidentType?/null
+
+alt code exists
+  Svc --> Ctrl : BusinessRuleValidationError(AlreadyExists)
+  Ctrl --> SPA : 400 Bad Request
+else code does not exist
+  opt dto.parentCode != null
+    Svc -> Repo : findByCode(dto.parentCode)
+    Repo -> DB : findOne({code: parentCode})
+    DB --> Repo : record/null
+    Repo --> Svc : parent?/null
+    alt parent not found
+      Svc --> Ctrl : BusinessRuleValidationError(NotFound parent)
+      Ctrl --> SPA : 400 Bad Request
+    end
+  end
+
+  Svc -> Map : (conceptual) severity parsing\nSeverityFactory.fromString(...)
+  Svc -> Svc : IncidentType.creat(props)
+
+  Svc -> Repo : save(incidentType)
+  Repo -> Map : toPersistence(incidentType)
+  Repo -> DB : create(persistence)
+  DB --> Repo : createdDoc
+  Repo -> Map : toDomain(createdDoc)
+  Repo --> Svc : IncidentType
+
+  Svc -> Map : toDTO(IncidentType)
+  Svc --> Ctrl : Result.ok(dto)
+  Ctrl --> SPA : 200 OK\nIncidentTypeDTO
+end
+
+== Update Incident Type ==
+Officer -> SPA : Edit + Submit
+SPA -> Routes : PUT /api/incidentTypes/{code}\n(Update IncidentType DTO)
+Routes -> Ctrl : execute(req,res)
+Ctrl -> Svc : updateAsync(code, dto)
+
+Svc -> Repo : findByCode(code)
+Repo -> DB : findOne({code})
+DB --> Repo : record/null
+Repo --> Svc : IncidentType?/null
+
+alt incident type not found
+  Svc --> Ctrl : BusinessRuleValidationError(NotFound)
+  Ctrl --> SPA : 404 Not Found
+else found
+  opt dto.parentCode != null
+    alt dto.parentCode == code
+      Svc --> Ctrl : BusinessRuleValidationError(InvalidHierarchy self-parent)
+      Ctrl --> SPA : 400 Bad Request
+    else
+      Svc -> Repo : findByCode(dto.parentCode)
+      Repo -> DB : findOne({code: parentCode})
+      DB --> Repo : record/null
+      Repo --> Svc : parent?/null
+
+      alt parent not found
+        Svc --> Ctrl : BusinessRuleValidationError(NotFound parent)
+        Ctrl --> SPA : 400 Bad Request
+      else parent exists
+        Svc -> Repo : getSubTreeFromParentNode(code)
+        Repo -> DB : aggregate($graphLookup...)
+        DB --> Repo : descendants[]
+        Repo --> Svc : IncidentType[]
+        alt parent is a descendant (cycle)
+          Svc --> Ctrl : BusinessRuleValidationError(InvalidHierarchy cycle)
+          Ctrl --> SPA : 400 Bad Request
+        end
+      end
+    end
+  end
+
+  Svc -> Map : (conceptual) severity parsing\nSeverityFactory.fromString(...)
+  Svc -> Svc : incidentType.changeName(...)\nchangeDescription(...)\nchangeSeverity(...)\nchangeParent(dto.parentCode ?? null)
+
+  Svc -> Repo : save(incidentType)
+  Repo -> Map : toPersistence(incidentType)
+  Repo -> DB : update/save(persistence)
+  DB --> Repo : updatedDoc
+  Repo -> Map : toDomain(updatedDoc)
+  Repo --> Svc : IncidentType
+
+  Svc -> Map : toDTO(IncidentType)
+  Svc --> Ctrl : Result.ok(dto)
+  Ctrl --> SPA : 200 OK\nIncidentTypeDTO
+end
+
+== Get Roots ==
+Officer -> SPA : Open Incident Types page
+SPA -> Routes : GET /api/incidentTypes/roots
+Routes -> Ctrl : execute(req,res)
+Ctrl -> Svc : getRootTypes()
+Svc -> Repo : getRootTypes()
+Repo -> DB : find({parent: null OR parent missing})
+DB --> Repo : docs[]
+Repo -> Map : toDomain(docs[])
+Repo --> Svc : IncidentType[]
+Svc -> Map : toDTO(list)
+Svc --> Ctrl : Result.ok(list)
+Ctrl --> SPA : 200 OK\nIncidentTypeDTO[]
+
+== Load Direct Children ==
+Officer -> SPA : Expand a node
+SPA -> Routes : GET /api/incidentTypes/{code}/children
+Routes -> Ctrl : execute(req,res)
+Ctrl -> Svc : getDirectChilds(code)
+Svc -> Repo : getDirectChilds(code)
+Repo -> DB : find({parent: code})
+DB --> Repo : docs[]
+Repo -> Map : toDomain(docs[])
+Repo --> Svc : IncidentType[]
+Svc -> Map : toDTO(list)
+Svc --> Ctrl : Result.ok(list)
+Ctrl --> SPA : 200 OK\nIncidentTypeDTO[]
+
+== Load Subtree ==
+Officer -> SPA : Request subtree view
+SPA -> Routes : GET /api/incidentTypes/{code}/subtree
+Routes -> Ctrl : execute(req,res)
+Ctrl -> Svc : getSubTreeFromParentNode(code)
+Svc -> Repo : getSubTreeFromParentNode(code)
+Repo -> DB : aggregate($graphLookup...)
+DB --> Repo : descendants[]
+Repo -> Map : toDomain(descendants[])
+Repo --> Svc : IncidentType[]
+Svc -> Map : toDTO(list)
+Svc --> Ctrl : Result.ok(list)
+Ctrl --> SPA : 200 OK\nIncidentTypeDTO[]
+
+== Delete Incident Type (Possible Future) ==
+Officer -> SPA : Delete incident type
+SPA -> Routes : DELETE /api/incidentTypes/{code}
+Routes -> Ctrl : execute(req,res)
+Ctrl -> Svc : deleteAsync(code)
+
+Svc -> Repo : findByCode(code)
+Repo -> DB : findOne({code})
+DB --> Repo : record/null
+Repo --> Svc : IncidentType?/null
+
+alt not found
+  Svc --> Ctrl : BusinessRuleValidationError(NotFound)
+  Ctrl --> SPA : 404 Not Found
+else found
+  Svc -> Repo : getDirectChilds(code)
+  Repo -> DB : find({parent: code})
+  DB --> Repo : docs[]
+  Repo --> Svc : IncidentType[]
+  alt has children
+    Svc --> Ctrl : BusinessRuleValidationError(Conflict - has children)
+    Ctrl --> SPA : 409 Conflict
+  else no children
+    Svc -> Repo : deleteByCode(code)
+    Repo -> DB : deleteOne({code})
+    DB --> Repo : deletedCount
+    alt deletedCount == 0
+      Svc --> Ctrl : BusinessRuleValidationError(PersistError)
+      Ctrl --> SPA : 500 Internal Server Error
+    else deleted ok
+      Svc --> Ctrl : Result.ok()
+      Ctrl --> SPA : 204 No Content
+    end
+  end
+end
+
+@enduml
+```
