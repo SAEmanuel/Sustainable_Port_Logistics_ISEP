@@ -127,7 +127,7 @@ export default {
         },
         incidentType: {
             name: "IncidentTypeRepo",
-            path: "../repos/incidentType/incidentTypeRepo"
+            path: "../repos/incidentTypeRepo"
         }
     },
 
@@ -139,7 +139,7 @@ export default {
         },
         incidentType: {
             name: "IncidentTypeService",
-            path: "../services/incidentType/incidentTypeService"
+            path: "../services/incidentTypeService"
         }
     }
 };

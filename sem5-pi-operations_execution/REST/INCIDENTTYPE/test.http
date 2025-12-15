@@ -1,0 +1,49 @@
+###
+POST http://localhost:3000/api/incidentTypes
+Content-Type: application/json
+
+{
+  "code": "T-INC001",
+  "name": "Environmental Conditions",
+  "description": "Weather/environment-related operational disruptions.",
+  "severity": "Major",
+  "parentCode": null
+}
+
+###
+POST http://localhost:3000/api/incidentTypes
+Content-Type: application/json
+
+{
+  "code": "T-INC002",
+  "name": "Fog",
+  "description": "Reduced visibility due to fog affecting navigation and operations.",
+  "severity": "Minor",
+  "parentCode": "T-INC001"
+}
+
+###
+PUT http://localhost:3000/api/incidentTypes/T-INC002
+Content-Type: application/json
+
+{
+  "name": "Fog (Updated)",
+  "description": "Updated description: reduced visibility due to fog affecting berthing and maneuvering.",
+  "severity": "Minor",
+  "parentCode": "T-INC001"
+}
+
+###
+GET http://localhost:3000/api/incidentTypes/roots
+
+###
+GET http://localhost:3000/api/incidentTypes/T-INC001
+
+###
+GET http://localhost:3000/api/incidentTypes/search/name?name=Fog
+
+###
+GET http://localhost:3000/api/incidentTypes/T-INC001/children
+
+###
+GET http://localhost:3000/api/incidentTypes/T-INC001/subtree
