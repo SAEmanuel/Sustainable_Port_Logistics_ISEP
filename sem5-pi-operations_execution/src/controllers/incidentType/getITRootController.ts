@@ -5,7 +5,7 @@ import { Logger } from "winston";
 import { BusinessRuleValidationError } from "../../core/logic/BusinessRuleValidationError";
 
 @Service()
-export default class GetITDirectChildController extends BaseController {
+export default class GetITRootTypesController extends BaseController {
     constructor(
         @Inject("IncidentTypeService") private incidentTypeService: IIncidentTypeService,
         @Inject("logger") private logger: Logger
@@ -14,35 +14,21 @@ export default class GetITDirectChildController extends BaseController {
     }
 
     protected async executeImpl(): Promise<any> {
-        const parentCode =
-            (this.req.params.parentCode as string) ||
-            (this.req.params.code as string) ||
-            (this.req.query.parentCode as string);
-
         try {
-            if (!parentCode) {
-                return this.clientError("parentCode is required");
-            }
-
-            const result = await this.incidentTypeService.getDirectChilds(parentCode);
+            const result = await this.incidentTypeService.getRootTypes();
             return this.ok(this.res, result.getValue());
 
         } catch (e) {
             if (e instanceof BusinessRuleValidationError) {
-                this.logger.warn("Business rule violation while getting IT direct children", {
+                this.logger.warn("Business rule violation while getting IT root types", {
                     message: e.message,
-                    details: e.details,
-                    parentCode
+                    details: e.details
                 });
 
                 return this.clientError(e.message);
             }
 
-            this.logger.error("Unexpected error getting IT direct children", {
-                parentCode,
-                error: e
-            });
-
+            this.logger.error("Unexpected error getting IT root types", { error: e });
             return this.fail("Internal server error");
         }
     }
