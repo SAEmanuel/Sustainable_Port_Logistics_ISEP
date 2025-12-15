@@ -51,10 +51,10 @@ function ComplementaryTaskCategorySearch({ onSearch }: Props) {
                     onChange={(e) => setFilterValue(e.target.value)}
                     className="ctc-search-select-input"
                 >
-                    <option value="">{t("common.select")}</option>
-                    <option value="Safety and Security">Safety and Security</option>
-                    <option value="Maintenance">Maintenance</option>
-                    <option value="Cleaning and Housekeeping">Cleaning</option>
+                    <option value="">{t("ctc.actions.select")}</option>
+                    <option value="Safety and Security">{t("ctc.categories.Safety and Security")}</option>
+                    <option value="Maintenance">{t("ctc.categories.Maintenance")}</option>
+                    <option value="Cleaning and Housekeeping">{t("ctc.categories.Cleaning and Housekeeping")}</option>
                 </select>
             ) : (
                 <input

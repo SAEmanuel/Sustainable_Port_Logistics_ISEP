@@ -12,10 +12,11 @@ interface Props {
     onCreated: () => void;
 }
 
-const initialData = {
+const initialData: Partial<CreateComplementaryTaskCategoryDTO> = {
+    code: "",
     name: "",
     description: "",
-    category: "Maintenance" as Category, // Valor padrão temporário
+    category: "Maintenance" as Category,
     defaultDuration: undefined
 };
 
@@ -33,11 +34,13 @@ function ComplementaryTaskCategoryCreateModal({ isOpen, onClose, onCreated }: Pr
     const [step, setStep] = useState(1);
     const [formData, setFormData] = useState<Partial<CreateComplementaryTaskCategoryDTO>>(initialData);
     const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState<Error | null>(null);
 
     useEffect(() => {
         if (!isOpen) {
             setStep(1);
             setFormData(initialData);
+            setError(null);
         }
     }, [isOpen]);
 
@@ -46,15 +49,64 @@ function ComplementaryTaskCategoryCreateModal({ isOpen, onClose, onCreated }: Pr
         setStep(2);
     };
 
+    const handleValueChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setError(null);
+        const { name, value } = e.target;
+
+        const isNumericField = name === "defaultDuration";
+        const finalValue = isNumericField ? (value === "" ? undefined : Number(value)) : value;
+
+        setFormData((prev) => ({
+            ...prev,
+            [name]: finalValue,
+        }));
+    };
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        setError(null);
+
+
+        if (!formData.code || formData.code.trim() === "") {
+            const msg = t("ctc.errors.codeRequired") || "Code is required.";
+            setError(new Error(msg));
+            toast.error(msg);
+            return;
+        }
+
+        if (!formData.name || formData.name.trim() === "") {
+            const msg = t("ctc.errors.nameRequired");
+            setError(new Error(msg));
+            toast.error(msg);
+            return;
+        }
+
+        if (formData.defaultDuration !== undefined && (formData.defaultDuration < 0 || isNaN(formData.defaultDuration))) {
+            const msg = t("ctc.errors.invalidDuration");
+            setError(new Error(msg || "Duration must be a positive number."));
+            toast.error(msg || "Duration must be a positive number.");
+            return;
+        }
+
+
         setIsLoading(true);
         try {
-            await createCTC(formData as CreateComplementaryTaskCategoryDTO);
+
+            const dtoToSend: CreateComplementaryTaskCategoryDTO = {
+                code: formData.code!,
+                name: formData.name!,
+                description: formData.description || "",
+                category: formData.category!,
+                defaultDuration: formData.defaultDuration ?? null
+            } as CreateComplementaryTaskCategoryDTO;
+
+            await createCTC(dtoToSend);
             toast.success(t("ctc.success.created"));
             onCreated();
         } catch (err) {
-            toast.error(t("ctc.errors.create"));
+            const apiError = err as Error;
+            setError(apiError);
+            toast.error(apiError.message || t("ctc.errors.createFailedGeneric") || "Creation failed. Check server logs.");
         } finally {
             setIsLoading(false);
         }
@@ -99,28 +151,47 @@ function ComplementaryTaskCategoryCreateModal({ isOpen, onClose, onCreated }: Pr
                     {step === 2 && (
                         <div>
                             <div className="ctc-form-group">
+                                <label>{t("ctc.form.code")}</label>
+                                <input
+                                    required
+                                    name="code"
+                                    type="text"
+                                    value={formData.code}
+                                    onChange={handleValueChange}
+                                />
+                            </div>
+                            <div className="ctc-form-group">
                                 <label>{t("ctc.form.name")}</label>
                                 <input
                                     required
+                                    name="name"
+                                    type="text"
                                     value={formData.name}
-                                    onChange={e => setFormData({...formData, name: e.target.value})}
+                                    onChange={handleValueChange}
                                 />
                             </div>
                             <div className="ctc-form-group">
                                 <label>{t("ctc.form.description")}</label>
                                 <input
+                                    name="description"
+                                    type="text"
                                     value={formData.description}
-                                    onChange={e => setFormData({...formData, description: e.target.value})}
+                                    onChange={handleValueChange}
                                 />
                             </div>
                             <div className="ctc-form-group">
-                                <label>{t("ctc.form.duration")}</label>
+                                <label>{t("ctc.form.duration")} ({t("physicalResource.form.opcional")})</label>
                                 <input
                                     type="number"
+                                    name="defaultDuration"
+                                    min="0"
+                                    step="1"
                                     value={formData.defaultDuration || ""}
-                                    onChange={e => setFormData({...formData, defaultDuration: Number(e.target.value)})}
+                                    onChange={handleValueChange}
                                 />
                             </div>
+
+                            {error && <p className="pr-error-message">{error.message}</p>}
 
                             <div className="ctc-modal-actions-wizard">
                                 <button type="button" onClick={() => setStep(1)} className="ctc-cancel-button">

@@ -1,14 +1,14 @@
-// features/complementaryTaskCategory/components/ComplementaryTaskCategoryTable.tsx
 import { useTranslation } from "react-i18next";
 import type { ComplementaryTaskCategory } from "../domain/complementaryTaskCategory";
 import "../style/complementaryTaskCategory.css";
 
 interface Props {
     categories: ComplementaryTaskCategory[];
-    onDetails: (cat: ComplementaryTaskCategory) => void;
+    onEdit: (cat: ComplementaryTaskCategory) => void;
+    onToggleStatus: (cat: ComplementaryTaskCategory) => void;
 }
 
-function ComplementaryTaskCategoryTable({ categories, onDetails }: Props) {
+function ComplementaryTaskCategoryTable({ categories, onEdit, onToggleStatus }: Props) {
     const { t } = useTranslation();
 
     if (categories.length === 0) {
@@ -40,9 +40,17 @@ function ComplementaryTaskCategoryTable({ categories, onDetails }: Props) {
                         </span>
                     </td>
                     <td>
-                        <button onClick={() => onDetails(cat)} className="ctc-details-button">
-                            {t("actions.details")}
-                        </button>
+                        <div style={{ display: 'flex', gap: '0.5rem' }}>
+                            <button onClick={() => onEdit(cat)} className="pr-edit-button">
+                                {t("ctc.actions.edit")}
+                            </button>
+                            <button
+                                onClick={() => onToggleStatus(cat)}
+                                className={cat.isActive ? "pr-deactivate-button" : "pr-activate-button"}
+                            >
+                                {cat.isActive ? t("actions.deactivate") : t("actions.activate")}
+                            </button>
+                        </div>
                     </td>
                 </tr>
             ))}

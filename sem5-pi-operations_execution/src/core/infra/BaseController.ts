@@ -1,4 +1,3 @@
-
 import * as express from 'express'
 
 export abstract class BaseController {
@@ -10,11 +9,22 @@ export abstract class BaseController {
 
     protected abstract executeImpl (): Promise<void | any>;
 
-    public execute (req: express.Request, res: express.Response): void {
+    public async execute (req: express.Request, res: express.Response): Promise<void> {
         this.req = req;
         this.res = res;
 
-        this.executeImpl();
+
+        await this.executeImpl()
+            .then(result => {
+                if (result && !this.res.headersSent) {
+                }
+            })
+            .catch(error => {
+                console.error("Unhandled error in BaseController:", error);
+                if (!this.res.headersSent) {
+                    this.fail("Internal server error");
+                }
+            });
     }
 
     public static jsonResponse (res: express.Response, code: number, message: string) {
@@ -71,6 +81,11 @@ export abstract class BaseController {
     }
 
     public fail (error: Error | string) {
+        if (this.res.headersSent) {
+            console.error("Attempted to send failure response after headers were already sent.", error);
+            return;
+        }
+
         console.log(error);
         return this.res.status(500).json({
             message: error.toString()

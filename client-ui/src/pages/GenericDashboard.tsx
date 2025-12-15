@@ -15,10 +15,11 @@ import {
     FaRoute
 } from "react-icons/fa";
 import {
-FiShuffle,FiTablet
+    FiShuffle, FiTablet,
 } from "react-icons/fi";
 import "./css/genericDashboard.css";
 import {FiAnchor, FiBox, FiFileText, FiMapPin} from "react-icons/fi";
+import {BsBookmarksFill} from "react-icons/bs";
 
 type LinkItem = { label: string; path: string; color: string; icon: JSX.Element };
 
@@ -45,6 +46,7 @@ const routeIcon: Record<string, JSX.Element> = {
     "/sao": <FiFileText size={44} />,
     "/DR": <FiTablet size={44} />,
     "/DRAdmin": <FiShuffle size={44} />,
+    "/ctc" : <BsBookmarksFill size={44} />
 };
 
 function useAccessibleLinksByRole(t: (k: string) => string, role?: "Administrator" | "PortAuthorityOfficer" | "LogisticsOperator" | "ShippingAgentRepresentative" | "ProjectManager" | "PortOperationsSupervisor" | null | undefined) {

@@ -116,6 +116,7 @@
     "sao": "Gerir Organizações Agente de Transporte",
     "port3d": "Visualização 3D",
     "planning": "Planeamento",
+    "ctc" : "Categorias de tarefas complementares",
     "announcement": {
       "title": "Avisos do sistema",
       "body": "Manutenção agendada hoje às 23:00 — alguns módulos poderão ficar indisponíveis."
@@ -1284,6 +1285,85 @@
       "originalRequest": "Alterações solicitadas originalmente",
       "noOriginalPayload": "Nenhum dado de retificação encontrado."
     }
-  }
+  },
 
+  "ctc": {
+    "title": "Categorias de Tarefas Complementares",
+    "createButton": "Criar Categoria",
+    "noData": "Nenhuma categoria encontrada.",
+    "read-only" : "Apenas de leitura",
+
+    "editModal": {
+      "title": "Editar Categoria"
+    },
+
+    "stats": {
+      "total": "Total",
+      "active": "Ativas",
+      "inactive": "Inativas"
+    },
+
+    "table": {
+      "code": "Código",
+      "name": "Nome",
+      "category": "Categoria",
+      "duration": "Duração Padrão",
+      "status": "Estado",
+      "actions": "Ações"
+    },
+
+    "search": {
+      "code": "Código",
+      "name": "Nome",
+      "description": "Descrição",
+      "category": "Categoria"
+    },
+    "searchPlaceholder": {
+      "code": "Ex: CTC001",
+      "name": "Ex: Segurança Elétrica",
+      "description": "Ex: Tarefas de segurança"
+    },
+
+    "steps": {
+      "category": "Categoria",
+      "details": "Detalhes"
+    },
+    "selectCategory": "Selecione a Categoria principal:",
+
+    "categories": {
+      "Safety and Security": "Segurança e Vigilância",
+      "Maintenance": "Manutenção",
+      "Cleaning and Housekeeping": "Limpeza e Organização"
+    },
+
+    "form": {
+      "code": "Código",
+      "name": "Nome",
+      "description": "Descrição",
+      "duration": "Duração Padrão (minutos)"
+    },
+
+    "errors": {
+      "loadAll": "Erro ao carregar as categorias.",
+      "search": "Erro ao pesquisar categorias.",
+      "create": "Erro ao criar a categoria.",
+      "updateFailed": "Erro ao atualizar a categoria.",
+      "statusChangeFailed": "Erro ao alterar o estado da categoria.",
+      "codeRequired": "O Código é obrigatório.",
+      "nameRequired": "O Nome é obrigatório.",
+      "invalidDuration": "A Duração deve ser um número positivo.",
+      "createFailedGeneric": "A criação falhou. Verifique os logs do servidor."
+    },
+
+    "success": {
+      "created": "Categoria criada com sucesso!",
+      "updated": "Categoria atualizada com sucesso!",
+      "statusChange": "Categoria {{action}} com sucesso!"
+    },
+
+    "actions" : {
+      "edit" : "editar",
+      "select" : "Selecionar"
+    }
+  }
 }

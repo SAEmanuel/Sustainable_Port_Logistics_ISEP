@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import toast from "react-hot-toast";
 import { FaTasks } from "react-icons/fa";
@@ -10,26 +10,34 @@ import {
     getCTCByCode,
     getCTCByName,
     getCTCByDescription,
-    getCTCByCategory
+    getCTCByCategory,
+    activateCTC,
+    deactivateCTC
 } from "../services/complementaryTaskCategoryService";
 
 import type { ComplementaryTaskCategory } from "../domain/complementaryTaskCategory";
 import ComplementaryTaskCategoryTable from "../components/ComplementaryTaskCategoryTable";
 import ComplementaryTaskCategorySearch from "../components/ComplementaryTaskCategorySearch";
 import ComplementaryTaskCategoryCreateModal from "../components/ComplementaryTaskCategoryCreateModal";
-
+import ComplementaryTaskCategoryEditModal from "../components/ComplementaryTaskCategoryEditModal";
 
 type FilterType = "all" | "code" | "name" | "description" | "category";
 
 function ComplementaryTaskCategoryPage() {
     const { t } = useTranslation();
+    const didMountRef = useRef(false);
     const [categories, setCategories] = useState<ComplementaryTaskCategory[]>([]);
+    const [selectedCategory, setSelectedCategory] = useState<ComplementaryTaskCategory | null>(null);
     const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+    const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<Error | null>(null);
 
     useEffect(() => {
-        loadCategories();
+        if (!didMountRef.current) {
+            didMountRef.current = true;
+            loadCategories();
+        }
     }, []);
 
     const loadCategories = async () => {
@@ -45,6 +53,7 @@ function ComplementaryTaskCategoryPage() {
             setIsLoading(false);
         }
     };
+
 
     const handleSearch = async (type: FilterType, value: string) => {
         setIsLoading(true);
@@ -80,12 +89,42 @@ function ComplementaryTaskCategoryPage() {
         }
     };
 
+
     const stats = useMemo(() => {
         const total = categories.length;
         const active = categories.filter(c => c.isActive).length;
         const inactive = total - active;
         return { total, active, inactive };
     }, [categories]);
+
+
+
+    const handleEdit = (category: ComplementaryTaskCategory) => {
+        setSelectedCategory(category);
+        setIsEditModalOpen(true);
+    };
+
+    const handleCloseEditModal = () => {
+        setIsEditModalOpen(false);
+        setSelectedCategory(null);
+        loadCategories();
+    };
+
+    const handleToggleStatus = async (category: ComplementaryTaskCategory) => {
+        setIsLoading(true);
+        const action = category.isActive ? deactivateCTC : activateCTC;
+        const actionName = category.isActive ? t("actions.deactivate") : t("actions.activate");
+
+        try {
+            await action(category.code);
+            toast.success(t("ctc.success.statusChange", { action: actionName }));
+            loadCategories();
+        } catch (err) {
+            toast.error(t("ctc.errors.statusChangeFailed", { action: actionName }));
+        } finally {
+            setIsLoading(false);
+        }
+    };
 
     return (
         <div className="ctc-page-container">
@@ -133,7 +172,8 @@ function ComplementaryTaskCategoryPage() {
 
             <ComplementaryTaskCategoryTable
                 categories={categories}
-                onDetails={(c) => console.log("Details", c)} // Implementar modal de detalhes se necessário
+                onEdit={handleEdit}
+                onToggleStatus={handleToggleStatus}
             />
 
             <ComplementaryTaskCategoryCreateModal
@@ -144,6 +184,16 @@ function ComplementaryTaskCategoryPage() {
                     setIsCreateModalOpen(false);
                 }}
             />
+
+            {/* Modal de Edição */}
+            {selectedCategory && (
+                <ComplementaryTaskCategoryEditModal
+                    isOpen={isEditModalOpen}
+                    onClose={handleCloseEditModal}
+                    onUpdated={handleCloseEditModal}
+                    resource={selectedCategory}
+                />
+            )}
         </div>
     );
 }

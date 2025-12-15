@@ -112,6 +112,7 @@
     "planning": "Planning",
     "accessModules": "Access Modules",
     "port3d": "3D Visualization",
+    "ctc" : "Complementary Task Categories",
     "announcement": {
       "title": "System notices",
       "body": "Scheduled maintenance today at 23:00 — some modules may be unavailable."
@@ -1285,6 +1286,86 @@
 
       "originalRequest": "Original requested changes",
       "noOriginalPayload": "No rectification payload was found."
+    }
+  },
+
+  "ctc": {
+    "title": "Complementary Task Categories",
+    "createButton": "Create Category",
+    "noData": "No categories found.",
+    "read-only" : "Read-only",
+
+    "editModal": {
+      "title": "Edit Category"
+    },
+
+    "stats": {
+      "total": "Total",
+      "active": "Active",
+      "inactive": "Inactive"
+    },
+
+    "table": {
+      "code": "Code",
+      "name": "Name",
+      "category": "Category",
+      "duration": "Default Duration",
+      "status": "Status",
+      "actions": "Actions"
+    },
+
+    "search": {
+      "code": "Code",
+      "name": "Name",
+      "description": "Description",
+      "category": "Category"
+    },
+    "searchPlaceholder": {
+      "code": "Ex: CTC001",
+      "name": "Ex: Electrical Safety",
+      "description": "Ex: Safety tasks"
+    },
+
+    "steps": {
+      "category": "Category",
+      "details": "Details"
+    },
+    "selectCategory": "Select the main Category:",
+
+    "categories": {
+      "Safety and Security": "Safety and Security",
+      "Maintenance": "Maintenance",
+      "Cleaning and Housekeeping": "Cleaning and Housekeeping"
+    },
+
+    "form": {
+      "code": "Code",
+      "name": "Name",
+      "description": "Description",
+      "duration": "Default Duration (minutes)"
+    },
+
+    "errors": {
+      "loadAll": "Error loading categories.",
+      "search": "Error searching categories.",
+      "create": "Error creating category.",
+      "updateFailed": "Error updating category.",
+      "statusChangeFailed": "Error changing category status.",
+      "codeRequired": "Code is required.",
+      "nameRequired": "Name is required.",
+      "invalidDuration": "Duration must be a positive number.",
+      "createFailedGeneric": "Creation failed. Check server logs."
+    },
+
+    "success": {
+      "created": "Category created successfully!",
+      "updated": "Category updated successfully!",
+      "statusChange": "Category {{action}} successfully!"
+    },
+
+    "actions" : {
+      "edit" : "edit",
+      "select" : "Select"
     }
   }
 }

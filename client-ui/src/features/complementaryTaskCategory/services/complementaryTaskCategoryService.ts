@@ -6,7 +6,6 @@ import { mapToCTCDomain } from "../mappers/complementaryTaskCategoryMapper";
 
 export async function createCTC(dto: CreateComplementaryTaskCategoryDTO): Promise<ComplementaryTaskCategory> {
     const res = await operationsApi.post("/api/complementary-task-categories", dto);
-
     return mapToCTCDomain(res.data);
 }
 

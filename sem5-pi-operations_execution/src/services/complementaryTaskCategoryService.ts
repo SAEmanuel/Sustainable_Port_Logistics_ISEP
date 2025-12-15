@@ -206,7 +206,6 @@ export default class ComplementaryTaskCategoryService
         this.logger.debug("Fetching all ComplementaryTaskCategories");
 
         const categories = await this.repo.findAll();
-
         return Result.ok(categories.map(c => this.categoryMap.toDTO(c)));
     }
 }
