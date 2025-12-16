@@ -21,6 +21,7 @@ function ComplementaryTaskCategoryTable({ categories, onEdit, onToggleStatus }: 
             <tr>
                 <th>{t("ctc.table.code")}</th>
                 <th>{t("ctc.table.name")}</th>
+                <th>{t("ctc.table.description")}</th>
                 <th>{t("ctc.table.category")}</th>
                 <th>{t("ctc.table.duration")}</th>
                 <th>{t("ctc.table.status")}</th>
@@ -32,6 +33,7 @@ function ComplementaryTaskCategoryTable({ categories, onEdit, onToggleStatus }: 
                 <tr key={cat.id}>
                     <td>{cat.code}</td>
                     <td>{cat.name}</td>
+                    <td>{cat.description}</td>
                     <td>{t(`ctc.categories.${cat.category}`)}</td>
                     <td>{cat.defaultDuration ? `${cat.defaultDuration} min` : "-"}</td>
                     <td>

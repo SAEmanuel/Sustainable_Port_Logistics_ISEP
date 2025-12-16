@@ -195,10 +195,10 @@ function ComplementaryTaskCategoryCreateModal({ isOpen, onClose, onCreated }: Pr
 
                             <div className="ctc-modal-actions-wizard">
                                 <button type="button" onClick={() => setStep(1)} className="ctc-cancel-button">
-                                    {t("actions.back")}
+                                    {t("ctc.actions.back")}
                                 </button>
                                 <button type="submit" disabled={isLoading} className="ctc-submit-button">
-                                    {isLoading ? t("common.saving") : t("actions.create")}
+                                    {isLoading ? t("common.saving") : t("ctc.actions.create")}
                                 </button>
                             </div>
                         </div>

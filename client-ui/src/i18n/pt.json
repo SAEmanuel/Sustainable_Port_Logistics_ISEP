@@ -1309,7 +1309,8 @@
       "category": "Categoria",
       "duration": "Duração Padrão",
       "status": "Estado",
-      "actions": "Ações"
+      "actions": "Ações",
+      "description": "Descrição"
     },
 
     "search": {
@@ -1363,7 +1364,9 @@
 
     "actions" : {
       "edit" : "editar",
-      "select" : "Selecionar"
+      "select" : "Selecionar",
+      "create" : "Criar",
+      "back"  : "Voltar"
     }
   },
   "incidentType": {

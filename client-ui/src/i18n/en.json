@@ -1311,7 +1311,8 @@
       "category": "Category",
       "duration": "Default Duration",
       "status": "Status",
-      "actions": "Actions"
+      "actions": "Actions",
+      "description": "Description"
     },
 
     "search": {
@@ -1365,7 +1366,10 @@
 
     "actions" : {
       "edit" : "edit",
-      "select" : "Select"
+      "select" : "Select",
+      "create" : "Create",
+      "back"  : "Back"
+
     }
   },
   "incidentType": {
