@@ -1,5 +1,6 @@
 import {CTStatus} from "../domain/complementaryTask/ctstatus";
 
+
 export interface IComplementaryTaskPersistence {
     domainId: string,
     code: string,
@@ -8,5 +9,7 @@ export interface IComplementaryTaskPersistence {
     timeStart: Date,
     timeEnd: Date,
     status: CTStatus,
-    //vve: vve
+    vve: string,
+    createdAt: Date;
+    updatedAt: Date | null;
 }
