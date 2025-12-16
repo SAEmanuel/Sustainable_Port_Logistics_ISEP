@@ -3,7 +3,6 @@ import {IncidentType} from "../domain/incidentTypes/incidentType";
 import {IIncidentTypeDTO} from "../dto/IIncidentTypeDTO";
 import {IIncidentTypePersistence} from "../dataschema/IIncidentTypePersistence";
 import {UniqueEntityID} from "../core/domain/UniqueEntityID";
-import {Severity} from "../domain/incidentTypes/severity";
 
 export default class IncidentTypeMap extends Mapper<IncidentType, IIncidentTypeDTO, IIncidentTypePersistence>{
     toDTO(cat : IncidentType): IIncidentTypeDTO{

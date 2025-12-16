@@ -2,7 +2,7 @@ import { Service, Inject } from "typedi";
 import IUserService from "../services/IServices/IUserService";
 import IUserRepo from "../services/IRepos/IUserRepo";
 import { User } from "../domain/user/user";
-import  UserMap  from "../mappers/UserMap";
+import UserMap from "../mappers/UserMap";
 import { IUserDTO } from "../dto/IUserDTO";
 import { Result } from "../core/logic/Result";
 import { GenericAppError } from "../core/logic/AppError";
