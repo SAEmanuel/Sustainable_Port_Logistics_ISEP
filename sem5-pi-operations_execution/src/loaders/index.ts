@@ -6,7 +6,7 @@ import config from '../config';
 import Logger from './logger';
 
 export default async ({expressApp}: { expressApp: express.Application }) => {
-    const mongoConnection = await mongooseLoader();
+    await mongooseLoader();
     Logger.info('✌️ DB loaded and connected!');
 
 
@@ -14,13 +14,15 @@ export default async ({expressApp}: { expressApp: express.Application }) => {
         schemas: [
             {name: "userSchema", path: "../persistence/schemas/userSchema"},
             {name: "complementaryTaskCategorySchema", path: "../persistence/schemas/complementaryTaskCategorySchema"},
-            {name: "incidentTypeSchema", path: "../persistence/schemas/incidentTypeSchema"}
+            {name: "incidentTypeSchema", path: "../persistence/schemas/incidentTypeSchema"},
+            {name: "complementaryTaskSchema", path: "../persistence/schemas/complementaryTaskSchema"}
         ],
 
         mappers: [
             {name: "UserMap", path: "../mappers/UserMap"},
             {name: "ComplementaryTaskCategoryMap", path: "../mappers/ComplementaryTaskCategoryMap"},
-            {name: "IncidentTypeMap", path: "../mappers/IncidentTypeMap"}
+            {name: "IncidentTypeMap", path: "../mappers/IncidentTypeMap"},
+            {name: "ComplementaryTaskMap", path: "../mappers/ComplementaryTaskMap"},
         ],
 
         controllers: [
@@ -36,6 +38,19 @@ export default async ({expressApp}: { expressApp: express.Application }) => {
             config.controllers.complementaryTaskCategory.activate,
             config.controllers.complementaryTaskCategory.deactivate,
 
+            // ComplementaryTask controllers
+            config.controllers.complementaryTask.create,
+            config.controllers.complementaryTask.update,
+            config.controllers.complementaryTask.getAll,
+            config.controllers.complementaryTask.getCompleted,
+            config.controllers.complementaryTask.getByCategory,
+            config.controllers.complementaryTask.getByCode,
+            config.controllers.complementaryTask.getByStaff,
+            config.controllers.complementaryTask.getByVve,
+            config.controllers.complementaryTask.getInProgress,
+            config.controllers.complementaryTask.getInRange,
+            config.controllers.complementaryTask.getScheduled,
+
             // IncidentType controllers
             config.controllers.complementaryTaskCategory.getAll,
             config.controllers.incidentType.create,
@@ -49,12 +64,14 @@ export default async ({expressApp}: { expressApp: express.Application }) => {
         repos: [
             config.repos.user,
             config.repos.complementaryTaskCategory,
-            config.repos.incidentType
+            config.repos.incidentType,
+            config.repos.complementaryTask
         ],
         services: [
             config.services.user,
             config.services.complementaryTaskCategory,
-            config.services.incidentType
+            config.services.incidentType,
+            config.services.complementaryTask
         ]
     });
 

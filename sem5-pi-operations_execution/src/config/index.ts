@@ -116,6 +116,54 @@ export default {
                 name: "DeactivateComplementaryTaskCategoryController",
                 path: "../controllers/complementaryTaskCategory/deactivateComplementaryTaskCategoryController"
             }
+        },
+
+        complementaryTask : {
+            create : {
+                name : "CreateCTController",
+                path : "../controllers/complementaryTask/createCTController",
+            },
+            update : {
+                name : "UpdateCTController",
+                path : "../controllers/complementaryTask/updateCTController",
+            },
+            getAll : {
+                name : "GetAllCTController",
+                path : "../controllers/complementaryTask/getAllCTController",
+            },
+            getCompleted : {
+                name : "GetCompletedCTController",
+                path : "../controllers/complementaryTask/getCompletedCTController",
+            },
+            getByCategory: {
+                name : "GetCTByCategoryController",
+                path : "../controllers/complementaryTask/getCTByCategoryController",
+            },
+            getByCode: {
+                name : "GetCTByCodeController",
+                path : "../controllers/complementaryTask/getCTByCodeController",
+            },
+            getByStaff: {
+                name : "GetCTByStaffController",
+                path : "../controllers/complementaryTask/getCTByStaffController",
+            },
+            getByVve: {
+                name : "GetCTByVveController",
+                path : "../controllers/complementaryTask/getCTByVveController",
+            },
+            getInProgress: {
+                name : "GetInProgressCtController",
+                path : "../controllers/complementaryTask/getInProgressCtController",
+            },
+            getInRange: {
+                name : "GetInRangeCTController",
+                path : "../controllers/complementaryTask/getInRangeCTController",
+            },
+            getScheduled: {
+                name : "GetScheduledCTController",
+                path : "../controllers/complementaryTask/getScheduledCTController",
+            },
+
         }
     },
 
@@ -128,6 +176,10 @@ export default {
         incidentType: {
             name: "IncidentTypeRepo",
             path: "../repos/incidentTypeRepo"
+        },
+        complementaryTask : {
+            name: "ComplementaryTaskRepo",
+            path : "../repos/complementaryTaskRepo"
         }
     },
 
@@ -140,6 +192,10 @@ export default {
         incidentType: {
             name: "IncidentTypeService",
             path: "../services/incidentTypeService"
+        },
+        complementaryTask : {
+            name: "ComplementaryTaskService",
+            path : "../services/complementaryTaskService"
         }
     }
 };
