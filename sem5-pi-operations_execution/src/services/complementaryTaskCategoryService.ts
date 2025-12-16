@@ -2,13 +2,13 @@ import { Service, Inject } from "typedi";
 import IComplementaryTaskCategoryService from "../services/IServices/IComplementaryTaskCategoryService";
 import IComplementaryTaskCategoryRepo from "../services/IRepos/IComplementaryTaskCategoryRepo";
 import { ComplementaryTaskCategory } from "../domain/complementaryTaskCategory/complementaryTaskCategory";
-import  ComplementaryTaskCategoryMap  from "../mappers/ComplementaryTaskCategoryMap";
 import { IComplementaryTaskCategoryDTO } from "../dto/IComplementaryTaskCategoryDTO";
 import { Result } from "../core/logic/Result";
 import { Category, CategoryFactory } from "../domain/complementaryTaskCategory/category";
 import { Logger } from "winston";
 import { BusinessRuleValidationError } from "../core/logic/BusinessRuleValidationError";
 import { CTCError } from "../domain/complementaryTaskCategory/errors/ctcErrors";
+import ComplementaryTaskCategoryMap from "../mappers/ComplementaryTaskCategoryMap";
 
 @Service()
 export default class ComplementaryTaskCategoryService

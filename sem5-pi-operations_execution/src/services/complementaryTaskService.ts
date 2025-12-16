@@ -1,127 +1,168 @@
-import { Service, Inject } from "typedi";
-import IComplementaryTaskService from "../services/IServices/IComplementaryTaskService";
-import IComplementaryTaskRepo from "../services/IRepos/IComplementaryTaskRepo";
-import { ComplementaryTask } from "../domain/complementaryTask/complementaryTask";
-import { ComplementaryTaskMap } from "../mappers/ComplementaryTaskMap";
-import { IComplementaryTaskDTO } from "../dto/IComplementaryTaskDTO";
-import { Result } from "../core/logic/Result";
-import { GenericAppError } from "../core/logic/AppError";
-import { CTStatus } from "../domain/complementaryTask/ctstatus";
+import {Service, Inject} from "typedi";
+
+import {Logger} from "winston";
+import IComplementaryTaskService from "./IServices/IComplementaryTaskService";
+import IComplementaryTaskRepo from "./IRepos/IComplementaryTaskRepo";
+import ComplementaryTaskMap from "../mappers/ComplementaryTaskMap";
+import {IComplementaryTaskDTO} from "../dto/IComplementaryTaskDTO";
+import {Result} from "../core/logic/Result";
+import {ComplementaryTaskCategoryId} from "../domain/complementaryTaskCategory/complementaryTaskCategoryId";
+import {ComplementaryTaskCode} from "../domain/complementaryTask/ComplementaryTaskCode";
+import {VesselVisitExecutionId} from "../domain/vesselVisitExecution/vesselVisitExecutionId";
+import {CTStatus} from "../domain/complementaryTask/ctstatus";
+import {BusinessRuleValidationError} from "../core/logic/BusinessRuleValidationError";
+import {CTError} from "../domain/complementaryTask/errors/ctErrors";
+import {ComplementaryTask} from "../domain/complementaryTask/complementaryTask";
+import {CTCError} from "../domain/complementaryTaskCategory/errors/ctcErrors";
 
 @Service()
 export default class ComplementaryTaskService implements IComplementaryTaskService {
 
     constructor(
-        @Inject("ComplementaryTaskRepo") private complementaryTaskRepo: IComplementaryTaskRepo
-    ) {}
+        @Inject("ComplementaryTaskRepo")
+        private repo: IComplementaryTaskRepo,
 
-    public async createComplementaryTask(
-    taskDTO: IComplementaryTaskDTO
-    ): Promise<Result<IComplementaryTaskDTO>> {
+        @Inject("ComplementaryTaskMap")
+        private complementaryTaskMap: ComplementaryTaskMap,
 
-        try {
-            var genCode = await this.generateCode();
-
-            const taskExists = await this.complementaryTaskRepo.findByCode(genCode);
-
-            if (taskExists) {
-            return Result.fail<IComplementaryTaskDTO>(
-                "Complementary task with this code already exists."
-            );
-            }
-
-            // 🔹 create now THROWS on error
-            const task = ComplementaryTask.create({
-            code: genCode,
-            category: taskDTO.category,
-            staff: taskDTO.staff,
-            timeStart: taskDTO.timeStart,
-            timeEnd: taskDTO.timeEnd,
-            status: taskDTO.status as CTStatus
-            });
-
-            const taskSaved = await this.complementaryTaskRepo.save(task);
-
-            if (!taskSaved) {
-            return Result.fail<IComplementaryTaskDTO>(
-                "Error saving complementary task."
-            );
-            }
-
-            const taskDTOSaved = ComplementaryTaskMap.toDTO(taskSaved);
-            return Result.ok<IComplementaryTaskDTO>(taskDTOSaved);
-
-        } catch (e) {
-            return Result.fail<IComplementaryTaskDTO>(
-            String(new GenericAppError.UnexpectedError(e).errorValue())
-            );
-        }
+        @Inject("logger")
+        private logger: Logger
+    ) {
     }
 
-    public async updateComplementaryTask(taskDTO: IComplementaryTaskDTO): Promise<Result<IComplementaryTaskDTO>> {
-        try {
-            const task = await this.complementaryTaskRepo.findByCode(taskDTO.code);
+    public async createAsync(dto: IComplementaryTaskDTO): Promise<Result<IComplementaryTaskDTO>> {
+        this.logger.info("Creating ComplementaryTask", {code: dto.code});
 
-            if (!task) {
-                return Result.fail<IComplementaryTaskDTO>("Complementary task not found.");
-            }
+        const number = await this.repo.getNextSequenceNumber();
 
-            task.category = taskDTO.category;
-            task.staff = taskDTO.staff;
-            task.timeStart = taskDTO.timeStart;
-            task.timeEnd = taskDTO.timeEnd;
-            task.status = taskDTO.status as CTStatus;
+        const task = ComplementaryTask.create({
+            code: ComplementaryTaskCode.create(dto.category, number),
+            category: ComplementaryTaskCategoryId.caller(dto.category),
+            staff: dto.staff,
+            timeStart: dto.timeStart,
+            timeEnd: dto.timeEnd,
+            status: dto.status,
+            vve: VesselVisitExecutionId.caller(dto.vve),
+            createdAt : new Date(),
+            updatedAt: null
+        });
 
-            const taskSaved = await this.complementaryTaskRepo.save(task);
-
-            if (!taskSaved) {
-                return Result.fail<IComplementaryTaskDTO>("Error updating complementary task.");
-            }
-
-            const taskDTOSaved = ComplementaryTaskMap.toDTO(taskSaved);
-            return Result.ok<IComplementaryTaskDTO>(taskDTOSaved);
-
-        } catch (e) {
-            return Result.fail<IComplementaryTaskDTO>(
-                String(new GenericAppError.UnexpectedError(e).errorValue())
+        const saved = await this.repo.save(task);
+        if (!saved) {
+            throw new BusinessRuleValidationError(
+                CTError.PersistError,
+                "Error saving complementary task"
             );
         }
+
+        return Result.ok(this.complementaryTaskMap.toDTO(saved));
     }
 
-    public async getComplementaryTask(code: string): Promise<Result<IComplementaryTaskDTO>> {
-        try {
-            const task = await this.complementaryTaskRepo.findByCode(code);
-
-            if (!task) {
-                return Result.fail<IComplementaryTaskDTO>(`Complementary task not found for code: ${code}`);
-            }
-
-            const taskDTO = ComplementaryTaskMap.toDTO(task);
-            return Result.ok<IComplementaryTaskDTO>(taskDTO);
-
-        } catch (e) {
-            return Result.fail<IComplementaryTaskDTO>(
-                String(new GenericAppError.UnexpectedError(e).errorValue())
+    public async updateAsync(code: ComplementaryTaskCode, dto: IComplementaryTaskDTO): Promise<Result<IComplementaryTaskDTO>> {
+        const task = await this.repo.findByCode(code);
+        if (!task) {
+            throw new BusinessRuleValidationError(
+                CTError.NotFound,
+                "Complementary task not found",
+                `No task found with code ${code}`
             );
         }
-    }
 
+        task.changeDetails(
+            ComplementaryTaskCategoryId.create(dto.category),
+            dto.staff,
+            dto.timeStart,
+            dto.timeEnd,
+            VesselVisitExecutionId.create(dto.vve)
+        );
 
-
-    private async generateCode(): Promise<string> {
-        const year = new Date().getFullYear();
-
-        const lastTask = await this.complementaryTaskRepo.findLastTaskOfYear(year);
-
-        let nextNumber = 1;
-
-        if (lastTask) {
-            const lastNumber = Number(lastTask.code.split("-")[2]);
-            nextNumber = lastNumber + 1;
+        const saved = await this.repo.save(task);
+        if (!saved) {
+            throw new BusinessRuleValidationError(
+                CTError.PersistError,
+                "Error updating complementary task"
+            );
         }
 
-        const padded = String(nextNumber).padStart(5, "0");
-
-        return `CT-${year}-${padded}`;
+        return Result.ok(this.complementaryTaskMap.toDTO(saved));
     }
+
+    public async getAllAsync(): Promise<Result<IComplementaryTaskDTO[]>> {
+        this.logger.debug("Fetching all ComplementaryTasks");
+
+        const tasks = await this.repo.findAll();
+        return Result.ok(tasks.map(t => this.complementaryTaskMap.toDTO(t)));
+    }
+
+    public async getByCategoryAsync(category: ComplementaryTaskCategoryId): Promise<Result<IComplementaryTaskDTO[]>> {
+        this.logger.debug(`Fetching all complementary tasks with category: ${category}`);
+        const tasks = await this.repo.findByCategory(category);
+        return Result.ok(tasks.map(t => this.complementaryTaskMap.toDTO(t)));
+    }
+
+    public async getByCodeAsync(code: ComplementaryTaskCode): Promise<Result<IComplementaryTaskDTO>> {
+        this.logger.debug(`Fetching complementary task with code: ${code}`);
+        const task = await this.repo.findByCode(code);
+        if (!task) {
+            throw new BusinessRuleValidationError(
+                CTCError.NotFound,
+                "Complementary task not found",
+                `No category found with code ${code}`
+            );
+        }
+        return Result.ok(this.complementaryTaskMap.toDTO(task));
+    }
+
+    public async getByStaffAsync(staff: string): Promise<Result<IComplementaryTaskDTO[]>> {
+        this.logger.debug(`Fetching all complementary tasks with staff: ${staff}`);
+        const tasks = await this.repo.findByStaff(staff);
+        return Result.ok(tasks.map(t => this.complementaryTaskMap.toDTO(t)));
+    }
+
+    public async getByVveAsync(vve: VesselVisitExecutionId): Promise<Result<IComplementaryTaskDTO[]>> {
+        this.logger.debug(`Fetching all complementary tasks from vve: ${vve}`);
+        const tasks = await this.repo.findByVve(vve);
+        return Result.ok(tasks.map(t => this.complementaryTaskMap.toDTO(t)));
+    }
+
+    public async getCompletedAsync(): Promise<Result<IComplementaryTaskDTO[]>> {
+        this.logger.debug("Fetching all completed complementary tasks");
+        const tasks = await this.repo.findCompleted(CTStatus.Completed);
+        return Result.ok(tasks.map(t => this.complementaryTaskMap.toDTO(t)));
+    }
+
+    public async getInProgressAsync(): Promise<Result<IComplementaryTaskDTO[]>> {
+        this.logger.debug("Fetching all in progress complementary tasks");
+        const tasks = await this.repo.findInProgress(CTStatus.InProgress);
+        return Result.ok(tasks.map(t => this.complementaryTaskMap.toDTO(t)));
+    }
+
+
+    public async getScheduledAsync(): Promise<Result<IComplementaryTaskDTO[]>> {
+        this.logger.debug("Fetching all scheduled complementary tasks");
+        const tasks = await this.repo.findScheduled(CTStatus.Scheduled);
+        return Result.ok(tasks.map(t => this.complementaryTaskMap.toDTO(t)));
+    }
+
+    public async getInRangeAsync(timeStart: Date, timeEnd: Date): Promise<Result<IComplementaryTaskDTO[]>> {
+        const now = new Date();
+
+        if (timeStart >= timeEnd) {
+            throw new BusinessRuleValidationError(
+                CTError.InvalidTimeRange,
+                "Start time must be before end time"
+            );
+        }
+
+        if (timeStart < now) {
+            throw new BusinessRuleValidationError(
+                CTError.InvalidTimeRange,
+                "Start time must be in the future"
+            );
+        }
+
+        const tasks = await this.repo.findInRange(timeStart, timeEnd);
+        return Result.ok(tasks.map(t => this.complementaryTaskMap.toDTO(t)));
+    }
+
 }
