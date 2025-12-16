@@ -1,8 +1,5 @@
 import { Container } from 'typedi';
 import Logger from './logger';
-import {UserMap} from "../mappers/UserMap";
-import {ComplementaryTaskCategoryMap} from "../mappers/ComplementaryTaskCategoryMap";
-import {IncidentTypeMap} from "../mappers/IncidentTypeMap";
 
 interface SchemaConfig {
     name: string;
@@ -19,14 +16,24 @@ interface DependencyInjectorInput {
     controllers: ModuleConfig[];
     repos: ModuleConfig[];
     services: ModuleConfig[];
+    mappers: MapperConfig[];
 }
 
-export default ({ schemas, controllers, repos, services }: DependencyInjectorInput) => {
+interface MapperConfig {
+    name: string;
+    path: string;
+}
+
+export default ({ schemas, controllers, repos, services, mappers }: DependencyInjectorInput) => {
     try {
         Container.set("logger", Logger);
-        Container.set("UserMap", new UserMap());
-        Container.set("ComplementaryTaskCategoryMap", new ComplementaryTaskCategoryMap());
-        Container.set("IncidentTypeMap", new IncidentTypeMap());
+
+        // Load mappers
+        mappers.forEach((m: MapperConfig) => {
+            const MapperClass = require(m.path).default;
+            const mapperInstance = new MapperClass();
+            Container.set(m.name, mapperInstance);
+        });
 
         // Load schemas
         schemas.forEach((s: SchemaConfig) => {

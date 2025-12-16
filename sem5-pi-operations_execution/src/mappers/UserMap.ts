@@ -5,7 +5,7 @@ import { UniqueEntityID } from "../core/domain/UniqueEntityID";
 import { IUserPersistence } from "../dataschema/IUserPersistence";
 import { RoleFactory } from "../domain/user/role";
 
-export class UserMap extends Mapper<User, IUserDTO, IUserPersistence> {
+export default class UserMap extends Mapper<User, IUserDTO, IUserPersistence> {
 
     toDTO(user: User): IUserDTO {
         return {

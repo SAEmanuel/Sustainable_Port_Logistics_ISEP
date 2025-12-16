@@ -5,19 +5,28 @@ import dependencyInjectorLoader from './dependencyInjector';
 import config from '../config';
 import Logger from './logger';
 
-export default async ({ expressApp }: { expressApp: express.Application }) => {
+export default async ({expressApp}: { expressApp: express.Application }) => {
     const mongoConnection = await mongooseLoader();
     Logger.info('✌️ DB loaded and connected!');
 
 
     dependencyInjectorLoader({
         schemas: [
-            { name: "userSchema", path: "../persistence/schemas/userSchema" },
-            { name: "complementaryTaskCategorySchema", path: "../persistence/schemas/complementaryTaskCategorySchema" },
-            { name: "incidentTypeSchema", path: "../persistence/schemas/incidentTypeSchema" }
+            {name: "userSchema", path: "../persistence/schemas/userSchema"},
+            {name: "complementaryTaskCategorySchema", path: "../persistence/schemas/complementaryTaskCategorySchema"},
+            {name: "incidentTypeSchema", path: "../persistence/schemas/incidentTypeSchema"}
         ],
+
+        mappers: [
+            {name: "UserMap", path: "../mappers/UserMap"},
+            {name: "ComplementaryTaskCategoryMap", path: "../mappers/ComplementaryTaskCategoryMap"},
+            {name: "IncidentTypeMap", path: "../mappers/IncidentTypeMap"}
+        ],
+
         controllers: [
             config.controllers.user,
+
+            // ComplementaryTaskCategory controllers
             config.controllers.complementaryTaskCategory.create,
             config.controllers.complementaryTaskCategory.update,
             config.controllers.complementaryTaskCategory.getByCode,
@@ -51,6 +60,6 @@ export default async ({ expressApp }: { expressApp: express.Application }) => {
 
     Logger.info('✌️ DI container loaded');
 
-    await expressLoader({ app: expressApp });
+    await expressLoader({app: expressApp});
     Logger.info('✌️ Express loaded');
 };

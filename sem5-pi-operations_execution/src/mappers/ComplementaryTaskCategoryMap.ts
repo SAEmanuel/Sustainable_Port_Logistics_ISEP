@@ -4,7 +4,7 @@ import {UniqueEntityID} from "../core/domain/UniqueEntityID";
 import {IComplementaryTaskCategoryDTO} from "../dto/IComplementaryTaskCategoryDTO";
 import {IComplementaryTaskCategoryPersistence} from "../dataschema/IComplementaryTaskCategoryPersistence";
 
-export class ComplementaryTaskCategoryMap extends Mapper<ComplementaryTaskCategory, IComplementaryTaskCategoryDTO, IComplementaryTaskCategoryPersistence> {
+export default class ComplementaryTaskCategoryMap extends Mapper<ComplementaryTaskCategory, IComplementaryTaskCategoryDTO, IComplementaryTaskCategoryPersistence> {
 
     toDTO(cat: ComplementaryTaskCategory): IComplementaryTaskCategoryDTO {
         return {
