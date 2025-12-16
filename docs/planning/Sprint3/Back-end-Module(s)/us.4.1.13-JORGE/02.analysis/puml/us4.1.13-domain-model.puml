@@ -1,0 +1,60 @@
+@startuml
+skinparam monochrome true
+skinparam shadowing false
+title US 4.1.13 – Incident Management (Domain Excerpt)
+
+class Incident {
+  +incidentId: String
+  +incidentTypeCode: String
+  +startTime: DateTime
+  +endTime: DateTime [0..1]
+  +durationMinutes: long [derived]
+  +severity: Severity
+  +description: String
+  +createdByUserId: String
+  +impactMode: ImpactMode
+  +upcomingWindowStart: DateTime [0..1]
+  +upcomingWindowEnd: DateTime [0..1]
+}
+
+class IncidentType {
+  +code: String
+  +name: String
+  +description: String
+  +severity: Severity
+  +parentCode: String [0..1]
+}
+
+class VVE {
+  +vveId: String
+  +vesselId: String
+  +plannedStart: DateTime [0..1]
+  +plannedEnd: DateTime [0..1]
+  +actualStart: DateTime [0..1]
+  +actualEnd: DateTime [0..1]
+}
+
+class IncidentAffectedVVE {
+  +incidentId: String
+  +vveId: String
+  +attachedAt: DateTime [0..1]
+  +attachedByUserId: String [0..1]
+}
+
+enum Severity {
+  Minor
+  Major
+  Critical
+}
+
+enum ImpactMode {
+  ALL_ONGOING
+  SPECIFIC_VVES
+  UPCOMING
+}
+
+Incident "0..*" --> "1" IncidentType : classified as
+Incident "1" o-- "0..*" IncidentAffectedVVE : affects
+VVE "1" o-- "0..*" IncidentAffectedVVE : impacted by
+
+@enduml

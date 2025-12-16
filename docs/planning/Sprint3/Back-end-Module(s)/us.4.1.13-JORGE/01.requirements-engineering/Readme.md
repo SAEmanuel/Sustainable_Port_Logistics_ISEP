@@ -146,7 +146,7 @@ As a **Logistics Operator**, I want to **record and manage incidents** that affe
 
 ### 1.6. System Sequence Diagram (SSD)
 
-![](./puml/us4.1.13-sequence-diagram.jpg)
+![](./puml/us4.1.13-sequence-diagram.svg)
 
 ---
 
