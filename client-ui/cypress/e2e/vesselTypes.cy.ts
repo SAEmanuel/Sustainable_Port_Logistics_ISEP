@@ -1,3 +1,4 @@
+// @ts-ignore
 const API_BASE = "http://localhost:5008/api/VesselType";
 
 describe("Vessel Types – E2E", () => {
