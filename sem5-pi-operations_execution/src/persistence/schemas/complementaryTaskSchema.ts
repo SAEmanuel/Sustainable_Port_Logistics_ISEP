@@ -1,52 +1,71 @@
-import { IComplementaryTaskPersistence } from '../../dataschema/IComplementaryTaskPersistence';
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
+import { IComplementaryTaskPersistence } from "../../dataschema/IComplementaryTaskPersistence";
+import { CTStatus } from "../../domain/complementaryTask/ctstatus";
 
-const ComplementaryTask = new mongoose.Schema(
+const ComplementaryTaskSchema = new mongoose.Schema(
     {
         domainId: {
             type: String,
-            unique: true
+            required: true,
+            unique: true,
+            index: true
         },
 
         code: {
             type: String,
             required: true,
             unique: true,
-            index: true,
+            index: true
         },
 
         category: {
             type: String,
-            lowercase: true,
-            unique: true,
-            index: true,
+            required: true,
+            index: true
         },
 
         staff: {
             type: String,
-            required: [true, 'Please enter staff'],
+            required: true,
+            index: true
         },
 
         timeStart: {
             type: Date,
-            required: true,
+            required: true
         },
 
         timeEnd: {
             type: Date,
-            required: true,
+            required: true
         },
 
         status: {
             type: String,
-            required: [true, 'No status'],
+            required: true,
+            enum: Object.values(CTStatus)
         },
 
+        vve: {
+            type: String,
+            required: true,
+            index: true
+        },
+
+        createdAt: {
+            type: Date,
+            required: true
+        },
+
+        updatedAt: {
+            type: Date,
+            required: false
+        }
     },
     {
         timestamps: false,
-        versionKey: false,
+        versionKey: false
     }
 );
 
-export default mongoose.model<IComplementaryTaskPersistence & mongoose.Document>('ComplementaryTask', ComplementaryTask);
+export default mongoose.model<IComplementaryTaskPersistence & mongoose.Document>("ComplementaryTask", ComplementaryTaskSchema);
