@@ -15,32 +15,37 @@ export default class ComplementaryTaskService implements IComplementaryTaskServi
         @Inject("ComplementaryTaskRepo") private complementaryTaskRepo: IComplementaryTaskRepo
     ) {}
 
-    public async createComplementaryTask(taskDTO: IComplementaryTaskDTO): Promise<Result<IComplementaryTaskDTO>> {
+    public async createComplementaryTask(
+    taskDTO: IComplementaryTaskDTO
+    ): Promise<Result<IComplementaryTaskDTO>> {
+
         try {
-            const taskExists = await this.complementaryTaskRepo.findByCode(taskDTO.code);
+            var genCode = await this.generateCode();
+
+            const taskExists = await this.complementaryTaskRepo.findByCode(genCode);
 
             if (taskExists) {
-                return Result.fail<IComplementaryTaskDTO>("Complementary task with this code already exists.");
+            return Result.fail<IComplementaryTaskDTO>(
+                "Complementary task with this code already exists."
+            );
             }
 
-            const taskOrError = ComplementaryTask.create({
-                code: taskDTO.code,
-                category: taskDTO.category,
-                staff: taskDTO.staff,
-                timeStart: taskDTO.timeStart,
-                timeEnd: taskDTO.timeEnd,
-                status: taskDTO.status as CTStatus
+            // 🔹 create now THROWS on error
+            const task = ComplementaryTask.create({
+            code: genCode,
+            category: taskDTO.category,
+            staff: taskDTO.staff,
+            timeStart: taskDTO.timeStart,
+            timeEnd: taskDTO.timeEnd,
+            status: taskDTO.status as CTStatus
             });
 
-            if (taskOrError.isFailure) {
-                return Result.fail<IComplementaryTaskDTO>(String(taskOrError.errorValue()));
-            }
-
-            const task = taskOrError.getValue();
             const taskSaved = await this.complementaryTaskRepo.save(task);
 
             if (!taskSaved) {
-                return Result.fail<IComplementaryTaskDTO>("Error saving complementary task.");
+            return Result.fail<IComplementaryTaskDTO>(
+                "Error saving complementary task."
+            );
             }
 
             const taskDTOSaved = ComplementaryTaskMap.toDTO(taskSaved);
@@ -48,7 +53,7 @@ export default class ComplementaryTaskService implements IComplementaryTaskServi
 
         } catch (e) {
             return Result.fail<IComplementaryTaskDTO>(
-                String(new GenericAppError.UnexpectedError(e).errorValue())
+            String(new GenericAppError.UnexpectedError(e).errorValue())
             );
         }
     }
@@ -99,5 +104,24 @@ export default class ComplementaryTaskService implements IComplementaryTaskServi
                 String(new GenericAppError.UnexpectedError(e).errorValue())
             );
         }
+    }
+
+
+
+    private async generateCode(): Promise<string> {
+        const year = new Date().getFullYear();
+
+        const lastTask = await this.complementaryTaskRepo.findLastTaskOfYear(year);
+
+        let nextNumber = 1;
+
+        if (lastTask) {
+            const lastNumber = Number(lastTask.code.split("-")[2]);
+            nextNumber = lastNumber + 1;
+        }
+
+        const padded = String(nextNumber).padStart(5, "0");
+
+        return `CT-${year}-${padded}`;
     }
 }

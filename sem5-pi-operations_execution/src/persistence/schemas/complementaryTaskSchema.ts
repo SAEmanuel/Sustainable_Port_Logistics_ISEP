@@ -1,4 +1,4 @@
-import { IComplementaryTaskPersistance } from '../../dataschema/IComplementaryTaskPersistence';
+import { IComplementaryTaskPersistence } from '../../dataschema/IComplementaryTaskPersistence';
 import mongoose from 'mongoose';
 
 const ComplementaryTask = new mongoose.Schema(
@@ -10,7 +10,7 @@ const ComplementaryTask = new mongoose.Schema(
 
         code: {
             type: String,
-            required: [true, 'Please enter name'],
+            required: true,
             unique: true,
             index: true,
         },
@@ -49,4 +49,4 @@ const ComplementaryTask = new mongoose.Schema(
     }
 );
 
-export default mongoose.model<IComplementaryTaskPersistance & mongoose.Document>('ComplementaryTask', ComplementaryTask);
+export default mongoose.model<IComplementaryTaskPersistence & mongoose.Document>('ComplementaryTask', ComplementaryTask);

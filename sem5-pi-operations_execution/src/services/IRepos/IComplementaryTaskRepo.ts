@@ -4,4 +4,6 @@ import { ComplementaryTask } from "../../domain/complementaryTask/complementaryT
 
 export default interface IComplementaryTaskRepo extends Repo<ComplementaryTask> {
     findByCode(code: string): Promise<ComplementaryTask | null>;
+
+    findLastTaskOfYear(year: number): Promise<ComplementaryTask | null>;
 }

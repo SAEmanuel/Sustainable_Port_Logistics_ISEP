@@ -1,14 +1,14 @@
 import IComplementaryTaskRepo from "../services/IRepos/IComplementaryTaskRepo";
 import { Inject, Service } from "typedi";
 import { ComplementaryTask } from "../domain/complementaryTask/complementaryTask";
-import { IComplementaryTaskPersistance } from "../dataschema/IComplementaryTaskPersistence";
+import { IComplementaryTaskPersistence } from "../dataschema/IComplementaryTaskPersistence";
 import { Document, Model } from "mongoose";
 import { ComplementaryTaskMap } from "../mappers/ComplementaryTaskMap";
 
 @Service()
 export default class ComplementaryTaskRepo implements IComplementaryTaskRepo {
   constructor(
-    @Inject("complementaryTaskSchema") private complementaryTaskSchema: Model<IComplementaryTaskPersistance & Document>,
+    @Inject("complementaryTaskSchema") private complementaryTaskSchema: Model<IComplementaryTaskPersistence & Document>,
     @Inject("logger") private logger: any
   ) {}
 
@@ -48,4 +48,16 @@ export default class ComplementaryTaskRepo implements IComplementaryTaskRepo {
     const taskRecord = await this.complementaryTaskSchema.findOne({ code });
     return taskRecord ? ComplementaryTaskMap.toDomain(taskRecord) : null;
   }
+
+  //to generate ct code
+  public async findLastTaskOfYear(year: number): Promise<ComplementaryTask | null> {
+  const taskRecord = await this.complementaryTaskSchema
+    .findOne({
+      code: { $regex: `^CT-${year}-` }
+    })
+    .sort({ code: -1 }) // highest sequence comes last lexicographically
+    .exec();
+
+  return taskRecord ? ComplementaryTaskMap.toDomain(taskRecord) : null;
+}
 }

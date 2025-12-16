@@ -1,12 +1,11 @@
-/*import {AggregateRoot} from "../../core/domain/AggregateRoot";
+import {AggregateRoot} from "../../core/domain/AggregateRoot";
 import {UniqueEntityID} from "../../core/domain/UniqueEntityID";
-import {Result} from "../../core/logic/Result";
-import {UserId} from "../userId";
-import {Role} from "../role";
 import {Guard} from "../../core/logic/Guard";
 import { ComplementaryTaskCategory } from "../complementaryTaskCategory/complementaryTaskCategory";
 import { CTStatus } from "./ctstatus";
 import {ComplementaryTaskId} from "./complementaryTaskId";
+import { ComplementaryTaskError } from "./errors/ctErrors";
+import { BusinessRuleValidationError } from "../../core/logic/BusinessRuleValidationError";
 
 interface ComplementaryTaskProps{
     code: string,
@@ -25,7 +24,7 @@ export class ComplementaryTask extends AggregateRoot<ComplementaryTaskProps> {
     }
 
     get userId(): ComplementaryTaskId {
-        return UserId.caller(this.id)
+        return ComplementaryTaskId.caller(this.id)
     }
 
     get code():string{
@@ -97,7 +96,7 @@ export class ComplementaryTask extends AggregateRoot<ComplementaryTaskProps> {
     public static create(
         props: ComplementaryTaskProps,
         id?: UniqueEntityID
-    ): Result<ComplementaryTask> {
+    ): ComplementaryTask {
 
         const guardedProps = [
         { argument: props.code, argumentName: "code" },
@@ -109,22 +108,51 @@ export class ComplementaryTask extends AggregateRoot<ComplementaryTaskProps> {
         // { argument: props.vve, argumentName: "vve" }, 
         ];
 
-        const guardResult = Guard.againstNullOrUndefinedBulk(guardedProps);
+         const guardResult = Guard.againstNullOrUndefinedBulk(guardedProps);
 
         if (!guardResult.succeeded) {
-                return Result.fail<ComplementaryTask>(guardResult.message)
-        } else {
-            if (!this.isValidCodeFormat(props.code)) {
-                return Result.fail<ComplementaryTask>(
-                    "Code must follow the format CT-####-#### (e.g., CT-2025-00456)"
-                );
-            }
-
-            const task = new ComplementaryTask({
-                ...props
-            }, id);
-
-            return Result.ok<ComplementaryTask>(task);
+            throw new BusinessRuleValidationError(
+            ComplementaryTaskError.InvalidInput,
+            "Invalid complementary task details",
+            guardResult.message ?? "Invalid input"
+            );
         }
+
+        if (!this.isValidCodeFormat(props.code)) {
+            throw new BusinessRuleValidationError(
+            ComplementaryTaskError.InvalidCodeFormat,
+            "Invalid code format",
+            "Code must follow the format CT-YYYY-NNNNN"
+            );
+        }
+
+        if (!props.timeStart) {
+            throw new BusinessRuleValidationError(
+            ComplementaryTaskError.InvalidDateStart,
+            "Invalid start date",
+            "timeStart is required"
+            );
+        }
+
+        if (!props.timeEnd) {
+            throw new BusinessRuleValidationError(
+            ComplementaryTaskError.InvalidDateEnd,
+            "Invalid end date",
+            "timeEnd is required"
+            );
+        }
+
+        if (props.timeStart >= props.timeEnd) {
+            throw new BusinessRuleValidationError(
+            ComplementaryTaskError.InvalidDateEnd,
+            "Invalid date range",
+            "timeEnd must be after timeStart"
+            );
+        }
+
+        return new ComplementaryTask(
+            { ...props },
+            id
+        );
     }
-} */
+}
