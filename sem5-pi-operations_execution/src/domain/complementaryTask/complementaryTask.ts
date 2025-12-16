@@ -1,37 +1,89 @@
-import {AggregateRoot} from "../../core/domain/AggregateRoot";
-import {UniqueEntityID} from "../../core/domain/UniqueEntityID";
-import {Guard} from "../../core/logic/Guard";
-import { ComplementaryTaskCategory } from "../complementaryTaskCategory/complementaryTaskCategory";
+import { ComplementaryTaskCategoryId } from "../complementaryTaskCategory/complementaryTaskCategoryId";
 import { CTStatus } from "./ctstatus";
-import {ComplementaryTaskId} from "./complementaryTaskId";
-import { ComplementaryTaskError } from "./errors/ctErrors";
+import { VesselVisitExecutionId } from "../vesselVisitExecution/vesselVisitExecutionId";
+import { ComplementaryTaskCode } from "./ComplementaryTaskCode";
+import { AggregateRoot } from "../../core/domain/AggregateRoot";
+import { UniqueEntityID } from "../../core/domain/UniqueEntityID";
+import { Guard } from "../../core/logic/Guard";
 import { BusinessRuleValidationError } from "../../core/logic/BusinessRuleValidationError";
+import { CTError } from "./errors/ctErrors";
+import { ComplementaryTaskId } from "./complementaryTaskId";
 
-interface ComplementaryTaskProps{
-    code: string,
-    category: string,
-    staff: string,
-    timeStart: Date,
-    timeEnd: Date,
-    status: CTStatus,
-    //vve: vve
+interface ComplementaryTaskProps {
+    code: ComplementaryTaskCode;
+    category: ComplementaryTaskCategoryId;
+    staff: string;
+    timeStart: Date;
+    timeEnd: Date;
+    status: CTStatus;
+    vve: VesselVisitExecutionId;
+    createdAt: Date;
+    updatedAt: Date | null;
 }
 
 export class ComplementaryTask extends AggregateRoot<ComplementaryTaskProps> {
+
+    private constructor(props: ComplementaryTaskProps, id?: UniqueEntityID) {
+        super(props, id);
+    }
+
+
+    public static create(
+        props: ComplementaryTaskProps,
+        id?: UniqueEntityID
+    ): ComplementaryTask {
+
+        const guardResult = Guard.againstNullOrUndefinedBulk([
+            { argument: props.code, argumentName: "code" },
+            { argument: props.category, argumentName: "categoryId" },
+            { argument: props.staff, argumentName: "staff" },
+            { argument: props.timeStart, argumentName: "timeStart" },
+            { argument: props.timeEnd, argumentName: "timeEnd" },
+            { argument: props.status, argumentName: "status" },
+            { argument: props.vve, argumentName: "vveId" },
+            { argument: props.createdAt, argumentName: "createdAt" }
+        ]);
+
+        if (!guardResult.succeeded) {
+            throw new BusinessRuleValidationError(
+                CTError.InvalidInput,
+                "Invalid complementary task input",
+                guardResult.message ?? "Invalid input"
+            );
+        }
+
+        this.validateTimeWindow(props.timeStart, props.timeEnd);
+
+        if (!props.staff.trim()) {
+            throw new BusinessRuleValidationError(
+                CTError.InvalidInput,
+                "Staff is required"
+            );
+        }
+
+        return new ComplementaryTask(
+            {
+                ...props,
+                updatedAt: props.updatedAt ?? null
+            },
+            id
+        );
+    }
+
 
     get id(): UniqueEntityID {
         return this._id;
     }
 
-    get userId(): ComplementaryTaskId {
-        return ComplementaryTaskId.caller(this.id)
+    get taskId(): ComplementaryTaskId {
+        return ComplementaryTaskId.caller(this.id);
     }
 
-    get code():string{
+    get code(): ComplementaryTaskCode {
         return this.props.code;
     }
 
-    get category(): string {
+    get category(): ComplementaryTaskCategoryId {
         return this.props.category;
     }
 
@@ -51,108 +103,97 @@ export class ComplementaryTask extends AggregateRoot<ComplementaryTaskProps> {
         return this.props.status;
     }
 
-    // get vve(): VVE { 
-    //   return this.props.vve;
-    // }
-
-
-    set code(value:string){
-        this.props.code = value;
+    get vve() : VesselVisitExecutionId {
+        return this.props.vve;
     }
 
-    set category(value: string) {
-        this.props.category = value;
+    get createdAt(): Date {
+        return this.props.createdAt;
     }
 
-    set staff(value: string) {
-        this.props.staff = value;
+    get updatedAt(): Date | null {
+        return this.props.updatedAt;
     }
 
-    set timeStart(value: Date) {
-        this.props.timeStart = value;
-    }
 
-    set timeEnd(value: Date) {
-        this.props.timeEnd = value;
-    }
+    public changeDetails(
+        category: ComplementaryTaskCategoryId,
+        staff: string,
+        timeStart: Date,
+        timeEnd: Date,
+        vve: VesselVisitExecutionId
+    ): void {
 
-    set status(value: CTStatus) {
-        this.props.status = value;
-    }
-
-    // set vve(value: VVE) {
-    //   this.props.vve = value;
-    // }
-
-    private constructor(props: ComplementaryTaskProps, id?: UniqueEntityID) {
-        super(props, id);
-    }
-
-    private static isValidCodeFormat(code: string): boolean {
-        const regex = /^CT-(202[5-9]|20[3-9][0-9])-([0-9]{5})$/;
-        return regex.test(code);
-    }
-
-    public static create(
-        props: ComplementaryTaskProps,
-        id?: UniqueEntityID
-    ): ComplementaryTask {
-
-        const guardedProps = [
-        { argument: props.code, argumentName: "code" },
-        { argument: props.category, argumentName: "category" },
-        { argument: props.staff, argumentName: "staff" },
-        { argument: props.timeStart, argumentName: "timeStart" },
-        { argument: props.timeEnd, argumentName: "timeEnd" },
-        { argument: props.status, argumentName: "status" },
-        // { argument: props.vve, argumentName: "vve" }, 
-        ];
-
-         const guardResult = Guard.againstNullOrUndefinedBulk(guardedProps);
-
-        if (!guardResult.succeeded) {
+        if (this.props.status === CTStatus.Completed) {
             throw new BusinessRuleValidationError(
-            ComplementaryTaskError.InvalidInput,
-            "Invalid complementary task details",
-            guardResult.message ?? "Invalid input"
+                CTError.AlreadyCompleted,
+                "Cannot modify a completed complementary task"
             );
         }
 
-        if (!this.isValidCodeFormat(props.code)) {
+        if (!staff.trim()) {
             throw new BusinessRuleValidationError(
-            ComplementaryTaskError.InvalidCodeFormat,
-            "Invalid code format",
-            "Code must follow the format CT-YYYY-NNNNN"
+                CTError.InvalidInput,
+                "Staff is required"
             );
         }
 
-        if (!props.timeStart) {
+        ComplementaryTask.validateTimeWindow(timeStart, timeEnd);
+
+        this.props.category = category;
+        this.props.staff = staff;
+        this.props.timeStart = timeStart;
+        this.props.timeEnd = timeEnd;
+        this.props.vve = vve;
+
+        this.touch();
+    }
+
+    public inProgress(): void {
+        if (this.props.status !== CTStatus.Scheduled) {
             throw new BusinessRuleValidationError(
-            ComplementaryTaskError.InvalidDateStart,
-            "Invalid start date",
-            "timeStart is required"
+                CTError.NotScheduled,
+                "Complementary task must be scheduled to start",
+                `Current status: ${this.props.status}`
             );
         }
 
-        if (!props.timeEnd) {
+        this.props.status = CTStatus.InProgress;
+        this.touch();
+    }
+
+    public complete(): void {
+        if (this.props.status !== CTStatus.InProgress) {
             throw new BusinessRuleValidationError(
-            ComplementaryTaskError.InvalidDateEnd,
-            "Invalid end date",
-            "timeEnd is required"
+                CTError.NotInProgress,
+                "Complementary task must be in progress to complete",
+                `Current status: ${this.props.status}`
             );
         }
 
-        if (props.timeStart >= props.timeEnd) {
+        this.props.status = CTStatus.Completed;
+        this.touch();
+    }
+
+
+    private static validateTimeWindow(start: Date, end: Date): void {
+        if (start >= end) {
             throw new BusinessRuleValidationError(
-            ComplementaryTaskError.InvalidDateEnd,
-            "Invalid date range",
-            "timeEnd must be after timeStart"
+                CTError.InvalidTimeWindow,
+                "Invalid time window",
+                "Start time must be before end time"
             );
         }
 
-        return new ComplementaryTask(
-            { ...props },
-            id
-        );
+        if (start.getTime() < Date.now()) {
+            throw new BusinessRuleValidationError(
+                CTError.InvalidTimeWindow,
+                "Start time cannot be in the past"
+            );
+        }
+    }
+
+    private touch(): void {
+        this.props.updatedAt = new Date();
     }
 }
