@@ -1,0 +1,38 @@
+@startuml
+title SSD – Record and Manage Incidents (US 4.1.13)
+
+actor "Logistics Operator" as LO
+boundary "SPA" as SPA
+boundary "Incidents REST API" as API
+
+== Create Incident ==
+LO -> SPA: Enter incident data\n(type, start, severity, scope, description)
+SPA -> API: POST /incidents (CreateIncidentDTO)
+API --> SPA: 201 Created (IncidentDTO)
+SPA --> LO: Show created incident
+
+== List/Filter Incidents ==
+LO -> SPA: Apply filters\n(vessel, date range, severity, status)
+SPA -> API: GET /incidents?...
+API --> SPA: 200 OK (IncidentDTO[])
+SPA --> LO: Show list\n(highlight active impacting)
+
+== Attach/Detach Affected VVEs ==
+LO -> SPA: Attach VVE to incident
+SPA -> API: POST /incidents/{id}/vves/{vveId}
+API --> SPA: 200 OK (IncidentDTO updated)
+SPA --> LO: Updated affected VVEs
+
+LO -> SPA: Detach VVE from incident
+SPA -> API: DELETE /incidents/{id}/vves/{vveId}
+API --> SPA: 200 OK (IncidentDTO updated)
+SPA --> LO: Updated affected VVEs
+
+== Resolve Incident ==
+LO -> SPA: Set end time (resolve)
+SPA -> API: PATCH /incidents/{id} (endTime)
+API -> API: Compute duration
+API --> SPA: 200 OK (IncidentDTO w/ duration)
+SPA --> LO: Show resolved incident
+
+@enduml
