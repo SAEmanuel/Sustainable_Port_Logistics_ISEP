@@ -3,7 +3,7 @@ import { Result } from "../core/logic/Result";
 import { BusinessRuleValidationError } from "../core/logic/BusinessRuleValidationError";
 import IIncidentTypeRepository from "./IRepos/IIncidentTypeRepository";
 import { Logger } from "winston";
-import {IncidentTypeMap} from "../mappers/IncidentTypeMap";
+import IncidentTypeMap from "../mappers/IncidentTypeMap";
 import {IIncidentTypeDTO} from "../dto/IIncidentTypeDTO";
 import { Service, Inject } from "typedi";
 import {IncidentTypeError} from "../domain/incidentTypes/errors/incidentTypeErrors"

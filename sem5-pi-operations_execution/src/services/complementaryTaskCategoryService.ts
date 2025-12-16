@@ -2,7 +2,7 @@ import { Service, Inject } from "typedi";
 import IComplementaryTaskCategoryService from "../services/IServices/IComplementaryTaskCategoryService";
 import IComplementaryTaskCategoryRepo from "../services/IRepos/IComplementaryTaskCategoryRepo";
 import { ComplementaryTaskCategory } from "../domain/complementaryTaskCategory/complementaryTaskCategory";
-import { ComplementaryTaskCategoryMap } from "../mappers/ComplementaryTaskCategoryMap";
+import  ComplementaryTaskCategoryMap  from "../mappers/ComplementaryTaskCategoryMap";
 import { IComplementaryTaskCategoryDTO } from "../dto/IComplementaryTaskCategoryDTO";
 import { Result } from "../core/logic/Result";
 import { Category, CategoryFactory } from "../domain/complementaryTaskCategory/category";

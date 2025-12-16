@@ -12,13 +12,14 @@ import {
     getIncidentTypeByCode,
     getIncidentTypesByName,
     getIncidentTypeChildren,
-    getIncidentTypeSubtree
+    getIncidentTypeSubtree,
 } from "../services/incidentTypeService";
 
 import IncidentTypeTable from "../components/IncidentTypeTable";
 import IncidentTypeSearch from "../components/IncidentTypeSearch";
 import IncidentTypeCreateModal from "../components/IncidentTypeCreateModal";
 import IncidentTypeEditModal from "../components/IncidentTypeEditModal";
+import IncidentTypeHierarchyPanel from "../components/IncidentTypeHierarchyPanel";
 
 type FilterType = "roots" | "code" | "name" | "children" | "subtree";
 
@@ -27,13 +28,26 @@ function IncidentTypePage() {
     const didMountRef = useRef(false);
 
     const [items, setItems] = useState<IncidentType[]>([]);
-    const [selected, setSelected] = useState<IncidentType | null>(null);
 
+    // selection for hierarchy
+    const [selected, setSelected] = useState<IncidentType | null>(null);
+    const [selectedCode, setSelectedCode] = useState<string | null>(null);
+
+    // modals
     const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
+    // dedicated "editing" item (avoid fighting with hierarchy selection)
+    const [editing, setEditing] = useState<IncidentType | null>(null);
+
+    // main list loading/errors
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<Error | null>(null);
+
+    // subtree loading/errors
+    const [subtree, setSubtree] = useState<IncidentType[]>([]);
+    const [subtreeLoading, setSubtreeLoading] = useState(false);
+    const [subtreeError, setSubtreeError] = useState<string | null>(null);
 
     useEffect(() => {
         if (!didMountRef.current) {
@@ -54,6 +68,27 @@ function IncidentTypePage() {
         } finally {
             setIsLoading(false);
         }
+    };
+
+    const loadSubtree = async (code: string) => {
+        setSubtreeLoading(true);
+        setSubtreeError(null);
+        try {
+            const data = await getIncidentTypeSubtree(code);
+            setSubtree(data);
+        } catch (err) {
+            setSubtree([]);
+            setSubtreeError((err as Error)?.message ?? t("incidentType.errors.loadSubtree"));
+            toast.error(t("incidentType.errors.loadSubtree"));
+        } finally {
+            setSubtreeLoading(false);
+        }
+    };
+
+    const handleSelect = async (it: IncidentType) => {
+        setSelected(it);
+        setSelectedCode(it.code);
+        await loadSubtree(it.code);
     };
 
     const handleSearch = async (type: FilterType, value: string) => {
@@ -91,6 +126,11 @@ function IncidentTypePage() {
             }
 
             setItems(data);
+
+            // optional UX: if search returned a single item, auto-select + load its subtree
+            if (data.length === 1) {
+                await handleSelect(data[0]);
+            }
         } catch (err) {
             setError(err as Error);
             setItems([]);
@@ -102,7 +142,7 @@ function IncidentTypePage() {
 
     const stats = useMemo(() => {
         const total = items.length;
-        const roots = items.filter(i => i.parentCode === null).length;
+        const roots = items.filter((i) => i.parentCode === null).length;
         const nonRoots = total - roots;
 
         const bySeverity = items.reduce(
@@ -117,14 +157,17 @@ function IncidentTypePage() {
     }, [items]);
 
     const handleEdit = (it: IncidentType) => {
-        setSelected(it);
+        setEditing(it);
         setIsEditModalOpen(true);
     };
 
     const handleCloseEditModal = () => {
         setIsEditModalOpen(false);
-        setSelected(null);
+        setEditing(null);
         loadRoots();
+
+        // optional: refresh subtree if the edited item is the selected one
+        if (selectedCode) loadSubtree(selectedCode);
     };
 
     return (
@@ -171,7 +214,31 @@ function IncidentTypePage() {
             {isLoading && <p>{t("common.loading")}</p>}
             {error && <p className="error-message">{error.message}</p>}
 
-            <IncidentTypeTable items={items} onEdit={handleEdit} />
+            <div className="it-content-grid">
+                <div className="it-content-left">
+                    <IncidentTypeTable
+                        items={items}
+                        onEdit={handleEdit}
+                        onSelect={handleSelect}
+                        selectedCode={selectedCode}
+                    />
+                </div>
+
+                <div className="it-content-right">
+                    <IncidentTypeHierarchyPanel
+                        selected={selected}
+                        subtree={subtree}
+                        loading={subtreeLoading}
+                        error={subtreeError}
+                        onNodeSelect={(code) => {
+                            const it = subtree.find((x) => x.code === code) ?? items.find((x) => x.code === code);
+                            if (it) handleSelect(it);
+                            else loadSubtree(code);
+                        }}
+                        onRefresh={() => selectedCode && loadSubtree(selectedCode)}
+                    />
+                </div>
+            </div>
 
             <IncidentTypeCreateModal
                 isOpen={isCreateModalOpen}
@@ -182,12 +249,12 @@ function IncidentTypePage() {
                 }}
             />
 
-            {selected && (
+            {editing && (
                 <IncidentTypeEditModal
                     isOpen={isEditModalOpen}
                     onClose={handleCloseEditModal}
                     onUpdated={handleCloseEditModal}
-                    resource={selected}
+                    resource={editing}
                 />
             )}
         </div>

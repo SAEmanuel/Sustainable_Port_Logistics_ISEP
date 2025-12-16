@@ -3,7 +3,7 @@ import { Inject, Service } from "typedi";
 import { User } from "../domain/user/user";
 import { IUserPersistence } from "../dataschema/IUserPersistence";
 import { Document, Model } from "mongoose";
-import { UserMap } from "../mappers/UserMap";
+import  UserMap  from "../mappers/UserMap";
 import { Logger } from "winston";
 
 @Service()

@@ -1,7 +1,7 @@
 import {Inject, Service} from "typedi";
 import {Model, Document} from "mongoose";
 import IIncidentTypeRepository from "../services/IRepos/IIncidentTypeRepository";
-import {IncidentTypeMap} from "../mappers/IncidentTypeMap";
+import IncidentTypeMap from "../mappers/IncidentTypeMap";
 import {IIncidentTypePersistence} from "../dataschema/IIncidentTypePersistence";
 import { IncidentType } from "../domain/incidentTypes/incidentType";
 import {ComplementaryTaskCategory} from "../domain/complementaryTaskCategory/complementaryTaskCategory";

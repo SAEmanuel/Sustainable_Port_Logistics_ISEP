@@ -606,7 +606,8 @@
     "update": "Atualizar",
     "volume": "Volume",
     "dock": "Dock",
-    "optional": "opcional"
+    "optional": "opcional",
+    "saving": "A guardar..."
   },
   "vvn": {
     "title": "Vessel Visit Notifications",
@@ -766,7 +767,10 @@
     "confirmDelete": "Sim, eliminar este utilizador",
     "cancel": "Cancelar",
     "save": "Salvar",
-    "saved": "Salvo!"
+    "saved": "Salvo!",
+    "back": "Voltar",
+    "next": "Seguinte",
+    "create": "Criar"
   },
   "table": {
     "name": "Nome",
@@ -807,7 +811,8 @@
     "roleChangeFailed": "Falha ao alterar a função do utilizador.",
     "toggleFailed": "Falha ao alterar o estado do utilizador.",
     "deleteFailed": "Falha ao eliminar o utilizador",
-    "alert": "AVISO"
+    "alert": "AVISO",
+    "emptySearch": "O campo de pesquisa não pode estar vazio."
   },
   "confirm": {
     "activate": "Tens a certeza que queres ativar este utilizador?",
@@ -1370,76 +1375,112 @@
     }
   },
   "incidentType": {
-    "title": "Tipos de Incidente",
-    "createButton": "Criar Tipo de Incidente",
-    "noData": "Nenhum tipo de incidente encontrado.",
-    "read-only": "Apenas de leitura",
-    "selectParent": "Selecionar Categoria Pai",
-    "steps": {
-      "parent": "Passo 1: Pai",
-      "details": "Passo 2: Detalhes"
+    "title": "Incident Types",
+    "createButton": "Create Incident Type",
+    "noData": "No incident types found.",
+    "read-only": "Read-only",
+
+    "hierarchy": {
+      "title": "Hierarquia",
+      "empty": "Selecione um tipo de incidente na tabela para visualizar a sua subtree.",
+      "subtitleEmpty": "Sem seleção",
+      "loading": "A carregar subtree…",
+      "noSubtree": "Não existem dados de subtree disponíveis.",
+      "refresh": "Atualizar"
     },
-    "parent": {
-      "none": "Sem Pai (Raiz)"
+
+    "createModal": {
+      "title": "Create Incident Type",
+      "subtitle": "Choose a parent and define the incident type details."
     },
+
+    "editModal": {
+      "title": "Edit Incident Type"
+    },
+
     "stats": {
       "total": "Total",
-      "roots": "Tipos Raiz",
-      "children": "Filhos/Sub-tipos",
-      "active": "Ativos",
-      "inactive": "Inativos"
+      "roots": "Roots",
+      "children": "Children"
     },
+
     "table": {
-      "name": "Nome",
-      "code": "Código",
-      "severity": "Gravidade",
-      "parent": "Pai",
-      "status": "Estado",
-      "actions": "Ações"
+      "code": "Code",
+      "name": "Name",
+      "severity": "Severity",
+      "parent": "Parent",
+      "actions": "Actions"
     },
+
     "actions": {
-      "edit": "Editar"
+      "edit": "Edit"
     },
+
     "search": {
-      "roots": "Mostrar Raízes",
-      "code": "Por Código",
-      "name": "Por Nome",
-      "children": "Filhos Diretos",
-      "subtree": "Sub-árvore Completa"
+      "roots": "Roots",
+      "code": "By code",
+      "name": "By name",
+      "children": "Children of",
+      "subtree": "Subtree of"
     },
+
     "searchPlaceholder": {
-      "code": "Ex: INC-001",
-      "name": "Ex: Incêndio...",
-      "children": "Código do Pai (Ex: INC-001)",
-      "subtree": "Código da Raiz/Pai"
+      "code": "e.g., T-INC001",
+      "name": "e.g., Environmental Conditions",
+      "children": "e.g., T-INC001",
+      "subtree": "e.g., T-INC001"
     },
-    "severity": {
-      "Minor": "Baixa",
-      "Major": "Média",
-      "Critical": "Crítica"
+
+    "steps": {
+      "parent": "Step 1: Parent",
+      "parentDesc": "Choose where this incident type belongs",
+      "details": "Step 2: Details",
+      "detailsDesc": "Define fields and severity"
     },
+
+    "selectParent": "Select Parent Category",
+
+    "parent": {
+      "help": "Select a parent category (root) or choose “No parent” to create a root incident type.",
+      "searchPlaceholder": "Search parent categories...",
+      "resultsCount": "{{count}} result(s)",
+      "noResults": "No matches found.",
+      "noResultsHint": "Try a different search term.",
+      "none": "No Parent (Root)",
+      "noneDesc": "Creates a top-level incident type.",
+      "selected": "Selected parent"
+    },
+
     "form": {
-      "code": "Código",
-      "name": "Nome",
-      "description": "Descrição",
-      "severity": "Gravidade",
-      "parent": "Código do Pai"
+      "code": "Code",
+      "codePH": "e.g., T-INC001",
+      "name": "Name",
+      "namePH": "e.g., Fire hazard",
+      "description": "Description",
+      "descriptionPH": "Optional notes / description",
+      "severity": "Severity",
+      "parent": "Parent"
     },
-    "editModal": {
-      "title": "Editar Tipo de Incidente"
+
+    "severity": {
+      "Minor": "Minor",
+      "Major": "Major",
+      "Critical": "Critical"
     },
+
     "errors": {
-      "loadRoots": "Erro ao carregar tipos raiz.",
-      "search": "Erro ao pesquisar tipos de incidente.",
-      "createFailedGeneric": "Falha na criação. Verifique os logs.",
-      "updateFailed": "Falha ao atualizar tipo de incidente.",
-      "codeRequired": "O Código é obrigatório.",
-      "nameRequired": "O Nome é obrigatório."
+      "loadRoots": "Failed to load root incident types.",
+      "loadSubtree": "Failed to load incident subtree.",
+      "search": "Search failed.",
+      "codeRequired": "Code is required.",
+      "nameRequired": "Name is required.",
+      "createFailedGeneric": "Creation failed. Check server logs.",
+      "updateFailed": "Update failed."
     },
+
     "success": {
-      "created": "Tipo de incidente criado com sucesso!",
-      "updated": "Tipo de incidente atualizado com sucesso!",
-      "deleted": "Tipo de incidente eliminado com sucesso!"
+      "created": "Incident type created successfully!",
+      "updated": "Incident type updated successfully!"
     }
   }
 }
