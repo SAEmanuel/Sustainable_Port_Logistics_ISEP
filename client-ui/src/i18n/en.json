@@ -1367,5 +1367,78 @@
       "edit" : "edit",
       "select" : "Select"
     }
+  },
+  "incidentType": {
+    "title": "Incident Types",
+    "createButton": "Create Incident Type",
+    "noData": "No incident types found.",
+    "read-only": "Read-only",
+    "selectParent": "Select Parent Category",
+    "steps": {
+      "parent": "Step 1: Parent",
+      "details": "Step 2: Details"
+    },
+    "parent": {
+      "none": "No Parent (Root)"
+    },
+    "stats": {
+      "total": "Total",
+      "roots": "Root Types",
+      "children": "Children/Sub-types",
+      "active": "Active",
+      "inactive": "Inactive"
+    },
+    "table": {
+      "name": "Name",
+      "code": "Code",
+      "severity": "Severity",
+      "parent": "Parent",
+      "status": "Status",
+      "actions": "Actions"
+    },
+    "actions": {
+      "edit": "Edit"
+    },
+    "search": {
+      "roots": "Show Roots",
+      "code": "By Code",
+      "name": "By Name",
+      "children": "Direct Children",
+      "subtree": "Full Sub-tree"
+    },
+    "searchPlaceholder": {
+      "code": "Ex: INC-001",
+      "name": "Ex: Fire...",
+      "children": "Parent Code (Ex: INC-001)",
+      "subtree": "Root/Parent Code"
+    },
+    "severity": {
+      "Minor": "Minor",
+      "Major": "Major",
+      "Critical": "Critical"
+    },
+    "form": {
+      "code": "Code",
+      "name": "Name",
+      "description": "Description",
+      "severity": "Severity",
+      "parent": "Parent Code"
+    },
+    "editModal": {
+      "title": "Edit Incident Type"
+    },
+    "errors": {
+      "loadRoots": "Error loading root types.",
+      "search": "Error searching incident types.",
+      "createFailedGeneric": "Creation failed. Please check logs.",
+      "updateFailed": "Failed to update incident type.",
+      "codeRequired": "Code is required.",
+      "nameRequired": "Name is required."
+    },
+    "success": {
+      "created": "Incident type created successfully!",
+      "updated": "Incident type updated successfully!",
+      "deleted": "Incident type deleted successfully!"
+    }
   }
 }

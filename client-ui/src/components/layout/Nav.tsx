@@ -68,7 +68,8 @@ export default function Nav({ isOpen }: NavProps) {
             { label: t("menu.vessels"), path: "/vessels", icon: <FaShip /> },
             { label: t("menu.vvnResponse"), path: "/responsevvn", icon: <FiFileText /> },
             { label: t("menu.sao"), path: "/sao", icon: <FiFileText /> },
-            { label: t("menu.sar"), path: "/sar", icon: <FiFileText /> }
+            { label: t("menu.sar"), path: "/sar", icon: <FiFileText /> },
+            { label: t("menu.incidentType"), path: "/incidentType", icon: <FiFileText /> }
         ]
         : [];
 

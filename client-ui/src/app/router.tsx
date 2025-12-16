@@ -27,6 +27,7 @@ import SAO from "../features/sao/pages/sao.tsx";
 import SAR from "../features/sar/pages/sar.tsx";
 import DR from "../features/dataRightsRequests/pages/DataRightsRequestsPage.tsx";
 import DRAdmin from "../features/dataRightsRequests/pages/AdminDataRightsRequestsPage";
+import IncidentType from "../features/incidentTypes/pages/IncidentTypePage.tsx"
 
 import SchedulePage from "../features/scheduling/pages/SchedulePage.tsx";
 import ComplementaryTaskCategoryPage
@@ -157,6 +158,11 @@ export const router = createBrowserRouter([
                                 path: "pp",
                                 element: <RequireRole roles={[Roles.Administrator]} />,
                                 children: [{ index: true, element: <PrivatePrivacy /> }],
+                            },
+                            {
+                                path: "incidentType",
+                                element: <RequireRole roles={[Roles.PortAuthorityOfficer]} />,
+                                children: [{ index: true, element: <IncidentType /> }],
                             },
                             { path: "forbidden", element: <Forbidden /> },
                         ],

@@ -1365,5 +1365,78 @@
       "edit" : "editar",
       "select" : "Selecionar"
     }
+  },
+  "incidentType": {
+    "title": "Tipos de Incidente",
+    "createButton": "Criar Tipo de Incidente",
+    "noData": "Nenhum tipo de incidente encontrado.",
+    "read-only": "Apenas de leitura",
+    "selectParent": "Selecionar Categoria Pai",
+    "steps": {
+      "parent": "Passo 1: Pai",
+      "details": "Passo 2: Detalhes"
+    },
+    "parent": {
+      "none": "Sem Pai (Raiz)"
+    },
+    "stats": {
+      "total": "Total",
+      "roots": "Tipos Raiz",
+      "children": "Filhos/Sub-tipos",
+      "active": "Ativos",
+      "inactive": "Inativos"
+    },
+    "table": {
+      "name": "Nome",
+      "code": "Código",
+      "severity": "Gravidade",
+      "parent": "Pai",
+      "status": "Estado",
+      "actions": "Ações"
+    },
+    "actions": {
+      "edit": "Editar"
+    },
+    "search": {
+      "roots": "Mostrar Raízes",
+      "code": "Por Código",
+      "name": "Por Nome",
+      "children": "Filhos Diretos",
+      "subtree": "Sub-árvore Completa"
+    },
+    "searchPlaceholder": {
+      "code": "Ex: INC-001",
+      "name": "Ex: Incêndio...",
+      "children": "Código do Pai (Ex: INC-001)",
+      "subtree": "Código da Raiz/Pai"
+    },
+    "severity": {
+      "Minor": "Baixa",
+      "Major": "Média",
+      "Critical": "Crítica"
+    },
+    "form": {
+      "code": "Código",
+      "name": "Nome",
+      "description": "Descrição",
+      "severity": "Gravidade",
+      "parent": "Código do Pai"
+    },
+    "editModal": {
+      "title": "Editar Tipo de Incidente"
+    },
+    "errors": {
+      "loadRoots": "Erro ao carregar tipos raiz.",
+      "search": "Erro ao pesquisar tipos de incidente.",
+      "createFailedGeneric": "Falha na criação. Verifique os logs.",
+      "updateFailed": "Falha ao atualizar tipo de incidente.",
+      "codeRequired": "O Código é obrigatório.",
+      "nameRequired": "O Nome é obrigatório."
+    },
+    "success": {
+      "created": "Tipo de incidente criado com sucesso!",
+      "updated": "Tipo de incidente atualizado com sucesso!",
+      "deleted": "Tipo de incidente eliminado com sucesso!"
+    }
   }
 }
