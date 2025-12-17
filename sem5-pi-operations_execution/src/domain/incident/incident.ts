@@ -12,7 +12,6 @@ import {VesselVisitExecutionId} from "../vesselVisitExecution/vesselVisitExecuti
 interface IncidentProps {
     code : string,
     incidentTypeCode : string,
-    vveList: string[];
     startTime : Date,
     endTime : Date | null,
     duration : number | null,
@@ -21,7 +20,10 @@ interface IncidentProps {
     description: string,
     createdByUser : string,
     upcomingWindowStartTime : Date | null,
-    upcomingWindowEndTime : Date | null
+    upcomingWindowEndTime : Date | null,
+
+    createdAt : Date,
+    updatedAt : Date | null
 }
 
 export class Incident extends AggregateRoot<IncidentProps>{
@@ -44,10 +46,6 @@ export class Incident extends AggregateRoot<IncidentProps>{
 
     get startTime() : Date{
         return this.props.startTime;
-    }
-
-    get vveList() : string[]{
-        return this.props.vveList;
     }
 
     get endTime() : Date | null{
@@ -82,6 +80,14 @@ export class Incident extends AggregateRoot<IncidentProps>{
         return this.props.upcomingWindowEndTime;
     }
 
+    get createdAt(): Date {
+        return this.props.createdAt;
+    }
+
+    get updatedAt(): Date | null {
+        return this.props.updatedAt;
+    }
+
     private constructor(
         props: IncidentProps,
         id?: UniqueEntityID) {
@@ -99,7 +105,8 @@ export class Incident extends AggregateRoot<IncidentProps>{
             { argument: props.severity, argumentName: "severity" },
             { argument: props.impactMode, argumentName: "impactMode" },
             { argument: props.description, argumentName: "description" },
-            { argument: props.createdByUser, argumentName: "createdByUser" }
+            { argument: props.createdByUser, argumentName: "createdByUser" },
+            { argument: props.createdAt, argumentName: "createdAt" }
         ]
 
         const guardResult = Guard.againstNullOrUndefinedBulk(guardedProps);
@@ -161,7 +168,8 @@ export class Incident extends AggregateRoot<IncidentProps>{
             endTime : props.endTime ?? null,
             duration : props.duration ?? null,
             upcomingWindowStartTime: props.upcomingWindowStartTime ?? null,
-            upcomingWindowEndTime: props.upcomingWindowEndTime ?? null
+            upcomingWindowEndTime: props.upcomingWindowEndTime ?? null,
+            updatedAt: props.updatedAt ?? null,
         }, id)
     }
 
@@ -171,6 +179,7 @@ export class Incident extends AggregateRoot<IncidentProps>{
 
     public changeIncidentTypeCode(incidentTypeCode : string) : void {
         this.props.incidentTypeCode = incidentTypeCode;
+        this.touch();
     }
 
     public changeStartTime(startTime : Date) :void{
@@ -190,6 +199,8 @@ export class Incident extends AggregateRoot<IncidentProps>{
         if(this.props.endTime != null){
             this.calculateDuration(startTime,this.props.endTime);
         }
+
+        this.touch();
     }
 
     public changeEndTime(endTime : Date) :void{
@@ -210,14 +221,17 @@ export class Incident extends AggregateRoot<IncidentProps>{
         }
 
         this.props.endTime = endTime;
+        this.touch();
     }
 
     public changeSeverity(severity : Severity) : void{
         this.props.severity = severity;
+        this.touch();
     }
 
     public changeImpactMode(impactMode : ImpactMode) : void{
         this.props.impactMode = impactMode;
+        this.touch();
     }
 
     public changeDescription(description: string): void {
@@ -229,6 +243,7 @@ export class Incident extends AggregateRoot<IncidentProps>{
             )
         }
         this.props.description = description;
+        this.touch();
     }
 
     public changeUpComingWindowTimes(windowStartTime : Date, windowEndTime : Date) : void {
@@ -259,6 +274,7 @@ export class Incident extends AggregateRoot<IncidentProps>{
 
         this.props.upcomingWindowStartTime = windowStartTime;
         this.props.upcomingWindowEndTime = windowEndTime;
+        this.touch();
     }
 
     private calculateDuration(startTime : Date, endTime: Date) : void {
@@ -285,5 +301,9 @@ export class Incident extends AggregateRoot<IncidentProps>{
                 "Start time cannot be in the past"
             );
         }
+    }
+
+    private touch(): void {
+        this.props.updatedAt = new Date();
     }
 }
