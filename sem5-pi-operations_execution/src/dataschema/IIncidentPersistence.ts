@@ -2,7 +2,7 @@ import {Severity} from "../domain/incidentTypes/severity";
 import {ImpactMode} from "../domain/incident/impactMode";
 
 export interface IIncidentPersistence {
-    id? : string,
+    id : string,
     code : string,
     incidentTypeCode : string,
     vveList: string[];
