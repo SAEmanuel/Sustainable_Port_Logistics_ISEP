@@ -608,7 +608,9 @@
     "volume": "Volume",
     "dock": "Dock",
     "optional": "opcional",
-    "saving": "A guardar..."
+    "saving": "A guardar...",
+    "search" : "Procurar",
+    "select" : "Selecionar"
   },
   "vvn": {
     "title": "Vessel Visit Notifications",
@@ -1298,6 +1300,8 @@
     "createButton": "Criar Categoria",
     "noData": "Nenhuma categoria encontrada.",
     "read-only" : "Apenas de leitura",
+    "detailsTitle" : "Detalhes da categoria",
+
 
     "editModal": {
       "title": "Editar Categoria"
@@ -1482,6 +1486,82 @@
     "success": {
       "created": "Incident type created successfully!",
       "updated": "Incident type updated successfully!"
+    }
+  },
+  "ct": {
+    "title": "Tarefas Complementares",
+    "createButton": "Nova Tarefa",
+    "details": "Detalhes",
+    "noData": "Nenhuma tarefa encontrada.",
+    "createTitle": "Criar Tarefa Complementar",
+    "editTitle": "Editar Tarefa",
+    "read-only": "Apenas leitura",
+    "fix" : "CORRIGIR",
+    "fixCategoryTitle" : "Fix Category",
+    "fixCategoryMessage" : "The previous category was deactivated",
+
+    "stats": {
+      "total": "Total",
+      "scheduled": "Agendadas",
+      "inProgress": "Em Curso",
+      "completed": "Concluídas"
+    },
+
+    "table": {
+      "code": "Código",
+      "category": "Categoria",
+      "staff": "Staff",
+      "vve": "VVE",
+      "start": "Início",
+      "end": "Fim",
+      "status": "Estado",
+      "actions": "Ações"
+    },
+
+    "form": {
+      "code": "Código da Tarefa",
+      "category": "Categoria",
+      "vve": "VVE",
+      "staff": "Staff",
+      "startTime": "Hora de Início",
+      "endTime": "Hora de Fim",
+      "status": "Estado",
+      "newCategory" : "Nova Categoria"
+    },
+
+    "search": {
+      "all": "Todos",
+      "code": "Código",
+      "category": "Categoria",
+      "staff": "Staff",
+      "vve": "VVE"
+    },
+
+    "status": {
+      "Scheduled": "Agendada",
+      "InProgress": "Em Curso",
+      "Completed": "Concluída"
+    },
+
+    "errors": {
+      "loadAll": "Erro ao carregar tarefas",
+      "search": "A pesquisa falhou",
+      "loadCategory": "Falha ao carregar detalhes da categoria",
+      "codeRequired": "O código é obrigatório",
+      "categoryRequired": "A categoria é obrigatória",
+      "vveRequired": "O VVE é obrigatório",
+      "updateFailed": "Falha na atualização"
+    },
+
+    "success": {
+      "created": "Tarefa criada com sucesso",
+      "updated": "Tarefa atualizada com sucesso"
+    },
+
+    "actions": {
+      "create": "Criar",
+      "edit" : "Editar",
+      "fix" : "Alterar"
     }
   }
 }

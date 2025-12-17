@@ -20,6 +20,7 @@ import {
 import "./css/genericDashboard.css";
 import {FiAnchor, FiBox, FiFileText, FiMapPin} from "react-icons/fi";
 import {BsBookmarksFill} from "react-icons/bs";
+import {BookAIcon} from "lucide-react";
 
 type LinkItem = { label: string; path: string; color: string; icon: JSX.Element };
 
@@ -46,7 +47,8 @@ const routeIcon: Record<string, JSX.Element> = {
     "/sao": <FiFileText size={44} />,
     "/DR": <FiTablet size={44} />,
     "/DRAdmin": <FiShuffle size={44} />,
-    "/ctc" : <BsBookmarksFill size={44} />
+    "/ctc" : <BsBookmarksFill size={44} />,
+    "/ct" : <BookAIcon size={44} />
 };
 
 function useAccessibleLinksByRole(t: (k: string) => string, role?: "Administrator" | "PortAuthorityOfficer" | "LogisticsOperator" | "ShippingAgentRepresentative" | "ProjectManager" | "PortOperationsSupervisor" | null | undefined) {
@@ -60,6 +62,7 @@ function useAccessibleLinksByRole(t: (k: string) => string, role?: "Administrato
                     { label: t("dashboard.qualifications"), path: "/qualifications", color, icon: routeIcon["/qualifications"] },
                     { label: t("dashboard.physicalResources"), path: "/physical-resources", color, icon: routeIcon["/physical-resources"] },
                     { label: t("dashboard.staffMembers"), path: "/staff-members", color, icon: routeIcon["/staff-members"] },
+                    { label: t("dashboard.ct"), path: "/ct", color, icon: routeIcon["/ct"] },
                     { label: t("dashboard.port3d"), path: "/3dSecene", color, icon: routeIcon["/3dSecene"] },
                 );
                 L.push({ label: t("dashboard.dd"), path: "/datarights", color, icon: routeIcon["/DR"] },);
@@ -131,7 +134,7 @@ export default function GenericDashboard() {
                             src={picture}
                             alt={displayName || "avatar"}
                             className="gd-avatar-img"
-                            style={{ objectFit: "cover" }} // Garante que não fica distorcida
+                            style={{ objectFit: "cover" }}
                         />
                     ) : (
                         <div className="gd-avatar-placeholder">
