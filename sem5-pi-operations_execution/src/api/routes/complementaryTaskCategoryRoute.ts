@@ -31,6 +31,10 @@ export default (app: Router) => {
         config.controllers.complementaryTaskCategory.getByCode.name
     ) as GetCTCByCodeController;
 
+    const getByIdCtrl = Container.get(
+        config.controllers.complementaryTaskCategory.getById.name
+    ) as GetCTCByCodeController;
+
     const getByNameCtrl = Container.get(
         config.controllers.complementaryTaskCategory.getByName.name
     ) as GetCTCByNameController;
@@ -136,4 +140,6 @@ export default (app: Router) => {
         "/:code/deactivate",
         (req, res) => deactivateCtrl.execute(req, res)
     );
+
+    route.get("/search/id/:id", (req, res) => getByIdCtrl.execute(req, res));
 };

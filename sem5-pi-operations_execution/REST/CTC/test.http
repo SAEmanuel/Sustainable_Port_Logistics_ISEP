@@ -30,6 +30,8 @@ GET http://localhost:3000/api/complementary-task-categories
 ###
 GET http://localhost:3000/api/complementary-task-categories/CTC001
 
+###
+GET http://localhost:3000/api/complementary-task-categories/search/id/9fc6495d-4401-4b56-a9c5-04c531ff666d
 
 ###
 GET http://localhost:3000/api/complementary-task-categories/search/name?name=Onboard Security Check

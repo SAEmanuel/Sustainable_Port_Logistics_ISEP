@@ -32,6 +32,7 @@ export default async ({expressApp}: { expressApp: express.Application }) => {
             config.controllers.complementaryTaskCategory.create,
             config.controllers.complementaryTaskCategory.update,
             config.controllers.complementaryTaskCategory.getByCode,
+            config.controllers.complementaryTaskCategory.getById,
             config.controllers.complementaryTaskCategory.getByName,
             config.controllers.complementaryTaskCategory.getByDescription,
             config.controllers.complementaryTaskCategory.getByCategory,

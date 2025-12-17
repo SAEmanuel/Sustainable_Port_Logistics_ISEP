@@ -96,6 +96,10 @@ export default {
                 name: "GetCTCByCodeController",
                 path: "../controllers/complementaryTaskCategory/getCTCByCodeController"
             },
+            getById: {
+                name: "GetCTCByIdController",
+                path: "../controllers/complementaryTaskCategory/getCTCByIdController"
+            },
             getByName: {
                 name: "GetCTCByNameController",
                 path: "../controllers/complementaryTaskCategory/getCTCByNameController"

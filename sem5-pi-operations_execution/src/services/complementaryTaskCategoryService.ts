@@ -9,6 +9,7 @@ import { Logger } from "winston";
 import { BusinessRuleValidationError } from "../core/logic/BusinessRuleValidationError";
 import { CTCError } from "../domain/complementaryTaskCategory/errors/ctcErrors";
 import ComplementaryTaskCategoryMap from "../mappers/ComplementaryTaskCategoryMap";
+import {ComplementaryTaskCategoryId} from "../domain/complementaryTaskCategory/complementaryTaskCategoryId";
 
 @Service()
 export default class ComplementaryTaskCategoryService
@@ -111,6 +112,20 @@ export default class ComplementaryTaskCategoryService
                 CTCError.NotFound,
                 "Complementary task category not found",
                 `No category found with code ${code}`
+            );
+        }
+
+        return Result.ok(this.categoryMap.toDTO(category));
+    }
+
+    public async getByIdAsync(id: ComplementaryTaskCategoryId): Promise<Result<IComplementaryTaskCategoryDTO>> {
+
+        const category = await this.repo.findById(id);
+        if (!category) {
+            throw new BusinessRuleValidationError(
+                CTCError.NotFound,
+                "Complementary task category not found",
+                `No category found with id ${id}`
             );
         }
 
