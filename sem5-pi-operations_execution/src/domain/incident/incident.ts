@@ -1,5 +1,5 @@
 import {Severity} from "../incidentTypes/severity";
-import {ImpactMode, ImpactModeFactory} from "./impactMode";
+import {ImpactMode} from "./impactMode";
 import {AggregateRoot} from "../../core/domain/AggregateRoot";
 import {UniqueEntityID} from "../../core/domain/UniqueEntityID";
 import {IncidentId} from "./incidentId";
@@ -7,10 +7,12 @@ import {BusinessRuleValidationError} from "../../core/logic/BusinessRuleValidati
 import {IncidentError} from "./errors/incidentErrors";
 import {Guard} from "../../core/logic/Guard";
 import {IncidentType} from "../incidentTypes/incidentType";
+import {VesselVisitExecutionId} from "../vesselVisitExecution/vesselVisitExecutionId";
 
-interface IncidentProps{
+interface IncidentProps {
     code : string,
     incidentTypeCode : string,
+    vveList: string[];
     startTime : Date,
     endTime : Date | null,
     duration : number | null,
@@ -42,6 +44,10 @@ export class Incident extends AggregateRoot<IncidentProps>{
 
     get startTime() : Date{
         return this.props.startTime;
+    }
+
+    get vveList() : string[]{
+        return this.props.vveList;
     }
 
     get endTime() : Date | null{
@@ -150,8 +156,17 @@ export class Incident extends AggregateRoot<IncidentProps>{
             }
         }
 
-        return new Incident({...props}, id)
+        return new Incident({
+            ...props,
+            endTime : props.endTime ?? null,
+            duration : props.duration ?? null,
+            upcomingWindowStartTime: props.upcomingWindowStartTime ?? null,
+            upcomingWindowEndTime: props.upcomingWindowEndTime ?? null
+        }, id)
+    }
 
+    public static rehydrate(props: IncidentProps, id: UniqueEntityID): Incident {
+        return new Incident(props, id);
     }
 
     public changeIncidentTypeCode(incidentTypeCode : string) : void {
@@ -251,7 +266,8 @@ export class Incident extends AggregateRoot<IncidentProps>{
     }
 
     private static isValidCodeFormat(code: string): boolean {
-        return /^T-INC\d{3}$/.test(code);
+
+        return /^INC-2025-\d{4}$/.test(code);
     }
 
     private static validateTimeWindow(start: Date, end: Date | null): void {
