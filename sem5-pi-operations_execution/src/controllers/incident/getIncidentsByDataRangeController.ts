@@ -4,7 +4,7 @@ import {Logger} from "winston";
 import IIncidentService from "../../services/IServices/IIncidentService";
 
 @Service()
-export default class DeleteIncidentController extends BaseController {
+export default class GetIncidentsByDataRangeController extends BaseController {
     constructor(
         @Inject("IncidentService") private incidentService: IIncidentService,
         @Inject("logger") private logger: Logger
@@ -13,10 +13,12 @@ export default class DeleteIncidentController extends BaseController {
     }
 
     protected async executeImpl(): Promise<any> {
-        const incidentCode = this.req.params.code ? this.req.params.code : this.req.query.incidentCode as string;
+        // Conversão explícita de string para Date
+        const startDataRange = new Date(this.req.query.startDataRange as string);
+        const endDataRange = new Date(this.req.query.endDataRange as string);
 
         try {
-            const result = await this.incidentService.deleteAsync(incidentCode);
+            const result = await this.incidentService.getByDataRangeAsync(startDataRange, endDataRange);
 
             if (result.isFailure) {
                 return this.clientError(result.errorValue() as string);
@@ -24,7 +26,7 @@ export default class DeleteIncidentController extends BaseController {
 
             return this.ok(this.res, result.getValue());
         } catch (e) {
-            this.logger.error("Unexpected error deleting Incident", { e });
+            this.logger.error("Unexpected error getting incident by dataRange", { e });
             return this.fail("Internal server error");
         }
     }

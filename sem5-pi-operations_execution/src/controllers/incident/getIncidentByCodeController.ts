@@ -2,43 +2,29 @@ import {Inject, Service} from "typedi";
 import {BaseController} from "../../core/infra/BaseController";
 import {Logger} from "winston";
 import IIncidentService from "../../services/IServices/IIncidentService";
-import {BusinessRuleValidationError} from "../../core/logic/BusinessRuleValidationError";
 
 @Service()
-export default class UpdateIncidentController extends BaseController{
-
+export default class GetIncidentByCodeController extends BaseController {
     constructor(
         @Inject("IncidentService") private incidentService: IIncidentService,
         @Inject("logger") private logger: Logger
-
     ) {
         super();
     }
 
     protected async executeImpl(): Promise<any> {
-        const incidentCode = this.req.query.incidentCode as string;
+        const incidentCode = this.req.params.code ? this.req.params.code : this.req.query.incidentCode as string;
 
         try {
             const result = await this.incidentService.getByCodeAsync(incidentCode);
 
-            return this.ok(this.res, result.getValue());
-
-        } catch (e) {
-
-            if (e instanceof BusinessRuleValidationError) {
-                this.logger.warn("Business rule violation while getting Incident by code", {
-                    message: e.message,
-                    details: e.details
-                });
-
-                return this.clientError(e.message);
+            if (result.isFailure) {
+                return this.clientError(result.errorValue() as string);
             }
 
-            this.logger.error(
-                "Unexpected error getting incident by code",
-                { e }
-            );
-
+            return this.ok(this.res, result.getValue());
+        } catch (e) {
+            this.logger.error("Unexpected error getting incident by code", { e });
             return this.fail("Internal server error");
         }
     }
