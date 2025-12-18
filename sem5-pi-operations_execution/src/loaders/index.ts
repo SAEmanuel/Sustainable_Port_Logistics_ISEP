@@ -15,7 +15,8 @@ export default async ({expressApp}: { expressApp: express.Application }) => {
             {name: "userSchema", path: "../persistence/schemas/userSchema"},
             {name: "complementaryTaskCategorySchema", path: "../persistence/schemas/complementaryTaskCategorySchema"},
             {name: "incidentTypeSchema", path: "../persistence/schemas/incidentTypeSchema"},
-            {name: "complementaryTaskSchema", path: "../persistence/schemas/complementaryTaskSchema"}
+            {name: "complementaryTaskSchema", path: "../persistence/schemas/complementaryTaskSchema"},
+            {name: "vesselVisitExecutionSchema", path: "../persistence/schemas/vesselVisitExecutionSchema"}
         ],
 
         mappers: [
@@ -23,6 +24,8 @@ export default async ({expressApp}: { expressApp: express.Application }) => {
             {name: "ComplementaryTaskCategoryMap", path: "../mappers/ComplementaryTaskCategoryMap"},
             {name: "IncidentTypeMap", path: "../mappers/IncidentTypeMap"},
             {name: "ComplementaryTaskMap", path: "../mappers/ComplementaryTaskMap"},
+            {name: "VesselVisitExecutionMap", path: "../mappers/VesselVisitExecutionMap"},
+
         ],
 
         controllers: [
@@ -59,19 +62,26 @@ export default async ({expressApp}: { expressApp: express.Application }) => {
             config.controllers.incidentType.getRoot,
             config.controllers.incidentType.getByCode,
             config.controllers.incidentType.getByName,
-            config.controllers.incidentType.getDirectChilds
+            config.controllers.incidentType.getDirectChilds,
+
+            // VesselVisitExecution controllers
+            config.controllers.vesselVisitExecution.create,
+            config.controllers.vesselVisitExecution.getAll
+
         ],
         repos: [
             config.repos.user,
             config.repos.complementaryTaskCategory,
             config.repos.incidentType,
-            config.repos.complementaryTask
+            config.repos.complementaryTask,
+            config.repos.VesselVisitExecution
         ],
         services: [
             config.services.user,
             config.services.complementaryTaskCategory,
             config.services.incidentType,
-            config.services.complementaryTask
+            config.services.complementaryTask,
+            config.services.VesselVisitExecution
         ]
     });
 
