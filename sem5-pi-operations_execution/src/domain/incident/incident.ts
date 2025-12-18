@@ -193,6 +193,10 @@ export class Incident extends AggregateRoot<IncidentProps> {
         this.touch();
     }
 
+    public changeVVEList(vveList : string[]): void {
+        this.props.vveList = vveList;
+    }
+
     public changeStartTime(startTime: Date): void {
         if (startTime === null || startTime === undefined) {
             throw new BusinessRuleValidationError(
