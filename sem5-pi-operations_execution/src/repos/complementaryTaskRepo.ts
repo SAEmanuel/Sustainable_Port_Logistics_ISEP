@@ -56,7 +56,17 @@ export default class ComplementaryTaskRepo implements IComplementaryTaskRepo {
 
 
     public async findAll(): Promise<ComplementaryTask[]> {
+        const now = new Date();
+
         const records = await this.complementaryTaskSchema.find();
+
+        for (const r of records) {
+            if (r.status !== CTStatus.Completed && r.timeEnd.getTime() < now.getTime()) {
+                r.status = CTStatus.Completed;
+                await r.save();
+            }
+        }
+
         return records
             .map(r => this.complementaryTaskMap.toDomain(r))
             .filter(Boolean) as ComplementaryTask[];

@@ -27,6 +27,12 @@ export async function getCTCByCode(code: string): Promise<ComplementaryTaskCateg
 }
 
 
+export async function getCTCById(id: string): Promise<ComplementaryTaskCategory> {
+    const res = await operationsApi.get(`/api/complementary-task-categories/search/id/${id}`);
+    return mapToCTCDomain(res.data);
+}
+
+
 export async function getCTCByName(name: string): Promise<ComplementaryTaskCategory[]> {
     const res = await operationsApi.get("/api/complementary-task-categories/search/name",
         { params: { name } }

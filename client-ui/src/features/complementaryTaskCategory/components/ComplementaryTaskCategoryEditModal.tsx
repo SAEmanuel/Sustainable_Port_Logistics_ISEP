@@ -26,7 +26,6 @@ function ComplementaryTaskCategoryEditModal({ isOpen, onClose, onUpdated, resour
 
     useEffect(() => {
         if (isOpen) {
-            // Sincroniza o estado inicial do formulário com o recurso atual
             setFormData({
                 name: resource.name,
                 description: resource.description,
@@ -54,7 +53,6 @@ function ComplementaryTaskCategoryEditModal({ isOpen, onClose, onUpdated, resour
         e.preventDefault();
         setError(null);
 
-        // Validações básicas (consistentes com o modal de criação)
         if (!formData.name || formData.name.trim() === "") {
             const msg = t("ctc.errors.nameRequired");
             setError(new Error(msg));

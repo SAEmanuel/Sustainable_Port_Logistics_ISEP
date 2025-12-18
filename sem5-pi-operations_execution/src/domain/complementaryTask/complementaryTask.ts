@@ -72,7 +72,6 @@ export class ComplementaryTask extends AggregateRoot<ComplementaryTaskProps> {
     }
 
 
-
     get id(): UniqueEntityID {
         return this._id;
     }

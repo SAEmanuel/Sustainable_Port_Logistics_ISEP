@@ -114,6 +114,7 @@
     "accessModules": "Access Modules",
     "port3d": "3D Visualization",
     "ctc" : "Complementary Task Categories",
+    "ct" : "Complementary Tasks",
     "announcement": {
       "title": "System notices",
       "body": "Scheduled maintenance today at 23:00 — some modules may be unavailable."
@@ -601,7 +602,9 @@
     "volume": "Volume",
     "dock": "Dock",
     "downloadTemplate": "Download template",
-    "saving": "Saving..."
+    "saving": "Saving...",
+    "search" : "Search",
+    "select" : "Select"
   },
   "vvn": {
     "title": "Vessel Visit Notifications",
@@ -1300,10 +1303,13 @@
     "createButton": "Create Category",
     "noData": "No categories found.",
     "read-only" : "Read-only",
+    "detailsTitle" : "Category Details",
+
 
     "editModal": {
       "title": "Edit Category"
     },
+
 
     "stats": {
       "total": "Total",
@@ -1349,7 +1355,8 @@
       "code": "Code",
       "name": "Name",
       "description": "Description",
-      "duration": "Default Duration (minutes)"
+      "duration": "Default Duration",
+      "category" : "Category"
     },
 
     "errors": {
@@ -1486,6 +1493,76 @@
     "success": {
       "created": "Tipo de incidente criado com sucesso!",
       "updated": "Tipo de incidente atualizado com sucesso!"
+    }
+  },
+  "ct": {
+    "title": "Complementary Tasks",
+    "createButton": "New Task",
+    "details": "Details",
+    "noData": "No tasks found.",
+    "createTitle": "Create Complementary Task",
+    "editTitle": "Edit Task",
+    "read-only": "Read-only",
+    "fix" : "FIX",
+    "fixCategoryTitle" : "Corrigir Categoria",
+    "fixCategoryMessage" : "A Categoria anterior foi desativada",
+
+    "stats": {
+      "total": "Total",
+      "scheduled": "Scheduled",
+      "inProgress": "In Progress",
+      "completed": "Completed"
+    },
+
+    "table": {
+      "code": "Code",
+      "category": "Category",
+      "staff": "Staff",
+      "vve": "VVE",
+      "start": "Start Time",
+      "end": "End Time",
+      "status": "Status",
+      "actions": "Actions"
+    },
+    "form": {
+      "code": "Task Code",
+      "category": "Category",
+      "vve": "VVE",
+      "staff": "Staff",
+      "startTime": "Start Time",
+      "endTime": "End Time",
+      "status": "Status",
+      "newCategory" : "New Category"
+    },
+    "search": {
+      "all": "All",
+      "code": "Code",
+      "category": "Category",
+      "staff": "Staff",
+      "vve": "VVE"
+    },
+    "status": {
+      "Scheduled": "Scheduled",
+      "InProgress": "In Progress",
+      "Completed": "Completed"
+    },
+    "errors": {
+      "loadAll": "Error loading tasks",
+      "search": "Search failed",
+      "loadCategory": "Failed to load category details",
+      "codeRequired": "Code is required",
+      "categoryRequired": "Category is required",
+      "vveRequired": "VVE is required",
+      "updateFailed": "Update failed"
+    },
+    "success": {
+      "created": "Task created successfully",
+      "updated": "Task updated successfully"
+    },
+    "actions": {
+      "create": "Create",
+      "edit" : "Edit",
+      "fix" : "Fix"
     }
   }
 }

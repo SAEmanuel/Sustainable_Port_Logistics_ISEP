@@ -32,6 +32,7 @@ import IncidentType from "../features/incidentTypes/pages/IncidentTypePage.tsx"
 import SchedulePage from "../features/scheduling/pages/SchedulePage.tsx";
 import ComplementaryTaskCategoryPage
     from "../features/complementaryTaskCategory/pages/ComplementaryTaskCategoryPage.tsx";
+import ComplementaryTaskPage from "../features/complementaryTask/pages/ComplementaryTaskPage.tsx";
 
 export const router = createBrowserRouter([
     {
@@ -76,6 +77,12 @@ export const router = createBrowserRouter([
                                 path: "ctc",
                                 element: <RequireRole roles={[Roles.PortOperationsSupervisor]} />,
                                 children: [{ index: true, element: <ComplementaryTaskCategoryPage /> }],
+                            },
+
+                            {
+                                path: "ct",
+                                element: <RequireRole roles={[Roles.LogisticsOperator]} />,
+                                children: [{ index: true, element: <ComplementaryTaskPage /> }],
                             },
 
                             {

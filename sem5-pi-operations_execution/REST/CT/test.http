@@ -2,10 +2,10 @@ POST http://localhost:3000/api/complementary-tasks
 Content-Type: application/json
 
 {
-  "category": "1a14e352-1b76-41fb-b899-72664e019065",
-  "staff": "Staff A",
-  "timeStart": "2025-12-17T09:00:00.000Z",
-  "timeEnd": "2025-12-17T11:00:00.000Z",
+  "category": "1ae4cf4c-3e6d-4f2e-9b8f-a8d3091a0895",
+  "staff": "Staff XU",
+  "timeStart": "2026-01-10T10:00:00.000Z",
+  "timeEnd": "2026-01-10T12:00:00.000Z",
   "status": "Scheduled",
   "vve": "1a14e352-1b76-41fb-b899-72664e119065"
 }
@@ -15,10 +15,10 @@ PUT http://localhost:3000/api/complementary-tasks/CTC001[1]
 Content-Type: application/json
 
 {
-  "category": "1a14e352-1b76-41fb-b899-72664e019065",
+  "category": "1ae4cf4c-3e6d-4f2e-9b8f-a8d3091a0895",
   "staff": "Staff B",
-  "timeStart": "2025-12-17T10:00:00.000Z",
-  "timeEnd": "2025-12-17T12:00:00.000Z",
+  "timeStart": "2026-01-10T10:00:00.000Z",
+  "timeEnd": "2026-01-10T12:00:00.000Z",
   "status": "Scheduled",
   "vve": "1a14e352-1b76-41fb-b899-72664e119065"
 }

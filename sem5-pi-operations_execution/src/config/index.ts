@@ -96,6 +96,10 @@ export default {
                 name: "GetCTCByCodeController",
                 path: "../controllers/complementaryTaskCategory/getCTCByCodeController"
             },
+            getById: {
+                name: "GetCTCByIdController",
+                path: "../controllers/complementaryTaskCategory/getCTCByIdController"
+            },
             getByName: {
                 name: "GetCTCByNameController",
                 path: "../controllers/complementaryTaskCategory/getCTCByNameController"
@@ -165,6 +169,72 @@ export default {
             },
 
         },
+        incident: {
+            create: {
+                name : "CreateIncidentController",
+                path : "../controllers/incident/createIncidentController",
+            },
+
+            update: {
+                name : "UpdateIncidentController",
+                path : "../controllers/incident/updateIncidentController",
+            },
+
+            delete: {
+                name : "DeleteIncidentController",
+                path : "../controllers/incident/deleteIncidentController",
+            },
+
+            getAll: {
+                name : "GetAllIncidentsController",
+                path : "../controllers/incident/getAllIncidentsController",
+            },
+
+            getByCode: {
+                name : "GetIncidentByCodeController",
+                path : "../controllers/incident/getIncidentByCodeController",
+            },
+
+            getActive: {
+                name : "GetActiveIncidentsController",
+                path : "../controllers/incident/getActiveIncidentsController",
+            },
+
+            getResolved: {
+                name : "GetResolvedIncidentsController",
+                path : "../controllers/incident/getResolvedIncidentsController",
+            },
+
+            getByDateRange: {
+                name : "GetIncidentsByDataRangeController",
+                path : "../controllers/incident/getIncidentsByDataRangeController",
+            },
+
+            getBySeverity: {
+                name : "GetIncidentsBySeverityController",
+                path : "../controllers/incident/getIncidentsBySeverityController",
+            },
+
+            getByVVE: {
+                name : "GetIncidentsByVVEController",
+                path : "../controllers/incident/getIncidentsByVVEController",
+            },
+
+            addVVE: {
+                name : "AddVVEToIncidentController",
+                path : "../controllers/incident/addVVEToIncidentController",
+            },
+
+            removeVVE: {
+                name : "RemoveVVEFromIncidentController",
+                path : "../controllers/incident/removeVVEFromIncidentController",
+            },
+
+            markResolved: {
+                name : "MarkIncidentResolvedController",
+                path : "../controllers/incident/markIncidentResolvedController",
+            }
+        },
 
         vesselVisitExecution: {
             create: {
@@ -196,6 +266,10 @@ export default {
         VesselVisitExecution: {
             name: "VesselVisitExecutionRepo",
             path: "../repos/vesselVisitExecutionRepo"
+        },
+        incident: {
+            name: "incidentRepo",
+            path: "../repos/incidentRepo",
         }
     },
 
@@ -216,6 +290,10 @@ export default {
         VesselVisitExecution: {
             name: "VesselVisitExecutionService",
             path: "../services/vesselVisitExecutionService"
+        },
+        incident: {
+            name: "IncidentService",
+            path: "../services/incidentService"
         }
     }
 };

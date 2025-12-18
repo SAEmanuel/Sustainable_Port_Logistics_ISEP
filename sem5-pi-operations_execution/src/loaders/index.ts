@@ -4,6 +4,7 @@ import mongooseLoader from './mongoose';
 import dependencyInjectorLoader from './dependencyInjector';
 import config from '../config';
 import Logger from './logger';
+import IncidentMap from "../mappers/IncidentMap";
 
 export default async ({expressApp}: { expressApp: express.Application }) => {
     await mongooseLoader();
@@ -16,6 +17,8 @@ export default async ({expressApp}: { expressApp: express.Application }) => {
             {name: "complementaryTaskCategorySchema", path: "../persistence/schemas/complementaryTaskCategorySchema"},
             {name: "incidentTypeSchema", path: "../persistence/schemas/incidentTypeSchema"},
             {name: "complementaryTaskSchema", path: "../persistence/schemas/complementaryTaskSchema"},
+            {name: "incidentSchema", path: "../persistence/schemas/incidentSchema"},
+            {name: "complementaryTaskSchema", path: "../persistence/schemas/complementaryTaskSchema"},
             {name: "vesselVisitExecutionSchema", path: "../persistence/schemas/vesselVisitExecutionSchema"}
         ],
 
@@ -26,6 +29,7 @@ export default async ({expressApp}: { expressApp: express.Application }) => {
             {name: "ComplementaryTaskMap", path: "../mappers/ComplementaryTaskMap"},
             {name: "VesselVisitExecutionMap", path: "../mappers/VesselVisitExecutionMap"},
 
+            {name: "IncidentMap", path: "../mappers/IncidentMap"}
         ],
 
         controllers: [
@@ -35,6 +39,7 @@ export default async ({expressApp}: { expressApp: express.Application }) => {
             config.controllers.complementaryTaskCategory.create,
             config.controllers.complementaryTaskCategory.update,
             config.controllers.complementaryTaskCategory.getByCode,
+            config.controllers.complementaryTaskCategory.getById,
             config.controllers.complementaryTaskCategory.getByName,
             config.controllers.complementaryTaskCategory.getByDescription,
             config.controllers.complementaryTaskCategory.getByCategory,
@@ -66,13 +71,31 @@ export default async ({expressApp}: { expressApp: express.Application }) => {
 
             // VesselVisitExecution controllers
             config.controllers.vesselVisitExecution.create,
-            config.controllers.vesselVisitExecution.getAll
+            config.controllers.vesselVisitExecution.getAll,
 
+            config.controllers.incidentType.getDirectChilds,
+
+            // Incident controllers
+            config.controllers.incident.create,
+            config.controllers.incident.update,
+            config.controllers.incident.delete,
+            config.controllers.incident.getAll,
+            config.controllers.incident.getByCode,
+            config.controllers.incident.getActive,
+            config.controllers.incident.getResolved,
+            config.controllers.incident.getByDateRange,
+            config.controllers.incident.getBySeverity,
+            config.controllers.incident.getByVVE,
+            config.controllers.incident.addVVE,
+            config.controllers.incident.removeVVE,
+            config.controllers.incident.markResolved,
         ],
         repos: [
             config.repos.user,
             config.repos.complementaryTaskCategory,
             config.repos.incidentType,
+            config.repos.complementaryTask,
+            config.repos.incident,
             config.repos.complementaryTask,
             config.repos.VesselVisitExecution
         ],
@@ -81,7 +104,9 @@ export default async ({expressApp}: { expressApp: express.Application }) => {
             config.services.complementaryTaskCategory,
             config.services.incidentType,
             config.services.complementaryTask,
-            config.services.VesselVisitExecution
+            config.services.VesselVisitExecution,
+            config.services.complementaryTask,
+            config.services.incident,
         ]
     });
 

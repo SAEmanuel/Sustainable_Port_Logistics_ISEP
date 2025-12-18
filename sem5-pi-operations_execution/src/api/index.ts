@@ -2,6 +2,7 @@ import { Router } from 'express';
 import userRoute from "./routes/userRoute";
 import complementaryTaskCategoryRoute from "./routes/complementaryTaskCategoryRoute";
 import incidentTypeRoute from "./routes/incidentTypeRoute"
+import incidentRoute from "./routes/incidentRoute"
 import complementaryTaskRoute from "./routes/complementaryTaskRoute";
 import vveRoute from "./routes/vveRoute";
 export default () => {
@@ -16,6 +17,7 @@ export default () => {
     complementaryTaskCategoryRoute(app);
     complementaryTaskRoute(app);
     incidentTypeRoute(app);
+    incidentRoute(app);
     vveRoute(app);
     return app;
 }
