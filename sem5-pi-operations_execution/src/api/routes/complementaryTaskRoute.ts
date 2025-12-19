@@ -71,9 +71,7 @@ export default (app: Router) => {
         "/update-status/:code",
         celebrate({
             body: Joi.object({
-                status: Joi.string().valid("Scheduled", "In Progress", "Completed").required(),
-                timeStart: Joi.date().iso().required(),
-                timeEnd: Joi.date().iso().required(),
+                status: Joi.string().valid("Scheduled", "In Progress", "Completed").required()
             })
         }),
         (req, res) => updateStatusCtrl.execute(req, res)

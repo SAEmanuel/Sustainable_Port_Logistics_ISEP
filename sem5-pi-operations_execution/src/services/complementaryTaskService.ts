@@ -4,7 +4,11 @@ import {Logger} from "winston";
 import IComplementaryTaskService from "./IServices/IComplementaryTaskService";
 import IComplementaryTaskRepo from "./IRepos/IComplementaryTaskRepo";
 import ComplementaryTaskMap from "../mappers/ComplementaryTaskMap";
-import {IComplementaryTaskDTO, IComplementaryTaskStatusDTO} from "../dto/IComplementaryTaskDTO";
+import {
+    IComplementaryTaskDTO,
+    ICreateComplementaryTaskDTO,
+    IUpdateComplementaryTaskDetailsDTO, IUpdateComplementaryTaskStatusDTO
+} from "../dto/IComplementaryTaskDTO";
 import {Result} from "../core/logic/Result";
 import {ComplementaryTaskCategoryId} from "../domain/complementaryTaskCategory/complementaryTaskCategoryId";
 import {ComplementaryTaskCode} from "../domain/complementaryTask/ComplementaryTaskCode";
@@ -34,7 +38,7 @@ export default class ComplementaryTaskService implements IComplementaryTaskServi
     ) {
     }
 
-    public async createAsync(dto: IComplementaryTaskDTO): Promise<Result<IComplementaryTaskDTO>> {
+    public async createAsync(dto: ICreateComplementaryTaskDTO): Promise<Result<IComplementaryTaskDTO>> {
         this.logger.info("Creating ComplementaryTask");
 
         const number = await this.repo.getNextSequenceNumber();
@@ -74,7 +78,7 @@ export default class ComplementaryTaskService implements IComplementaryTaskServi
         return Result.ok(this.complementaryTaskMap.toDTO(saved));
     }
 
-    public async updateAsync(code: ComplementaryTaskCode, dto: IComplementaryTaskDTO): Promise<Result<IComplementaryTaskDTO>> {
+    public async updateAsync(code: ComplementaryTaskCode, dto: IUpdateComplementaryTaskDetailsDTO): Promise<Result<IComplementaryTaskDTO>> {
         const task = await this.repo.findByCode(code);
         if (!task) {
             throw new BusinessRuleValidationError(
@@ -103,7 +107,7 @@ export default class ComplementaryTaskService implements IComplementaryTaskServi
         return Result.ok(this.complementaryTaskMap.toDTO(saved));
     }
 
-    public async updateStatusAsync(code: ComplementaryTaskCode, dto: IComplementaryTaskStatusDTO): Promise<Result<IComplementaryTaskDTO>> {
+    public async updateStatusAsync(code: ComplementaryTaskCode, dto: IUpdateComplementaryTaskStatusDTO): Promise<Result<IComplementaryTaskDTO>> {
         const task = await this.repo.findByCode(code);
         if (!task) {
             throw new BusinessRuleValidationError(

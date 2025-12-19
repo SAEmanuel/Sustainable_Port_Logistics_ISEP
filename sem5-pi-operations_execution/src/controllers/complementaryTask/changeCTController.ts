@@ -3,7 +3,7 @@ import { BaseController } from "../../core/infra/BaseController";
 import { Logger } from "winston";
 import { BusinessRuleValidationError } from "../../core/logic/BusinessRuleValidationError";
 import IComplementaryTaskService from "../../services/IServices/IComplementaryTaskService";
-import {IComplementaryTaskStatusDTO} from "../../dto/IComplementaryTaskDTO";
+import {IUpdateComplementaryTaskStatusDTO} from "../../dto/IComplementaryTaskDTO";
 import {ComplementaryTaskCode} from "../../domain/complementaryTask/ComplementaryTaskCode";
 
 @Service()
@@ -19,7 +19,7 @@ export default class ChangeCTController extends BaseController {
 
     protected async executeImpl(): Promise<any> {
         const code = this.req.params.code;
-        const dto = this.req.body as IComplementaryTaskStatusDTO;
+        const dto = this.req.body as IUpdateComplementaryTaskStatusDTO;
 
         try {
             if (!code) {

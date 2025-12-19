@@ -11,7 +11,7 @@ Content-Type: application/json
 }
 
 ###
-PUT http://localhost:3000/api/complementary-tasks/CTC001[1]
+PUT http://localhost:3000/api/complementary-tasks/CTC001%5B1%5D
 Content-Type: application/json
 
 {
@@ -21,6 +21,14 @@ Content-Type: application/json
   "timeEnd": "2026-01-10T12:00:00.000Z",
   "status": "Scheduled",
   "vve": "1a14e352-1b76-41fb-b899-72664e119065"
+}
+
+###
+PUT http://localhost:3000/api/complementary-tasks/update-status/CTC003%5B1%5D
+Content-Type: application/json
+
+{
+  "status": "InProgress"
 }
 
 ###
