@@ -12,10 +12,9 @@ import {Incident} from "../domain/incident/incident";
 import IIncidentTypeRepository from "./IRepos/IIncidentTypeRepository";
 import {Severity, SeverityFactory} from "../domain/incidentTypes/severity";
 import {ImpactMode, ImpactModeFactory} from "../domain/incident/impactMode";
+import IVesselVisitExecutionRepo from "./IRepos/IVesselVisitExecutionRepo";
+import {VesselVisitExecutionCode} from "../domain/vesselVisitExecution/vesselVisitExecutionCode";
 
-async function checkIfVVEsExist(vveList: string[] | string) {
-    // Placeholder for VVE Service validation
-}
 
 @Service()
 export default class IncidentService implements IIncidentService {
@@ -25,6 +24,8 @@ export default class IncidentService implements IIncidentService {
         private repo : IIncidentRepo,
         @Inject("IncidentTypeRepo")
         private repoType: IIncidentTypeRepository,
+        @Inject("VesselVisitExecutionRepo")
+        private repoVVE: IVesselVisitExecutionRepo,
         @Inject("IncidentMap")
         private incidentMap: IncidentMap,
         @Inject("logger")
@@ -55,10 +56,10 @@ export default class IncidentService implements IIncidentService {
                 );
             }
 
-            await checkIfVVEsExist(dto.vveList);
-
             const severity = SeverityFactory.fromString(String(dto.severity));
             const impactMode = ImpactModeFactory.fromString(String(dto.impactMode));
+
+            let listFinalVVE: string[] = [];
 
             if(impactMode == ImpactMode.Specific && dto.vveList.length != 1) {
                 throw new BusinessRuleValidationError(
@@ -66,17 +67,33 @@ export default class IncidentService implements IIncidentService {
                     "Invalid number of VVE",
                     `VVE list must have only 1 VVE when impactMode is 'Specific'.`
                 )
-            }else if(impactMode == ImpactMode.AllOnGoing ) {
-                // ir busvar todos a data-base
-            }else if(impactMode == ImpactMode.Upcoming ) {
-                // ir buscar a base de dados todos os atuais, e sempre que for chamdo e novos VVEs sejham criados tbm vao ser afetados por este (DENTRO DOS SEU TEMPOS CLARO)
-            }
 
+            } else if(impactMode == ImpactMode.AllOnGoing) {
+                const vves = await this.repoVVE.findAll();
+                listFinalVVE = vves.map(v => v.id.toString());
+
+            } else if(impactMode == ImpactMode.Upcoming) {
+
+                if(dto.upcomingWindowStartTime == null || dto.upcomingWindowEndTime == null){
+                    throw new BusinessRuleValidationError(
+                        IncidentTypeError.InvalidInput,
+                        "Invalid parameters for incident.",
+                        "When incident impactmode is 'Upcoming' upcomingStart/EndDate cannot be null."
+                    )
+                }
+
+                const vves = await this.repoVVE.getAllInDateRange(dto.upcomingWindowStartTime, dto.upcomingWindowEndTime);
+                listFinalVVE = vves.map(v => v.id.toString());
+
+            } else {
+                await this.checkIfVVEsExist(dto.vveList);
+                listFinalVVE = dto.vveList;
+            }
 
             const incident = Incident.create({
                 code :  dto.code,
                 incidentTypeCode: dto.incidentTypeCode,
-                vveList : dto.vveList,
+                vveList : listFinalVVE,
                 startTime : dto.startTime,
                 endTime : dto.endTime,
                 duration : null,
@@ -127,7 +144,7 @@ export default class IncidentService implements IIncidentService {
                 )
             }
 
-            await checkIfVVEsExist(dto.vveList);
+            await this.checkIfVVEsExist(dto.vveList);
 
             const parsedSeverity = SeverityFactory.fromString(String(dto.severity));
             const parsedImpactMode = ImpactModeFactory.fromString(String(dto.impactMode));
@@ -205,7 +222,6 @@ export default class IncidentService implements IIncidentService {
         }
     }
 
-    // --- IMPLEMENTED METHOD ---
     public async getByDataRangeAsync(startDateRange : Date, endDateRange : Date): Promise<Result<IIncidentDTO[]>>{
         try {
             if (startDateRange > endDateRange) {
@@ -221,13 +237,9 @@ export default class IncidentService implements IIncidentService {
             return Result.fail<IIncidentDTO[]>(errorMessage);
         }
     }
-    // --------------------------
 
-    // --- IMPLEMENTED METHOD ---
     public async getBySeverityAsync(severity : Severity): Promise<Result<IIncidentDTO[]>>{
         try {
-            // Note: If 'severity' comes in as a string from the controller, you might need
-            // to parse it here using SeverityFactory.fromString(severity) before passing to repo.
             const incidents = await this.repo.getBySeverity(severity);
             const dtos = incidents.map(i => this.incidentMap.toDTO(i));
 
@@ -237,9 +249,7 @@ export default class IncidentService implements IIncidentService {
             return Result.fail<IIncidentDTO[]>(errorMessage);
         }
     }
-    // --------------------------
 
-    // --- IMPLEMENTED METHOD ---
     public async getActiveIncidentsAsync() : Promise<Result<IIncidentDTO[]>> {
         try {
             const incidents = await this.repo.getActiveIncidents();
@@ -250,9 +260,7 @@ export default class IncidentService implements IIncidentService {
             return Result.fail<IIncidentDTO[]>(errorMessage);
         }
     }
-    // --------------------------
 
-    // --- IMPLEMENTED METHOD ---
     public async getResolvedIncidentsAsync(): Promise<Result<IIncidentDTO[]>> {
         try {
             const incidents = await this.repo.getResolvedIncidents();
@@ -263,11 +271,10 @@ export default class IncidentService implements IIncidentService {
             return Result.fail<IIncidentDTO[]>(errorMessage);
         }
     }
-    // --------------------------
 
     public async getByVVEAsync(vveCode: string): Promise<Result<IIncidentDTO[]>> {
         try {
-            await checkIfVVEsExist(vveCode);
+            await this.checkIfVVEsExist(vveCode);
 
             const listIncidentsFromDb = await this.repo.findByVVE(vveCode);
             const dtos = listIncidentsFromDb.map(i => this.incidentMap.toDTO(i));
@@ -329,7 +336,7 @@ export default class IncidentService implements IIncidentService {
                 )
             }
 
-            await checkIfVVEsExist(vveCode);
+            await this.checkIfVVEsExist(vveCode);
 
             incident.addAffectedVve(vveCode);
 
@@ -358,10 +365,6 @@ export default class IncidentService implements IIncidentService {
                     `No Incident found with code ${incidentCode}`
                 )
             }
-
-            // VVE existence check might not be needed for removal
-            // await checkIfVVEsExist(vveCode);
-
             incident.removeAffectedVve(vveCode);
 
             const save = await this.repo.save(incident);
@@ -376,6 +379,35 @@ export default class IncidentService implements IIncidentService {
         } catch (e) {
             const msg = e instanceof Error ? e.message : "Unknown error";
             return Result.fail<IIncidentDTO>(msg);
+        }
+    }
+
+    public async checkIfVVEsExist(vveList: string[] | string): Promise<void> {
+        if (Array.isArray(vveList)) {
+            for (const vve of vveList) {
+
+                const vveCode = VesselVisitExecutionCode.create(vve);
+                const exist = await this.repoVVE.findByCode(vveCode);
+
+                if (!exist) {
+                    throw new BusinessRuleValidationError(
+                        IncidentError.NotFound,
+                        "Error finding VVE in the DB.",
+                        `VVE code ${vveCode} was not found in the DataBase.`
+                    )
+                }
+            }
+        } else {
+            const vveCode = VesselVisitExecutionCode.create(vveList);
+            const exist = await this.repoVVE.findByCode(vveCode);
+
+            if (!exist) {
+                throw new BusinessRuleValidationError(
+                    IncidentError.NotFound,
+                    "Error finding VVE in the DB.",
+                    `VVE code ${vveCode} was not found in the DataBase.`
+                )
+            }
         }
     }
 }

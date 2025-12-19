@@ -4,6 +4,7 @@ import { VesselVisitExecution } from "../domain/vesselVisitExecution/vesselVisit
 import { IVesselVisitExecutionPersistence } from "../dataschema/IVesselVisitExecutionPersistence";
 import { Document, Model } from 'mongoose';
 import VesselVisitExecutionMap from "../mappers/VesselVisitExecutionMap";
+import { VesselVisitExecutionCode } from "../domain/vesselVisitExecution/vesselVisitExecutionCode";
 
 @Service()
 export default class VesselVisitExecutionRepo implements IVesselVisitExecutionRepo {
@@ -12,8 +13,28 @@ export default class VesselVisitExecutionRepo implements IVesselVisitExecutionRe
         private vveSchema: Model<IVesselVisitExecutionPersistence & Document>,
         @Inject('VesselVisitExecutionMap')
         private vesselVisitExecutionMap: VesselVisitExecutionMap
+    ) {
+    }
 
-    ) {}
+    async getAllInDateRange(startDate: Date, endDate: Date): Promise<VesselVisitExecution[]> {
+        const query = {
+            actualArrivalTime: {
+                $gte: startDate,
+                $lte: endDate
+            }
+        };
+
+        const records = await this.vveSchema.find(query);
+
+        return records.map(record => this.vesselVisitExecutionMap.toDomain(record));
+    }
+
+    async findByCode(code: VesselVisitExecutionCode): Promise<VesselVisitExecution | null> {
+        const codeValue = code instanceof VesselVisitExecutionCode ? code.value : code;
+
+        const record = await this.vveSchema.findOne({ code: codeValue });
+        return record ? this.vesselVisitExecutionMap.toDomain(record) : null;
+    }
 
     public async save(vve: VesselVisitExecution): Promise<VesselVisitExecution> {
         const query = { domainId: vve.id.toString() };
