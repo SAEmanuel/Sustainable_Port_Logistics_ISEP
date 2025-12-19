@@ -4,32 +4,22 @@ Content-Type: application/json
 {
   "category": "1ae4cf4c-3e6d-4f2e-9b8f-a8d3091a0895",
   "staff": "Staff XU",
-  "timeStart": "2026-01-10T10:00:00.000Z",
-  "timeEnd": "2026-01-10T12:00:00.000Z",
-  "status": "Scheduled",
-  "vve": "1a14e352-1b76-41fb-b899-72664e119065"
+  "timeStart": "2025-12-19T23:36:00.000Z",
+  "vve": "6153757c-4db4-4e7b-bb92-e1eebe2264d3"
 }
 
 ###
-PUT http://localhost:3000/api/complementary-tasks/CTC001%5B1%5D
+PUT http://localhost:3000/api/complementary-tasks/CTC006%5B1%5D
 Content-Type: application/json
 
 {
   "category": "1ae4cf4c-3e6d-4f2e-9b8f-a8d3091a0895",
   "staff": "Staff B",
-  "timeStart": "2026-01-10T10:00:00.000Z",
-  "timeEnd": "2026-01-10T12:00:00.000Z",
-  "status": "Scheduled",
-  "vve": "1a14e352-1b76-41fb-b899-72664e119065"
+  "timeStart": "2025-12-19T22:13:00.000Z",
+  "status": "Completed",
+  "vve": "6153757c-4db4-4e7b-bb92-e1eebe2264d3"
 }
 
-###
-PUT http://localhost:3000/api/complementary-tasks/update-status/CTC003%5B1%5D
-Content-Type: application/json
-
-{
-  "status": "InProgress"
-}
 
 ###
 GET http://localhost:3000/api/complementary-tasks

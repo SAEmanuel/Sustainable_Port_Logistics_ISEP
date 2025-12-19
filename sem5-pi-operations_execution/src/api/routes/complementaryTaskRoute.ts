@@ -15,7 +15,6 @@ import GetCTByVveController from "../../controllers/complementaryTask/getCTByVve
 import GetInProgressCTController from "../../controllers/complementaryTask/getInProgressCTController";
 import GetInRangeCTController from "../../controllers/complementaryTask/getInRangeCTController";
 import GetScheduledCTController from "../../controllers/complementaryTask/getScheduledCTController";
-import ChangeCTController from "../../controllers/complementaryTask/changeCTController";
 
 const route = Router();
 
@@ -24,7 +23,6 @@ export default (app: Router) => {
 
     const createCtrl = Container.get(config.controllers.complementaryTask.create.name) as CreateCTController;
     const updateCtrl = Container.get(config.controllers.complementaryTask.update.name) as UpdateCTController;
-    const updateStatusCtrl = Container.get(config.controllers.complementaryTask.updateStatus.name) as ChangeCTController;
     const getAllCtrl = Container.get(config.controllers.complementaryTask.getAll.name) as GetAllCTController;
     const getCompletedCtrl = Container.get(config.controllers.complementaryTask.getCompleted.name) as GetCompletedCTController;
     const getByCategoryCtrl = Container.get(config.controllers.complementaryTask.getByCategory.name) as GetCTByCategoryController;
@@ -43,8 +41,6 @@ export default (app: Router) => {
                 category: Joi.string().required(),
                 staff: Joi.string().required(),
                 timeStart: Joi.date().iso().required(),
-                timeEnd: Joi.date().iso().required(),
-                status: Joi.string().valid("Scheduled", "In Progress", "Completed").required(),
                 vve: Joi.string().required()
             })
         }),
@@ -59,24 +55,12 @@ export default (app: Router) => {
                 category: Joi.string().required(),
                 staff: Joi.string().required(),
                 timeStart: Joi.date().iso().required(),
-                timeEnd: Joi.date().iso().required(),
-                status: Joi.string().valid("Scheduled", "In Progress", "Completed").required(),
+                status: Joi.string().valid("Scheduled", "InProgress", "Completed").required(),
                 vve: Joi.string().required()
             })
         }),
         (req, res) => updateCtrl.execute(req, res)
     );
-
-    route.put(
-        "/update-status/:code",
-        celebrate({
-            body: Joi.object({
-                status: Joi.string().valid("Scheduled", "In Progress", "Completed").required()
-            })
-        }),
-        (req, res) => updateStatusCtrl.execute(req, res)
-    );
-
 
     route.get("/search/completed", (req, res) => getCompletedCtrl.execute(req, res));
     route.get("/search/in-progress", (req, res) => getInProgressCtrl.execute(req, res));

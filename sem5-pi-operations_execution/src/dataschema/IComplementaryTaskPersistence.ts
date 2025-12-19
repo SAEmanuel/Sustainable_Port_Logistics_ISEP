@@ -7,7 +7,7 @@ export interface IComplementaryTaskPersistence {
     category: string,
     staff: string,
     timeStart: Date,
-    timeEnd: Date,
+    timeEnd: Date | null,
     status: CTStatus,
     vve: string,
     createdAt: Date;

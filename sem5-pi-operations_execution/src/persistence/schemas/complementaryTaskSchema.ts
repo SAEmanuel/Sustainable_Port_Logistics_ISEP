@@ -37,7 +37,7 @@ const ComplementaryTaskSchema = new mongoose.Schema(
 
         timeEnd: {
             type: Date,
-            required: true
+            required: false
         },
 
         status: {

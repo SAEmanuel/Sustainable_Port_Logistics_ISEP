@@ -12,3 +12,7 @@ Content-Type: application/json
 
 ### Listar todos os registos de VVE
 GET {{api_url}}
+
+
+### Get by id
+GET http://localhost:3000/api/vve/6153757c-4db4-4e7b-bb92-e1eebe2264d3

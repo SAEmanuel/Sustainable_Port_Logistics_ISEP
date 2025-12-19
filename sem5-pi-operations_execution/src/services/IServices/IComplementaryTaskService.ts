@@ -1,7 +1,6 @@
 import {Result} from "../../core/logic/Result";
 import {
-    IComplementaryTaskDTO, ICreateComplementaryTaskDTO, IUpdateComplementaryTaskDetailsDTO,
-    IUpdateComplementaryTaskStatusDTO
+    IComplementaryTaskDTO, IHandleComplementaryTaskDTO
 } from "../../dto/IComplementaryTaskDTO";
 import {ComplementaryTaskCode} from "../../domain/complementaryTask/ComplementaryTaskCode";
 import {ComplementaryTaskCategoryId} from "../../domain/complementaryTaskCategory/complementaryTaskCategoryId";
@@ -9,11 +8,9 @@ import {VesselVisitExecutionId} from "../../domain/vesselVisitExecution/vesselVi
 
 export default interface IComplementaryTaskService {
 
-    createAsync(dto: ICreateComplementaryTaskDTO): Promise<Result<IComplementaryTaskDTO>>;
+    createAsync(dto: IHandleComplementaryTaskDTO): Promise<Result<IComplementaryTaskDTO>>;
 
-    updateAsync(code: ComplementaryTaskCode, dto: IUpdateComplementaryTaskDetailsDTO): Promise<Result<IComplementaryTaskDTO>>;
-
-    updateStatusAsync(code: ComplementaryTaskCode, dto: IUpdateComplementaryTaskStatusDTO): Promise<Result<IComplementaryTaskDTO>>;
+    updateAsync(code: ComplementaryTaskCode, dto: IHandleComplementaryTaskDTO): Promise<Result<IComplementaryTaskDTO>>;
 
     getAllAsync(): Promise<Result<IComplementaryTaskDTO[]>>;
 
