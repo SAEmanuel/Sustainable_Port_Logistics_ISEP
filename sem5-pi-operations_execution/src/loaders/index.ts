@@ -4,7 +4,6 @@ import mongooseLoader from './mongoose';
 import dependencyInjectorLoader from './dependencyInjector';
 import config from '../config';
 import Logger from './logger';
-import IncidentMap from "../mappers/IncidentMap";
 
 export default async ({expressApp}: { expressApp: express.Application }) => {
     await mongooseLoader();
@@ -49,6 +48,7 @@ export default async ({expressApp}: { expressApp: express.Application }) => {
             // ComplementaryTask controllers
             config.controllers.complementaryTask.create,
             config.controllers.complementaryTask.update,
+            config.controllers.complementaryTask.updateStatus,
             config.controllers.complementaryTask.getAll,
             config.controllers.complementaryTask.getCompleted,
             config.controllers.complementaryTask.getByCategory,

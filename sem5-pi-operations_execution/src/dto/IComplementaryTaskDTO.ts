@@ -5,8 +5,12 @@ export interface IComplementaryTaskDTO {
     code?: string;
     category: string;
     staff: string;
+    status: CTStatus;
     timeStart: Date;
     timeEnd: Date;
-    status: CTStatus;
     vve: string;
+}
+
+export interface IComplementaryTaskStatusDTO {
+    status: CTStatus;
 }

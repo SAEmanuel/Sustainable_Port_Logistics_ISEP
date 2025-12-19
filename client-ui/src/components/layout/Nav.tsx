@@ -4,12 +4,11 @@ import { useTranslation } from "react-i18next";
 import { useAuth0 } from "@auth0/auth0-react";
 import Profile from "../Profile";
 import LogoutButton from "../LogoutButton";
-import { useModuleLinks } from "../../hooks/useModuleLinks"; // IMPORTAR O NOVO HOOK
+import { useModuleLinks } from "../../hooks/useModuleLinks";
 
 import {
     FiHome,
     FiLayers,
-    FiTablet
 } from "react-icons/fi";
 
 type NavProps = {

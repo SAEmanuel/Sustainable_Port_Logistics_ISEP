@@ -4,7 +4,7 @@ import {Logger} from "winston";
 import IComplementaryTaskService from "./IServices/IComplementaryTaskService";
 import IComplementaryTaskRepo from "./IRepos/IComplementaryTaskRepo";
 import ComplementaryTaskMap from "../mappers/ComplementaryTaskMap";
-import {IComplementaryTaskDTO} from "../dto/IComplementaryTaskDTO";
+import {IComplementaryTaskDTO, IComplementaryTaskStatusDTO} from "../dto/IComplementaryTaskDTO";
 import {Result} from "../core/logic/Result";
 import {ComplementaryTaskCategoryId} from "../domain/complementaryTaskCategory/complementaryTaskCategoryId";
 import {ComplementaryTaskCode} from "../domain/complementaryTask/ComplementaryTaskCode";
@@ -91,6 +91,29 @@ export default class ComplementaryTaskService implements IComplementaryTaskServi
             dto.timeEnd,
             VesselVisitExecutionId.create(dto.vve)
         );
+
+        const saved = await this.repo.save(task);
+        if (!saved) {
+            throw new BusinessRuleValidationError(
+                CTError.PersistError,
+                "Error updating complementary task"
+            );
+        }
+
+        return Result.ok(this.complementaryTaskMap.toDTO(saved));
+    }
+
+    public async updateStatusAsync(code: ComplementaryTaskCode, dto: IComplementaryTaskStatusDTO): Promise<Result<IComplementaryTaskDTO>> {
+        const task = await this.repo.findByCode(code);
+        if (!task) {
+            throw new BusinessRuleValidationError(
+                CTError.NotFound,
+                "Complementary task not found",
+                `No task found with code ${code}`
+            );
+        }
+
+        task.changeStatus(dto.status);
 
         const saved = await this.repo.save(task);
         if (!saved) {

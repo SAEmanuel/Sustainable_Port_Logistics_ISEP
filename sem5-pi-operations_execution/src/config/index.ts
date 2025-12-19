@@ -131,6 +131,10 @@ export default {
                 name : "UpdateCTController",
                 path : "../controllers/complementaryTask/updateCTController",
             },
+            updateStatus : {
+                name : "ChangeCTController",
+                path : "../controllers/complementaryTask/changeCTController",
+            },
             getAll : {
                 name : "GetAllCTController",
                 path : "../controllers/complementaryTask/getAllCTController",

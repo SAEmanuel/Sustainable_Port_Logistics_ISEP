@@ -1,13 +1,13 @@
-import { ComplementaryTaskCategoryId } from "../complementaryTaskCategory/complementaryTaskCategoryId";
-import { CTStatus } from "./ctstatus";
-import { VesselVisitExecutionId } from "../vesselVisitExecution/vesselVisitExecutionId";
-import { ComplementaryTaskCode } from "./ComplementaryTaskCode";
-import { AggregateRoot } from "../../core/domain/AggregateRoot";
-import { UniqueEntityID } from "../../core/domain/UniqueEntityID";
-import { Guard } from "../../core/logic/Guard";
-import { BusinessRuleValidationError } from "../../core/logic/BusinessRuleValidationError";
-import { CTError } from "./errors/ctErrors";
-import { ComplementaryTaskId } from "./complementaryTaskId";
+import {ComplementaryTaskCategoryId} from "../complementaryTaskCategory/complementaryTaskCategoryId";
+import {CTStatus} from "./ctstatus";
+import {VesselVisitExecutionId} from "../vesselVisitExecution/vesselVisitExecutionId";
+import {ComplementaryTaskCode} from "./ComplementaryTaskCode";
+import {AggregateRoot} from "../../core/domain/AggregateRoot";
+import {UniqueEntityID} from "../../core/domain/UniqueEntityID";
+import {Guard} from "../../core/logic/Guard";
+import {BusinessRuleValidationError} from "../../core/logic/BusinessRuleValidationError";
+import {CTError} from "./errors/ctErrors";
+import {ComplementaryTaskId} from "./complementaryTaskId";
 
 interface ComplementaryTaskProps {
     code: ComplementaryTaskCode;
@@ -22,23 +22,20 @@ interface ComplementaryTaskProps {
 }
 
 export class ComplementaryTask extends AggregateRoot<ComplementaryTaskProps> {
-
     private constructor(props: ComplementaryTaskProps, id?: UniqueEntityID) {
         super(props, id);
     }
 
-
     public static create(props: ComplementaryTaskProps, id?: UniqueEntityID): ComplementaryTask {
-
         const guardResult = Guard.againstNullOrUndefinedBulk([
-            { argument: props.code, argumentName: "code" },
-            { argument: props.category, argumentName: "categoryId" },
-            { argument: props.staff, argumentName: "staff" },
-            { argument: props.timeStart, argumentName: "timeStart" },
-            { argument: props.timeEnd, argumentName: "timeEnd" },
-            { argument: props.status, argumentName: "status" },
-            { argument: props.vve, argumentName: "vveId" },
-            { argument: props.createdAt, argumentName: "createdAt" }
+            {argument: props.code, argumentName: "code"},
+            {argument: props.category, argumentName: "categoryId"},
+            {argument: props.staff, argumentName: "staff"},
+            {argument: props.timeStart, argumentName: "timeStart"},
+            {argument: props.timeEnd, argumentName: "timeEnd"},
+            {argument: props.status, argumentName: "status"},
+            {argument: props.vve, argumentName: "vveId"},
+            {argument: props.createdAt, argumentName: "createdAt"},
         ]);
 
         if (!guardResult.succeeded) {
@@ -52,16 +49,13 @@ export class ComplementaryTask extends AggregateRoot<ComplementaryTaskProps> {
         this.validateTimeWindow(props.timeStart, props.timeEnd);
 
         if (!props.staff.trim()) {
-            throw new BusinessRuleValidationError(
-                CTError.InvalidInput,
-                "Staff is required"
-            );
+            throw new BusinessRuleValidationError(CTError.InvalidInput, "Staff is required");
         }
 
         return new ComplementaryTask(
             {
                 ...props,
-                updatedAt: props.updatedAt ?? null
+                updatedAt: props.updatedAt ?? null,
             },
             id
         );
@@ -70,7 +64,6 @@ export class ComplementaryTask extends AggregateRoot<ComplementaryTaskProps> {
     public static rehydrate(props: ComplementaryTaskProps, id: UniqueEntityID): ComplementaryTask {
         return new ComplementaryTask(props, id);
     }
-
 
     get id(): UniqueEntityID {
         return this._id;
@@ -104,7 +97,7 @@ export class ComplementaryTask extends AggregateRoot<ComplementaryTaskProps> {
         return this.props.status;
     }
 
-    get vve() : VesselVisitExecutionId {
+    get vve(): VesselVisitExecutionId {
         return this.props.vve;
     }
 
@@ -116,7 +109,6 @@ export class ComplementaryTask extends AggregateRoot<ComplementaryTaskProps> {
         return this.props.updatedAt;
     }
 
-
     public changeDetails(
         category: ComplementaryTaskCategoryId,
         staff: string,
@@ -124,19 +116,10 @@ export class ComplementaryTask extends AggregateRoot<ComplementaryTaskProps> {
         timeEnd: Date,
         vve: VesselVisitExecutionId
     ): void {
-
-        if (this.props.status === CTStatus.Completed) {
-            throw new BusinessRuleValidationError(
-                CTError.AlreadyCompleted,
-                "Cannot modify a completed complementary task"
-            );
-        }
+        this.ensureNotCompleted();
 
         if (!staff.trim()) {
-            throw new BusinessRuleValidationError(
-                CTError.InvalidInput,
-                "Staff is required"
-            );
+            throw new BusinessRuleValidationError(CTError.InvalidInput, "Staff is required");
         }
 
         ComplementaryTask.validateTimeWindow(timeStart, timeEnd);
@@ -150,7 +133,33 @@ export class ComplementaryTask extends AggregateRoot<ComplementaryTaskProps> {
         this.touch();
     }
 
-    public inProgress(): void {
+
+    public changeStatus(targetStatus: CTStatus, now: Date = new Date()): void {
+        this.ensureNotCompleted();
+
+        switch (targetStatus) {
+            case CTStatus.Scheduled:
+                this.scheduled();
+                return;
+
+            case CTStatus.InProgress:
+                this.inProgress(now);
+                return;
+
+            case CTStatus.Completed:
+                this.complete(now);
+                return;
+
+            default:
+                throw new BusinessRuleValidationError(
+                    CTError.InvalidInput,
+                    "Invalid status transition",
+                    `Unsupported target status: ${String(targetStatus)}`
+                );
+        }
+    }
+
+    private inProgress(now: Date): void {
         if (this.props.status !== CTStatus.Scheduled) {
             throw new BusinessRuleValidationError(
                 CTError.NotScheduled,
@@ -159,11 +168,23 @@ export class ComplementaryTask extends AggregateRoot<ComplementaryTaskProps> {
             );
         }
 
+        const start = this.props.timeStart.getTime();
+        const end = this.props.timeEnd.getTime();
+        const t = now.getTime();
+
+        if (t < start || t > end) {
+            throw new BusinessRuleValidationError(
+                CTError.InvalidTimeWindow,
+                "Cannot start task outside its time window",
+                `Now=${now.toISOString()} start=${this.props.timeStart.toISOString()} end=${this.props.timeEnd.toISOString()}`
+            );
+        }
+
         this.props.status = CTStatus.InProgress;
         this.touch();
     }
 
-    public complete(): void {
+    private complete(now: Date): void {
         if (this.props.status !== CTStatus.InProgress) {
             throw new BusinessRuleValidationError(
                 CTError.NotInProgress,
@@ -172,10 +193,32 @@ export class ComplementaryTask extends AggregateRoot<ComplementaryTaskProps> {
             );
         }
 
+        const end = this.props.timeEnd.getTime();
+        if (now.getTime() < end) {
+            throw new BusinessRuleValidationError(
+                CTError.InvalidTimeWindow,
+                "Cannot complete task before timeEnd",
+                `Now=${now.toISOString()} end=${this.props.timeEnd.toISOString()}`
+            );
+        }
+
         this.props.status = CTStatus.Completed;
         this.touch();
     }
 
+    private scheduled(): void {
+        this.props.status = CTStatus.Scheduled;
+        this.touch();
+    }
+
+    private ensureNotCompleted(): void {
+        if (this.props.status === CTStatus.Completed) {
+            throw new BusinessRuleValidationError(
+                CTError.AlreadyCompleted,
+                "Cannot modify a completed complementary task"
+            );
+        }
+    }
 
     private static validateTimeWindow(start: Date, end: Date): void {
         if (start >= end) {
