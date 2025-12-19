@@ -48,7 +48,6 @@ export default async ({expressApp}: { expressApp: express.Application }) => {
             // ComplementaryTask controllers
             config.controllers.complementaryTask.create,
             config.controllers.complementaryTask.update,
-            config.controllers.complementaryTask.updateStatus,
             config.controllers.complementaryTask.getAll,
             config.controllers.complementaryTask.getCompleted,
             config.controllers.complementaryTask.getByCategory,
@@ -72,6 +71,7 @@ export default async ({expressApp}: { expressApp: express.Application }) => {
             // VesselVisitExecution controllers
             config.controllers.vesselVisitExecution.create,
             config.controllers.vesselVisitExecution.getAll,
+            config.controllers.vesselVisitExecution.getById,
 
             config.controllers.incidentType.getDirectChilds,
 

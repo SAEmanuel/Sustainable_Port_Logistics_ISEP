@@ -38,7 +38,6 @@ export default class UpdateCTController extends BaseController {
                     details: e.details,
                     code
                 });
-
                 return this.clientError(e.message);
             }
 

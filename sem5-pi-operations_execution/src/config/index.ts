@@ -249,6 +249,10 @@ export default {
             getAll: {
                 name: "getAllVVEController",
                 path: "../controllers/vve/getAllVVEController",
+            },
+            getById: {
+                name: "GetVVEByIdController",
+                path: "../controllers/vve/getVVEByIdController",
             }
         },
     },

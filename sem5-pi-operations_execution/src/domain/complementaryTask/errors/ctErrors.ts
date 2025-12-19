@@ -7,5 +7,6 @@ export enum CTError {
     InvalidTimeWindow = "CT_INVALID_TIME_WINDOW",
     PersistError = "CT_PERSIST_ERROR",
     NotFound = "CT_NOT_FOUND",
-    InvalidTimeRange = "CT_INVALID_TIME_RANGE"
+    InvalidTimeRange = "CT_INVALID_TIME_RANGE",
+    InScheduleCreation = "CT_IN_SCHEDULE_CREATION",
 }
