@@ -1567,5 +1567,126 @@
       "fix" : "Fix",
       "complete" : "Complete"
     }
+  },
+  "incident": {
+    "title": "Incidents",
+    "noData": "No incidents found.",
+    "stats": {
+      "total": "Total",
+      "active": "Active",
+      "resolved": "Resolved"
+    },
+    "table": {
+      "code": "Code",
+      "type": "Type",
+      "severity": "Severity",
+      "impactMode": "Impact",
+      "status": "Status",
+      "start": "Start",
+      "end": "End",
+      "actions": "Actions"
+    },
+    "status": {
+      "active": "Active",
+      "resolved": "Resolved"
+    },
+    "severity": {
+      "Minor": "Minor",
+      "Major": "Major",
+      "Critical": "Critical"
+    },
+    "impact": {
+      "Specific": "Specific",
+      "AllOnGoing": "AllOnGoing",
+      "Upcoming": "Upcoming"
+    },
+    "filter": {
+      "all": "All",
+      "active": "Active",
+      "resolved": "Resolved",
+      "code": "By code",
+      "severity": "By severity",
+      "vve": "By VVE",
+      "dateRange": "Date range",
+      "noValue": "No value",
+      "placeholder": {
+        "code": "INC-2024-00001",
+        "vve": "VVE-123456"
+      }
+    },
+    "details": {
+      "title": "Details",
+      "empty": "Select an incident to view details."
+    },
+    "fields": {
+      "severity": "Severity",
+      "impactMode": "Impact Mode",
+      "startTime": "Start",
+      "endTime": "End",
+      "description": "Description",
+      "vves": "Affected VVEs",
+      "upcomingWindow": "Upcoming Window"
+    },
+    "actions": {
+      "create": "Create Incident",
+      "resolve": "Resolve",
+      "addVve": "Add VVE",
+      "removeVve": "Remove VVE"
+    },
+    "vve": {
+      "placeholder": "VVE-998877",
+      "empty": "No associated VVEs."
+    },
+    "modal": {
+      "createTitle": "Create Incident",
+      "createSub": "Fill in the data and define the impact.",
+      "editTitle": "Edit Incident",
+      "editSub": "Update data and impact."
+    },
+    "form": {
+      "code": "Code",
+      "typeCode": "Incident Type Code",
+      "severity": "Severity",
+      "impactMode": "Impact Mode",
+      "description": "Description",
+      "descriptionPH": "Short description of the incident...",
+      "startTime": "Start Time",
+      "endTime": "End Time",
+      "endTimeHint": "Optional. If empty, the incident is considered active.",
+      "createdByUser": "Created by",
+      "vveList": "VVE List",
+      "vveCommaHint": "Separate by commas. E.g., VVE-1, VVE-2",
+      "vveIgnoredAllOngoing": "For AllOnGoing, the list is calculated automatically.",
+      "vveAutoUpcoming": "For Upcoming, the list is calculated based on the Upcoming window.",
+      "upcomingStart": "Upcoming Start",
+      "upcomingEnd": "Upcoming End"
+    },
+    "confirm": {
+      "delete": "Are you sure you want to delete incident {{code}}?"
+    },
+    "success": {
+      "created": "Incident created successfully.",
+      "updated": "Incident updated successfully.",
+      "deleted": "Incident deleted.",
+      "resolved": "Incident marked as resolved.",
+      "vveAdded": "VVE added.",
+      "vveRemoved": "VVE removed."
+    },
+    "errors": {
+      "loadAll": "Error loading incidents.",
+      "search": "Search error.",
+      "saveFailed": "Failed to save.",
+      "deleteFailed": "Failed to delete.",
+      "resolveFailed": "Failed to resolve.",
+      "vveAddFailed": "Failed to add VVE.",
+      "vveRemoveFailed": "Failed to remove VVE.",
+      "codeRequired": "Code is required.",
+      "typeRequired": "Incident Type Code is required.",
+      "startRequired": "Start Time is required.",
+      "descRequired": "Description is required.",
+      "vveRequiredSpecific": "In Specific mode, you must indicate at least 1 VVE.",
+      "upcomingWindowRequired": "In Upcoming mode, you must indicate upcoming start/end.",
+      "rangeRequired": "Indicate start and end for the range."
+    }
   }
 }

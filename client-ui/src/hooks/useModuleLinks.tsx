@@ -1,5 +1,5 @@
 
-import { useMemo } from "react";
+import {type JSX, useMemo} from "react";
 import { Roles, type Role } from "../app/types";
 import {
     FaUsers, FaCogs, FaCertificate, FaUniversity, FaShip, FaProjectDiagram, FaCalendarAlt
@@ -42,6 +42,7 @@ const routeConfig: Record<string, JSX.Element> = {
     "/planning-scheduling": <FaCalendarAlt />,
     "/sar": <FiFileText />,
     "/incidentType": <FiFileText />,
+    "/incident": <FiFileText />,
     "/3dSecene": <FiBox />
 };
 
@@ -82,6 +83,7 @@ export function useModuleLinks(t: (k: string) => string, role?: Role | string | 
                 add("dashboard.ct", "/ct");
                 add("dashboard.port3d", "/3dSecene");
                 add("dashboard.dd", "/datarights");
+                add("dashboard.incident", "/incident");
                 break;
 
             case Roles.ShippingAgentRepresentative:

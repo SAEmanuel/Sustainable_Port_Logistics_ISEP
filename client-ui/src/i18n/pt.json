@@ -1568,5 +1568,99 @@
       "fix" : "Alterar",
       "complete" : "Terminar"
     }
+  },
+  "incidentType": {
+    "title": "Tipos de Incidente",
+    "createButton": "Criar Tipo de Incidente",
+    "noData": "Não existem tipos de incidente.",
+    "read-only": "Apenas de leitura",
+    "hierarchy": {
+      "title": "Hierarquia",
+      "empty": "Selecione um tipo de incidente na tabela para visualizar a sua sub-árvore.",
+      "subtitleEmpty": "Sem seleção",
+      "loading": "A carregar sub-árvore…",
+      "noSubtree": "Não existem dados de sub-árvore disponíveis.",
+      "refresh": "Atualizar"
+    },
+    "createModal": {
+      "title": "Criar Tipo de Incidente",
+      "subtitle": "Selecione o pai e defina os detalhes do tipo de incidente."
+    },
+    "editModal": {
+      "title": "Editar Tipo de Incidente"
+    },
+    "stats": {
+      "total": "Total",
+      "roots": "Raiz",
+      "children": "Filhos"
+    },
+    "table": {
+      "code": "Código",
+      "name": "Nome",
+      "severity": "Gravidade",
+      "parent": "Pai",
+      "actions": "Ações"
+    },
+    "actions": {
+      "edit": "Editar"
+    },
+    "search": {
+      "roots": "Raiz",
+      "code": "Por código",
+      "name": "Por nome",
+      "children": "Filhos de",
+      "subtree": "Sub-árvore de"
+    },
+    "searchPlaceholder": {
+      "code": "Ex: T-INC001",
+      "name": "Ex: Condições ambientais",
+      "children": "Ex: T-INC001",
+      "subtree": "Ex: T-INC001"
+    },
+    "steps": {
+      "parent": "Passo 1: Pai",
+      "parentDesc": "Escolha onde este tipo de incidente se insere",
+      "details": "Passo 2: Detalhes",
+      "detailsDesc": "Defina os campos e a gravidade"
+    },
+    "selectParent": "Selecionar Categoria Pai",
+    "parent": {
+      "help": "Selecione uma categoria pai (raiz) ou escolha “Sem Pai” para criar um tipo de incidente raiz.",
+      "searchPlaceholder": "Pesquisar categorias pai...",
+      "resultsCount": "{{count}} resultado(s)",
+      "noResults": "Não foram encontrados resultados.",
+      "noResultsHint": "Tente outro termo de pesquisa.",
+      "none": "Sem Pai (Raiz)",
+      "noneDesc": "Cria um tipo de incidente de topo.",
+      "selected": "Pai selecionado"
+    },
+    "form": {
+      "code": "Código",
+      "codePH": "Ex: T-INC001",
+      "name": "Nome",
+      "namePH": "Ex: Risco de incêndio",
+      "description": "Descrição",
+      "descriptionPH": "Notas / descrição (opcional)",
+      "severity": "Gravidade",
+      "parent": "Pai"
+    },
+    "severity": {
+      "Minor": "Baixa",
+      "Major": "Média",
+      "Critical": "Crítica"
+    },
+    "errors": {
+      "loadRoots": "Erro ao carregar tipos de incidente raiz.",
+      "loadSubtree": "Erro ao carregar a sub-árvore do incidente.",
+      "search": "Erro ao pesquisar.",
+      "codeRequired": "O código é obrigatório.",
+      "nameRequired": "O nome é obrigatório.",
+      "createFailedGeneric": "A criação falhou. Verifique os logs do servidor.",
+      "updateFailed": "Falha ao atualizar."
+    },
+    "success": {
+      "created": "Tipo de incidente criado com sucesso!",
+      "updated": "Tipo de incidente atualizado com sucesso!"
+    }
   }
 }
