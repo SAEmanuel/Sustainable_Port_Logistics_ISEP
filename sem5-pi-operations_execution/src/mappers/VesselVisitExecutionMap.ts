@@ -14,7 +14,8 @@ export default class VesselVisitExecutionMap extends Mapper<VesselVisitExecution
             vvnId: vve.vvnId,
             vesselImo: vve.vesselImo,
             actualArrivalTime: vve.actualArrivalTime,
-            status: vve.status
+            status: vve.status,
+            creatorEmail: vve.creatorEmail
         } as IVesselVisitExecutionDTO;
     }
 

@@ -1,0 +1,143 @@
+.ctc-details-overlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1100;
+    backdrop-filter: blur(4px);
+    animation: fadeIn 0.2s ease-out;
+}
+
+.ctc-details-content {
+    background: #ffffff;
+    padding: 2rem;
+    border-radius: 16px;
+    width: 90%;
+    max-width: 550px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+    animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+
+.ctc-details-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid #f0f2f5;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+}
+
+.ctc-details-header h2 {
+    margin: 0;
+    font-size: 1.5rem;
+    color: #1a1a1a;
+}
+
+.ctc-close-x {
+    background: none;
+    border: none;
+    font-size: 1.8rem;
+    color: #999;
+    cursor: pointer;
+    line-height: 1;
+}
+
+
+.ctc-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+}
+
+.ctc-item {
+    display: flex;
+    flex-direction: column;
+}
+
+.ctc-item.full-width {
+    grid-column: 1 / -1;
+}
+
+.ctc-item label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: #6c757d;
+    letter-spacing: 0.8px;
+    margin-bottom: 0.4rem;
+}
+
+.ctc-item span {
+    font-size: 1rem;
+    color: #2d3436;
+    font-weight: 500;
+}
+
+
+.ctc-value-code {
+    font-family: 'Monaco', 'Consolas', monospace;
+    background: #f8f9fa;
+    padding: 2px 6px;
+    border-radius: 4px;
+    color: #0984e3 !important;
+}
+
+.ctc-duration-badge {
+    color: #d63031 !important;
+    font-weight: 600 !important;
+}
+
+.ctc-description-text {
+    background: #fcfcfc;
+    border: 1px solid #f0f0f0;
+    padding: 1rem;
+    border-radius: 8px;
+    margin: 0;
+    line-height: 1.5;
+    color: #444;
+}
+
+
+.ctc-status-pill {
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    width: fit-content;
+}
+
+.ctc-status-pill.active { background: #e3fcef; color: #00875a; }
+.ctc-status-pill.inactive { background: #ffebe6; color: #de350b; }
+
+
+.ctc-footer {
+    margin-top: 2rem;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.ctc-close-button {
+    background: #2d3436;
+    color: white;
+    border: none;
+    padding: 0.8rem 2rem;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.ctc-close-button:hover {
+    background: #000;
+    transform: translateY(-1px);
+}
+
+
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes slideUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}

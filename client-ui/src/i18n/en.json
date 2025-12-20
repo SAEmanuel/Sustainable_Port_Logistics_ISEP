@@ -609,11 +609,20 @@
   "vvn": {
     "title": "Vessel Visit Notifications",
     "new": "VVN",
+    "viewDetails" : "Details - vvn",
     "tabs": {
       "inProgressPending": "In-Progress/Pending",
       "submitted": "Submitted",
       "accepted": "Accepted",
-      "withdrawn": "Withdrawn"
+      "withdrawn": "Withdrawn",
+      "info": "Info",
+      "cargo": "Cargo",
+      "crew": "Crew",
+      "tasks": "Tasks"
+    },
+    "tasks": {
+      "title" : "Corresponding tasks",
+      "empty" : "No tasks associated"
     },
     "filters": {
       "specificRepGuid": "Specific Rep (Guid)",
@@ -641,7 +650,8 @@
       "eta": "ETA",
       "etd": "ETD",
       "volume": "Volume",
-      "dock": "Dock"
+      "dock": "Dock",
+      "title" : "Vessel Visit Notification"
     },
     "actions": {
       "submit": "Submit",
@@ -1568,6 +1578,24 @@
       "complete" : "Complete"
     }
   },
+  "vve": {
+    "details": {
+      "title": "Vessel Visit Execution Details"
+    },
+    "form": {
+      "code": "Visit Code",
+      "vesselImo": "Vessel IMO",
+      "actualArrivalTime": "Actual Arrival Time",
+      "status": "Current Status",
+      "creatorEmail": "Created By"
+    },
+    "status": {
+      "scheduled": "Scheduled",
+      "in-progress": "In Progress",
+      "completed": "Completed",
+      "unknown": "Unknown"
+    }
+  },
   "incident": {
     "title": "Incidents",
     "noData": "No incidents found.",
@@ -1689,4 +1717,5 @@
       "rangeRequired": "Indicate start and end for the range."
     }
   }
+
 }

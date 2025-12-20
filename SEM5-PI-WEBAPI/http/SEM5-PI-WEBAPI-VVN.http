@@ -91,7 +91,7 @@ Accept: {{accept}}
 # 5 - GET Vessel Visit Notification by ID
 
 ###
-GET {{portURL}}/api/VesselVisitNotification/id/46d6b08b-feba-43ec-b4ea-d083696301c2
+GET {{portURL}}/api/VesselVisitNotification/id/a3e352fa-415f-4ac7-b9fe-8619fa4dc6c3
 Accept: {{accept}}
 
 

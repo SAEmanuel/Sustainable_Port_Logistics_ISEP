@@ -28,10 +28,15 @@ import {
     getVVEById
 } from "../../vesselVisitExecution/services/vesselVisitExecutionService";
 
+import {
+    getVvnById
+} from "../../vesselVisitNotification/service/vvnService";
+
 import type { ComplementaryTask } from "../domain/complementaryTask";
 import type { ComplementaryTaskCategory } from "../../complementaryTaskCategory/domain/complementaryTaskCategory";
 import type { VesselVisitExecutionDTO } from "../../vesselVisitExecution/dto/vesselVisitExecutionDTO";
 import type { UpdateComplementaryTaskDTO } from "../dtos/updateComplementaryTaskDTO";
+import type { VesselVisitNotificationDto } from "../../vesselVisitNotification/dto/vvnTypesDtos";
 
 import ComplementaryTaskTable from "../components/ComplementaryTaskTable";
 import ComplementaryTaskSearch from "../components/ComplementaryTaskSearch";
@@ -39,7 +44,8 @@ import ComplementaryTaskCreateModal from "../components/ComplementaryTaskCreateM
 import ComplementaryTaskEditModal from "../components/ComplementaryTaskEditModal";
 import ComplementaryTaskCategoryDetailsModal from "../../complementaryTaskCategory/components/ComplementaryTaskCategoryDetailsModal";
 import ComplementaryTaskFixCategoryModal from "../components/ComplementaryTaskFixCategoryModal";
-import VesselVisitExecutionDetailsModal from "../../vesselVisitExecution/components/vesselVisitExecutionDetailsModal.tsx";
+import VesselVisitExecutionDetailsModal from "../../vesselVisitExecution/components/vesselVisitExecutionDetailsModal";
+import VvnDetailsModal from "../../vesselVisitNotification/components/modals/VvnDetailsModal";
 
 export type FilterType = "all" | "code" | "category" | "staff" | "vve" | "scheduled" | "completed" | "inProgress" | "range";
 
@@ -51,30 +57,32 @@ function ComplementaryTaskPage() {
     const [categories, setCategories] = useState<ComplementaryTaskCategory[]>([]);
     const [vves, setVves] = useState<VesselVisitExecutionDTO[]>([]);
 
+
     const [selectedTask, setSelectedTask] = useState<ComplementaryTask | null>(null);
     const [viewCategory, setViewCategory] = useState<ComplementaryTaskCategory | null>(null);
     const [viewVve, setViewVve] = useState<VesselVisitExecutionDTO | null>(null);
+    const [viewVvn, setViewVvn] = useState<VesselVisitNotificationDto | null>(null);
     const [taskToFix, setTaskToFix] = useState<ComplementaryTask | null>(null);
+
 
     const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [isCategoryDetailsOpen, setIsCategoryDetailsOpen] = useState(false);
     const [isVveDetailsOpen, setIsVveDetailsOpen] = useState(false);
+    const [isVvnDetailsOpen, setIsVvnDetailsOpen] = useState(false);
     const [isFixModalOpen, setIsFixModalOpen] = useState(false);
 
     const [isLoading, setIsLoading] = useState(false);
-    const [error, setError] = useState<Error | null>(null);
 
     useEffect(() => {
         if (!didMountRef.current) {
             didMountRef.current = true;
-            loadData();
+            void loadData();
         }
     }, []);
 
     const loadData = async () => {
         setIsLoading(true);
-        setError(null);
         try {
             const [tasksData, catsData, vvesData] = await Promise.all([
                 getAllCT(),
@@ -85,43 +93,39 @@ function ComplementaryTaskPage() {
             setTasks(tasksData);
             setCategories(catsData);
             setVves(vvesData as unknown as VesselVisitExecutionDTO[]);
-        } catch (err) {
-            setError(err as Error);
+        } catch {
             toast.error(t("ct.errors.loadAll") || "Error loading data");
         } finally {
             setIsLoading(false);
         }
     };
 
-    const handleSearch = async (type: FilterType, value: any) => {
+    const handleSearch = async (type: FilterType, value: unknown) => {
         setIsLoading(true);
-        setError(null);
         try {
             let data: ComplementaryTask[] = [];
             switch (type) {
                 case "code":
-                    try {
-                        const result = await getCTByCode(value);
-                        data = result ? [result] : [];
-                    } catch { data = []; }
+                    data = await getCTByCode(value as string).then(res => res ? [res] : []);
                     break;
-                case "category": data = await getCTByCategory(value); break;
-                case "staff": data = await getCTByStaff(value); break;
-                case "vve": data = await getCTByVve(value); break;
+                case "category": data = await getCTByCategory(value as string); break;
+                case "staff": data = await getCTByStaff(value as string); break;
+                case "vve": data = await getCTByVve(value as string); break;
                 case "scheduled": data = await getScheduledCT(); break;
                 case "completed": data = await getCompletedCT(); break;
                 case "inProgress": data = await getInProgressCT(); break;
-                case "range":
-                    data = await getCTInRange(value.start, value.end);
+                case "range": {
+                    const range = value as { start: number; end: number };
+                    data = await getCTInRange(range.start, range.end);
                     break;
+                }
                 case "all":
                 default:
                     await loadData();
                     return;
             }
             setTasks(data);
-        } catch (err) {
-            setError(err as Error);
+        } catch {
             setTasks([]);
             toast.error(t("ct.errors.search") || "Search failed");
         } finally {
@@ -135,21 +139,20 @@ function ComplementaryTaskPage() {
             const task = tasks.find(t => t.code === code);
             if (!task) throw new Error("Task not found");
 
-
             const updateDto: UpdateComplementaryTaskDTO = {
                 category: task.category,
                 staff: task.staff,
-                status: newStatus as any,
+                status: newStatus as "Scheduled" | "InProgress" | "Completed",
                 timeStart: task.timeStart,
-                vve: task.vve,
-                ...(newStatus === "Completed" && { timeEnd: new Date() })
+                vve: task.vve
             };
 
-            await updateCT(code, updateDto as any);
+            await updateCT(code, updateDto);
             toast.success(t("ct.success.statusUpdated") || "Status updated successfully");
             await loadData();
         } catch (err) {
-            toast.error((err as Error).message || t("ct.errors.statusUpdateFailed"));
+            const errorMessage = err instanceof Error ? err.message : String(err);
+            toast.error(errorMessage || t("ct.errors.statusUpdateFailed"));
         } finally {
             setIsLoading(false);
         }
@@ -169,6 +172,23 @@ function ComplementaryTaskPage() {
         }
     };
 
+
+    const handleViewVvn = async (vvnId: string) => {
+        if (!vvnId) return;
+        setIsLoading(true);
+        try {
+            console.log(vvnId);
+            const vvnData = await getVvnById(vvnId);
+            const data = Array.isArray(vvnData) ? vvnData[0] : vvnData;
+            setViewVvn(data);
+            setIsVvnDetailsOpen(true);
+        } catch {
+            toast.error(t("vvn.errors.loadDetails") || "Failed to load VVN details");
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
     const handleViewCategory = async (categoryId: string) => {
         setIsLoading(true);
         try {
@@ -182,66 +202,45 @@ function ComplementaryTaskPage() {
         }
     };
 
-    const handleEdit = (task: ComplementaryTask) => {
-        setSelectedTask(task);
-        setIsEditModalOpen(true);
-    };
-
-    const handleCloseEditModal = () => {
-        setIsEditModalOpen(false);
-        setSelectedTask(null);
-        loadData();
-    };
-
     const stats = useMemo(() => {
-        const total = tasks.length;
-        const scheduled = tasks.filter(t => t.status === "Scheduled").length;
-        const inProgress = tasks.filter(t => t.status === "InProgress").length;
-        const completed = tasks.filter(t => t.status === "Completed").length;
-        return { total, scheduled, inProgress, completed };
+        return {
+            total: tasks.length,
+            scheduled: tasks.filter(t => t.status === "Scheduled").length,
+            inProgress: tasks.filter(t => t.status === "InProgress").length,
+            completed: tasks.filter(t => t.status === "Completed").length
+        };
     }, [tasks]);
 
     return (
         <div className="ct-page-container">
             <div className="ct-header">
-                <Link to="/dashboard" className="ct-back-button" title={t("actions.backToDashboard")}>
-                    ‹
-                </Link>
-                <h1>
-                    <BookAIcon className="ct-icon" /> {t("ct.title") || "Complementary Tasks"}
-                </h1>
+                <Link to="/dashboard" className="ct-back-button" title={t("actions.backToDashboard")}>‹</Link>
+                <h1><BookAIcon className="ct-icon" /> {t("ct.title") || "Complementary Tasks"}</h1>
             </div>
 
             <div className="ct-controls-container">
                 <div className="ct-stats-grid">
-                    <div className="ct-stat-card total" onClick={() => handleSearch("all", "")} style={{cursor: 'pointer'}}>
-                        <span className="stat-icon">📋</span>
+                    <div className="ct-stat-card total" onClick={() => void handleSearch("all", "")} style={{cursor: 'pointer'}}>
                         <span className="stat-value">{stats.total}</span>
-                        <span className="stat-title">{t("ct.stats.total") || "Total"}</span>
+                        <span className="stat-title">{t("ct.stats.total")}</span>
                     </div>
-                    <div className="ct-stat-card warning" onClick={() => handleSearch("scheduled", "")} style={{cursor: 'pointer'}}>
-                        <span className="stat-icon">⏳</span>
+                    <div className="ct-stat-card warning" onClick={() => void handleSearch("scheduled", "")} style={{cursor: 'pointer'}}>
                         <span className="stat-value">{stats.scheduled}</span>
-                        <span className="stat-title">{t("ct.stats.scheduled") || "Scheduled"}</span>
+                        <span className="stat-title">{t("ct.stats.scheduled")}</span>
                     </div>
-                    <div className="ct-stat-card active" onClick={() => handleSearch("inProgress", "")} style={{cursor: 'pointer'}}>
-                        <span className="stat-icon">⚙️</span>
+                    <div className="ct-stat-card active" onClick={() => void handleSearch("inProgress", "")} style={{cursor: 'pointer'}}>
                         <span className="stat-value">{stats.inProgress}</span>
-                        <span className="stat-title">{t("ct.stats.inProgress") || "In Progress"}</span>
+                        <span className="stat-title">{t("ct.stats.inProgress")}</span>
                     </div>
-                    <div className="ct-stat-card success" onClick={() => handleSearch("completed", "")} style={{cursor: 'pointer'}}>
-                        <span className="stat-icon">✅</span>
+                    <div className="ct-stat-card success" onClick={() => void handleSearch("completed", "")} style={{cursor: 'pointer'}}>
                         <span className="stat-value">{stats.completed}</span>
-                        <span className="stat-title">{t("ct.stats.completed") || "Completed"}</span>
+                        <span className="stat-title">{t("ct.stats.completed")}</span>
                     </div>
                 </div>
 
                 <div className="ct-action-box">
                     <ComplementaryTaskSearch onSearch={handleSearch} />
-                    <button
-                        onClick={() => setIsCreateModalOpen(true)}
-                        className="create-ct-button"
-                    >
+                    <button onClick={() => setIsCreateModalOpen(true)} className="create-ct-button">
                         {t("ct.createButton") || "New Task"}
                     </button>
                 </div>
@@ -253,13 +252,34 @@ function ComplementaryTaskPage() {
                 tasks={tasks}
                 categories={categories}
                 vves={vves}
-                onEdit={handleEdit}
+                onEdit={(task) => { setSelectedTask(task); setIsEditModalOpen(true); }}
                 onViewCategory={handleViewCategory}
                 onViewVve={handleViewVve}
                 onFixCategory={(task) => { setTaskToFix(task); setIsFixModalOpen(true); }}
                 onStatusChange={handleStatusChange}
             />
 
+            {/* MODAIS DE DETALHES */}
+            <VesselVisitExecutionDetailsModal
+                isOpen={isVveDetailsOpen}
+                onClose={() => setIsVveDetailsOpen(false)}
+                vve={viewVve}
+                onViewVvn={handleViewVvn}
+            />
+
+            <VvnDetailsModal
+                isOpen={isVvnDetailsOpen}
+                onClose={() => setIsVvnDetailsOpen(false)}
+                vvn={viewVvn}
+            />
+
+            <ComplementaryTaskCategoryDetailsModal
+                isOpen={isCategoryDetailsOpen}
+                onClose={() => setIsCategoryDetailsOpen(false)}
+                category={viewCategory}
+            />
+
+            {/* MODAIS DE OPERAÇÃO */}
             <ComplementaryTaskCreateModal
                 isOpen={isCreateModalOpen}
                 onClose={() => setIsCreateModalOpen(false)}
@@ -270,30 +290,18 @@ function ComplementaryTaskPage() {
             {selectedTask && (
                 <ComplementaryTaskEditModal
                     isOpen={isEditModalOpen}
-                    onClose={handleCloseEditModal}
-                    onUpdated={handleCloseEditModal}
+                    onClose={() => { setIsEditModalOpen(false); setSelectedTask(null); void loadData(); }}
+                    onUpdated={() => { setIsEditModalOpen(false); setSelectedTask(null); void loadData(); }}
                     resource={selectedTask}
                     vveList={vves}
                 />
             )}
 
-            <ComplementaryTaskCategoryDetailsModal
-                isOpen={isCategoryDetailsOpen}
-                onClose={() => setIsCategoryDetailsOpen(false)}
-                category={viewCategory}
-            />
-
-            <VesselVisitExecutionDetailsModal
-                isOpen={isVveDetailsOpen}
-                onClose={() => setIsVveDetailsOpen(false)}
-                vve={viewVve}
-            />
-
             <ComplementaryTaskFixCategoryModal
                 isOpen={isFixModalOpen}
                 task={taskToFix}
                 onClose={() => setIsFixModalOpen(false)}
-                onFixed={() => { loadData(); setIsFixModalOpen(false); setTaskToFix(null); }}
+                onFixed={() => { void loadData(); setIsFixModalOpen(false); setTaskToFix(null); }}
             />
         </div>
     );

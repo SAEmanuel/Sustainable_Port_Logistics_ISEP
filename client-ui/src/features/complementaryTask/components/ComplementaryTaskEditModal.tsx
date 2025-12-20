@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import toast from "react-hot-toast";
 import { updateCT } from "../services/complementaryTaskService";
 import { getAllCTC } from "../../complementaryTaskCategory/services/complementaryTaskCategoryService";
-import type { ComplementaryTask } from "../domain/complementaryTask";
+import type { ComplementaryTask, CTStatus } from "../domain/complementaryTask";
 import type { UpdateComplementaryTaskDTO } from "../dtos/updateComplementaryTaskDTO";
 import type { ComplementaryTaskCategory } from "../../complementaryTaskCategory/domain/complementaryTaskCategory";
 import type { VesselVisitExecutionDTO } from "../../vesselVisitExecution/dto/vesselVisitExecutionDTO";
@@ -21,28 +21,25 @@ const toInputDateString = (dateInput: Date | string) => {
     if (!dateInput) return "";
     const date = new Date(dateInput);
     const offset = date.getTimezoneOffset() * 60000;
-    const localISOTime = (new Date(date.getTime() - offset)).toISOString().slice(0, 16);
-    return localISOTime;
+    return new Date(date.getTime() - offset).toISOString().slice(0, 16);
 };
 
 function ComplementaryTaskEditModal({ isOpen, onClose, onUpdated, resource, vveList }: Props) {
     const { t } = useTranslation();
     const [categories, setCategories] = useState<ComplementaryTaskCategory[]>([]);
+    const [isLoading, setIsLoading] = useState(false);
 
     const [formData, setFormData] = useState({
-        category: resource.category,
+        category: resource.category, // Aqui deve ser guardado o ID
         staff: resource.staff,
         vve: resource.vve,
         status: resource.status,
         timeStart: toInputDateString(resource.timeStart)
     });
 
-    const [isLoading, setIsLoading] = useState(false);
-    const [error, setError] = useState<Error | null>(null);
-
     useEffect(() => {
         if (isOpen) {
-            loadCategories();
+            void loadCategories();
             setFormData({
                 category: resource.category,
                 staff: resource.staff,
@@ -50,7 +47,6 @@ function ComplementaryTaskEditModal({ isOpen, onClose, onUpdated, resource, vveL
                 status: resource.status,
                 timeStart: toInputDateString(resource.timeStart)
             });
-            setError(null);
         }
     }, [isOpen, resource]);
 
@@ -64,7 +60,6 @@ function ComplementaryTaskEditModal({ isOpen, onClose, onUpdated, resource, vveL
     };
 
     const handleValueChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-        setError(null);
         const { name, value } = e.target;
         setFormData((prev) => ({
             ...prev,
@@ -74,15 +69,14 @@ function ComplementaryTaskEditModal({ isOpen, onClose, onUpdated, resource, vveL
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        setError(null);
-
         setIsLoading(true);
+        console.log(formData.vve);
         try {
             const submitData: UpdateComplementaryTaskDTO = {
                 category: formData.category,
                 staff: formData.staff,
                 vve: formData.vve,
-                status: formData.status as any,
+                status: formData.status as CTStatus,
                 timeStart: new Date(formData.timeStart)
             };
 
@@ -91,7 +85,6 @@ function ComplementaryTaskEditModal({ isOpen, onClose, onUpdated, resource, vveL
             onUpdated();
         } catch (err) {
             const apiError = err as Error;
-            setError(apiError);
             toast.error(apiError.message || t("ct.errors.updateFailed"));
         } finally {
             setIsLoading(false);
@@ -118,10 +111,12 @@ function ComplementaryTaskEditModal({ isOpen, onClose, onUpdated, resource, vveL
                                 name="category"
                                 value={formData.category}
                                 onChange={handleValueChange}
+                                required
                             >
+                                <option value="" disabled>{t("common.select") || "Select Category"}</option>
                                 {categories.map(cat => (
-                                    <option key={cat.id} value={cat.code}>
-                                        {cat.name}
+                                    <option key={cat.id} value={cat.id}>
+                                        {cat.name} ({cat.code})
                                     </option>
                                 ))}
                             </select>
@@ -132,6 +127,7 @@ function ComplementaryTaskEditModal({ isOpen, onClose, onUpdated, resource, vveL
                                 name="vve"
                                 value={formData.vve}
                                 onChange={handleValueChange}
+                                required
                             >
                                 {vveList.map(vve => (
                                     <option key={vve.id} value={vve.id}>
@@ -177,8 +173,6 @@ function ComplementaryTaskEditModal({ isOpen, onClose, onUpdated, resource, vveL
                             </select>
                         </div>
                     </div>
-
-                    {error && <p className="ct-error-message">{error.message}</p>}
 
                     <div className="ct-modal-actions-wizard">
                         <button type="button" onClick={onClose} className="ct-cancel-button">
