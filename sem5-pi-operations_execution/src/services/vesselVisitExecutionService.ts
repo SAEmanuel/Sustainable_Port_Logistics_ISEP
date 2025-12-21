@@ -11,6 +11,7 @@ import VvnService from "./ExternalData/vvnService";
 import VesselVisitExecutionMap from "../mappers/VesselVisitExecutionMap";
 import {VesselVisitExecutionId} from "../domain/vesselVisitExecution/vesselVisitExecutionId";
 import {VVEError} from "../domain/vesselVisitExecution/errors/vveErrors";
+import {CTError} from "../domain/complementaryTask/errors/ctErrors";
 
 @Service()
 export default class VesselVisitExecutionService implements IVesselVisitExecutionService {
@@ -105,7 +106,19 @@ export default class VesselVisitExecutionService implements IVesselVisitExecutio
         return Result.ok(vve.map(v => this.vesselVisitExecutionMap.toDTO(v)));
     }
 
+    public async getInRangeAsync(timeStart: Date, timeEnd: Date): Promise<Result<IVesselVisitExecutionDTO[]>> {
 
+        if (timeStart >= timeEnd) {
+            throw new BusinessRuleValidationError(
+                VVEError.InvalidTimeRange,
+                "Start time must be before end time",
+                `timeStart=${timeStart.toISOString()} timeEnd=${timeEnd.toISOString()}`
+            );
+        }
+
+        const tasks = await this.repo.getAllInDateRange(timeStart, timeEnd);
+        return Result.ok(tasks.map(t => this.vesselVisitExecutionMap.toDTO(t)));
+    }
 
     //METODOS AUXILIARES
 

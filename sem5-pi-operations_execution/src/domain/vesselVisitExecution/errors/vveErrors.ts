@@ -1,4 +1,5 @@
 export enum VVEError {
-    NotFound = "CT_NOT_FOUND",
+    NotFound = "VVE_NOT_FOUND",
+    InvalidTimeRange = "VVE_INVALID_TIME_RANGE"
 
 }

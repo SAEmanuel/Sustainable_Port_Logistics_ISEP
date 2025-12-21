@@ -22,3 +22,6 @@ GET http://localhost:3000/api/vve/code/VVE2025000001
 
 ### Get by imo
 GET http://localhost:3000/api/vve/imo/9823455
+
+### Get in range
+GET http://localhost:3000/api/vve/range?timeStart=1747699200000&timeEnd=1779235200000

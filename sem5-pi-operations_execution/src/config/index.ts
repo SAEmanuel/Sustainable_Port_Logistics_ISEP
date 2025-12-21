@@ -269,6 +269,10 @@ export default {
             getByImo: {
                 name: "GetVVEByImoController",
                 path: "../controllers/vve/getVVEByImoController",
+            },
+            getInRange: {
+                name: "GetVVEInRangeController",
+                path: "../controllers/vve/getVVEInRangeController",
             }
         },
     },

@@ -13,4 +13,6 @@ export default interface IVesselVisitExecutionService {
     getByCodeAsync(code: VesselVisitExecutionCode): Promise<Result<IVesselVisitExecutionDTO>>;
 
     getByImoAsync(imo: string): Promise<Result<IVesselVisitExecutionDTO[]>>;
+
+    getInRangeAsync(start: Date, end: Date): Promise<Result<IVesselVisitExecutionDTO[]>>;
 }
