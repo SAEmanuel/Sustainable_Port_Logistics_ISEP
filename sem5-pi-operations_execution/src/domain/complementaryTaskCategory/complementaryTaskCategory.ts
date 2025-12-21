@@ -25,7 +25,7 @@ export class ComplementaryTaskCategory
     }
 
     get categoryId(): ComplementaryTaskCategoryId {
-        return ComplementaryTaskCategoryId.caller(this.id);
+        return ComplementaryTaskCategoryId.create(this._id.toString());
     }
 
     get code(): string {

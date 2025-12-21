@@ -56,7 +56,6 @@ function ComplementaryTaskSearch({ onSearch }: Props) {
                 <option value="range">{t("ct.search.range") || "Date Range"}</option>
             </select>
 
-            {/* Renderização Condicional do Input conforme o tipo de filtro */}
             {searchType === "range" ? (
                 <div style={{ display: 'flex', gap: '0.5rem', flexGrow: 1 }}>
                     <input

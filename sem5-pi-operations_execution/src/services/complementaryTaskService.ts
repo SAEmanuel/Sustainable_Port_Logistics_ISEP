@@ -147,6 +147,19 @@ export default class ComplementaryTaskService implements IComplementaryTaskServi
         return Result.ok(tasks.map(t => this.complementaryTaskMap.toDTO(t)));
     }
 
+    public async getByCategoryCodeAsync(categoryCode: string): Promise<Result<IComplementaryTaskDTO[]>> {
+        const ctc = await this.ctcRepo.findByCode(categoryCode);
+        if(!ctc) {
+            throw new BusinessRuleValidationError(
+                CTCError.NotFound,
+                "Complementary task not found",
+                `No task found with ctc code ${categoryCode}`
+            );
+        }
+        const tasks = await this.repo.findByCategory(ctc.categoryId);
+        return Result.ok(tasks.map(t => this.complementaryTaskMap.toDTO(t)));
+    }
+
     public async getByStaffAsync(staff: string): Promise<Result<IComplementaryTaskDTO[]>> {
 
         const tasks = await this.repo.findByStaff(staff);

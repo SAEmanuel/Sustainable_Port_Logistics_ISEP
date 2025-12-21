@@ -8,14 +8,13 @@ import "../style/complementaryTask.css";
 import {
     getAllCT,
     getCTByCode,
-    getCTByCategory,
     getCTByStaff,
     getCTByVve,
     getScheduledCT,
     getCompletedCT,
     getInProgressCT,
     getCTInRange,
-    updateCT
+    updateCT, getCTByCategoryCode
 } from "../services/complementaryTaskService";
 
 import {
@@ -108,7 +107,7 @@ function ComplementaryTaskPage() {
                 case "code":
                     data = await getCTByCode(value as string).then(res => res ? [res] : []);
                     break;
-                case "category": data = await getCTByCategory(value as string); break;
+                case "category": data = await getCTByCategoryCode(value as string); break;
                 case "staff": data = await getCTByStaff(value as string); break;
                 case "vve": data = await getCTByVve(value as string); break;
                 case "scheduled": data = await getScheduledCT(); break;

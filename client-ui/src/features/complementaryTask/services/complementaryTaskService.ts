@@ -55,6 +55,13 @@ export async function getCTByCategory(category: string): Promise<ComplementaryTa
     return res.data.map(mapToCTDomain);
 }
 
+export async function getCTByCategoryCode(category: string): Promise<ComplementaryTask[]> {
+    const res = await operationsApi.get("/api/complementary-tasks/search/categoryCode",
+        {params: {category}}
+    );
+    return res.data.map(mapToCTDomain);
+}
+
 
 export async function getCTByStaff(staff: string): Promise<ComplementaryTask[]> {
     const res = await operationsApi.get("/api/complementary-tasks/search/staff",
