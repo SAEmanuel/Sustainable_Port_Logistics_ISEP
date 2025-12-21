@@ -1,0 +1,24 @@
+name: Sincronizar para Perfil Pessoal
+
+on:
+  push:
+    branches:
+      - main 
+
+jobs:
+  git-mirror:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Mirror para o meu perfil
+        run: |
+          # Aqui estamos a montar o comando que envia o código para o teu repo público
+          # Substitui TEU_USER pelo teu nome no GitHub
+          # Substitui TEU_REPO_PUBLICO pelo nome do repo que criaste na Parte 2
+          
+          REMOTE_URL="https://x-access-token:${{ secrets.MINHA_CHAVE_PESSOAL }}@github.com/TEU_USER/TEU_REPO_PUBLICO.git"
+          
+          git push --force --prune $REMOTE_URL "refs/remotes/origin/*:refs/heads/*"
