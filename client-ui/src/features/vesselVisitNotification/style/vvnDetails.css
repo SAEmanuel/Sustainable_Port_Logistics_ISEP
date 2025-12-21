@@ -1,0 +1,180 @@
+.vvn-details-overlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0, 0, 0, 0.75);
+    backdrop-filter: blur(5px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+}
+
+.vvn-details-content {
+    background: white;
+    width: 90%;
+    max-width: 650px;
+    max-height: 90vh;
+    border-radius: 12px;
+    box-shadow: 0 15px 50px rgba(0,0,0,0.3);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    animation: vvnPop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Header */
+.vvn-details-header {
+    background: #f8f9fa;
+    padding: 1.2rem 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #eee;
+    flex-shrink: 0; /* Não encolhe */
+}
+
+.vvn-details-header h2 { margin: 0; font-size: 1.3rem; color: #333; }
+
+.vvn-close-x {
+    background: none;
+    border: none;
+    font-size: 1.8rem;
+    color: #999;
+    cursor: pointer;
+    line-height: 1;
+}
+
+/* Tabs */
+.vvn-tabs {
+    display: flex;
+    background: #f1f3f4;
+    padding: 0 1rem;
+    flex-shrink: 0;
+}
+
+.vvn-tabs button {
+    padding: 1rem 1.2rem;
+    border: none;
+    background: none;
+    cursor: pointer;
+    font-weight: 600;
+    color: #5f6368;
+    border-bottom: 3px solid transparent;
+    transition: all 0.2s;
+    text-transform: capitalize;
+}
+
+.vvn-tabs button.active {
+    color: #1a73e8;
+    border-bottom-color: #1a73e8;
+}
+
+/* Body & Scrolling Area */
+.vvn-details-body {
+    padding: 1.5rem;
+    overflow-y: auto;
+    flex-grow: 1;
+    background: #fff;
+}
+
+/* Grid & Fields */
+.vvn-grid-info {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.2rem;
+}
+
+.vvn-field { display: flex; flex-direction: column; }
+.vvn-field.full { grid-column: span 2; }
+.vvn-field label, .section-label {
+    font-size: 0.7rem;
+    color: #70757a;
+    font-weight: 700;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+    letter-spacing: 0.5px;
+}
+
+.vvn-field span { font-size: 1rem; color: #202124; font-weight: 500; }
+
+.vvn-status-pill {
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: bold;
+    width: fit-content;
+}
+
+/* Tasks Styling */
+.vvn-tasks-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.vvn-task-card {
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 12px;
+    background: #fcfcfc;
+    border-left: 5px solid #1a73e8;
+}
+
+.task-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 6px;
+}
+
+.task-title { font-weight: 700; color: #333; font-size: 0.95rem; }
+
+.task-status-badge {
+    font-size: 0.7rem;
+    padding: 2px 8px;
+    border-radius: 4px;
+    background: #eee;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.task-desc {
+    margin: 0;
+    font-size: 0.85rem;
+    color: #666;
+    line-height: 1.4;
+}
+
+/* Footer */
+.vvn-details-footer {
+    padding: 1rem 1.5rem;
+    border-top: 1px solid #eee;
+    display: flex;
+    justify-content: flex-end;
+    background: #fff;
+    flex-shrink: 0;
+}
+
+.vvn-btn-primary {
+    background: #1a73e8;
+    color: white;
+    border: none;
+    padding: 0.6rem 2.5rem;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.vvn-btn-primary:hover { background: #1557b0; }
+
+@keyframes vvnPop {
+    from { transform: scale(0.95); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+
+/* Scrollbar Style */
+.vvn-details-body::-webkit-scrollbar { width: 6px; }
+.vvn-details-body::-webkit-scrollbar-track { background: #f1f1f1; }
+.vvn-details-body::-webkit-scrollbar-thumb { background: #ccc; border-radius: 10px; }

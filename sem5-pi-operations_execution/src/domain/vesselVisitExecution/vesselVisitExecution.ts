@@ -44,6 +44,10 @@ export class VesselVisitExecution extends AggregateRoot<VesselVisitExecutionProp
         return this.props.status;
     }
 
+    get creatorEmail(): string {
+        return this.props.creatorEmail;
+    }
+
     private constructor(props: VesselVisitExecutionProps, id?: UniqueEntityID) {
         super(props, id);
     }
