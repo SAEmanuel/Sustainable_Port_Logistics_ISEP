@@ -75,6 +75,7 @@ export default async ({expressApp}: { expressApp: express.Application }) => {
             config.controllers.vesselVisitExecution.getAll,
             config.controllers.vesselVisitExecution.getById,
             config.controllers.vesselVisitExecution.getByCode,
+            config.controllers.vesselVisitExecution.getByImo,
 
 
             // Incident controllers

@@ -265,6 +265,10 @@ export default {
             getByCode: {
                 name: "GetVVEByCodeController",
                 path: "../controllers/vve/getVVEByCodeController",
+            },
+            getByImo: {
+                name: "GetVVEByImoController",
+                path: "../controllers/vve/getVVEByImoController",
             }
         },
     },

@@ -6,8 +6,6 @@ import {Document, Model} from 'mongoose';
 import VesselVisitExecutionMap from "../mappers/VesselVisitExecutionMap";
 import {VesselVisitExecutionCode} from "../domain/vesselVisitExecution/vesselVisitExecutionCode";
 import {VesselVisitExecutionId} from "../domain/vesselVisitExecution/vesselVisitExecutionId";
-import {ComplementaryTaskCategoryId} from "../domain/complementaryTaskCategory/complementaryTaskCategoryId";
-import {ComplementaryTaskCategory} from "../domain/complementaryTaskCategory/complementaryTaskCategory";
 
 @Service()
 export default class VesselVisitExecutionRepo implements IVesselVisitExecutionRepo {
@@ -83,5 +81,13 @@ export default class VesselVisitExecutionRepo implements IVesselVisitExecutionRe
         const records = await this.vveSchema.find();
         return records.map(record => this.vesselVisitExecutionMap.toDomain(record));
     }
+
+    public async findByImo(imo: string): Promise<VesselVisitExecution[]> {
+        const records = await this.vveSchema.find({vesselImo: imo});
+        return records
+            .map(r => this.vesselVisitExecutionMap.toDomain(r))
+            .filter(Boolean) as VesselVisitExecution[];
+    }
+
 
 }

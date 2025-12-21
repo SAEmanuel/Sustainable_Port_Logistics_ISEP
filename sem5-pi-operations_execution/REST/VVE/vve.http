@@ -19,3 +19,6 @@ GET http://localhost:3000/api/vve/6153757c-4db4-4e7b-bb92-e1eebe2264d3
 
 ### Get by code
 GET http://localhost:3000/api/vve/code/VVE2025000001
+
+### Get by imo
+GET http://localhost:3000/api/vve/imo/9823455

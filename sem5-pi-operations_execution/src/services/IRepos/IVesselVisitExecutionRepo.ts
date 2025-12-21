@@ -10,5 +10,6 @@ export default interface IVesselVisitExecutionRepo extends Repo<VesselVisitExecu
     findAll(): Promise<VesselVisitExecution[]>;
     findByCode(code: VesselVisitExecutionCode) : Promise<VesselVisitExecution | null>;
     findById(id: VesselVisitExecutionId) : Promise<VesselVisitExecution | null>;
+    findByImo(imo: string) : Promise<VesselVisitExecution[]>;
     getAllInDateRange(startDate: Date, endDate: Date): Promise<VesselVisitExecution[]>;
 }

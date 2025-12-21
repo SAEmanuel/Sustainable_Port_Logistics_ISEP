@@ -100,6 +100,13 @@ export default class VesselVisitExecutionService implements IVesselVisitExecutio
         return Result.ok(this.vesselVisitExecutionMap.toDTO(vve));
     }
 
+    public async getByImoAsync(imo: string): Promise<Result<IVesselVisitExecutionDTO[]>> {
+        const vve = await this.repo.findByImo(imo);
+        return Result.ok(vve.map(v => this.vesselVisitExecutionMap.toDTO(v)));
+    }
+
+
+
     //METODOS AUXILIARES
 
     private async generateCodeAsync(): Promise<VesselVisitExecutionCode> {

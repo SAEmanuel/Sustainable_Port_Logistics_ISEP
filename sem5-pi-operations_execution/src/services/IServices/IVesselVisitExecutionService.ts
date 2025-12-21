@@ -11,4 +11,6 @@ export default interface IVesselVisitExecutionService {
     getByIdAsync(id: VesselVisitExecutionId): Promise<Result<IVesselVisitExecutionDTO>>;
 
     getByCodeAsync(code: VesselVisitExecutionCode): Promise<Result<IVesselVisitExecutionDTO>>;
+
+    getByImoAsync(imo: string): Promise<Result<IVesselVisitExecutionDTO[]>>;
 }
