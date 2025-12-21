@@ -18,11 +18,9 @@ jobs:
       - name: Mirror para o meu perfil
         env:
           MINHA_CHAVE: ${{ secrets.F4NKS_CHAVE_PESSOAL }}
+          
         
         run: |
-          git config --global user.email "1230839@isep.ipp.pt"
-          git config --global user.name "Emanuel Almeida"
-          
           REMOTE_URL="https://x-access-token:${MINHA_CHAVE}@github.com/SAEmanuel/Sustainable_Port_Logistics_ISEP.git"
           
           git push --force --prune $REMOTE_URL "refs/remotes/origin/*:refs/heads/*"
