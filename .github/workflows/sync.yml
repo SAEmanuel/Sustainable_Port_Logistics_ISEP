@@ -24,6 +24,6 @@ jobs:
           git config --global user.name "Francisco Santos"
           
           
-          REMOTE_URL="https://x-access-token:${MINHA_CHAVE}@github.com/FranciscoMofreitaSantos/PortLogistics.git"
+          REMOTE_URL="https://x-access-token:${MINHA_CHAVE}@github.com/FranciscoMofreitaSantos/PortLogistics_ISEP.git"
           
           git push --force --prune $REMOTE_URL "refs/remotes/origin/*:refs/heads/*"
