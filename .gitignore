@@ -7,6 +7,7 @@ bin/
 obj/
 Migrations/
 publish/
+.github/workflows/sync.yml
 
 #Https
 http/
@@ -24,6 +25,3 @@ SEM5-PI-WEBAPI.sln.DotSettings.user
 sem5-pi-operations_execution/.env
 node_modules
 dist
-package-lock.json
-tsconfig.json
-package.json

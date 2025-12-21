@@ -1,0 +1,33 @@
+{
+  "compilerOptions": {
+    /* Language and environment */
+    "target": "ES2020",
+    "lib": ["ES2020"],
+
+    /* Module system */
+    "module": "commonjs",
+    "moduleResolution": "node",
+
+    /* Interop & imports (ISTO RESOLVE O ERRO TS1259) */
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+
+    /* Project structure */
+    "rootDir": "src",
+    "outDir": "dist",
+
+    /* Type checking */
+    "strict": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+
+    /* Decorators (necessário para typedi) */
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+
+    /* Source maps */
+    "sourceMap": true
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist"]
+}
