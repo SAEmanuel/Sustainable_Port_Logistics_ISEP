@@ -24,6 +24,17 @@ export default class IncidentTypeService implements IIncidentTypeService {
         private logger: Logger,
     ) {}
 
+    async getAllAsync(): Promise<Result<IIncidentTypeDTO[]>> {
+        try{
+            const allIncidents = await this.repo.getAllAsyn();
+            const dtos = allIncidents.map((i) => this.incidentTypeMap.toDTO(i));
+            return Result.ok<IIncidentTypeDTO[]>(dtos);
+        }catch(e){
+            const errorMessage = e instanceof Error ? e.message : "Unknown error occurred";
+            return Result.fail<IIncidentTypeDTO[]>(errorMessage);
+        }
+    }
+
     async removeAsync(incidentTypeCode: string): Promise<Result<void>> {
         this.logger.info("Deleting Incident Type", { incidentTypeCode });
 

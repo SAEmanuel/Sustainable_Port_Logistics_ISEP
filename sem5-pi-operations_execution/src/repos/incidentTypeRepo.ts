@@ -4,7 +4,7 @@ import IIncidentTypeRepository from "../services/IRepos/IIncidentTypeRepository"
 import IncidentTypeMap from "../mappers/IncidentTypeMap";
 import {IIncidentTypePersistence} from "../dataschema/IIncidentTypePersistence";
 import { IncidentType } from "../domain/incidentTypes/incidentType";
-import {ComplementaryTaskCategory} from "../domain/complementaryTaskCategory/complementaryTaskCategory";
+
 
 @Service()
 export default class IncidentTypeRepo implements IIncidentTypeRepository {
@@ -18,6 +18,21 @@ export default class IncidentTypeRepo implements IIncidentTypeRepository {
         private logger: any
     ) {
     }
+
+    async getAllAsyn(): Promise<IncidentType[]> {
+        this.logger.debug("Finding all Incidents Types");
+
+        try {
+            const list = await this.incidentTypeSchema.find({});
+
+            return list
+                .map(record => this.incidentTypeMap.toDomain(record))
+                .filter(i => i != null) as IncidentType[];
+
+        } catch (e) {
+            this.logger.error("Error finding all Incidents Types", {error: e});
+            return [];
+        }    }
 
     async removeType(incidentTypeCode: string): Promise<number> {
         this.logger.debug("Deleting Incident Type", { incidentTypeCode });

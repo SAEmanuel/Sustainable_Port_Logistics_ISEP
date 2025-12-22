@@ -11,6 +11,7 @@ import GetITRootController from "../../controllers/incidentType/getITRootControl
 import GetITDirectChildController from "../../controllers/incidentType/getITDirectChildController";
 import GetITSubTreeController from "../../controllers/incidentType/getITSubTreeController";
 import RemoveIncidentTypeController from "../../controllers/incidentType/removeIncidentTypeController"
+import GetAllITController from "../../controllers/incidentType/getAllITController"
 
 const route = Router();
 
@@ -24,6 +25,10 @@ export default (app: Router) => {
     const removeCtrl = Container.get(
         config.controllers.incidentType.remove.name
     ) as RemoveIncidentTypeController;
+
+    const getAllCtrl = Container.get(
+        config.controllers.incidentType.getAll.name
+    ) as GetAllITController;
 
     const updateCtrl = Container.get(
         config.controllers.incidentType.update.name
@@ -73,6 +78,12 @@ export default (app: Router) => {
         }),
         (req, res) => getByNameCtrl.execute(req, res)
     );
+
+    // ----------------------------
+    // READ: Search by name
+    // GET /incidentTypes/search/all
+    // ----------------------------
+    route.get("/search/all", (req, res) => getAllCtrl.execute(req, res));
 
     // ----------------------------
     // READ: Direct children

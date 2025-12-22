@@ -14,6 +14,7 @@ import {
     getIncidentTypeChildren,
     getIncidentTypeSubtree,
     deleteIncidentType,
+    getAllIncidentTypes
 } from "../services/incidentTypeService";
 
 import IncidentTypeTable from "../components/IncidentTypeTable";
@@ -22,7 +23,7 @@ import IncidentTypeCreateModal from "../components/IncidentTypeCreateModal";
 import IncidentTypeEditModal from "../components/IncidentTypeEditModal";
 import IncidentTypeHierarchyPanel from "../components/IncidentTypeHierarchyPanel";
 
-type FilterType = "roots" | "code" | "name" | "children" | "subtree";
+type FilterType = "roots" | "code" | "name" | "children" | "subtree" | "all";
 
 function IncidentTypePage() {
     const { t } = useTranslation();
@@ -119,6 +120,10 @@ function IncidentTypePage() {
 
                 case "subtree":
                     data = await getIncidentTypeSubtree(value);
+                    break;
+
+                case "all":
+                    data = await getAllIncidentTypes();
                     break;
 
                 default:

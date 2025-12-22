@@ -1445,7 +1445,8 @@
       "code": "Por código",
       "name": "Por nome",
       "children": "Filhos de",
-      "subtree": "Sub-árvore de"
+      "subtree": "Sub-árvore de",
+      "all": "All"
     },
 
     "searchPlaceholder": {

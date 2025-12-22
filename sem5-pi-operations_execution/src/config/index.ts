@@ -1,5 +1,6 @@
 import dotenv from "dotenv";
 import path from "path";
+import GetAllITController from "../controllers/incidentType/getAllITController";
 
 const env = process.env.NODE_ENV || "development";
 
@@ -56,6 +57,10 @@ export default {
             remove:{
                 name: "RemoveIncidentTypeController",
                 path: "../controllers/incidentType/removeIncidentTypeController"
+            },
+            getAll:{
+                name: "GetAllITController",
+                path: "../controllers/incidentType/getAllITController"
             },
             update:{
                 name: "UpdateITController",

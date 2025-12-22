@@ -17,4 +17,6 @@ export default interface IIncidentTypeService {
     createAsync(dto: IIncidentTypeDTO): Promise<Result<IIncidentTypeDTO>>;
 
     removeAsync(incidentTypeCode: string): Promise<Result<void>>;
+
+    getAllAsync(): Promise<Result<IIncidentTypeDTO[]>>;
 }

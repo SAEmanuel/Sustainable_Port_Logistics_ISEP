@@ -42,3 +42,8 @@ export async function getIncidentTypeSubtree(parentCode: string): Promise<Incide
 export async function deleteIncidentType(code: string): Promise<void> {
     await operationsApi.delete(`/api/incidentTypes/${code}`);
 }
+
+export async function getAllIncidentTypes(): Promise<IncidentType[]> {
+    const res = await operationsApi.get(`/api/incidentTypes/search/all`);
+    return res.data.map(mapToIncidentTypeDomain);
+}

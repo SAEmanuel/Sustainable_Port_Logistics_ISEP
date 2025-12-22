@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import toast from "react-hot-toast";
 import "../style/incidentType.css";
 
-type FilterType = "roots" | "code" | "name" | "children" | "subtree";
+type FilterType = "roots" | "code" | "name" | "children" | "subtree" | "all";
 
 interface Props {
     onSearch: (type: FilterType, value: string) => void;
@@ -18,7 +18,7 @@ function IncidentTypeSearch({ onSearch }: Props) {
         e.preventDefault();
 
         // roots doesn't need a value
-        if (filterType !== "roots" && filterValue.trim() === "") {
+        if (filterType !== "roots" && filterType !== "all" && filterValue.trim() === "") {
             toast.error(t("errors.emptySearch"));
             return;
         }
@@ -32,7 +32,7 @@ function IncidentTypeSearch({ onSearch }: Props) {
         onSearch("roots", "");
     };
 
-    const needsValue = filterType !== "roots";
+    const needsValue = filterType !== "roots" && filterType !== "all";
 
     return (
         <form onSubmit={handleSubmit} className="it-search-form">
@@ -49,6 +49,7 @@ function IncidentTypeSearch({ onSearch }: Props) {
                 <option value="name">{t("incidentType.search.name")}</option>
                 <option value="children">{t("incidentType.search.children")}</option>
                 <option value="subtree">{t("incidentType.search.subtree")}</option>
+                <option value="all">{t("incidentType.search.all")}</option>
             </select>
 
             {needsValue && (
