@@ -6,7 +6,9 @@ import "../style/incidents.css";
 import type { Incident, ImpactMode, Severity } from "../domain/incident";
 import type { CreateIncidentDTO } from "../dtos/createIncidentDTO";
 import type { UpdateIncidentDTO } from "../dtos/updateIncidentDTO";
-import { createIncident, updateIncident, getAllVVEs } from "../services/incidentService"; // Importa getAllVVEs
+import { createIncident, updateIncident, getAllVVEs } from "../services/incidentService";
+import { getAllIncidentTypes } from "../../incidentTypes/services/incidentTypeService"
+import type {IncidentType} from "../../incidentTypes/domain/incidentType.ts";
 
 const severities: Severity[] = ["Minor", "Major", "Critical"];
 const impactModes: ImpactMode[] = ["Specific", "AllOnGoing", "Upcoming"];
@@ -48,6 +50,10 @@ export default function IncidentUpsertModal({
     const [vveSearch, setVveSearch] = useState(""); // Filtro de pesquisa
     const [loadingVves, setLoadingVves] = useState(false);
 
+    const [allIncidentsTypes, setAllIncidentsTypes] = useState<IncidentType[]>([]);
+    const [loadingIncidentTypes, setLoadingIncidentTypes] = useState(false);
+    const [incidentTypeSearch, setIncidentTypeSearch] = useState("");
+
     // Carregar dados ao abrir
     useEffect(() => {
         if (!isOpen) return;
@@ -58,6 +64,13 @@ export default function IncidentUpsertModal({
             .then((list) => setAllVves(list))
             .catch(() => toast.error("Falha ao carregar lista de VVEs"))
             .finally(() => setLoadingVves(false));
+
+        setLoadingIncidentTypes(true);
+        getAllIncidentTypes()
+            .then((list) => setAllIncidentsTypes(list))
+            .catch(() => toast.error("Falha ao carregar lista de Incidents Types"))
+            .finally(() => setLoadingIncidentTypes(false));
+
 
         // 2. Preencher formulário
         if (mode === "edit" && resource) {
@@ -78,6 +91,7 @@ export default function IncidentUpsertModal({
             setData(emptyCreate);
         }
         setVveSearch(""); // Limpa pesquisa ao reabrir
+        setIncidentTypeSearch("");
     }, [isOpen, mode, resource]);
 
     const isUpcoming = data.impactMode === "Upcoming";
@@ -98,10 +112,23 @@ export default function IncidentUpsertModal({
         });
     };
 
+    const toggleIncidentType = (code: string) => {
+        setData((prev) => ({
+            ...prev,
+            incidentTypeCode: prev.incidentTypeCode === code ? "" : code,
+        }));
+    };
+
     // Filtered List based on Search
     const filteredVves = allVves.filter((v) =>
         v.toLowerCase().includes(vveSearch.toLowerCase())
     );
+
+    const filteredIncidentTypes = allIncidentsTypes.filter((it) => {
+        const q = incidentTypeSearch.toLowerCase();
+        return it.code.toLowerCase().includes(q) || it.name.toLowerCase().includes(q);
+    });
+
 
     const validate = (): string | null => {
         if (mode === "create" && !data.code.trim()) return t("incident.errors.codeRequired");
@@ -199,13 +226,13 @@ export default function IncidentUpsertModal({
                             </div>
                         )}
 
-                        <div className="in-group">
-                            <label>{t("incident.form.typeCode")}</label>
+                        <div className="in-group in-group-full">
+                            <label>{t("incident.form.description")}</label>
                             <input
                                 className="in-input"
-                                value={data.incidentTypeCode}
-                                onChange={(e) => onField("incidentTypeCode", e.target.value)}
-                                placeholder="Ex: T-INC001"
+                                value={data.description}
+                                onChange={(e) => onField("description", e.target.value)}
+                                placeholder={t("incident.form.descriptionPH")}
                             />
                         </div>
 
@@ -231,15 +258,6 @@ export default function IncidentUpsertModal({
                             </select>
                         </div>
 
-                        <div className="in-group in-group-full">
-                            <label>{t("incident.form.description")}</label>
-                            <input
-                                className="in-input"
-                                value={data.description}
-                                onChange={(e) => onField("description", e.target.value)}
-                                placeholder={t("incident.form.descriptionPH")}
-                            />
-                        </div>
 
                         <div className="in-group">
                             <label>{t("incident.form.startTime")}</label>
@@ -262,6 +280,72 @@ export default function IncidentUpsertModal({
                                 />
                             </div>
                         )}
+
+                        <div className="in-group in-group-full">
+                            <label>{t("incident.form.typeCode")}</label>
+
+                            {/* Chips do selecionado (opcional, mas consistente com VVE) */}
+                            {data.incidentTypeCode && (
+                                <div className="in-selected-area">
+                                    <div className="in-chip">
+                                        <span className="in-mono">{data.incidentTypeCode}</span>
+                                        <button
+                                            type="button"
+                                            className="in-chip-x"
+                                            onClick={() => onField("incidentTypeCode", "")}
+                                            title={t("actions.clear")}
+                                        >
+                                            ×
+                                        </button>
+                                    </div>
+                                </div>
+                            )}
+
+                            <div className="in-vve-selector">
+                                {/* Pesquisa (corrigida) */}
+                                <input
+                                    type="text"
+                                    className="in-vve-search"
+                                    placeholder={t("incident.form.typeSearchPH") ?? "Pesquisar Incident Type..."}
+                                    value={incidentTypeSearch}
+                                    onChange={(e) => setIncidentTypeSearch(e.target.value)}
+                                />
+
+                                {/* Lista com scroll */}
+                                <div className="in-vve-list">
+                                    {loadingIncidentTypes ? (
+                                        <div style={{ padding: "1rem", color: "#999", fontSize: "0.85rem" }}>
+                                            {t("common.loading")}
+                                        </div>
+                                    ) : filteredIncidentTypes.length === 0 ? (
+                                        <div style={{ padding: "1rem", color: "#999", fontSize: "0.85rem" }}>
+                                            {t("incident.errors.noIncidentTypes") ?? "Nenhuma Incident Type encontrada"}
+                                        </div>
+                                    ) : (
+                                        filteredIncidentTypes.map((it) => {
+                                            const isSelected = data.incidentTypeCode === it.code;
+
+                                            return (
+                                                <div
+                                                    key={it.code}
+                                                    className={`in-vve-item ${isSelected ? "is-selected" : ""}`}
+                                                    onClick={() => toggleIncidentType(it.code)}
+                                                >
+                                                    <div className="in-checkbox-mock"></div>
+
+                                                    <div style={{ display: "flex", flexDirection: "column", gap: "0.15rem" }}>
+                                                        <span className="in-mono">{it.code}</span>
+                                                        <span style={{ fontSize: "0.85rem", opacity: 0.8 }}>{it.name}</span>
+                                                    </div>
+                                                </div>
+                                            );
+                                        })
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+
+
 
                         {/* --- SELETOR DE VVES MODERNO --- */}
                         <div className="in-group in-group-full">

@@ -1550,5 +1550,129 @@
       "completed": "Concluído",
       "unknown": "Desconhecido"
     }
+  },
+  "incident": {
+    "title": "Incidentes",
+    "noData": "Nenhum incidente encontrado.",
+    "stats": {
+      "total": "Total",
+      "active": "Ativos",
+      "resolved": "Resolvidos"
+    },
+    "table": {
+      "code": "Código",
+      "type": "Tipo",
+      "severity": "Severidade",
+      "impactMode": "Impacto",
+      "status": "Estado",
+      "start": "Início",
+      "end": "Fim",
+      "actions": "Ações"
+    },
+    "status": {
+      "active": "Ativo",
+      "resolved": "Resolvido"
+    },
+    "severity": {
+      "Minor": "Menor",
+      "Major": "Maior",
+      "Critical": "Crítico"
+    },
+    "impact": {
+      "Specific": "Específico",
+      "AllOnGoing": "Todos (em curso)",
+      "Upcoming": "Próximo"
+    },
+    "filter": {
+      "all": "Todos",
+      "active": "Ativos",
+      "resolved": "Resolvidos",
+      "code": "Por código",
+      "severity": "Por severidade",
+      "vve": "Por VVE",
+      "dateRange": "Intervalo de datas",
+      "noValue": "Sem valor",
+      "placeholder": {
+        "code": "INC-2024-00001",
+        "vve": "VVE-123456"
+      }
+    },
+    "details": {
+      "title": "Detalhes",
+      "empty": "Selecione um incidente para ver os detalhes."
+    },
+    "fields": {
+      "severity": "Severidade",
+      "impactMode": "Modo de impacto",
+      "startTime": "Início",
+      "endTime": "Fim",
+      "description": "Descrição",
+      "vves": "VVEs afetados",
+      "upcomingWindow": "Janela do próximo"
+    },
+    "actions": {
+      "create": "Criar incidente",
+      "resolve": "Resolver",
+      "addVve": "Adicionar VVE",
+      "removeVve": "Remover VVE"
+    },
+    "vve": {
+      "placeholder": "VVE-998877",
+      "empty": "Sem VVEs associados."
+    },
+    "modal": {
+      "createTitle": "Criar incidente",
+      "createSub": "Preencha os dados e defina o impacto.",
+      "editTitle": "Editar incidente",
+      "editSub": "Atualize os dados e o impacto."
+    },
+    "form": {
+      "code": "Código",
+      "typeCode": "Código do tipo de incidente",
+      "severity": "Severidade",
+      "impactMode": "Modo de impacto",
+      "description": "Descrição",
+      "descriptionPH": "Descrição curta do incidente...",
+      "startTime": "Hora de início",
+      "endTime": "Hora de fim",
+      "endTimeHint": "Opcional. Se estiver vazio, o incidente é considerado ativo.",
+      "createdByUser": "Criado por",
+      "vveList": "Lista de VVEs",
+      "vveCommaHint": "Separe por vírgulas. Ex.: VVE-1, VVE-2",
+      "vveIgnoredAllOngoing": "Em Todos (em curso), a lista é calculada automaticamente.",
+      "vveAutoUpcoming": "Em Próximo, a lista é calculada com base na janela do próximo.",
+      "upcomingStart": "Início do próximo",
+      "upcomingEnd": "Fim do próximo",
+      "typeSearchPH": "Pesquisar tipo de incidente por código..."
+
+    },
+    "confirm": {
+      "delete": "Tem a certeza de que pretende eliminar o incidente {{code}}?"
+    },
+    "success": {
+      "created": "Incidente criado com sucesso.",
+      "updated": "Incidente atualizado com sucesso.",
+      "deleted": "Incidente eliminado.",
+      "resolved": "Incidente marcado como resolvido.",
+      "vveAdded": "VVE adicionado.",
+      "vveRemoved": "VVE removido."
+    },
+    "errors": {
+      "loadAll": "Erro ao carregar incidentes.",
+      "search": "Erro na pesquisa.",
+      "saveFailed": "Falha ao guardar.",
+      "deleteFailed": "Falha ao eliminar.",
+      "resolveFailed": "Falha ao resolver.",
+      "vveAddFailed": "Falha ao adicionar VVE.",
+      "vveRemoveFailed": "Falha ao remover VVE.",
+      "codeRequired": "O código é obrigatório.",
+      "typeRequired": "O Código do tipo de incidente é obrigatório.",
+      "startRequired": "A Hora de início é obrigatória.",
+      "descRequired": "A descrição é obrigatória.",
+      "vveRequiredSpecific": "No modo Específico, tem de indicar pelo menos 1 VVE.",
+      "upcomingWindowRequired": "No modo Próximo, tem de indicar o início/fim do próximo.",
+      "rangeRequired": "Indique o início e o fim do intervalo."
+    }
   }
+
 }

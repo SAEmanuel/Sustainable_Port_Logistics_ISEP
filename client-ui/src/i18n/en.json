@@ -1691,7 +1691,9 @@
       "vveIgnoredAllOngoing": "For AllOnGoing, the list is calculated automatically.",
       "vveAutoUpcoming": "For Upcoming, the list is calculated based on the Upcoming window.",
       "upcomingStart": "Upcoming Start",
-      "upcomingEnd": "Upcoming End"
+      "upcomingEnd": "Upcoming End",
+      "typeSearchPH": "Search Incident Type by Code..."
+
     },
     "confirm": {
       "delete": "Are you sure you want to delete incident {{code}}?"
