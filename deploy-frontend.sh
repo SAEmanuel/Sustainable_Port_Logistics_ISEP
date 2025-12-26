@@ -1,5 +1,16 @@
 #!/bin/bash
 
+set -e
+
+# ===== Ensure PATH works inside GitHub Runner =====
+export DOTNET_ROOT="$HOME/.dotnet"
+export PATH="$DOTNET_ROOT:$HOME/node/bin:$PATH"
+
+# ===== Ensure SSH works non-interactive =====
+export SSH_OPTS="-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o LogLevel=ERROR"
+alias ssh="ssh $SSH_OPTS"
+alias scp="scp $SSH_OPTS"
+
 # FRONTEND SERVERS
 SERVERS=(
   "root@10.9.22.90"
@@ -8,7 +19,6 @@ SERVERS=(
 
 WEB_DIR="/var/www/spa"
 FRONTEND_DIR="./client-ui"
-
 GUARDIAN="root@10.9.23.2"
 
 echo "=========================="
@@ -24,33 +34,24 @@ systemctl stop frontend2-monitor 2>/dev/null
 systemctl stop nginx-monitor 2>/dev/null
 EOF
 
-
 # ---------------------------------------------------------
 echo "Building frontend..."
 # ---------------------------------------------------------
-
-cd "$FRONTEND_DIR" || { 
-  echo "ERROR: Frontend directory not found: $FRONTEND_DIR"
-  exit 1
-}
+cd "$FRONTEND_DIR" || { echo "❌ Frontend directory missing"; exit 1; }
 
 if [ ! -f package.json ]; then
-  echo "ERROR: package.json not found inside $FRONTEND_DIR"
+  echo "❌ package.json missing in $FRONTEND_DIR"
   exit 1
 fi
 
-npm run build || { 
-  echo "ERROR: Frontend build failed."
-  exit 1
-}
+npm install || { echo "❌ NPM INSTALL FAILED"; exit 1; }
+npm run build || { echo "❌ FRONTEND BUILD FAILED"; exit 1; }
 
 echo "Frontend build completed successfully."
-
 
 # ---------------------------------------------------------
 echo "Deploying to frontend servers..."
 # ---------------------------------------------------------
-
 for SERVER in "${SERVERS[@]}"; do
 
   echo "-----------------------------------------"
@@ -58,23 +59,22 @@ for SERVER in "${SERVERS[@]}"; do
   echo "-----------------------------------------"
 
   ssh $SERVER "rm -rf $WEB_DIR/* && mkdir -p $WEB_DIR" || {
-    echo "ERROR clearing remote directory on $SERVER"
+    echo "❌ Failed clearing remote directory on $SERVER"
     exit 1
   }
 
   scp -r dist/* "$SERVER:$WEB_DIR/" || {
-    echo "ERROR uploading files to $SERVER"
+    echo "❌ Upload failed to $SERVER"
     exit 1
   }
 
   ssh $SERVER "nginx -t && systemctl reload nginx" || {
-    echo "ERROR: nginx reload failed on $SERVER"
+    echo "❌ nginx reload failed on $SERVER"
     exit 1
   }
 
   echo "Deployment finished on $SERVER"
 done
-
 
 # ---------------------------------------------------------
 echo "Re-enabling monitoring on Guardian VM..."
@@ -84,7 +84,6 @@ systemctl start frontend1-monitor 2>/dev/null
 systemctl start frontend2-monitor 2>/dev/null
 systemctl start nginx-monitor 2>/dev/null
 EOF
-
 
 echo "==============================="
 echo " FRONTEND DEPLOY SUCCESSFUL"

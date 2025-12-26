@@ -1,5 +1,16 @@
 #!/bin/bash
 
+set -e
+
+# ===== Ensure PATH works inside GitHub Runner =====
+export DOTNET_ROOT="$HOME/.dotnet"
+export PATH="$DOTNET_ROOT:$HOME/node/bin:$PATH"
+
+# ===== Ensure SSH works non-interactive =====
+export SSH_OPTS="-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o LogLevel=ERROR"
+alias ssh="ssh $SSH_OPTS"
+alias scp="scp $SSH_OPTS"
+
 SERVER="root@10.9.22.226"
 GUARDIAN="root@10.9.23.2"
 REMOTE_DIR="/opt/backend"
@@ -63,7 +74,6 @@ mkdir publish
 npm install || { echo "❌ NPM INSTALL FAILED"; exit 1; }
 npm run build || { echo "❌ TYPESCRIPT BUILD FAILED"; exit 1; }
 
-# Copy final build
 cp package*.json publish/
 cp -r dist publish/
 
@@ -107,10 +117,10 @@ mv $OPERATIONS_REMOTE   $REMOTE_DIR/sem5-pi-operations_execution
 EOF
 
 # ---------------------------------------------------------
-echo "Uploading .env.production to server..."
+echo "Uploading .env.production..."
 # ---------------------------------------------------------
 LOCAL_ENV="$OPERATIONS_PROJECT/.env.production"
-REMOTE_ENV="/opt/backend/sem5-pi-operations_execution/.env.production"
+REMOTE_ENV="$REMOTE_DIR/sem5-pi-operations_execution/.env.production"
 
 ssh $SERVER "rm -f $REMOTE_ENV"
 scp "$LOCAL_ENV" "$SERVER:$REMOTE_ENV"
@@ -120,7 +130,7 @@ ssh $SERVER "chmod 600 $REMOTE_ENV"
 echo "Installing Node.js production dependencies..."
 # ---------------------------------------------------------
 ssh $SERVER << EOF
-cd /opt/backend/sem5-pi-operations_execution
+cd $REMOTE_DIR/sem5-pi-operations_execution
 npm install --production
 EOF
 
