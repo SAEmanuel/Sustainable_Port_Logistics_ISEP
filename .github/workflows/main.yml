@@ -49,3 +49,26 @@ jobs:
 
       - name: Run Unit Tests
         run: dotnet test ./SEM5-PI-PlanningScheduling/ --no-build --verbosity normal --configuration Release --logger "trx;LogFileName=test-results-scheduling.trx"
+
+  deploy:
+    name: Deploy to self-hosted server
+    runs-on: self-hosted
+    needs:
+      - build-webapi
+      - build-scheduling
+    if: github.ref == 'refs/heads/main'
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Ensure deploy scripts are executable
+        run: |
+          chmod +x ./deploy-backends.sh || true
+          chmod +x ./deploy-frontend.sh || true
+
+      - name: Run backend deploy script
+        run: ./deploy-backends.sh
+
+      - name: Run frontend deploy script
+        run: ./deploy-frontend.sh
