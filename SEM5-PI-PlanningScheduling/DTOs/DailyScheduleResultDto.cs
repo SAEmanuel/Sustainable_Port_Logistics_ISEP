@@ -107,3 +107,17 @@ public class GeneticScheduleResultDto
     public double MutationRate { get; set; }
     public double CrossoverRate { get; set; }
 }
+
+public class SmartScheduleResultDto
+{
+    public string SelectedAlgorithm { get; set; } = string.Empty;
+    
+    public DailyScheduleResultDto Schedule { get; set; } = new();
+    public PrologFullResultDto? Prolog { get; set; }
+
+    public int ProblemSize { get; set; }
+    public int VesselCount { get; set; }
+    public int CraneCount { get; set; }
+
+    public string SelectionReason { get; set; } = string.Empty;
+}

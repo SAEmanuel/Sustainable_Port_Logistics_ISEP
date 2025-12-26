@@ -102,4 +102,22 @@ public class ScheduleController : ControllerBase
             return BadRequest(new { error = e.Message });
         }
     }
+    
+    [HttpGet("daily/smart")]
+    public async Task<ActionResult<SmartScheduleResultDto>> GetSmartSchedule(
+        [FromQuery] DateOnly day,
+        [FromQuery] int? maxComputationSeconds)
+    {
+        try
+        {
+            var result = await _schedulingService
+                .ComputeDailyScheduleSmartAsync(day, maxComputationSeconds);
+
+            return Ok(result);
+        }
+        catch (PlanningSchedulingException e)
+        {
+            return BadRequest(new { error = e.Message });
+        }
+    }
 }

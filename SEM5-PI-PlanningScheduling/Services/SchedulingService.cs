@@ -752,70 +752,167 @@ public class SchedulingService
         return baseDateTime.AddHours(hoursSinceStart);
     }
 
-public async Task<GeneticScheduleResultDto> ComputeDailyScheduleGeneticAsync(
-    DateOnly day,
-    int? populationSizeOverride = null,
-    int? generationsOverride = null,
-    double? mutationRateOverride = null,
-    double? crossoverRateOverride = null)
-{
-    ClearCaches();
-
-    var vvns = await _vvnClient.GetVisitNotifications();
-    var vvnsForDay = vvns
-        .Where(v => DateOnly.FromDateTime(v.EstimatedTimeArrival.Date) == day)
-        .ToList();
-
-    if (vvnsForDay.Count == 0)
-        throw new PlanningSchedulingException($"No visits for {day}");
-    
-    var baseSchedule = await ComputeDailyScheduleAsync(day);
-
-    int n = vvnsForDay.Count;
-    
-
-    int populationSize =
-        populationSizeOverride ??
-        Math.Max(10, n * 2);
-
-    int generations =
-        generationsOverride ??
-        40;
-
-    double mutationRate =
-        mutationRateOverride ??
-        0.15;
-
-    double crossoverRate =
-        crossoverRateOverride ??
-        0.8;
-
-    
-    var prologResult = await _prologClient.SendToPrologAsync<PrologFullResultDto>(
-        "schedule/genetic",
-        new
-        {
-            schedule = baseSchedule,
-            population = populationSize,
-            generations = generations,
-            mutation_rate = mutationRate,
-            crossover_rate = crossoverRate
-        });
-
-
-    var optimizedSchedule = UpdateScheduleFromPrologResult(baseSchedule, prologResult);
-
-    await AssignStaffToScheduleAsync(optimizedSchedule, day, vvnsForDay);
-
-    return new GeneticScheduleResultDto
+    public async Task<GeneticScheduleResultDto> ComputeDailyScheduleGeneticAsync(
+        DateOnly day,
+        int? populationSizeOverride = null,
+        int? generationsOverride = null,
+        double? mutationRateOverride = null,
+        double? crossoverRateOverride = null)
     {
-        Schedule = optimizedSchedule,
-        Prolog = prologResult,
+        ClearCaches();
 
-        PopulationSize = populationSize,
-        Generations = generations,
-        MutationRate = mutationRate,
-        CrossoverRate = crossoverRate
-    };
-}
+        var vvns = await _vvnClient.GetVisitNotifications();
+        var vvnsForDay = vvns
+            .Where(v => DateOnly.FromDateTime(v.EstimatedTimeArrival.Date) == day)
+            .ToList();
+
+        if (vvnsForDay.Count == 0)
+            throw new PlanningSchedulingException($"No visits for {day}");
+
+        var baseSchedule = await ComputeDailyScheduleAsync(day);
+
+        int n = vvnsForDay.Count;
+
+
+        int populationSize =
+            populationSizeOverride ??
+            Math.Max(10, n * 2);
+
+        int generations =
+            generationsOverride ??
+            40;
+
+        double mutationRate =
+            mutationRateOverride ??
+            0.15;
+
+        double crossoverRate =
+            crossoverRateOverride ??
+            0.8;
+
+
+        var prologResult = await _prologClient.SendToPrologAsync<PrologFullResultDto>(
+            "schedule/genetic",
+            new
+            {
+                schedule = baseSchedule,
+                population = populationSize,
+                generations = generations,
+                mutation_rate = mutationRate,
+                crossover_rate = crossoverRate
+            });
+
+
+        var optimizedSchedule = UpdateScheduleFromPrologResult(baseSchedule, prologResult);
+
+        await AssignStaffToScheduleAsync(optimizedSchedule, day, vvnsForDay);
+
+        return new GeneticScheduleResultDto
+        {
+            Schedule = optimizedSchedule,
+            Prolog = prologResult,
+
+            PopulationSize = populationSize,
+            Generations = generations,
+            MutationRate = mutationRate,
+            CrossoverRate = crossoverRate
+        };
+    }
+
+    public async Task<SmartScheduleResultDto> ComputeDailyScheduleSmartAsync(
+        DateOnly day,
+        int? maxComputationSeconds = null)
+    {
+        ClearCaches();
+
+        var vvns = await _vvnClient.GetVisitNotifications();
+        var vvnsForDay = vvns
+            .Where(v => DateOnly.FromDateTime(v.EstimatedTimeArrival.Date) == day)
+            .ToList();
+
+        if (vvnsForDay.Count == 0)
+            throw new PlanningSchedulingException($"No visits for {day}");
+
+        int vesselCount = vvnsForDay.Count;
+
+        var docks = vvnsForDay.Select(v => v.Dock).Distinct().ToList();
+        int craneCount = 0;
+
+        foreach (var dock in docks)
+        {
+            var dockCranes = await GetCachedDockCranesAsync(dock);
+            craneCount += dockCranes.Count;
+        }
+
+        int problemSize = vesselCount * Math.Max(1, craneCount);
+
+        string chosen = "";
+        string reason = "";
+
+
+        if (maxComputationSeconds is not null && maxComputationSeconds <= 2)
+        {
+            chosen = "genetic";
+            reason = "Time-constrained case";
+        }
+        else if (problemSize <= 8)
+        {
+            chosen = "optimal";
+            reason = "Small instance — full search feasible";
+        }
+        else if (problemSize <= 20)
+        {
+            chosen = "greedy";
+            reason = "Medium instance — heuristic selected";
+        }
+        else
+        {
+            chosen = "genetic";
+            reason = "Large instance — wider exploration required";
+        }
+
+
+        (DailyScheduleResultDto schedule, PrologFullResultDto prolog) result;
+
+        switch (chosen)
+        {
+            case "optimal":
+                result = await ComputeScheduleWithAlgorithmAsync(day, "optimal");
+                break;
+
+            case "greedy":
+                result = await ComputeScheduleWithAlgorithmAsync(day, "greedy");
+                break;
+
+            case "genetic":
+                var genetic = await ComputeDailyScheduleGeneticAsync(day);
+                return new SmartScheduleResultDto
+                {
+                    SelectedAlgorithm = "genetic",
+                    Schedule = genetic.Schedule,
+                    Prolog = genetic.Prolog,
+                    ProblemSize = problemSize,
+                    VesselCount = vesselCount,
+                    CraneCount = craneCount,
+                    SelectionReason = reason
+                };
+
+            default:
+                throw new Exception("Unexpected algorithm selection.");
+        }
+
+
+        return new SmartScheduleResultDto
+        {
+            SelectedAlgorithm = chosen,
+            Schedule = result.schedule,
+            Prolog = result.prolog,
+            ProblemSize = problemSize,
+            VesselCount = vesselCount,
+            CraneCount = craneCount,
+            SelectionReason = reason
+        };
+    }
+    
+    
 }
