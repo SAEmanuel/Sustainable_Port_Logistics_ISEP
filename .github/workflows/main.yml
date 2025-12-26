@@ -1,71 +1,140 @@
-name: .NET Backend Build & Test
+name: Backend & Frontend CI + Deploy
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
   pull_request:
-    branches: [ "main" ]
-  schedule:
-    - cron: '0 2 * * *'
+    branches: ["main"]
   workflow_dispatch:
+  schedule:
+    - cron: "0 2 * * *"
 
 jobs:
-  build-webapi:
+
+  # ===========================
+  # BACKEND TESTS - WEB API
+  # ===========================
+  test-webapi:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Set up .NET
-        uses: actions/setup-dotnet@v4
+      - uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '9.0.x'
+          dotnet-version: "9.0.x"
 
-      - name: Restore dependencies
+      - name: Restore WEBAPI
         run: dotnet restore ./SEM5-PI-WEBAPI/
 
-      - name: Build WEBAPI
-        run: dotnet build ./SEM5-PI-WEBAPI/ --no-restore --configuration Release
+      - name: Run WEBAPI Tests
+        run: dotnet test ./SEM5-PI-WEBAPI/ --configuration Release --logger "trx;LogFileName=test-results-webapi.trx"
 
-      - name: Run Unit Tests
-        run: dotnet test ./SEM5-PI-WEBAPI/ --no-build --verbosity normal --configuration Release --logger "trx;LogFileName=test-results-webapi.trx"
 
-  build-scheduling:
+  # ===========================
+  # BACKEND TESTS - SCHEDULING
+  # ===========================
+  test-scheduling:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Set up .NET
-        uses: actions/setup-dotnet@v4
+      - uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '9.0.x'
+          dotnet-version: "9.0.x"
 
-      - name: Restore dependencies
+      - name: Restore Scheduling
         run: dotnet restore ./SEM5-PI-PlanningScheduling/
 
-      - name: Build Scheduling API
-        run: dotnet build ./SEM5-PI-PlanningScheduling/ --no-restore --configuration Release
+      - name: Run Scheduling Tests
+        run: dotnet test ./SEM5-PI-PlanningScheduling/ --configuration Release --logger "trx;LogFileName=test-results-scheduling.trx"
 
-      - name: Run Unit Tests
-        run: dotnet test ./SEM5-PI-PlanningScheduling/ --no-build --verbosity normal --configuration Release --logger "trx;LogFileName=test-results-scheduling.trx"
 
+  # ===========================
+  # OPERATIONS EXECUTION TESTS
+  # ===========================
+  test-operations:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install dependencies
+        working-directory: ./sem5-pi-operations_execution
+        run: npm ci
+
+      - name: Run Operations Tests
+        working-directory: ./sem5-pi-operations_execution
+        run: npm test
+
+
+  # ===========================
+  # FRONTEND UNIT TESTS
+  # ===========================
+  test-frontend-unit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install frontend dependencies
+        working-directory: ./client-ui
+        run: npm ci
+
+      - name: Run frontend unit tests
+        working-directory: ./client-ui
+        run: npm test
+
+
+  # ===========================
+  # CYPRESS END-TO-END TESTS
+  # ===========================
+  test-frontend-e2e:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install frontend dependencies
+        working-directory: ./client-ui
+        run: npm ci
+
+      - name: Run Cypress E2E tests
+        working-directory: ./client-ui
+        run: |
+          npx cypress install
+          npx cypress run
+
+
+  # ===========================
+  # DEPLOY (ONLY IF ALL TESTS PASS)
+  # ===========================
   deploy:
     name: Deploy to self-hosted server
     runs-on: self-hosted
     needs:
-      - build-webapi
-      - build-scheduling
-    if: github.ref == 'refs/heads/main'
+      - test-webapi
+      - test-scheduling
+      - test-operations
+      - test-frontend-unit
+      - test-frontend-e2e
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
       - name: Ensure deploy scripts are executable
         run: |
-          chmod +x ./deploy-backends.sh || true
-          chmod +x ./deploy-frontend.sh || true
+          chmod +x ./deploy-backends.sh
+          chmod +x ./deploy-frontend.sh
 
       - name: Run backend deploy script
         run: ./deploy-backends.sh
