@@ -20,7 +20,6 @@ type ScheduleResponseWithTime = ScheduleResponse & { executionTime?: number };
 
 interface AlgorithmComparisonTableProps {
     allResults: Partial<Record<AlgorithmType, ScheduleResponseWithTime>>;
-    // Correção ESLint: Alterado 'any' para 'Record<string, unknown>'
     t: (key: string, options?: Record<string, unknown>) => string;
 }
 
@@ -28,7 +27,6 @@ const ComparisonRow: React.FC<{
     algo: AlgorithmType;
     result?: ScheduleResponseWithTime;
     minDelay: number | null;
-    // Correção ESLint: Alterado 'any' para 'Record<string, unknown>'
     t: (key: string, options?: Record<string, unknown>) => string;
 }> = ({ algo, result, minDelay, t }) => {
 
@@ -41,7 +39,6 @@ const ComparisonRow: React.FC<{
         )
         : 0;
 
-    // Correção TS2365: Criamos variáveis separadas para lógica numérica e exibição textual
     const delayValue = hasData ? (result.prolog.total_delay ?? 0) : 0;
     const delayDisplay = hasData ? (result.prolog.total_delay ?? 0).toString() : '-';
 
@@ -71,7 +68,6 @@ const ComparisonRow: React.FC<{
                 {isNotComputed ? (
                     <Badge color="gray" size="lg">{t('planningScheduling.notComputed')}</Badge>
                 ) : (
-                    // Correção TS2365: Agora comparamos número com número (delayValue > 0)
                     <Badge size="lg" color={delayValue > 0 ? "red" : "green"}>
                         {delayDisplay} {t('planningScheduling.hours')}
                     </Badge>

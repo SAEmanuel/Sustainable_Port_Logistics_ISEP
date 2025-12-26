@@ -2,21 +2,15 @@ import type {
     DailyScheduleResultDto,
     MultiCraneComparisonResultDto,
     PrologFullResultDto,
+    SmartScheduleResultDto,
 } from '../dtos/scheduling.dtos';
 
 export type ScheduleResponse = {
-    algorithm:
-        | 'optimal'
-        | 'greedy'
-        | 'local_search'
-        | 'multi_crane'
-        | 'genetic'
-        | 'smart';
-
+    algorithm: AlgorithmType;
     schedule: DailyScheduleResultDto;
     prolog: PrologFullResultDto;
-
     comparisonData?: MultiCraneComparisonResultDto;
+    smartData?: SmartScheduleResultDto;
 };
 
 export type AlgorithmType =
@@ -27,12 +21,16 @@ export type AlgorithmType =
     | 'genetic'
     | 'smart';
 
-
 export interface GeneticParams {
     populationSize?: number;
     generations?: number;
     mutationRate?: number;
     crossoverRate?: number;
+}
+
+
+export interface SmartParams {
+    maxComputationSeconds?: number;
 }
 
 const BASE_URL = import.meta.env.VITE_PLANNING_URL;
@@ -42,7 +40,8 @@ export const SchedulingService = {
         day: string,
         algorithm: AlgorithmType,
         comparisonAlgorithm: string = 'greedy',
-        geneticParams?: GeneticParams
+        geneticParams?: GeneticParams,
+        smartParams?: SmartParams
     ): Promise<ScheduleResponse> {
 
         let endpointUrl = `api/schedule/daily/${algorithm}`;
@@ -57,6 +56,9 @@ export const SchedulingService = {
 
         if (algorithm === 'smart') {
             endpointUrl = `api/schedule/daily/smart`;
+            if (smartParams?.maxComputationSeconds) {
+                queryParams += `&maxComputationSeconds=${smartParams.maxComputationSeconds}`;
+            }
         }
 
         if (algorithm === 'genetic') {
@@ -89,17 +91,18 @@ export const SchedulingService = {
                 };
             }
 
-            if (algorithm === 'genetic' && rawResult.schedule) {
+            if (algorithm === 'smart' && rawResult.schedule) {
                 return {
-                    algorithm: 'genetic',
+                    algorithm: 'smart',
                     schedule: rawResult.schedule,
-                    prolog: rawResult.prolog as PrologFullResultDto
+                    prolog: rawResult.prolog as PrologFullResultDto,
+                    smartData: rawResult as SmartScheduleResultDto
                 };
             }
 
-            if (algorithm === 'smart' && rawResult.schedule) {
+            if (algorithm === 'genetic' && rawResult.schedule) {
                 return {
-                    algorithm: rawResult.selectedAlgorithm,
+                    algorithm: 'genetic',
                     schedule: rawResult.schedule,
                     prolog: rawResult.prolog as PrologFullResultDto
                 };
@@ -116,7 +119,6 @@ export const SchedulingService = {
                 return {
                     algorithm,
                     schedule: rawResult as DailyScheduleResultDto,
-                    // CORREÇÃO: Adicionada a propriedade 'algorithm' para cumprir a interface PrologFullResultDto
                     prolog: {
                         algorithm,
                         total_delay: 0,

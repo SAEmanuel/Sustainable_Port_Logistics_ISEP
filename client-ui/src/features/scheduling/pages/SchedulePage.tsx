@@ -22,7 +22,8 @@ import {
     Select,
     Table,
     NumberInput,
-    Collapse
+    Collapse,
+    Alert
 } from '@mantine/core';
 
 import {
@@ -37,7 +38,9 @@ import {
     IconSettings,
     IconListDetails,
     IconDna,
-    IconAdjustmentsHorizontal
+    IconAdjustmentsHorizontal,
+    IconBrain,
+    IconInfoCircle
 } from '@tabler/icons-react';
 
 import {notifyLoading, notifySuccess, notifyError} from "../../../utils/notify";
@@ -45,7 +48,8 @@ import {
     SchedulingService,
     type AlgorithmType,
     type ScheduleResponse,
-    type GeneticParams
+    type GeneticParams,
+    type SmartParams
 } from '../services/SchedulingService';
 
 import type {
@@ -55,12 +59,11 @@ import type {
 } from '../dtos/scheduling.dtos.ts';
 
 import AlgorithmComparisonTable from '../components/AlgorithmComparisonTable';
-import { MultiCraneAnalysis } from '../components/MultiCraneAnalysis';
+
 
 
 export type ScheduleResponseWithTime = ScheduleResponse & { executionTime?: number };
 
-// Definição de tipo para a função de tradução para evitar 'any'
 type TFunc = (key: string, options?: Record<string, unknown>) => string;
 
 function HtmlDateInput({
@@ -96,7 +99,6 @@ function HtmlDateInput({
     );
 }
 
-// Correção ESLint: Alterado 't: any' para 't: TFunc'
 const OperationRow = ({op, t, locale}: { op: SchedulingOperationDto, t: TFunc, locale: string }) => {
     const isDelayed = op.departureDelay > 0;
 
@@ -229,7 +231,9 @@ export default function SchedulePage() {
     const {t, i18n} = useTranslation();
 
     const [selectedDate, setSelectedDate] = useState<string | null>(null);
-    const [selectedAlgorithm, setSelectedAlgorithm] = useState<AlgorithmType>('greedy');
+
+
+    const [selectedAlgorithm, setSelectedAlgorithm] = useState<AlgorithmType>('smart');
     const [multiCraneAlgorithm, setMultiCraneAlgorithm] = useState<string>('greedy');
 
     const [geneticParams, setGeneticParams] = useState<GeneticParams>({
@@ -237,6 +241,11 @@ export default function SchedulePage() {
         generations: undefined,
         mutationRate: undefined,
         crossoverRate: undefined
+    });
+
+
+    const [smartParams, setSmartParams] = useState<SmartParams>({
+        maxComputationSeconds: undefined
     });
 
     const [showComparisonAnalysis, setShowComparisonAnalysis] = useState(false);
@@ -248,6 +257,7 @@ export default function SchedulePage() {
     const locale = i18n.language;
 
     const algorithms = [
+        {value: 'smart', label: t('planningScheduling.smart'), icon: IconBrain},
         {value: 'optimal', label: t('planningScheduling.optimal'), icon: IconStar},
         {value: 'greedy', label: t('planningScheduling.greedy'), icon: IconBolt},
         {value: 'local_search', label: t('planningScheduling.localSearch'), icon: IconSearch},
@@ -281,7 +291,8 @@ export default function SchedulePage() {
                 selectedDate,
                 currentAlgo,
                 multiCraneAlgorithm,
-                geneticParams
+                geneticParams,
+                smartParams
             );
 
             const endTime = performance.now();
@@ -354,8 +365,8 @@ export default function SchedulePage() {
                                         value: a.value,
                                         label: (
                                             <Center style={{display: "flex", flexDirection: "column", padding: 8}}>
-                                                <a.icon size={20} color={a.value === 'multi_crane' ? 'var(--mantine-color-blue-6)' : undefined}/>
-                                                <Text size="sm" fw={a.value === 'multi_crane' ? 700 : 400}>
+                                                <a.icon size={20} color={a.value === 'smart' ? 'var(--mantine-color-indigo-6)' : a.value === 'multi_crane' ? 'var(--mantine-color-blue-6)' : undefined}/>
+                                                <Text size="sm" fw={a.value === 'smart' || a.value === 'multi_crane' ? 700 : 400}>
                                                     {a.label}
                                                 </Text>
                                             </Center>
@@ -383,6 +394,27 @@ export default function SchedulePage() {
                         </Group>
                     </Grid.Col>
                 </Grid>
+
+                {/* PAINEL SMART */}
+                <Collapse in={selectedAlgorithm === 'smart'}>
+                    <Box mt="xl" p="md" style={{ backgroundColor: 'var(--mantine-color-indigo-0)', borderRadius: '12px', border: '1px dashed var(--mantine-color-indigo-2)' }}>
+                        <Group mb="xs">
+                            <IconAdjustmentsHorizontal size={18} color="var(--mantine-color-indigo-6)"/>
+                            <Text fw={700} size="sm" c="indigo.9">{t('planningScheduling.smartSettings')}</Text>
+                        </Group>
+                        <Grid>
+                            <Grid.Col span={{base: 12, md: 4}}>
+                                <NumberInput
+                                    label={t('planningScheduling.maxComputationSeconds')}
+                                    placeholder={t('planningScheduling.smartDefaultSeconds')}
+                                    min={1}
+                                    value={smartParams.maxComputationSeconds}
+                                    onChange={(val) => setSmartParams({ maxComputationSeconds: val as number })}
+                                />
+                            </Grid.Col>
+                        </Grid>
+                    </Box>
+                </Collapse>
 
                 <Collapse in={selectedAlgorithm === 'genetic'}>
                     <Box mt="xl" p="md" style={{ backgroundColor: 'var(--mantine-color-gray-0)', borderRadius: '12px', border: '1px dashed #ccc' }}>
@@ -440,10 +472,10 @@ export default function SchedulePage() {
                     mt="xl"
                     loading={isLoading}
                     disabled={!selectedDate}
-                    leftSection={<IconBolt size={20}/>}
+                    leftSection={selectedAlgorithm === 'smart' ? <IconBrain size={20}/> : <IconBolt size={20}/>}
                     variant={selectedAlgorithm === 'multi_crane' ? "gradient" : "filled"}
                     gradient={selectedAlgorithm === 'multi_crane' ? {from: "blue", to: "cyan"} : undefined}
-                    color={selectedAlgorithm !== 'multi_crane' ? "indigo" : undefined}
+                    color={selectedAlgorithm === 'smart' ? "indigo" : selectedAlgorithm !== 'multi_crane' ? "indigo" : undefined}
                 >
                     {selectedAlgorithm === 'multi_crane'
                         ? t('planningScheduling.runMultiCrane', {algo: algorithms.find(a=>a.value === multiCraneAlgorithm)?.label || multiCraneAlgorithm})
@@ -477,9 +509,8 @@ export default function SchedulePage() {
                         </Group>
                     )}
 
-                    {showComparisonAnalysis && allResults['multi_crane']?.comparisonData ? (
-                        <MultiCraneAnalysis data={allResults['multi_crane'].comparisonData!} />
-                    ) : (
+                    {/* Tabela de comparação oculta se for SMART, conforme pedido */}
+                    {!showComparisonAnalysis && lastComputedAlgorithm !== 'smart' && (
                         <AlgorithmComparisonTable allResults={allResults} t={t as TFunc} />
                     )}
 
@@ -488,6 +519,18 @@ export default function SchedulePage() {
                             <Title order={3} mb="xl" mt="xl" style={{borderBottom: "2px solid #eef"}}>
                                 {t('planningScheduling.scheduleResult', {algo: getAlgoName(lastComputedAlgorithm!)})}
                             </Title>
+
+                            {/* Informação do Algoritmo Selecionado pela IA */}
+                            {scheduleToDisplay.smartData && (
+                                <Alert icon={<IconInfoCircle size={20}/>} title={t('planningScheduling.smartReasonTitle')} color="indigo" radius="md" mb="xl">
+                                    <Text size="sm" fw={500}>
+                                        {t('planningScheduling.smartSelectionPerformed')}: <Badge color="indigo" variant="outline" ml={5}>{scheduleToDisplay.smartData.selectedAlgorithm.toUpperCase()}</Badge>
+                                    </Text>
+                                    <Text size="xs" mt={5} c="dimmed">
+                                        {scheduleToDisplay.smartData.selectionReason}
+                                    </Text>
+                                </Alert>
+                            )}
 
                             <Card shadow="md" radius="lg" p="lg" withBorder mb="xl" bg="indigo.8" c="white">
                                 <Group justify="space-between">

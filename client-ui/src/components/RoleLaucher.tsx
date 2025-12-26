@@ -157,7 +157,6 @@ export default function RoleLauncher() {
                 )}
             </button>
 
-            {/* Resto do JSX... */}
             {open && !user?.role && (
                 <div
                     className="role-waiting-dropdown"

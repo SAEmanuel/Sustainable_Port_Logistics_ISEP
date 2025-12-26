@@ -68,8 +68,8 @@
     "planningScheduling": "Planning",
     "pp": "Privacy Policies",
     "dataRigths": "Data Rights",
-    "dataRigthsAdmin" : "Manage DDs Requests",
-    "incidentType" : "Incident Types"
+    "dataRigthsAdmin": "Manage DDs Requests",
+    "incidentType": "Incident Types"
   },
   "layout": {
     "light": "Light mode",
@@ -113,9 +113,9 @@
     "planning": "Planning",
     "accessModules": "Access Modules",
     "port3d": "3D Visualization",
-    "ctc" : "Complementary Task Categories",
-    "ct" : "Complementary Tasks",
-    "incident" : "Incidents",
+    "ctc": "Complementary Task Categories",
+    "ct": "Complementary Tasks",
+    "incident": "Incidents",
     "announcement": {
       "title": "System notices",
       "body": "Scheduled maintenance today at 23:00 — some modules may be unavailable."
@@ -604,13 +604,13 @@
     "dock": "Dock",
     "downloadTemplate": "Download template",
     "saving": "Saving...",
-    "search" : "Search",
-    "select" : "Select"
+    "search": "Search",
+    "select": "Select"
   },
   "vvn": {
     "title": "Vessel Visit Notifications",
     "new": "VVN",
-    "viewDetails" : "Details - vvn",
+    "viewDetails": "Details - vvn",
     "tabs": {
       "inProgressPending": "In-Progress/Pending",
       "submitted": "Submitted",
@@ -622,8 +622,8 @@
       "tasks": "Tasks"
     },
     "tasks": {
-      "title" : "Corresponding tasks",
-      "empty" : "No tasks associated"
+      "title": "Corresponding tasks",
+      "empty": "No tasks associated"
     },
     "filters": {
       "specificRepGuid": "Specific Rep (Guid)",
@@ -652,7 +652,7 @@
       "etd": "ETD",
       "volume": "Volume",
       "dock": "Dock",
-      "title" : "Vessel Visit Notification"
+      "title": "Vessel Visit Notification"
     },
     "actions": {
       "submit": "Submit",
@@ -1092,7 +1092,14 @@
     "exCrossover": "Ex: 0.8",
     "runMultiCrane": "Run Multi-Crane ({{algo}})",
     "standardView": "Standard View",
-    "comparison": "Comparison"
+    "comparison": "Comparison",
+    "smart": "Smart Choice",
+    "smartSettings": "Smart Settings",
+    "maxComputationSeconds": "Time Limit (seconds)",
+    "smartDefaultSeconds": "Default: Auto",
+    "smartReasonTitle": "Artificial Intelligence Decision",
+    "smartSelectionPerformed": "Selected algorithm",
+    "smartReason": "Selection Reason"
   },
   "footer": {
     "desc": "Integrated platform for smart port management, logistics optimization, and maritime operations control.",
@@ -1221,7 +1228,6 @@
       "selectOption": "Select...",
       "idPlaceholder": "ID Number",
       "delPlaceholder": "Why do you want to delete your data?",
-
       "title": "Create a new request",
       "subtitle": "Choose the type of request and fill in the details below.",
       "accessDesc": "Get a full copy of your data.",
@@ -1273,78 +1279,59 @@
       "empty": "No data rights requests to show.",
       "userEmail": "User (request owner)",
       "detailsTitle": "Request details",
-
       "assignToMe": "Assign to me",
       "assignSuccess": "Request assigned to you",
       "assignError": "Error assigning request",
-
       "respondAccess": "Generate access response",
       "respondAccessSuccess": "Access response generated and emailed",
-
       "respondDeletion": "Perform deletion",
       "respondDeletionSuccess": "Deletion request processed",
-
       "respondRectification": "Review & Approve Changes",
       "rectificationTitle": "Review & Approve Changes",
-
       "rejectEntire": "Reject entire request (no changes will be applied)",
       "globalReason": "Global reason (optional)",
       "globalReason_PH": "Why are you rejecting this request?",
-
       "sectionIdentity": "Profile Identity",
       "sectionDetails": "Details & Status",
-
       "finalName": "Final name",
       "finalEmail": "Final email",
       "finalPhone": "Final phone number",
       "finalNationality": "Final nationality",
       "finalCitizenId": "Final citizen ID",
       "finalIsActive": "Final account status",
-
       "reasonField_PH": "Reason (optional)",
-
       "discardImage": "Discard Image",
       "noPictureChange": "No picture change requested",
       "noChange": "No change",
-
       "keepAsIs": "Keep as is",
       "setActive": "Active ✅",
       "setInactive": "Inactive ⛔",
-
       "adminComment": "Admin Internal Note / Response to User",
       "commentPlaceholder": "Optional comment...",
-
       "processing": "Processing...",
       "confirmReject": "Reject Request",
       "applyDecision": "Apply Changes",
       "rectificationApplied": "Decision applied successfully.",
       "rectificationError": "Error applying decision.",
       "respondError": "Error responding to request",
-
       "originalRequest": "Original requested changes",
       "noOriginalPayload": "No rectification payload was found."
     }
   },
-
   "ctc": {
     "title": "Complementary Task Categories",
     "createButton": "Create Category",
     "noData": "No categories found.",
-    "read-only" : "Read-only",
-    "detailsTitle" : "Category Details",
-
-
+    "read-only": "Read-only",
+    "detailsTitle": "Category Details",
     "editModal": {
       "title": "Edit Category"
     },
-
-
     "stats": {
       "total": "Total",
       "active": "Active",
       "inactive": "Inactive"
     },
-
     "table": {
       "code": "Code",
       "name": "Name",
@@ -1354,7 +1341,6 @@
       "actions": "Actions",
       "description": "Description"
     },
-
     "search": {
       "code": "Code",
       "name": "Name",
@@ -1366,27 +1352,23 @@
       "name": "Ex: Electrical Safety",
       "description": "Ex: Safety tasks"
     },
-
     "steps": {
       "category": "Category",
       "details": "Details"
     },
     "selectCategory": "Select the main Category:",
-
     "categories": {
       "Safety and Security": "Safety and Security",
       "Maintenance": "Maintenance",
       "Cleaning and Housekeeping": "Cleaning and Housekeeping"
     },
-
     "form": {
       "code": "Code",
       "name": "Name",
       "description": "Description",
       "duration": "Default Duration",
-      "category" : "Category"
+      "category": "Category"
     },
-
     "errors": {
       "loadAll": "Error loading categories.",
       "search": "Error searching categories.",
@@ -1398,19 +1380,16 @@
       "invalidDuration": "Duration must be a positive number.",
       "createFailedGeneric": "Creation failed. Check server logs."
     },
-
     "success": {
       "created": "Category created successfully!",
       "updated": "Category updated successfully!",
       "statusChange": "Category {{action}} successfully!"
     },
-
-    "actions" : {
-      "edit" : "edit",
-      "select" : "Select",
-      "create" : "Create",
-      "back"  : "Back"
-
+    "actions": {
+      "edit": "edit",
+      "select": "Select",
+      "create": "Create",
+      "back": "Back"
     }
   },
   "incidentType": {
@@ -1427,23 +1406,18 @@
       "noSubtree": "No subtree data available.",
       "refresh": "Refresh"
     },
-
-
     "createModal": {
       "title": "Create Incident Type",
       "subtitle": "Selecione o pai e defina os detalhes do tipo de incidente."
     },
-
     "editModal": {
       "title": "Edit Incident Type"
     },
-
     "stats": {
       "total": "Total",
       "roots": "Root",
       "children": "Children"
     },
-
     "table": {
       "code": "Code",
       "name": "Name",
@@ -1451,12 +1425,10 @@
       "parent": "Father",
       "actions": "Actions"
     },
-
     "actions": {
       "edit": "Edit",
       "delete": "Delete"
     },
-
     "search": {
       "roots": "Raiz",
       "code": "Por código",
@@ -1465,23 +1437,19 @@
       "subtree": "Sub-árvore de",
       "all": "All"
     },
-
     "searchPlaceholder": {
       "code": "Ex: T-INC001",
       "name": "Ex: Condições ambientais",
       "children": "Ex: T-INC001",
       "subtree": "Ex: T-INC001"
     },
-
     "steps": {
       "parent": "Passo 1: Pai",
       "parentDesc": "Escolha onde este tipo de incidente se insere",
       "details": "Passo 2: Detalhes",
       "detailsDesc": "Defina os campos e a gravidade"
     },
-
     "selectParent": "Selecionar Categoria Pai",
-
     "parent": {
       "help": "Selecione uma categoria pai (raiz) ou escolha “Sem Pai” para criar um tipo de incidente raiz.",
       "searchPlaceholder": "Pesquisar categorias pai...",
@@ -1492,7 +1460,6 @@
       "noneDesc": "Cria um tipo de incidente de topo.",
       "selected": "Pai selecionado"
     },
-
     "form": {
       "code": "Código",
       "codePH": "Ex: T-INC001",
@@ -1503,13 +1470,11 @@
       "severity": "Gravidade",
       "parent": "Pai"
     },
-
     "severity": {
       "Minor": "Baixa",
       "Major": "Média",
       "Critical": "Crítica"
     },
-
     "errors": {
       "loadRoots": "Erro ao carregar tipos de incidente raiz.",
       "loadSubtree": "Erro ao carregar a sub-árvore do incidente.",
@@ -1519,7 +1484,6 @@
       "createFailedGeneric": "A criação falhou. Verifique os logs do servidor.",
       "updateFailed": "Falha ao atualizar."
     },
-
     "success": {
       "created": "Tipo de incidente criado com sucesso!",
       "updated": "Tipo de incidente atualizado com sucesso!",
@@ -1534,17 +1498,15 @@
     "createTitle": "Create Complementary Task",
     "editTitle": "Edit Task",
     "read-only": "Read-only",
-    "fix" : "FIX",
-    "fixCategoryTitle" : "Corrigir Categoria",
-    "fixCategoryMessage" : "A Categoria anterior foi desativada",
-
+    "fix": "FIX",
+    "fixCategoryTitle": "Corrigir Categoria",
+    "fixCategoryMessage": "A Categoria anterior foi desativada",
     "stats": {
       "total": "Total",
       "scheduled": "Scheduled",
       "inProgress": "In Progress",
       "completed": "Completed"
     },
-
     "table": {
       "code": "Code",
       "category": "Category",
@@ -1554,7 +1516,7 @@
       "end": "End Time",
       "status": "Status",
       "actions": "Actions",
-      "endEstimatedActual" : "Expected end"
+      "endEstimatedActual": "Expected end"
     },
     "form": {
       "code": "Task Code",
@@ -1564,7 +1526,7 @@
       "startTime": "Start Time",
       "endTime": "End Time",
       "status": "Status",
-      "newCategory" : "New Category"
+      "newCategory": "New Category"
     },
     "search": {
       "all": "All",
@@ -1572,7 +1534,7 @@
       "category": "Category",
       "staff": "Staff",
       "vve": "VVE",
-      "range" : "Between range"
+      "range": "Between range"
     },
     "status": {
       "Scheduled": "Scheduled",
@@ -1594,9 +1556,9 @@
     },
     "actions": {
       "create": "Create",
-      "edit" : "Edit",
-      "fix" : "Fix",
-      "complete" : "Complete"
+      "edit": "Edit",
+      "fix": "Fix",
+      "complete": "Complete"
     }
   },
   "vve": {
@@ -1710,7 +1672,6 @@
       "upcomingStart": "Upcoming Start",
       "upcomingEnd": "Upcoming End",
       "typeSearchPH": "Search Incident Type by Code..."
-
     },
     "confirm": {
       "delete": "Are you sure you want to delete incident {{code}}?"
@@ -1740,5 +1701,4 @@
       "rangeRequired": "Indicate start and end for the range."
     }
   }
-
 }

@@ -671,6 +671,13 @@ html, body {
     border-color: #6c5b24;
 }
 
+.role-badge--manager {
+    background: linear-gradient(135deg, #9b59b6, #76458d);
+    border-color: #ba78c0;
+}
+
+
+
 [data-theme="dark"] .role-badge {
     color: var(--brand-color);
 }
