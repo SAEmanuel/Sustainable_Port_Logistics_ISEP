@@ -93,3 +93,17 @@ public class PrologFullResultDto
     [JsonPropertyName("status")]
     public string Status { get; set; } = string.Empty;
 }
+
+public class GeneticScheduleResultDto
+{
+    public string Algorithm => "genetic";
+    
+    public DailyScheduleResultDto Schedule { get; set; } = new();
+    public PrologFullResultDto? Prolog { get; set; }
+
+    
+    public int PopulationSize { get; set; }
+    public int Generations { get; set; }
+    public double MutationRate { get; set; }
+    public double CrossoverRate { get; set; }
+}

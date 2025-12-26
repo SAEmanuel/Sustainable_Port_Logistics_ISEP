@@ -6,7 +6,6 @@ namespace SEM5_PI_DecisionEngineAPI.Services;
 
 public class SchedulingService
 {
-
     const float MinP = 0.4f;
     const float MaxP = 0.4f;
 
@@ -120,7 +119,7 @@ public class SchedulingService
 
         UpdateScheduleFromPrologResult(realSchedule, realProlog);
         UpdateScheduleFromPrologResult(singleCraneSchedule, singleCraneProlog);
-        
+
         await AssignStaffToScheduleAsync(realSchedule, day, vvnsForDay);
         await AssignStaffToScheduleAsync(singleCraneSchedule, day, vvnsForDay);
 
@@ -177,7 +176,7 @@ public class SchedulingService
     // GENERIC ALGORITHM SCHEDULING (Recuperado para o Controller)
     // =================================================================================
     public async Task<(DailyScheduleResultDto Schedule, PrologFullResultDto Prolog)> ComputeScheduleWithAlgorithmAsync(
-        DateOnly day, 
+        DateOnly day,
         string algorithmType)
     {
         var vvns = await _vvnClient.GetVisitNotifications();
@@ -187,21 +186,21 @@ public class SchedulingService
 
         if (vvnsForDay.Count == 0)
             throw new PlanningSchedulingException($"No visits for {day}");
-        
+
         var schedule = await ComputeDailyScheduleAsync(day);
-        
+
         Func<DailyScheduleResultDto, Task<PrologFullResultDto?>> sendToProlog = algorithmType.ToLower() switch
         {
             "greedy" => SendScheduleToPrologGreedy,
             "local_search" => SendScheduleToPrologLocalSearch,
             "optimal" => SendScheduleToPrologOptimal,
-            _ => SendScheduleToPrologGreedy 
+            _ => SendScheduleToPrologGreedy
         };
-        
+
         var prologResult = await sendToProlog(schedule);
-        
+
         schedule = UpdateScheduleFromPrologResult(schedule, prologResult);
-        
+
         await AssignStaffToScheduleAsync(schedule, day, vvnsForDay);
 
         return (schedule, prologResult!);
@@ -350,7 +349,7 @@ public class SchedulingService
         var allocation = vvnsForDay.ToDictionary(v => v.Id, v => 1);
 
         var result = await ComputeScheduleFromAllocationsAsync(day, vvnsForDay, allocation, preCalc, capacities);
-        
+
         await AssignStaffToScheduleAsync(result, day, vvnsForDay);
 
         return result;
@@ -364,7 +363,7 @@ public class SchedulingService
         Dictionary<string, int> dockCapacities)
     {
         var cranes = await GetCranesForVvnsAsync(vvnsForDay);
-        
+
         var result = new DailyScheduleResultDto();
 
         foreach (var vvn in vvnsForDay)
@@ -395,8 +394,8 @@ public class SchedulingService
                 VvnId = vvn.Id,
                 Vessel = vessel!.Name,
                 Dock = vvn.Dock,
-                StartTime = etaHours, 
-                RealArrivalTime = etaHours, 
+                StartTime = etaHours,
+                RealArrivalTime = etaHours,
                 EndTime = plannedEtdHours,
                 LoadingDuration = scaledLoad,
                 UnloadingDuration = scaledUnload,
@@ -420,8 +419,8 @@ public class SchedulingService
     // =================================================================================
 
     public async Task AssignStaffToScheduleAsync(
-        DailyScheduleResultDto schedule, 
-        DateOnly day, 
+        DailyScheduleResultDto schedule,
+        DateOnly day,
         List<VesselVisitNotificationPSDto> vvns)
     {
         var cranes = await GetCranesForVvnsAsync(vvns);
@@ -434,7 +433,7 @@ public class SchedulingService
             {
                 int startHour = op.RealArrivalTime;
                 int endHour = op.RealDepartureTime;
-                
+
                 // Fallback caso não tenha sido inicializado
                 if (startHour == 0 && endHour == 0)
                 {
@@ -451,7 +450,7 @@ public class SchedulingService
     }
 
     private List<StaffAssignmentDto> BuildStaffAssignments(
-        DateTime opStart, 
+        DateTime opStart,
         DateTime opEnd,
         List<StaffMemberDto> staffForVvn)
     {
@@ -465,7 +464,7 @@ public class SchedulingService
         {
             var dayStart = currentDay.ToDateTime(TimeOnly.MinValue);
             var dayEnd = dayStart.AddDays(1);
-            
+
             var effectiveStart = opStart > dayStart ? opStart : dayStart;
             var effectiveEnd = opEnd < dayEnd ? opEnd : dayEnd;
 
@@ -533,7 +532,7 @@ public class SchedulingService
         {
             if (scheduleOpsDict.TryGetValue(pOp.Vessel, out var op))
             {
-                op.RealArrivalTime = pOp.StartTime; 
+                op.RealArrivalTime = pOp.StartTime;
                 Console.WriteLine($"Do metodo pica START {op.RealArrivalTime}");
                 op.RealDepartureTime = pOp.EndTime;
                 Console.WriteLine($"Do metodo pica END {op.RealDepartureTime}");
@@ -752,4 +751,71 @@ public class SchedulingService
         var baseDateTime = day.ToDateTime(TimeOnly.MinValue);
         return baseDateTime.AddHours(hoursSinceStart);
     }
+
+public async Task<GeneticScheduleResultDto> ComputeDailyScheduleGeneticAsync(
+    DateOnly day,
+    int? populationSizeOverride = null,
+    int? generationsOverride = null,
+    double? mutationRateOverride = null,
+    double? crossoverRateOverride = null)
+{
+    ClearCaches();
+
+    var vvns = await _vvnClient.GetVisitNotifications();
+    var vvnsForDay = vvns
+        .Where(v => DateOnly.FromDateTime(v.EstimatedTimeArrival.Date) == day)
+        .ToList();
+
+    if (vvnsForDay.Count == 0)
+        throw new PlanningSchedulingException($"No visits for {day}");
+    
+    var baseSchedule = await ComputeDailyScheduleAsync(day);
+
+    int n = vvnsForDay.Count;
+    
+
+    int populationSize =
+        populationSizeOverride ??
+        Math.Max(10, n * 2);
+
+    int generations =
+        generationsOverride ??
+        40;
+
+    double mutationRate =
+        mutationRateOverride ??
+        0.15;
+
+    double crossoverRate =
+        crossoverRateOverride ??
+        0.8;
+
+    
+    var prologResult = await _prologClient.SendToPrologAsync<PrologFullResultDto>(
+        "schedule/genetic",
+        new
+        {
+            schedule = baseSchedule,
+            population = populationSize,
+            generations = generations,
+            mutation_rate = mutationRate,
+            crossover_rate = crossoverRate
+        });
+
+
+    var optimizedSchedule = UpdateScheduleFromPrologResult(baseSchedule, prologResult);
+
+    await AssignStaffToScheduleAsync(optimizedSchedule, day, vvnsForDay);
+
+    return new GeneticScheduleResultDto
+    {
+        Schedule = optimizedSchedule,
+        Prolog = prologResult,
+
+        PopulationSize = populationSize,
+        Generations = generations,
+        MutationRate = mutationRate,
+        CrossoverRate = crossoverRate
+    };
+}
 }

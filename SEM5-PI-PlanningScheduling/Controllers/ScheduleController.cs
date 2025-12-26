@@ -75,4 +75,31 @@ public class ScheduleController : ControllerBase
             return BadRequest(new { message = ex.Message });
         }
     }
+    
+    [HttpGet("daily/genetic")]
+    public async Task<ActionResult<GeneticScheduleResultDto>> GetDailyGeneticSchedule(
+        [FromQuery] DateOnly day,
+        [FromQuery] int? populationSizeOverride,
+        [FromQuery] int? generationsOverride,
+        [FromQuery] double? mutationRateOverride,
+        [FromQuery] double? crossoverRateOverride)
+    {
+        try
+        {
+            var result = await _schedulingService
+                .ComputeDailyScheduleGeneticAsync(
+                    day,
+                    populationSizeOverride,
+                    generationsOverride,
+                    mutationRateOverride,
+                    crossoverRateOverride
+                );
+
+            return Ok(result);
+        }
+        catch (PlanningSchedulingException e)
+        {
+            return BadRequest(new { error = e.Message });
+        }
+    }
 }
