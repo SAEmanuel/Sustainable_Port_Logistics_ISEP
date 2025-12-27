@@ -1,7 +1,8 @@
 import { describe, it, expect ,beforeEach} from 'vitest';
-import { IncidentType } from '../../domain/incidentTypes/incidentType';
-import { BusinessRuleValidationError } from '../../core/logic/BusinessRuleValidationError';
-import { IncidentTypeError } from '../../domain/incidentTypes/errors/incidentTypeErrors';
+import {IncidentType} from "../../../domain/incidentTypes/incidentType";
+import {BusinessRuleValidationError} from "../../../core/logic/BusinessRuleValidationError";
+import {IncidentTypeError} from "../../../domain/incidentTypes/errors/incidentTypeErrors";
+
 
 // Mock simples para Severity se não for um enum exportado,
 // ou usa os valores reais se tiveres acesso ao ficheiro.

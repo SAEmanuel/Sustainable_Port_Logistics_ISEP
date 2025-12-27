@@ -1,7 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import IncidentTypeService from '../../services/incidentTypeService'; // Ajusta o caminho conforme a tua estrutura real
-import { IncidentTypeError } from '../../domain/incidentTypes/errors/incidentTypeErrors';
-import { BusinessRuleValidationError } from '../../core/logic/BusinessRuleValidationError';
+import IncidentTypeService from "../../../services/incidentTypeService";
+
 
 // Helper para criar um Mock da Entidade de Domínio
 const createMockIncidentType = (code: string, parentCode: string | null = null) => ({
