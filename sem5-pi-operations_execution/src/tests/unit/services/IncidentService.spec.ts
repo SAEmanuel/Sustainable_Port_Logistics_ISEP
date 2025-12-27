@@ -1,6 +1,7 @@
 import 'reflect-metadata';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import IncidentService from '../../services/incidentService';
+import IncidentService from "../../../services/incidentService";
+
 
 // Mock Dependencies
 const mockIncidentRepo = {

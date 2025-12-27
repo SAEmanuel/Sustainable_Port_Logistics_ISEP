@@ -135,11 +135,20 @@ export class ComplementaryTaskCategory
         ];
 
         const guardResult = Guard.againstNullOrUndefinedBulk(guardedProps);
+
         if (!guardResult.succeeded) {
             throw new BusinessRuleValidationError(
                 CTCError.InvalidInput,
                 "Invalid input",
                 guardResult.message ?? "Invalid input"
+            );
+        }
+
+        if (!props.name.trim() || !props.description.trim()) {
+            throw new BusinessRuleValidationError(
+                CTCError.InvalidInput,
+                "Invalid category details",
+                "Name and description are required"
             );
         }
 

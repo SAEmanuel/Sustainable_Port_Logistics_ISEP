@@ -25,3 +25,13 @@ GET http://localhost:3000/api/vve/imo/9823455
 
 ### Get in range
 GET http://localhost:3000/api/vve/range?timeStart=1747699200000&timeEnd=1779235200000
+
+### Atualizar berth time e dock de um VVE (In Progress)
+PUT http://localhost:3000/api/vve/6153757c-4db4-4e7b-bb92-e1eebe2264d3/berth
+Content-Type: application/json
+
+{
+  "actualBerthTime": "2025-05-20T12:00:00Z",
+  "actualDockId": "DOCK-8",
+  "updaterEmail": "emanuel@isep.ipp.pt"
+}

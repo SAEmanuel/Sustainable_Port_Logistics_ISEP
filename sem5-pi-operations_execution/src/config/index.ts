@@ -295,8 +295,12 @@ export default {
                 name: "CreateOperationPlanController",
                 path: "../controllers/operationPlan/createOperationPlanController"
             }
+            },
+            updateBerthDock: {
+                name: "UpdateVVEActualBerthAndDockController",
+                path: "../controllers/vve/updateVVEActualBerthAndDockController"
+            },
         },
-    },
 
     repos: {
         user: { name: "UserRepo", path: "../repos/userRepo" },

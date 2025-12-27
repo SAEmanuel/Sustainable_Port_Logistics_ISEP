@@ -1,9 +1,10 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { Incident } from '../../domain/incident/incident';
-import { BusinessRuleValidationError } from '../../core/logic/BusinessRuleValidationError';
-import { IncidentError } from '../../domain/incident/errors/incidentErrors';
-import { Severity } from '../../domain/incidentTypes/severity';
-import { ImpactMode } from '../../domain/incident/impactMode';
+import {Incident} from "../../../domain/incident/incident";
+import {ImpactMode} from "../../../domain/incident/impactMode";
+import {IncidentError} from "../../../domain/incident/errors/incidentErrors";
+import {BusinessRuleValidationError} from "../../../core/logic/BusinessRuleValidationError";
+import {Severity} from "../../../domain/incidentTypes/severity";
+
 
 describe('Incident Domain Entity', () => {
     // Helper: Valid default properties for a clean "Global" incident

@@ -12,7 +12,21 @@ interface VesselVisitExecutionProps {
     actualArrivalTime: Date;
     creatorEmail: string;
     status: string;
+
+    actualBerthTime?: Date;
+    actualDockId?: string;
+    dockDiscrepancyNote?: string;
+
+    updatedAt?: Date;
+    auditLog?: Array<{
+        at: Date;
+        by: string;
+        action: string;
+        changes?: any;
+        note?: string;
+    }>;
 }
+
 
 export class VesselVisitExecution extends AggregateRoot<VesselVisitExecutionProps> {
 
@@ -81,6 +95,75 @@ export class VesselVisitExecution extends AggregateRoot<VesselVisitExecutionProp
 
         return new VesselVisitExecution({
             ...props,
+            auditLog: props.auditLog ?? []
         }, id);
     }
+
+    get actualBerthTime(): Date | undefined {
+        return this.props.actualBerthTime;
+    }
+
+    get actualDockId(): string | undefined {
+        return this.props.actualDockId;
+    }
+
+    get dockDiscrepancyNote(): string | undefined {
+        return this.props.dockDiscrepancyNote;
+    }
+
+    get updatedAt(): Date | undefined {
+        return this.props.updatedAt;
+    }
+
+    get auditLog(): any[] {
+        return this.props.auditLog ?? [];
+    }
+
+    public updateBerthAndDock(
+        berthTime: Date,
+        dockId: string,
+        updatedBy: string,
+        discrepancyNote?: string
+    ): void {
+
+        if (this.props.status !== "In Progress") {
+            throw new BusinessRuleValidationError(
+                "Invalid status",
+                "Only 'In Progress' VVEs can be updated with berth time and dock."
+            );
+        }
+
+        if (berthTime.getTime() < this.props.actualArrivalTime.getTime()) {
+            throw new BusinessRuleValidationError(
+                "Invalid berth time",
+                "Actual berth time cannot be before actual arrival time."
+            );
+        }
+
+        const now = new Date();
+
+        const previous = {
+            actualBerthTime: this.props.actualBerthTime,
+            actualDockId: this.props.actualDockId
+        };
+
+        this.props.actualBerthTime = berthTime;
+        this.props.actualDockId = dockId;
+        this.props.dockDiscrepancyNote = discrepancyNote;
+
+        this.props.updatedAt = now;
+
+        this.props.auditLog = this.props.auditLog ?? [];
+        this.props.auditLog.push({
+            at: now,
+            by: updatedBy,
+            action: "UPDATE_BERTH_DOCK",
+            changes: {
+                from: previous,
+                to: { actualBerthTime: berthTime, actualDockId: dockId }
+            },
+            note: discrepancyNote
+        });
+    }
+
 }

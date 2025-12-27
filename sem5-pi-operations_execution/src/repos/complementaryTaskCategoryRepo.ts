@@ -29,13 +29,14 @@ export default class ComplementaryTaskCategoryRepo implements IComplementaryTask
 
     public async save(category: ComplementaryTaskCategory): Promise<ComplementaryTaskCategory | null> {
 
-        const rawPersistence = this.categoryMap.toPersistence(category);
-
         this.logger.debug("Saving ComplementaryTaskCategory", {
             code: category.code
         });
 
         try {
+
+            const rawPersistence = this.categoryMap.toPersistence(category);
+
             const existing =
                 await this.complementaryTaskCategorySchema.findOne({
                     domainId: rawPersistence.domainId
@@ -64,10 +65,12 @@ export default class ComplementaryTaskCategoryRepo implements IComplementaryTask
             return this.categoryMap.toDomain(created);
 
         } catch (e) {
+
             this.logger.error(
                 "Error saving ComplementaryTaskCategory",
-                {error: e}
+                { error: e, code: category.code }
             );
+
             return null;
         }
     }

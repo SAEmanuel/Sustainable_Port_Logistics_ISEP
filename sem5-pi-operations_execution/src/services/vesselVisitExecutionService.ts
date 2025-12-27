@@ -132,4 +132,51 @@ export default class VesselVisitExecutionService implements IVesselVisitExecutio
 
         return VesselVisitExecutionCode.create(codeValue);
     }
+
+    public async updateBerthAndDockAsync(
+        id: VesselVisitExecutionId,
+        actualBerthTime: Date,
+        actualDockId: string,
+        updaterEmail: string
+    ): Promise<Result<IVesselVisitExecutionDTO>> {
+
+        const vve = await this.repo.findById(id);
+        if (!vve) {
+            throw new BusinessRuleValidationError(
+                VVEError.NotFound,
+                "VVE not found",
+                `No VVE found with id ${id}`
+            );
+        }
+
+        const externalVvn = await this.vvnService.fetchById(vve.vvnId);
+        if (!externalVvn) {
+            throw new BusinessRuleValidationError("VVN not found in the System");
+        }
+
+        const plannedDockId =
+            (externalVvn as any).dockId ??
+            (externalVvn as any).dock ??
+            (externalVvn as any).assignedDockId;
+
+        let note: string | undefined = undefined;
+        if (plannedDockId && plannedDockId !== actualDockId) {
+            note = `Actual dock '${actualDockId}' differs from planned dock '${plannedDockId}'`;
+        }
+
+        vve.updateBerthAndDock(new Date(actualBerthTime), actualDockId, updaterEmail, note);
+
+        await this.repo.save(vve);
+
+        this.logger.info("Updated VVE berth time and dock", {
+            vveId: id.toString(),
+            actualBerthTime: new Date(actualBerthTime).toISOString(),
+            actualDockId,
+            plannedDockId,
+            updaterEmail
+        });
+
+        return Result.ok(this.vesselVisitExecutionMap.toDTO(vve));
+    }
+
 }
