@@ -80,6 +80,7 @@ export function useModuleLinks(t: (k: string) => string, role?: Role | string | 
                 add("dashboard.qualifications", "/qualifications");
                 add("dashboard.physicalResources", "/physical-resources");
                 add("dashboard.staffMembers", "/staff-members");
+                add("dashboard.planning", "/planning-scheduling");
                 add("dashboard.ct", "/ct");
                 add("dashboard.port3d", "/3dSecene");
                 add("dashboard.dd", "/datarights");
