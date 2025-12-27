@@ -1,0 +1,28 @@
+POST http://localhost:5296/api/schedule/save
+Content-Type: application/json
+
+{
+  "planDate": "2025-12-25",
+  "author": "planner@user.com",
+  "algorithm": "Genetic_Algorithm_V3",
+  "total_delay": 45,
+  "status": "Success",
+  "operations": [
+    {
+      "vvnId": "VVN-2025-X",
+      "vessel": "MAERSK LIMA",
+      "dock": "D01",
+      "startTime": 0,
+      "endTime": 120,
+      "loadingDuration": 60,
+      "unloadingDuration": 60,
+      "crane": "C1",
+      "craneCountUsed": 1,
+      "totalCranesOnDock": 2,
+      "optimizedOperationDuration": 120,
+      "realDepartureTime": 120,
+      "realArrivalTime": 0,
+      "departureDelay": 0
+    }
+  ]
+}

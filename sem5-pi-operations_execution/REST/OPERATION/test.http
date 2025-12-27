@@ -1,0 +1,22 @@
+### US 4.1.2 - Guardar um Plano de Operações Gerado
+POST http://localhost:3000/api/operation-plans
+Content-Type: application/json
+
+{
+  "algorithm": "Genetic_Algorithm_V2",
+  "total_delay": 45,
+  "status": "Success",
+  "planDate": "2025-12-25",
+  "author": "logistics_manager@porto.pt",
+  "best_sequence": [
+    {
+      "VvnId": "VVN-2025-X",
+      "Vessel": "MAERSK LIMA",
+      "Dock": "D01",
+      "StartTime": 0,
+      "EndTime": 120,
+      "LoadingDuration": 60,
+      "UnloadingDuration": 60
+    }
+  ]
+}
