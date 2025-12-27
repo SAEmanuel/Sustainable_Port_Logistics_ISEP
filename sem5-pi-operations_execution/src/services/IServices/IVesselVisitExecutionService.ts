@@ -15,4 +15,11 @@ export default interface IVesselVisitExecutionService {
     getByImoAsync(imo: string): Promise<Result<IVesselVisitExecutionDTO[]>>;
 
     getInRangeAsync(start: Date, end: Date): Promise<Result<IVesselVisitExecutionDTO[]>>;
+    
+    updateBerthAndDockAsync(
+        id: VesselVisitExecutionId,
+        actualBerthTime: Date,
+        actualDockId: string,
+        updaterEmail: string
+    ): Promise<Result<IVesselVisitExecutionDTO>>;
 }

@@ -287,7 +287,11 @@ export default {
             getInRange: {
                 name: "GetVVEInRangeController",
                 path: "../controllers/vve/getVVEInRangeController",
-            }
+            },
+            updateBerthDock: {
+                name: "UpdateVVEActualBerthAndDockController",
+                path: "../controllers/vve/updateVVEActualBerthAndDockController"
+            },
         },
     },
 
