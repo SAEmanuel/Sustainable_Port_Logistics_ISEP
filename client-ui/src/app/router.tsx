@@ -60,7 +60,7 @@ export const router = createBrowserRouter([
 
                             {
                                 path: "planning-scheduling",
-                                element: <RequireRole roles={[Roles.ProjectManager]} />,
+                                element: <RequireRole roles={[Roles.ProjectManager, Roles.LogisticsOperator]} />,
                                 children: [{ index: true, element: <SchedulePage /> }],
                             },
                             {
