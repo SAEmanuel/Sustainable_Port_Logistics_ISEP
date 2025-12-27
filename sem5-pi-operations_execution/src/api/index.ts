@@ -5,6 +5,7 @@ import incidentTypeRoute from "./routes/incidentTypeRoute"
 import incidentRoute from "./routes/incidentRoute"
 import complementaryTaskRoute from "./routes/complementaryTaskRoute";
 import vveRoute from "./routes/vveRoute";
+import operationPlanRoute from "./routes/operationPlanRoute";
 export default () => {
     const app = Router();
 
@@ -19,5 +20,6 @@ export default () => {
     incidentTypeRoute(app);
     incidentRoute(app);
     vveRoute(app);
+    operationPlanRoute(app);
     return app;
 }

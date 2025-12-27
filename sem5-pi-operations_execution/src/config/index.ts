@@ -50,23 +50,23 @@ export default {
         },
 
         incidentType: {
-            create:{
+            create: {
                 name: "CreatedITController",
                 path: "../controllers/incidentType/createdITController"
             },
-            remove:{
+            remove: {
                 name: "RemoveIncidentTypeController",
                 path: "../controllers/incidentType/removeIncidentTypeController"
             },
-            getAll:{
+            getAll: {
                 name: "GetAllITController",
                 path: "../controllers/incidentType/getAllITController"
             },
-            update:{
+            update: {
                 name: "UpdateITController",
                 path: "../controllers/incidentType/updateITController"
             },
-            getByCode:{
+            getByCode: {
                 name: "GetITByCodeController",
                 path: "../controllers/incidentType/getITByCodeController"
             },
@@ -74,15 +74,15 @@ export default {
                 name: "GetITByNameController",
                 path: "../controllers/incidentType/getITByNameController"
             },
-            getDirectChilds:{
+            getDirectChilds: {
                 name: "GetITDirectChildController",
                 path: "../controllers/incidentType/getITDirectChildController"
             },
-            getRoot : {
+            getRoot: {
                 name: "GetITRootController",
                 path: "../controllers/incidentType/getITRootController"
             },
-            getSubTree:{
+            getSubTree: {
                 name: "GetITSubTreeController",
                 path: "../controllers/incidentType/getITSubTreeController"
             }
@@ -131,69 +131,69 @@ export default {
             }
         },
 
-        complementaryTask : {
-            create : {
-                name : "CreateCTController",
-                path : "../controllers/complementaryTask/createCTController",
+        complementaryTask: {
+            create: {
+                name: "CreateCTController",
+                path: "../controllers/complementaryTask/createCTController",
             },
-            update : {
-                name : "UpdateCTController",
-                path : "../controllers/complementaryTask/updateCTController",
+            update: {
+                name: "UpdateCTController",
+                path: "../controllers/complementaryTask/updateCTController",
             },
-            updateStatus : {
-                name : "ChangeCTController",
-                path : "../controllers/complementaryTask/changeCTController",
+            updateStatus: {
+                name: "ChangeCTController",
+                path: "../controllers/complementaryTask/changeCTController",
             },
-            getAll : {
-                name : "GetAllCTController",
-                path : "../controllers/complementaryTask/getAllCTController",
+            getAll: {
+                name: "GetAllCTController",
+                path: "../controllers/complementaryTask/getAllCTController",
             },
-            getCompleted : {
-                name : "GetCompletedCTController",
-                path : "../controllers/complementaryTask/getCompletedCTController",
+            getCompleted: {
+                name: "GetCompletedCTController",
+                path: "../controllers/complementaryTask/getCompletedCTController",
             },
             getByCategory: {
-                name : "GetCTByCategoryController",
-                path : "../controllers/complementaryTask/getCTByCategoryController",
+                name: "GetCTByCategoryController",
+                path: "../controllers/complementaryTask/getCTByCategoryController",
             },
             getByCategoryCode: {
-                name : "GetCTByCategoryCodeController",
-                path : "../controllers/complementaryTask/getCTByCategoryCodeController",
+                name: "GetCTByCategoryCodeController",
+                path: "../controllers/complementaryTask/getCTByCategoryCodeController",
             },
             getByCode: {
-                name : "GetCTByCodeController",
-                path : "../controllers/complementaryTask/getCTByCodeController",
+                name: "GetCTByCodeController",
+                path: "../controllers/complementaryTask/getCTByCodeController",
             },
             getByStaff: {
-                name : "GetCTByStaffController",
-                path : "../controllers/complementaryTask/getCTByStaffController",
+                name: "GetCTByStaffController",
+                path: "../controllers/complementaryTask/getCTByStaffController",
             },
             getByVve: {
-                name : "GetCTByVveController",
-                path : "../controllers/complementaryTask/getCTByVveController",
+                name: "GetCTByVveController",
+                path: "../controllers/complementaryTask/getCTByVveController",
             },
             getByVveCode: {
-                name : "GetCTByVveCodeController",
-                path : "../controllers/complementaryTask/getCTByVveCodeController",
+                name: "GetCTByVveCodeController",
+                path: "../controllers/complementaryTask/getCTByVveCodeController",
             },
             getInProgress: {
-                name : "GetInProgressCtController",
-                path : "../controllers/complementaryTask/getInProgressCTController",
+                name: "GetInProgressCtController",
+                path: "../controllers/complementaryTask/getInProgressCTController",
             },
             getInRange: {
-                name : "GetInRangeCTController",
-                path : "../controllers/complementaryTask/getInRangeCTController",
+                name: "GetInRangeCTController",
+                path: "../controllers/complementaryTask/getInRangeCTController",
             },
             getScheduled: {
-                name : "GetScheduledCTController",
-                path : "../controllers/complementaryTask/getScheduledCTController",
+                name: "GetScheduledCTController",
+                path: "../controllers/complementaryTask/getScheduledCTController",
             },
 
         },
         incident: {
             create: {
-                name : "CreateIncidentController",
-                path : "../controllers/incident/createIncidentController",
+                name: "CreateIncidentController",
+                path: "../controllers/incident/createIncidentController",
             },
 
             updateVEEList: {
@@ -202,63 +202,63 @@ export default {
             },
 
             update: {
-                name : "UpdateIncidentController",
-                path : "../controllers/incident/updateIncidentController",
+                name: "UpdateIncidentController",
+                path: "../controllers/incident/updateIncidentController",
             },
 
             delete: {
-                name : "DeleteIncidentController",
-                path : "../controllers/incident/deleteIncidentController",
+                name: "DeleteIncidentController",
+                path: "../controllers/incident/deleteIncidentController",
             },
 
             getAll: {
-                name : "GetAllIncidentsController",
-                path : "../controllers/incident/getAllIncidentsController",
+                name: "GetAllIncidentsController",
+                path: "../controllers/incident/getAllIncidentsController",
             },
 
             getByCode: {
-                name : "GetIncidentByCodeController",
-                path : "../controllers/incident/getIncidentByCodeController",
+                name: "GetIncidentByCodeController",
+                path: "../controllers/incident/getIncidentByCodeController",
             },
 
             getActive: {
-                name : "GetActiveIncidentsController",
-                path : "../controllers/incident/getActiveIncidentsController",
+                name: "GetActiveIncidentsController",
+                path: "../controllers/incident/getActiveIncidentsController",
             },
 
             getResolved: {
-                name : "GetResolvedIncidentsController",
-                path : "../controllers/incident/getResolvedIncidentsController",
+                name: "GetResolvedIncidentsController",
+                path: "../controllers/incident/getResolvedIncidentsController",
             },
 
             getByDateRange: {
-                name : "GetIncidentsByDataRangeController",
-                path : "../controllers/incident/getIncidentsByDataRangeController",
+                name: "GetIncidentsByDataRangeController",
+                path: "../controllers/incident/getIncidentsByDataRangeController",
             },
 
             getBySeverity: {
-                name : "GetIncidentsBySeverityController",
-                path : "../controllers/incident/getIncidentsBySeverityController",
+                name: "GetIncidentsBySeverityController",
+                path: "../controllers/incident/getIncidentsBySeverityController",
             },
 
             getByVVE: {
-                name : "GetIncidentsByVVEController",
-                path : "../controllers/incident/getIncidentsByVVEController",
+                name: "GetIncidentsByVVEController",
+                path: "../controllers/incident/getIncidentsByVVEController",
             },
 
             addVVE: {
-                name : "AddVVEToIncidentController",
-                path : "../controllers/incident/addVVEToIncidentController",
+                name: "AddVVEToIncidentController",
+                path: "../controllers/incident/addVVEToIncidentController",
             },
 
             removeVVE: {
-                name : "RemoveVVEFromIncidentController",
-                path : "../controllers/incident/removeVVEFromIncidentController",
+                name: "RemoveVVEFromIncidentController",
+                path: "../controllers/incident/removeVVEFromIncidentController",
             },
 
             markResolved: {
-                name : "MarkIncidentResolvedController",
-                path : "../controllers/incident/markIncidentResolvedController",
+                name: "MarkIncidentResolvedController",
+                path: "../controllers/incident/markIncidentResolvedController",
             }
         },
 
@@ -287,6 +287,13 @@ export default {
             getInRange: {
                 name: "GetVVEInRangeController",
                 path: "../controllers/vve/getVVEInRangeController",
+            },
+        },
+
+        operationPlan: {
+            create: {
+                name: "CreateOperationPlanController",
+                path: "../controllers/operationPlan/createOperationPlanController"
             }
         },
     },
@@ -312,7 +319,10 @@ export default {
         incident: {
             name: "incidentRepo",
             path: "../repos/incidentRepo",
-        }
+        },
+        operationPlan: {
+            name: "OperationPlanRepo",
+            path: "../repos/operationPlanRepo" }
     },
 
     services: {
@@ -336,6 +346,9 @@ export default {
         incident: {
             name: "IncidentService",
             path: "../services/incidentService"
-        }
+        },
+        operationPlan: {
+            name: "OperationPlanService",
+            path: "../services/operationPlanService" }
     }
 };

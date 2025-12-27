@@ -18,7 +18,8 @@ export default async ({expressApp}: { expressApp: express.Application }) => {
             {name: "complementaryTaskSchema", path: "../persistence/schemas/complementaryTaskSchema"},
             {name: "incidentSchema", path: "../persistence/schemas/incidentSchema"},
             {name: "complementaryTaskSchema", path: "../persistence/schemas/complementaryTaskSchema"},
-            {name: "vesselVisitExecutionSchema", path: "../persistence/schemas/vesselVisitExecutionSchema"}
+            {name: "vesselVisitExecutionSchema", path: "../persistence/schemas/vesselVisitExecutionSchema"},
+            { name: "operationPlanSchema", path: "../persistence/schemas/operationPlanSchema" }
         ],
 
         mappers: [
@@ -27,8 +28,8 @@ export default async ({expressApp}: { expressApp: express.Application }) => {
             {name: "IncidentTypeMap", path: "../mappers/IncidentTypeMap"},
             {name: "ComplementaryTaskMap", path: "../mappers/ComplementaryTaskMap"},
             {name: "VesselVisitExecutionMap", path: "../mappers/VesselVisitExecutionMap"},
-
-            {name: "IncidentMap", path: "../mappers/IncidentMap"}
+            {name: "IncidentMap", path: "../mappers/IncidentMap"},
+            {name: "OperationPlanMap", path: "../mappers/OperationPlanMap"},
         ],
 
         controllers: [
@@ -96,6 +97,9 @@ export default async ({expressApp}: { expressApp: express.Application }) => {
             config.controllers.incident.addVVE,
             config.controllers.incident.removeVVE,
             config.controllers.incident.markResolved,
+
+            //OperationPlan
+            config.controllers.operationPlan.create,
             config.controllers.incident.updateVEEList,
         ],
         repos: [
@@ -105,7 +109,8 @@ export default async ({expressApp}: { expressApp: express.Application }) => {
             config.repos.complementaryTask,
             config.repos.incident,
             config.repos.complementaryTask,
-            config.repos.VesselVisitExecution
+            config.repos.VesselVisitExecution,
+            config.repos.operationPlan
         ],
         services: [
             config.services.user,
@@ -115,6 +120,7 @@ export default async ({expressApp}: { expressApp: express.Application }) => {
             config.services.VesselVisitExecution,
             config.services.complementaryTask,
             config.services.incident,
+            config.services.operationPlan
         ]
     });
 
