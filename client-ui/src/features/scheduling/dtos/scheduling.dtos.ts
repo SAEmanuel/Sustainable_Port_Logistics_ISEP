@@ -93,3 +93,11 @@ export interface SmartScheduleResultDto {
 
     selectionReason: string;
 }
+export interface SaveScheduleDto {
+    planDate: string;
+    author: string;
+    algorithm: string;
+    total_delay: number;
+    status: string;
+    operations: SchedulingOperationDto[];
+}

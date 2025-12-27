@@ -11,24 +11,50 @@ public class DailyScheduleResultDto
 
 public class SchedulingOperationDto
 {
+    [JsonPropertyName("vvnId")]
     public string VvnId { get; set; }
+
+    [JsonPropertyName("vessel")]
     public string Vessel { get; set; }
+
+    [JsonPropertyName("dock")]
     public string Dock { get; set; }
+
+    [JsonPropertyName("startTime")]
     public int StartTime { get; set; }
+
+    [JsonPropertyName("endTime")]
     public int EndTime { get; set; }
+
+    [JsonPropertyName("loadingDuration")]
     public int LoadingDuration { get; set; }
+
+    [JsonPropertyName("unloadingDuration")]
     public int UnloadingDuration { get; set; }
-    public List<StaffAssignmentDto>? StaffAssignments { get; set; }
+
+    [JsonPropertyName("crane")]
     public string Crane { get; set; } = string.Empty;
 
+    [JsonPropertyName("craneCountUsed")]
     public int CraneCountUsed { get; set; } = 1;
-    
+
+    [JsonPropertyName("totalCranesOnDock")]
     public int TotalCranesOnDock { get; set; }
 
+    [JsonPropertyName("optimizedOperationDuration")]
     public int OptimizedOperationDuration { get; set; }
+
+    [JsonPropertyName("realDepartureTime")]
     public int RealDepartureTime { get; set; }
+
+    [JsonPropertyName("realArrivalTime")]
     public int RealArrivalTime { get; set; }
+
+    [JsonPropertyName("departureDelay")]
     public int DepartureDelay { get; set; }
+    
+    [JsonPropertyName("staffAssignments")]
+    public List<StaffAssignmentDto>? StaffAssignments { get; set; }
     
     public int? TheoreticalRequiredCranes { get; set; }
     public string? ResourceSuggestion { get; set; }
