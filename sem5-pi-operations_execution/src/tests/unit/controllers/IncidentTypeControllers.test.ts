@@ -1,16 +1,14 @@
 import 'reflect-metadata';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { Result } from '../../core/logic/Result';
-import { BusinessRuleValidationError } from '../../core/logic/BusinessRuleValidationError';
-
-// --- IMPORTS CORRIGIDOS (Baseado no teu print) ---
-import CreateITController from '../../controllers/incidentType/createdITController';
-import UpdateITController from '../../controllers/incidentType/updateITController';
-import GetIncidentTypeDTO from '../../controllers/incidentType/getITByCodeController';
-import GetITByNameController from '../../controllers/incidentType/getITByNameController';
-import GetITDirectChildController from '../../controllers/incidentType/getITDirectChildController';
-import GetITRootTypesController from '../../controllers/incidentType/getITRootController';
-import GetITSubTreeController from '../../controllers/incidentType/getITSubTreeController';
+import CreateITController from "../../../controllers/incidentType/createdITController";
+import {Result} from "../../../core/logic/Result";
+import {BusinessRuleValidationError} from "../../../core/logic/BusinessRuleValidationError";
+import UpdateITController from "../../../controllers/incidentType/updateITController";
+import GetIncidentTypeDTO from "../../../controllers/incidentType/getITByCodeController";
+import GetITByNameController from "../../../controllers/incidentType/getITByNameController";
+import GetITDirectChildController from "../../../controllers/incidentType/getITDirectChildController";
+import GetITSubTreeController from "../../../controllers/incidentType/getITSubTreeController";
+import GetITRootTypesController from "../../../controllers/incidentType/getITRootController";
 
 describe('IncidentType Controllers', () => {
     let serviceMock: any;
