@@ -43,12 +43,17 @@ function ComplementaryTaskCategoryTable({ categories, onEdit, onToggleStatus }: 
                     </td>
                     <td>
                         <div style={{ display: 'flex', gap: '0.5rem' }}>
-                            <button onClick={() => onEdit(cat)} className="pr-edit-button">
+                            <button
+                                onClick={() => onEdit(cat)}
+                                className="pr-edit-button"
+                                title={t("actions.edit")} // Adicionado para facilitar a seleção nos testes
+                            >
                                 {t("ctc.actions.edit")}
                             </button>
                             <button
                                 onClick={() => onToggleStatus(cat)}
                                 className={cat.isActive ? "pr-deactivate-button" : "pr-activate-button"}
+                                title={cat.isActive ? t("actions.deactivate") : t("actions.activate")} // Adicionado para facilitar a seleção nos testes
                             >
                                 {cat.isActive ? t("actions.deactivate") : t("actions.activate")}
                             </button>

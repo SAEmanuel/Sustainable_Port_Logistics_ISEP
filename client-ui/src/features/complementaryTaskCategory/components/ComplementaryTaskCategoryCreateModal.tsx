@@ -66,7 +66,6 @@ function ComplementaryTaskCategoryCreateModal({ isOpen, onClose, onCreated }: Pr
         e.preventDefault();
         setError(null);
 
-
         if (!formData.code || formData.code.trim() === "") {
             const msg = t("ctc.errors.codeRequired") || "Code is required.";
             setError(new Error(msg));
@@ -88,10 +87,8 @@ function ComplementaryTaskCategoryCreateModal({ isOpen, onClose, onCreated }: Pr
             return;
         }
 
-
         setIsLoading(true);
         try {
-
             const dtoToSend: CreateComplementaryTaskCategoryDTO = {
                 code: formData.code!,
                 name: formData.name!,
@@ -106,7 +103,7 @@ function ComplementaryTaskCategoryCreateModal({ isOpen, onClose, onCreated }: Pr
         } catch (err) {
             const apiError = err as Error;
             setError(apiError);
-            toast.error(apiError.message || t("ctc.errors.createFailedGeneric") || "Creation failed. Check server logs.");
+            toast.error(apiError.message || t("ctc.errors.createFailedGeneric") || "Creation failed.");
         } finally {
             setIsLoading(false);
         }
@@ -151,37 +148,41 @@ function ComplementaryTaskCategoryCreateModal({ isOpen, onClose, onCreated }: Pr
                     {step === 2 && (
                         <div>
                             <div className="ctc-form-group">
-                                <label>{t("ctc.form.code")}</label>
+                                <label htmlFor="ctc-create-code">{t("ctc.form.code")}</label>
                                 <input
+                                    id="ctc-create-code"
                                     required
                                     name="code"
                                     type="text"
-                                    value={formData.code}
+                                    value={formData.code || ""}
                                     onChange={handleValueChange}
                                 />
                             </div>
                             <div className="ctc-form-group">
-                                <label>{t("ctc.form.name")}</label>
+                                <label htmlFor="ctc-create-name">{t("ctc.form.name")}</label>
                                 <input
+                                    id="ctc-create-name"
                                     required
                                     name="name"
                                     type="text"
-                                    value={formData.name}
+                                    value={formData.name || ""}
                                     onChange={handleValueChange}
                                 />
                             </div>
                             <div className="ctc-form-group">
-                                <label>{t("ctc.form.description")}</label>
+                                <label htmlFor="ctc-create-description">{t("ctc.form.description")}</label>
                                 <input
+                                    id="ctc-create-description"
                                     name="description"
                                     type="text"
-                                    value={formData.description}
+                                    value={formData.description || ""}
                                     onChange={handleValueChange}
                                 />
                             </div>
                             <div className="ctc-form-group">
-                                <label>{t("ctc.form.duration")} ({t("physicalResource.form.opcional")})</label>
+                                <label htmlFor="ctc-create-duration">{t("ctc.form.duration")} ({t("physicalResource.form.opcional")})</label>
                                 <input
+                                    id="ctc-create-duration"
                                     type="number"
                                     name="defaultDuration"
                                     min="0"
