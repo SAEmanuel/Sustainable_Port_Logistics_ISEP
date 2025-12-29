@@ -76,12 +76,12 @@ export default class IncidentRepo implements IIncidentRepo {
     }
 
     async save(i: Incident): Promise<Incident | null> {
-        const rawPersistence = this.incidentMap.toPersistence(i);
-
         this.logger.debug("Saving Incident", { code: i.code });
 
         try {
-            const existing = await this.incidentSchema.findOne({id: rawPersistence.id.toString()});
+            const rawPersistence = this.incidentMap.toPersistence(i);
+
+            const existing = await this.incidentSchema.findOne({ id: rawPersistence.id.toString() });
 
             if (existing) {
                 existing.set(rawPersistence);
@@ -95,12 +95,12 @@ export default class IncidentRepo implements IIncidentRepo {
 
             this.logger.info("Incident created", { code: i.code });
             return this.incidentMap.toDomain(created);
-
         } catch (err) {
-            this.logger.error("Error saving Incident", {error: err});
+            this.logger.error("Error saving Incident", { error: err });
             return null;
         }
     }
+
 
     async deleteIncident(incidentCode: string): Promise<void> {
         this.logger.debug("Deleting Incident", { incidentCode });
