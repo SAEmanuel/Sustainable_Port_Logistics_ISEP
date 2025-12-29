@@ -1,12 +1,18 @@
 import mongoose from "mongoose";
 import { MongoMemoryServer } from "mongodb-memory-server";
 
-let mongod: MongoMemoryServer;
+let mongod: MongoMemoryServer | null = null;
 
 export async function connectInMemoryMongo() {
     mongod = await MongoMemoryServer.create();
     const uri = mongod.getUri();
-    await mongoose.connect(uri);
+
+    // Opcional mas recomendável em testes (evita builds de índices em background)
+    mongoose.set("autoIndex", false);
+
+    await mongoose.connect(uri, {
+        autoIndex: false,
+    } as any);
 }
 
 export async function clearDatabase() {
@@ -17,7 +23,16 @@ export async function clearDatabase() {
 }
 
 export async function closeDatabase() {
-    await mongoose.connection.dropDatabase();
-    await mongoose.connection.close();
-    await mongod.stop();
+    // Não faças dropDatabase aqui — é a causa mais comum de teardown a bloquear
+    try {
+        if (mongoose.connection.readyState !== 0) {
+            // force = true: fecha sockets mesmo com operações pendentes
+            await mongoose.connection.close(true);
+        }
+    } finally {
+        if (mongod) {
+            await mongod.stop();
+            mongod = null;
+        }
+    }
 }

@@ -48,43 +48,32 @@ export default class IncidentTypeRepo implements IIncidentTypeRepository {
     }
 
     public async save(incidentType: IncidentType): Promise<IncidentType | null> {
-        const rawPersistence = this.incidentTypeMap.toPersistence(incidentType);
+        this.logger.debug("Saving Incident Type", { code: incidentType.code });
 
-        this.logger.debug("Saving Incident Type", {
-            code: incidentType.code
-        });
+        try {
+            const rawPersistence = this.incidentTypeMap.toPersistence(incidentType);
 
-        try{
-            const existing = await this.incidentTypeSchema.findOne({domainId: rawPersistence.domainId});
+            const existing = await this.incidentTypeSchema.findOne({ domainId: rawPersistence.domainId });
 
             if (existing) {
                 existing.set(rawPersistence);
                 await existing.save();
 
-                this.logger.info("Incident Type updated", {
-                    code: incidentType.code
-                });
+                this.logger.info("Incident Type updated", { code: incidentType.code });
                 return this.incidentTypeMap.toDomain(existing);
             }
 
-            const created = await this.incidentTypeSchema.create(
-                rawPersistence
-            );
+            const created = await this.incidentTypeSchema.create(rawPersistence);
 
-            this.logger.info("Incident Type created", {
-                code: incidentType.code
-            });
-
+            this.logger.info("Incident Type created", { code: incidentType.code });
             return this.incidentTypeMap.toDomain(created);
 
-        }catch(err){
-            this.logger.error(
-                "Error saving Incident Type",
-                {error: err}
-            );
+        } catch (err) {
+            this.logger.error("Error saving Incident Type", { error: err });
             return null;
         }
     }
+
 
 
     public async findByCode(code: string): Promise<IncidentType | null> {
