@@ -1,0 +1,133 @@
+@startuml
+skinparam monochrome true
+skinparam shadowing false
+title Domain Model – Operation Plan Update (US4.1.4)
+
+' =========================
+' Aggregate: VVN
+' =========================
+class VVN <<AggregateRoot>> {
+  +id: UniqueEntityID
+  +vesselId: string
+  +dockId: string
+  +eta: number
+  +etd: number
+  +status: string
+}
+
+' =========================
+' Aggregate: OperationPlan
+' =========================
+class OperationPlan <<AggregateRoot>> {
+  +id: UniqueEntityID
+  +vvnId: string
+  +algorithm: string
+  +totalDelay: number
+  +status: string
+  +planDate: Date
+  +createdAt: Date
+  +author: string
+}
+
+class Operation <<Entity>> {
+  +operationId: string
+  +vvnId: string
+  +vessel: string
+  +dock: string
+  +startTime: number
+  +endTime: number
+  +loadingDuration: number
+  +unloadingDuration: number
+  +crane: string
+  +craneCountUsed: number
+  +totalCranesOnDock: number
+  +optimizedOperationDuration: number
+  +realArrivalTime: number
+  +realDepartureTime: number
+  +departureDelay: number
+}
+
+class StaffAssignment <<ValueObject>> {
+  +staffId: string
+  +role: string
+  +startTime: number
+  +endTime: number
+}
+
+class OperationPlanChangeLog <<Entity>> {
+  +logId: string
+  +changedAt: Date
+  +author: string
+  +reasonForChange: string
+  +diffSummary: string
+}
+
+' =========================
+' Supporting entities (resource catalog / scheduling)
+' =========================
+class Dock <<Entity>> {
+  +dockId: string
+  +name: string
+  +totalCranes: number
+}
+
+class Crane <<Entity>> {
+  +craneId: string
+  +dockId: string
+  +name: string
+  +isActive: boolean
+}
+
+class StaffMember <<Entity>> {
+  +staffId: string
+  +name: string
+  +isActive: boolean
+}
+
+' =========================
+' Domain service (cross-aggregate consistency)
+' =========================
+class OperationPlanConsistencyChecker <<DomainService>> {
+  +check(updatedPlan: OperationPlan): ConflictOrWarning[]
+}
+
+' =========================
+' Relationships
+' =========================
+VVN "1" -- "0..1" OperationPlan : has/targets >
+OperationPlan "1" *-- "0..*" Operation : operations
+Operation "1" *-- "0..*" StaffAssignment : staffAssignments
+Operation "0..*" --> "1" Dock : uses >
+Operation "0..*" --> "0..*" Crane : assigned >
+StaffAssignment "0..*" --> "1" StaffMember : assigns >
+
+OperationPlan "1" *-- "0..*" OperationPlanChangeLog : auditTrail
+OperationPlanConsistencyChecker ..> OperationPlan
+OperationPlanConsistencyChecker ..> Dock
+OperationPlanConsistencyChecker ..> Crane
+OperationPlanConsistencyChecker ..> StaffMember
+OperationPlanConsistencyChecker ..> VVN
+
+' =========================
+' Notes / invariants (optional)
+' =========================
+note right of OperationPlan
+Aggregate invariants (local):
+- algorithm not empty
+- operations list exists
+- planDate defined
+Audit requirement:
+- every update appends ChangeLog(changedAt, author, reason)
+end note
+
+note right of Operation
+Operation constraints (local):
+- startTime < endTime
+- durations >= 0
+- craneCountUsed >= 0
+- craneCountUsed <= totalCranesOnDock
+Cross-aggregate checks:
+- dock/crane/staff overlaps vs other VVNs
+end note
+
+@enduml
