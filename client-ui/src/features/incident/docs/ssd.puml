@@ -1,0 +1,515 @@
+@startuml
+' ==========================================================
+' Sequence Diagram – Incidents (SPA + API + Domain + Persistence)
+' Covers: load/list, filters, details, create, edit, resolve, updateListVVEs, delete
+' Based on your React components + incidentService.ts endpoints
+' ==========================================================
+
+skinparam monochrome true
+skinparam shadowing false
+skinparam sequenceMessageAlign center
+
+actor "Security & Resilience Analyst (SAR)" as SAR
+
+' ========= FRONTEND / SPA =========
+boundary "SPA IncidentPage\n(/incident)" as IncPage
+control  "IncidentPage (state/handlers)\n(useEffect/loadAll, handleSearch,\nafterSave, afterDelete)" as IncComp
+control  "IncidentTable" as IncTable
+boundary "IncidentDetailsOverlay\n(.in-details-overlay)" as DetailsOverlay
+boundary "IncidentDetailsPanel\n(.in-details-modal)" as DetailsPanel
+boundary "IncidentUpsertModal\n(.in-modal-overlay)" as UpsertModal
+control  "Frontend Service\n(incidentService.ts)" as FEService
+boundary "HTTP ApiClient\n(operationsApi/axios)" as ApiClient
+collections "Toast\n(react-hot-toast)" as Toast
+
+' ========= BACKEND / API & DOMAIN =========
+boundary "API Layer\n(IncidentController)" as Controller
+control  "Application Layer\n(IncidentService)\n<<uses repos + UoW>>" as AppService
+control  "Mapper\n(IncidentMapper)" as Mapper
+control  "Domain Factory\n(IncidentFactory)" as Factory
+entity   "IIncidentRepository\n<<interface>>" as IRepo
+entity   "IncidentRepository" as Repo
+entity   "IIncidentTypeRepository\n<<interface>>" as ITypeRepo
+entity   "IncidentTypeRepository" as TypeRepo
+entity   "IVVERepository\n<<interface>>" as IVVERepo
+entity   "VVERepository" as VVERepo
+entity   "UnitOfWork\n(IUnitOfWork)" as UoW
+collections "Audit/Logs\n(ILogger/Serilog)" as Log
+database "Database" as DB
+
+' ==========================================================
+' 0) INITIAL LOAD – GET ALL INCIDENTS
+' ==========================================================
+== Initial Load (GET /api/incidents) ==
+
+SAR -> IncPage : Navigate to /incident
+activate IncPage
+
+IncPage -> IncComp : mount() / useEffect()
+activate IncComp
+
+IncComp -> FEService : getAllIncidents()
+activate FEService
+FEService -> ApiClient : GET /api/incidents
+activate ApiClient
+
+ApiClient -> Controller : GET /api/incidents
+activate Controller
+Controller -> AppService : GetAllAsync()
+activate AppService
+AppService -> IRepo : GetAllAsync()
+activate IRepo
+IRepo -> Repo : SELECT * FROM Incidents
+Repo -> DB : query
+DB --> Repo : rows
+Repo --> IRepo : List<Incident>
+IRepo --> AppService : List<Incident>
+deactivate IRepo
+deactivate Repo
+
+AppService -> Mapper : ToDto(list)
+activate Mapper
+Mapper --> AppService : IncidentDto[]
+deactivate Mapper
+
+AppService --> Controller : IncidentDto[]
+deactivate AppService
+Controller --> ApiClient : 200 OK (IncidentDto[])
+deactivate Controller
+
+ApiClient --> FEService : IncidentDto[]
+deactivate ApiClient
+FEService --> IncComp : mapToDomainList(dto[]) -> Incident[]
+deactivate FEService
+
+IncComp -> IncComp : setItems(list)\ncompute stats (useMemo)
+IncComp -> IncTable : render(items)
+IncComp --> IncPage : UI ready
+deactivate IncComp
+deactivate IncPage
+
+' ==========================================================
+' 1) FILTER / SEARCH (handleSearch)
+' ==========================================================
+== Search / Filters ==
+
+group Filter = Active
+  SAR -> IncPage : choose filter "active"\nclick Search
+  IncPage -> IncComp : handleSearch(filterType=active)
+  activate IncComp
+  IncComp -> FEService : getActiveIncidents()
+  activate FEService
+  FEService -> ApiClient : GET /api/incidents/active
+  activate ApiClient
+  ApiClient -> Controller : GET /api/incidents/active
+  activate Controller
+  Controller -> AppService : GetActiveAsync()
+  activate AppService
+  AppService -> IRepo : GetActiveAsync()
+  IRepo -> Repo : SELECT Incidents WHERE endTime IS NULL
+  Repo -> DB : query
+  DB --> Repo : rows
+  Repo --> IRepo : List<Incident>
+  IRepo --> AppService : List<Incident>
+  AppService -> Mapper : ToDto(list)
+  Mapper --> AppService : IncidentDto[]
+  AppService --> Controller : IncidentDto[]
+  deactivate AppService
+  Controller --> ApiClient : 200 OK
+  deactivate Controller
+  ApiClient --> FEService : dto[]
+  deactivate ApiClient
+  FEService --> IncComp : map -> Incident[]
+  deactivate FEService
+  IncComp -> IncTable : render(filtered)
+  deactivate IncComp
+end
+
+group Filter = Resolved
+  SAR -> IncPage : choose filter "resolved"\nclick Search
+  IncPage -> IncComp : handleSearch(resolved)
+  IncComp -> FEService : getResolvedIncidents()
+  FEService -> ApiClient : GET /api/incidents/resolved
+  ApiClient -> Controller : GET /api/incidents/resolved
+  Controller -> AppService : GetResolvedAsync()
+  AppService -> IRepo : GetResolvedAsync()
+  IRepo -> Repo : SELECT Incidents WHERE endTime IS NOT NULL
+  Repo -> DB : query
+  DB --> Repo : rows
+  Controller --> ApiClient : 200 OK (dto[])
+  ApiClient --> IncPage : list shown
+end
+
+group Filter = Severity
+  SAR -> IncPage : choose filter "severity"\nselect "Critical"\nclick Search
+  IncPage -> IncComp : handleSearch(severity, "Critical")
+  IncComp -> FEService : getIncidentsBySeverity("Critical")
+  FEService -> ApiClient : GET /api/incidents/search/severity?severity=Critical
+  ApiClient -> Controller : GET /api/incidents/search/severity
+  Controller -> AppService : SearchBySeverityAsync(severity)
+  AppService -> IRepo : SearchBySeverityAsync(severity)
+  IRepo -> Repo : SELECT WHERE severity = ?
+  Repo -> DB : query
+  DB --> Repo : rows
+  Controller --> ApiClient : 200 OK (dto[])
+end
+
+group Filter = DateRange
+  SAR -> IncPage : choose "dateRange"\nset start/end\nclick Search
+  IncPage -> IncComp : handleSearch(dateRange)
+  alt invalid input
+    IncComp -> Toast : toast.error(rangeRequired)
+  else valid
+    IncComp -> FEService : getIncidentsByDateRange(startISO, endISO)
+    FEService -> ApiClient : GET /api/incidents/search/date?start=...&end=...
+    ApiClient -> Controller : GET /api/incidents/search/date
+    Controller -> AppService : SearchByDateRangeAsync(start,end)
+    AppService -> IRepo : SearchByDateRangeAsync(start,end)
+    IRepo -> Repo : SELECT WHERE startTime/endTime overlap range
+    Repo -> DB : query
+    DB --> Repo : rows
+    Controller --> ApiClient : 200 OK (dto[])
+  end
+end
+
+group Filter = VVE
+  SAR -> IncPage : choose "vve"\ntype VVE-1\nclick Search
+  IncPage -> IncComp : handleSearch(vve,"VVE-1")
+  IncComp -> FEService : getIncidentsByVVE("VVE-1")
+  FEService -> ApiClient : GET /api/incidents/vve/VVE-1
+  ApiClient -> Controller : GET /api/incidents/vve/{vve}
+  Controller -> AppService : SearchByVVEAsync(vve)
+  AppService -> IRepo : SearchByVVEAsync(vve)
+  IRepo -> Repo : SELECT incidents matching VVE in list
+  Repo -> DB : query
+  DB --> Repo : rows
+  Controller --> ApiClient : 200 OK (dto[])
+end
+
+group Filter = Code (single)
+  SAR -> IncPage : choose "code"\ntype INC-001\nclick Search
+  IncPage -> IncComp : handleSearch(code,"INC-001")
+  IncComp -> FEService : getIncidentByCode("INC-001")
+  FEService -> ApiClient : GET /api/incidents/INC-001
+  ApiClient -> Controller : GET /api/incidents/{code}
+  Controller -> AppService : GetByCodeAsync(code)
+  AppService -> IRepo : GetByCodeAsync(code)
+  IRepo -> Repo : SELECT Incident WHERE code=?
+  Repo -> DB : query
+  DB --> Repo : row/null
+  alt found
+    AppService -> Mapper : ToDto(one)
+    AppService --> Controller : IncidentDto
+    Controller --> ApiClient : 200 OK
+  else not found
+    Controller --> ApiClient : 404 Not Found
+  end
+end
+
+' ==========================================================
+' 2) OPEN DETAILS (client-side selection) + ACTIONS
+' ==========================================================
+== Open Details Overlay ==
+
+SAR -> IncTable : click row "INC-001"
+activate IncTable
+IncTable -> IncComp : onSelect(it)
+deactivate IncTable
+
+IncComp -> DetailsOverlay : render overlay
+activate DetailsOverlay
+DetailsOverlay -> DetailsPanel : render selected data
+activate DetailsPanel
+
+' ---- Resolve ----
+== Resolve Incident (PATCH /resolve) ==
+SAR -> DetailsPanel : click "Resolve"
+DetailsPanel -> FEService : resolveIncident(code)
+activate FEService
+FEService -> ApiClient : PATCH /api/incidents/{code}/resolve
+activate ApiClient
+ApiClient -> Controller : PATCH /api/incidents/{code}/resolve
+activate Controller
+Controller -> AppService : ResolveAsync(code)
+activate AppService
+
+AppService -> IRepo : GetByCodeAsync(code)
+activate IRepo
+IRepo -> Repo : SELECT Incident WHERE code=?
+Repo -> DB : query
+DB --> Repo : row
+Repo --> IRepo : Incident
+IRepo --> AppService : Incident
+deactivate IRepo
+deactivate Repo
+
+AppService -> AppService : Validate not resolved\nSet endTime=now\nCompute duration
+AppService -> IRepo : Update(incident)
+IRepo -> Repo : UPDATE Incidents SET endTime=?, duration=? WHERE code=?
+Repo -> DB : update
+DB --> Repo : OK
+
+AppService -> UoW : CommitAsync()
+activate UoW
+UoW --> AppService : committed
+deactivate UoW
+
+AppService -> Mapper : ToDto(updated)
+activate Mapper
+Mapper --> AppService : IncidentDto
+deactivate Mapper
+
+AppService -> Log : Log(RESOLVE, sarId, code, SUCCESS)
+AppService --> Controller : IncidentDto
+deactivate AppService
+Controller --> ApiClient : 200 OK (IncidentDto)
+deactivate Controller
+
+ApiClient --> FEService : dto
+deactivate ApiClient
+FEService --> DetailsPanel : map -> Incident
+deactivate FEService
+DetailsPanel -> Toast : toast.success(incident.success.resolved)
+DetailsPanel -> IncComp : onChanged(updated)
+IncComp -> IncComp : afterSave(update list + selected)
+deactivate DetailsPanel
+
+' ---- Update Lists (PATCH /updateList) ----
+== Update Lists of VVEs (PATCH /updateList) ==
+SAR -> DetailsPanel : click "Atualizar"
+activate DetailsPanel
+DetailsPanel -> FEService : updateListsVVEs(code)
+activate FEService
+FEService -> ApiClient : PATCH /api/incidents/{code}/updateList
+activate ApiClient
+ApiClient -> Controller : PATCH /api/incidents/{code}/updateList
+activate Controller
+Controller -> AppService : UpdateListsVVEsAsync(code)
+activate AppService
+
+AppService -> IRepo : GetByCodeAsync(code)
+IRepo -> Repo : SELECT Incident WHERE code=?
+Repo -> DB : query
+DB --> Repo : row
+
+AppService -> AppService : Validate impactMode != Specific\nAND not resolved
+
+alt impactMode = AllOnGoing
+  AppService -> IVVERepo : GetAllOnGoingAsync(now)
+  activate IVVERepo
+  IVVERepo -> VVERepo : SELECT VVEs WHERE ongoing at now
+  VVERepo -> DB : query
+  DB --> VVERepo : rows
+  VVERepo --> IVVERepo : List<VVE>
+  IVVERepo --> AppService : List<VVE>
+  deactivate IVVERepo
+  deactivate VVERepo
+  AppService -> AppService : incident.vveList = map(vve.code)
+else impactMode = Upcoming
+  AppService -> IVVERepo : GetUpcomingInWindowAsync(windowStart, windowEnd)
+  IVVERepo -> VVERepo : SELECT VVEs WHERE start in [wStart,wEnd]
+  VVERepo -> DB : query
+  DB --> VVERepo : rows
+  AppService -> AppService : incident.vveList = map(vve.code)
+end
+
+AppService -> IRepo : Update(incident)
+IRepo -> Repo : UPDATE Incidents SET vveList=? WHERE code=?
+Repo -> DB : update
+DB --> Repo : OK
+
+AppService -> UoW : CommitAsync()
+UoW --> AppService : committed
+
+AppService -> Mapper : ToDto(updated)
+Mapper --> AppService : IncidentDto
+AppService -> Log : Log(UPDATE_LIST, sarId, code, SUCCESS)
+AppService --> Controller : IncidentDto
+deactivate AppService
+Controller --> ApiClient : 200 OK
+deactivate Controller
+ApiClient --> FEService : dto
+deactivate ApiClient
+FEService --> DetailsPanel : map -> Incident
+deactivate FEService
+DetailsPanel -> Toast : toast.success(incident.success.updatedList)
+DetailsPanel -> IncComp : onChanged(updated)
+deactivate DetailsPanel
+
+' ---- Delete ----
+== Delete Incident (DELETE) ==
+SAR -> DetailsPanel : click "Delete"\nconfirm OK
+activate DetailsPanel
+DetailsPanel -> DetailsPanel : window.confirm(...)
+DetailsPanel -> FEService : deleteIncident(code)
+activate FEService
+FEService -> ApiClient : DELETE /api/incidents/{code}
+activate ApiClient
+ApiClient -> Controller : DELETE /api/incidents/{code}
+activate Controller
+Controller -> AppService : DeleteAsync(code)
+activate AppService
+
+AppService -> IRepo : GetByCodeAsync(code)
+IRepo -> Repo : SELECT Incident WHERE code=?
+Repo -> DB : query
+DB --> Repo : row/null
+alt found
+  AppService -> IRepo : Remove(incident)
+  IRepo -> Repo : DELETE FROM Incidents WHERE code=?
+  Repo -> DB : delete
+  DB --> Repo : OK
+  AppService -> UoW : CommitAsync()
+  UoW --> AppService : committed
+  AppService -> Log : Log(DELETE, sarId, code, SUCCESS)
+  AppService --> Controller : 204 No Content
+  deactivate AppService
+  Controller --> ApiClient : 204 No Content
+else not found
+  AppService --> Controller : 404 Not Found
+  deactivate AppService
+  Controller --> ApiClient : 404 Not Found
+end
+deactivate Controller
+
+ApiClient --> FEService : success
+deactivate ApiClient
+FEService --> DetailsPanel : ok
+deactivate FEService
+
+DetailsPanel -> Toast : toast.success(incident.success.deleted)
+DetailsPanel -> IncComp : onDeleted(code)
+IncComp -> IncComp : afterDelete(remove from list)\nclose overlay if selected
+DetailsPanel -> DetailsOverlay : close
+deactivate DetailsPanel
+deactivate DetailsOverlay
+
+' ==========================================================
+' 3) CREATE / EDIT (Upsert Modal loads VVEs + Incident Types)
+' ==========================================================
+== Open Create Modal (loads VVEs + Incident Types) ==
+
+SAR -> IncPage : click "Create"
+IncPage -> IncComp : setIsCreateOpen(true)
+IncComp -> UpsertModal : render (isOpen=true)
+activate UpsertModal
+
+par Load VVEs
+  UpsertModal -> FEService : getAllVVEs()
+  activate FEService
+  FEService -> ApiClient : GET /api/vve
+  activate ApiClient
+  ApiClient -> Controller : GET /api/vve
+  note right of Controller
+    Typically handled by a\nVVEController in another module.
+  end note
+  ApiClient --> FEService : 200 OK (VVEDto[])
+  deactivate ApiClient
+  FEService --> UpsertModal : mapToDomain -> codes[]
+  deactivate FEService
+end
+
+par Load Incident Types (for selection list)
+  UpsertModal -> ApiClient : GET /api/incidentTypes/search/all
+  activate ApiClient
+  ApiClient -> System : IncidentTypesController\nGET /api/incidentTypes/search/all
+  ApiClient --> UpsertModal : 200 OK (IncidentTypeDto[])
+  deactivate ApiClient
+end
+
+SAR -> UpsertModal : fill fields\nselect incidentType\nselect VVEs (if Specific)\nsubmit
+
+UpsertModal -> FEService : createIncident(dto) OR updateIncident(code,dto)
+activate FEService
+alt mode=create
+  FEService -> ApiClient : POST /api/incidents
+  activate ApiClient
+  ApiClient -> Controller : POST /api/incidents
+  activate Controller
+  Controller -> AppService : CreateAsync(CreateIncidentDto)
+  activate AppService
+
+  AppService -> ITypeRepo : GetByCodeAsync(dto.incidentTypeCode)
+  activate ITypeRepo
+  ITypeRepo -> TypeRepo : SELECT IncidentType WHERE code=?
+  TypeRepo -> DB : query
+  DB --> TypeRepo : row/null
+  TypeRepo --> ITypeRepo : IncidentType/null
+  ITypeRepo --> AppService : IncidentType/null
+  deactivate ITypeRepo
+  deactivate TypeRepo
+
+  AppService -> AppService : Validate (code unique,\nrequired fields,\nSpecific=>vveList>=1,\nUpcoming=>window required)
+
+  AppService -> Factory : Create(dto)
+  activate Factory
+  Factory --> AppService : Incident entity
+  deactivate Factory
+
+  AppService -> IRepo : AddAsync(incident)
+  activate IRepo
+  IRepo -> Repo : INSERT Incident
+  Repo -> DB : insert
+  DB --> Repo : OK
+  Repo --> IRepo : persisted
+  IRepo --> AppService : ok
+  deactivate IRepo
+  deactivate Repo
+
+  AppService -> UoW : CommitAsync()
+  activate UoW
+  UoW --> AppService : committed
+  deactivate UoW
+
+  AppService -> Mapper : ToDto(incident)
+  activate Mapper
+  Mapper --> AppService : IncidentDto
+  deactivate Mapper
+
+  AppService -> Log : Log(CREATE, sarId, code, SUCCESS)
+  AppService --> Controller : 201 Created (IncidentDto)
+  deactivate AppService
+  Controller --> ApiClient : 201 Created
+  deactivate Controller
+
+  ApiClient --> FEService : dto
+  deactivate ApiClient
+  FEService --> UpsertModal : map -> Incident
+else mode=edit
+  FEService -> ApiClient : PUT /api/incidents/{code}
+  activate ApiClient
+  ApiClient -> Controller : PUT /api/incidents/{code}
+  activate Controller
+  Controller -> AppService : UpdateAsync(code, UpdateIncidentDto)
+  activate AppService
+  AppService -> IRepo : GetByCodeAsync(code)
+  IRepo -> Repo : SELECT Incident WHERE code=?
+  Repo -> DB : query
+  DB --> Repo : row/null
+  AppService -> AppService : Validate + ApplyUpdates
+  AppService -> IRepo : Update(incident)
+  IRepo -> Repo : UPDATE ...
+  Repo -> DB : update
+  DB --> Repo : OK
+  AppService -> UoW : CommitAsync()
+  UoW --> AppService : committed
+  AppService -> Mapper : ToDto(updated)
+  Mapper --> AppService : IncidentDto
+  AppService -> Log : Log(UPDATE, sarId, code, SUCCESS)
+  AppService --> Controller : 200 OK (IncidentDto)
+  deactivate AppService
+  Controller --> ApiClient : 200 OK
+  deactivate Controller
+  ApiClient --> FEService : dto
+  deactivate ApiClient
+  FEService --> UpsertModal : map -> Incident
+end
+deactivate FEService
+
+UpsertModal -> Toast : toast.success(created/updated)
+UpsertModal -> IncComp : onSaved(saved)
+IncComp -> IncComp : afterSave(update list + selected)
+UpsertModal -> IncComp : onClose()\nclose modal
+deactivate UpsertModal
+
+@enduml

@@ -1,0 +1,503 @@
+@startuml
+' ==========================================================
+' Sequence Diagram – Incident Types (SPA + API + Domain + Persistence)
+' Covers: roots load, search, select+subtree, refresh, create(stepper), edit, delete, pdf export (client-only)
+' Based on your IncidentTypePage + modals + incidentTypeService.ts endpoints
+' ==========================================================
+
+skinparam monochrome true
+skinparam shadowing false
+skinparam sequenceMessageAlign center
+
+actor "Port Authority Officer" as Officer
+
+' ========= FRONTEND / SPA =========
+boundary "SPA IncidentTypePage\n(/incidentType)" as ITPage
+control  "IncidentTypePage (state/handlers)\n(loadRoots, handleSearch,\nhandleSelect, loadSubtree,\nhandleDelete)" as ITComp
+control  "IncidentTypeSearch" as ITSearch
+control  "IncidentTypeTable" as ITTable
+control  "IncidentTypeHierarchyPanel\n(buildTree, expand/collapse,\nrefresh, pdf export)" as ITHierarchy
+boundary "IncidentTypeCreateModal\n(stepper)" as ITCreateModal
+boundary "IncidentTypeEditModal" as ITEditModal
+control  "Frontend Service\n(incidentTypeService.ts)" as ITService
+boundary "HTTP ApiClient\n(operationsApi/axios)" as ApiClient
+collections "Toast\n(react-hot-toast)" as Toast
+collections "PDF Export\n(html2canvas + jsPDF)" as PdfTools
+
+' ========= BACKEND / API & DOMAIN =========
+boundary "API Layer\n(IncidentTypesController)" as Controller
+control  "Application Layer\n(IncidentTypeService)\n<<uses repos + UoW>>" as AppService
+control  "Mapper\n(IncidentTypeMapper)" as Mapper
+control  "Factory\n(IncidentTypeFactory)" as Factory
+entity   "IIncidentTypeRepository\n<<interface>>" as IRepo
+entity   "IncidentTypeRepository" as Repo
+entity   "UnitOfWork\n(IUnitOfWork)" as UoW
+collections "Audit/Logs\n(ILogger/Serilog)" as Log
+database "Database" as DB
+
+' ==========================================================
+' 0) INITIAL LOAD – ROOTS
+' ==========================================================
+== Initial Load (Roots) ==
+
+Officer -> ITPage : Navigate to /incidentType
+activate ITPage
+ITPage -> ITComp : mount() / useEffect(loadRoots)
+activate ITComp
+
+ITComp -> ITService : getIncidentTypeRoots()
+activate ITService
+ITService -> ApiClient : GET /api/incidentTypes/roots
+activate ApiClient
+ApiClient -> Controller : GET /api/incidentTypes/roots
+activate Controller
+
+Controller -> AppService : GetRootsAsync()
+activate AppService
+AppService -> IRepo : GetRootsAsync()
+activate IRepo
+IRepo -> Repo : SELECT IncidentTypes WHERE parentCode IS NULL
+Repo -> DB : query
+DB --> Repo : rows
+Repo --> IRepo : List<IncidentType>
+IRepo --> AppService : List<IncidentType>
+deactivate IRepo
+deactivate Repo
+
+AppService -> Mapper : ToDto(list)
+activate Mapper
+Mapper --> AppService : IncidentTypeDto[]
+deactivate Mapper
+
+AppService --> Controller : dto[]
+deactivate AppService
+Controller --> ApiClient : 200 OK (dto[])
+deactivate Controller
+ApiClient --> ITService : dto[]
+deactivate ApiClient
+ITService --> ITComp : mapToDomainList(dto[])
+deactivate ITService
+
+ITComp -> ITTable : render roots
+ITComp -> ITHierarchy : render empty (no selection)
+deactivate ITComp
+deactivate ITPage
+
+' ==========================================================
+' 1) SEARCH (roots/code/name/children/subtree/all)
+' ==========================================================
+== Search / Filters ==
+
+Officer -> ITSearch : choose filter + value\nclick Search
+activate ITSearch
+ITSearch -> ITComp : onSearch(type,value)
+deactivate ITSearch
+activate ITComp
+
+alt type = roots
+  ITComp -> ITService : getIncidentTypeRoots()
+  ITService -> ApiClient : GET /api/incidentTypes/roots
+  ApiClient -> Controller : GET /roots
+  Controller --> ApiClient : 200 OK
+  ITComp -> ITTable : render list
+else type = code
+  ITComp -> ITService : getIncidentTypeByCode(code)
+  activate ITService
+  ITService -> ApiClient : GET /api/incidentTypes/{code}
+  activate ApiClient
+  ApiClient -> Controller : GET /api/incidentTypes/{code}
+  activate Controller
+  Controller -> AppService : GetByCodeAsync(code)
+  activate AppService
+  AppService -> IRepo : GetByCodeAsync(code)
+  IRepo -> Repo : SELECT IncidentType WHERE code=?
+  Repo -> DB : query
+  DB --> Repo : row/null
+  alt found
+    AppService -> Mapper : ToDto(one)
+    Mapper --> AppService : IncidentTypeDto
+    AppService --> Controller : dto
+    Controller --> ApiClient : 200 OK
+  else not found
+    Controller --> ApiClient : 404 Not Found
+  end
+  deactivate AppService
+  deactivate Controller
+  ApiClient --> ITService : dto/error
+  deactivate ApiClient
+  ITService --> ITComp : [item] or []
+  deactivate ITService
+  ITComp -> ITTable : render results
+else type = name
+  ITComp -> ITService : getIncidentTypesByName(name)
+  ITService -> ApiClient : GET /api/incidentTypes/search/name?name=...
+  ApiClient -> Controller : GET /search/name
+  Controller -> AppService : SearchByNameAsync(name)
+  AppService -> IRepo : SearchByNameAsync(name)
+  IRepo -> Repo : SELECT WHERE name ILIKE '%...%'
+  Repo -> DB : query
+  DB --> Repo : rows
+  Controller --> ApiClient : 200 OK (dto[])
+  ITComp -> ITTable : render results
+else type = children
+  ITComp -> ITService : getIncidentTypeChildren(parentCode)
+  ITService -> ApiClient : GET /api/incidentTypes/{parentCode}/children
+  ApiClient -> Controller : GET /{parentCode}/children
+  Controller -> AppService : GetChildrenAsync(parentCode)
+  AppService -> IRepo : GetChildrenAsync(parentCode)
+  IRepo -> Repo : SELECT WHERE parentCode=?
+  Repo -> DB : query
+  DB --> Repo : rows
+  Controller --> ApiClient : 200 OK
+  ITComp -> ITTable : render children
+else type = subtree
+  ITComp -> ITService : getIncidentTypeSubtree(code)
+  ITService -> ApiClient : GET /api/incidentTypes/{code}/subtree
+  ApiClient -> Controller : GET /{code}/subtree
+  Controller -> AppService : GetSubtreeAsync(code)
+  AppService -> IRepo : GetSubtreeAsync(code)
+  IRepo -> Repo : SELECT subtree nodes (recursive CTE or adjacency traversal)
+  Repo -> DB : query
+  DB --> Repo : rows
+  Controller --> ApiClient : 200 OK (dto[])
+  ITComp -> ITTable : render subtree list
+else type = all
+  ITComp -> ITService : getAllIncidentTypes()
+  ITService -> ApiClient : GET /api/incidentTypes/search/all
+  ApiClient -> Controller : GET /search/all
+  Controller -> AppService : GetAllAsync()
+  AppService -> IRepo : GetAllAsync()
+  IRepo -> Repo : SELECT * FROM IncidentTypes
+  Repo -> DB : query
+  DB --> Repo : rows
+  Controller --> ApiClient : 200 OK (dto[])
+  ITComp -> ITTable : render all
+end
+
+deactivate ITComp
+
+' ==========================================================
+' 2) SELECT ROW => LOAD SUBTREE (Hierarchy panel)
+' ==========================================================
+== Select + Load Subtree (Hierarchy Panel) ==
+
+Officer -> ITTable : click row (e.g., T-INC001)
+activate ITTable
+ITTable -> ITComp : onSelect(it)
+deactivate ITTable
+activate ITComp
+
+ITComp -> ITService : getIncidentTypeSubtree(code)
+activate ITService
+ITService -> ApiClient : GET /api/incidentTypes/{code}/subtree
+activate ApiClient
+ApiClient -> Controller : GET /api/incidentTypes/{code}/subtree
+activate Controller
+Controller -> AppService : GetSubtreeAsync(code)
+activate AppService
+AppService -> IRepo : GetSubtreeAsync(code)
+activate IRepo
+IRepo -> Repo : SELECT subtree nodes
+Repo -> DB : query
+DB --> Repo : rows
+Repo --> IRepo : List<IncidentType>
+IRepo --> AppService : list
+deactivate IRepo
+deactivate Repo
+
+AppService -> Mapper : ToDto(list)
+activate Mapper
+Mapper --> AppService : dto[]
+deactivate Mapper
+
+AppService --> Controller : dto[]
+deactivate AppService
+Controller --> ApiClient : 200 OK
+deactivate Controller
+ApiClient --> ITService : dto[]
+deactivate ApiClient
+ITService --> ITComp : mapToDomainList(dto[])
+deactivate ITService
+
+ITComp -> ITHierarchy : render subtree\n(buildTree client-side)
+deactivate ITComp
+
+' ---- Refresh subtree (button) ----
+== Refresh Subtree ==
+Officer -> ITHierarchy : click Refresh
+ITHierarchy -> ITComp : onRefresh(selectedCode)
+activate ITComp
+ITComp -> ITService : getIncidentTypeSubtree(selectedCode)
+ITService -> ApiClient : GET /api/incidentTypes/{selected}/subtree
+ApiClient -> Controller : GET /subtree
+Controller --> ApiClient : 200 OK
+ITComp -> ITHierarchy : rerender
+deactivate ITComp
+
+' ---- Export PDF (client-only) ----
+== Export Hierarchy PDF (client-only) ==
+Officer -> ITHierarchy : click "PDF"
+activate ITHierarchy
+ITHierarchy -> PdfTools : html2canvas(treeRef)\njsPDF.addImage()\njsPDF.save()
+note right of PdfTools
+No API call.\nPure client-side capture.
+end note
+deactivate ITHierarchy
+
+' ==========================================================
+' 3) CREATE (Stepper modal) – parent selection + details + POST
+' ==========================================================
+== Create Incident Type (Stepper) ==
+
+Officer -> ITPage : click "Create"
+ITPage -> ITComp : setIsCreateModalOpen(true)
+ITComp -> ITCreateModal : render
+activate ITCreateModal
+
+' Step 1 loads roots by default
+ITCreateModal -> ITService : getIncidentTypeRoots()
+activate ITService
+ITService -> ApiClient : GET /api/incidentTypes/roots
+activate ApiClient
+ApiClient -> Controller : GET /api/incidentTypes/roots
+activate Controller
+Controller -> AppService : GetRootsAsync()
+activate AppService
+AppService -> IRepo : GetRootsAsync()
+IRepo -> Repo : SELECT roots
+Repo -> DB : query
+DB --> Repo : rows
+Controller --> ApiClient : 200 OK (dto[])
+deactivate AppService
+deactivate Controller
+ApiClient --> ITService : dto[]
+deactivate ApiClient
+ITService --> ITCreateModal : roots list
+deactivate ITService
+
+Officer -> ITCreateModal : select parent (Root or some type)\nclick Next
+ITCreateModal -> ITCreateModal : step=2
+
+Officer -> ITCreateModal : fill code/name/description/severity\nclick Create
+
+ITCreateModal -> ITService : createIncidentType(dto)
+activate ITService
+ITService -> ApiClient : POST /api/incidentTypes\nBody: CreateIncidentTypeDto
+activate ApiClient
+ApiClient -> Controller : POST /api/incidentTypes
+activate Controller
+Controller -> AppService : CreateAsync(dto)
+activate AppService
+
+AppService -> AppService : Validate code unique\nValidate name required\nValidate parent exists (if set)\nValidate no cycle
+
+alt parentCode != null
+  AppService -> IRepo : GetByCodeAsync(parentCode)
+  activate IRepo
+  IRepo -> Repo : SELECT IncidentType WHERE code=?
+  Repo -> DB : query
+  DB --> Repo : row/null
+  Repo --> IRepo : parent/null
+  IRepo --> AppService : parent/null
+  deactivate IRepo
+  deactivate Repo
+end
+
+AppService -> Factory : Create(dto)
+activate Factory
+Factory --> AppService : IncidentType entity
+deactivate Factory
+
+AppService -> IRepo : AddAsync(entity)
+activate IRepo
+IRepo -> Repo : INSERT IncidentType
+Repo -> DB : insert
+DB --> Repo : OK
+Repo --> IRepo : persisted
+IRepo --> AppService : ok
+deactivate IRepo
+deactivate Repo
+
+AppService -> UoW : CommitAsync()
+activate UoW
+UoW --> AppService : committed
+deactivate UoW
+
+AppService -> Mapper : ToDto(entity)
+activate Mapper
+Mapper --> AppService : IncidentTypeDto
+deactivate Mapper
+
+AppService -> Log : Log(CREATE, officerId, code, SUCCESS)
+AppService --> Controller : 201 Created (dto)
+deactivate AppService
+Controller --> ApiClient : 201 Created
+deactivate Controller
+ApiClient --> ITService : dto
+deactivate ApiClient
+ITService --> ITCreateModal : mapToDomain(dto)
+deactivate ITService
+
+ITCreateModal -> Toast : toast.success(created)
+ITCreateModal -> ITComp : onCreated() (callback)
+ITCreateModal -> ITComp : close modal
+deactivate ITCreateModal
+
+' refresh roots (+ subtree if selected)
+ITComp -> ITService : getIncidentTypeRoots()
+ITService -> ApiClient : GET /api/incidentTypes/roots
+ApiClient -> Controller : GET /roots
+Controller --> ApiClient : 200 OK
+ITComp -> ITTable : re-render roots
+
+' ==========================================================
+' 4) EDIT (modal) – parent search + PUT
+' ==========================================================
+== Edit Incident Type ==
+
+Officer -> ITTable : click "Edit" on a row
+activate ITTable
+ITTable -> ITComp : onEdit(it)
+deactivate ITTable
+
+ITComp -> ITEditModal : open(resource)
+activate ITEditModal
+
+' modal loads roots as default parent candidates
+ITEditModal -> ITService : getIncidentTypeRoots()
+activate ITService
+ITService -> ApiClient : GET /api/incidentTypes/roots
+activate ApiClient
+ApiClient -> Controller : GET /roots
+activate Controller
+Controller -> AppService : GetRootsAsync()
+activate AppService
+AppService -> IRepo : GetRootsAsync()
+IRepo -> Repo : SELECT roots
+Repo -> DB : query
+DB --> Repo : rows
+Controller --> ApiClient : 200 OK
+deactivate AppService
+deactivate Controller
+deactivate ApiClient
+ITService --> ITEditModal : roots minus self
+deactivate ITService
+
+Officer -> ITEditModal : change name/desc/severity\n(optional) search parent\nselect parent\nclick Save
+
+ITEditModal -> ITService : updateIncidentType(code, dto)
+activate ITService
+ITService -> ApiClient : PUT /api/incidentTypes/{code}\nBody: UpdateIncidentTypeDto
+activate ApiClient
+ApiClient -> Controller : PUT /api/incidentTypes/{code}
+activate Controller
+Controller -> AppService : UpdateAsync(code,dto)
+activate AppService
+
+AppService -> IRepo : GetByCodeAsync(code)
+activate IRepo
+IRepo -> Repo : SELECT IncidentType WHERE code=?
+Repo -> DB : query
+DB --> Repo : row/null
+Repo --> IRepo : entity/null
+IRepo --> AppService : entity/null
+deactivate IRepo
+deactivate Repo
+
+alt found + valid update
+  AppService -> AppService : Validate (name required,\nparent exists,\nno cycle,\nnot self-parent)
+  AppService -> IRepo : Update(entity)
+  IRepo -> Repo : UPDATE IncidentTypes SET ...
+  Repo -> DB : update
+  DB --> Repo : OK
+  AppService -> UoW : CommitAsync()
+  UoW --> AppService : committed
+  AppService -> Mapper : ToDto(updated)
+  Mapper --> AppService : dto
+  AppService -> Log : Log(UPDATE, officerId, code, SUCCESS)
+  AppService --> Controller : 200 OK (dto)
+else not found
+  AppService --> Controller : 404 Not Found
+else conflict/cycle
+  AppService --> Controller : 409 Conflict
+end
+
+deactivate AppService
+Controller --> ApiClient : response
+deactivate Controller
+ApiClient --> ITService : dto
+deactivate ApiClient
+ITService --> ITEditModal : mapToDomain(dto)
+deactivate ITService
+
+ITEditModal -> Toast : toast.success(updated)
+ITEditModal -> ITComp : onUpdated() callback
+ITEditModal -> ITComp : close modal
+deactivate ITEditModal
+
+' page refresh roots + subtree if selected
+ITComp -> ITService : getIncidentTypeRoots()
+ITService -> ApiClient : GET /roots
+ITComp -> ITService : getIncidentTypeSubtree(selectedCode) (if selected)
+ITComp -> ITHierarchy : rerender
+
+' ==========================================================
+' 5) DELETE
+' ==========================================================
+== Delete Incident Type ==
+
+Officer -> ITTable : click "Delete"\nconfirm OK
+activate ITTable
+ITTable -> ITComp : handleDelete(it)
+deactivate ITTable
+activate ITComp
+
+ITComp -> ITComp : window.confirm(...)
+ITComp -> ITService : deleteIncidentType(code)
+activate ITService
+ITService -> ApiClient : DELETE /api/incidentTypes/{code}
+activate ApiClient
+ApiClient -> Controller : DELETE /api/incidentTypes/{code}
+activate Controller
+Controller -> AppService : DeleteAsync(code)
+activate AppService
+
+AppService -> IRepo : GetByCodeAsync(code)
+activate IRepo
+IRepo -> Repo : SELECT IncidentType WHERE code=?
+Repo -> DB : query
+DB --> Repo : row/null
+Repo --> IRepo : entity/null
+IRepo --> AppService : entity/null
+deactivate IRepo
+deactivate Repo
+
+alt found AND allowed
+  AppService -> AppService : Validate constraints\n(e.g., no children / not referenced)
+  AppService -> IRepo : Remove(entity)
+  IRepo -> Repo : DELETE FROM IncidentTypes WHERE code=?
+  Repo -> DB : delete
+  DB --> Repo : OK
+  AppService -> UoW : CommitAsync()
+  UoW --> AppService : committed
+  AppService -> Log : Log(DELETE, officerId, code, SUCCESS)
+  AppService --> Controller : 204 No Content
+else not found
+  AppService --> Controller : 404 Not Found
+else conflict
+  AppService --> Controller : 409 Conflict
+end
+
+deactivate AppService
+Controller --> ApiClient : response
+deactivate Controller
+ApiClient --> ITService : success/error
+deactivate ApiClient
+ITService --> ITComp : ok
+deactivate ITService
+
+ITComp -> Toast : toast.success(deleted)\nor toast.error(msg)
+ITComp -> ITComp : update local lists\nclear selection if needed\nreload roots\nreload subtree if still selected
+deactivate ITComp
+
+@enduml

@@ -1,0 +1,54 @@
+@startuml
+skinparam monochrome true
+skinparam shadowing false
+title System Sequence Diagram – Update Operation Plan (US4.1.4)
+
+actor "Logistics Operator" as Operator
+boundary "Operation Plans Management API" as System
+
+== Get Current Operation Plan (by VVN) ==
+Operator -> System : GET /api/vvns/{vvnId}/operation-plan?planDate={date}
+alt Plan found for VVN/date
+  System --> Operator : 200 OK\nBody: OperationPlanDto
+else Plan not found for VVN/date
+  System --> Operator : 404 Not Found\nBody: ProblemDetails
+else VVN not found
+  System --> Operator : 404 Not Found\nBody: ProblemDetails
+end
+
+== Update Operation Plan (manual adjustments) ==
+Operator -> System : PATCH /api/vvns/{vvnId}/operation-plan\nBody: UpdateOperationPlanDto(status?, operations[], reasonForChange)
+note right
+Key editable fields (per operation):
+- startTime, endTime
+- crane, craneCountUsed
+- staffAssignments
+Plan fields:
+- status (optional)
+Reason for change is required.
+Author is inferred from authentication.
+end note
+
+alt Valid update AND no blocking inconsistencies
+  System --> Operator : 200 OK\nBody: OperationPlanDto (updated)\n+ warnings[] (optional)
+else Invalid data / validation failed
+  System --> Operator : 400 Bad Request\nBody: ProblemDetails (validation)\n(e.g., startTime >= endTime, negative durations,\ncraneCountUsed > totalCranesOnDock, missing reason)
+else VVN not found OR Operation Plan not found
+  System --> Operator : 404 Not Found\nBody: ProblemDetails
+else Resource conflict / inconsistency detected (blocking)
+  System --> Operator : 409 Conflict\nBody: ProblemDetails\n+ conflicts[] (e.g., cranes/staff overlap, dock capacity)
+else Concurrency conflict (stale version / ETag)
+  System --> Operator : 412 Precondition Failed\nBody: ProblemDetails\n(e.g., If-Match failed / version mismatch)
+end
+
+== View Change Log (audit trail) ==
+Operator -> System : GET /api/vvns/{vvnId}/operation-plan/audit
+alt Audit found
+  System --> Operator : 200 OK\nBody: OperationPlanAuditEntryDto[]
+else Plan not found
+  System --> Operator : 404 Not Found\nBody: ProblemDetails
+else VVN not found
+  System --> Operator : 404 Not Found\nBody: ProblemDetails
+end
+
+@enduml
