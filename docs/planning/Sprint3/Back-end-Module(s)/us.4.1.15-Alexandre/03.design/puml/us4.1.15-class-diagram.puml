@@ -1,0 +1,72 @@
+@startuml
+skinparam monochrome true
+skinparam shadowing false
+title Class Diagram – US4.1.15 Complementary Task
+
+class ComplementaryTaskController <<Controller>> {
+  +listTasks(filter): HttpResponse
+  +createTask(dto): HttpResponse
+  +updateTask(code, dto): HttpResponse
+  +fixCategory(code, newCategory, reason): HttpResponse
+  +getAudit(code): HttpResponse
+}
+
+class ComplementaryTaskService <<ApplicationService>> {
+  +listTasks(filter): TaskDTO[]
+  +createTask(dto, author): TaskDTO
+  +updateTask(code, dto, author): TaskDTO
+  +fixCategory(code, newCategory, author): TaskDTO
+  +getAudit(code): AuditEntryDTO[]
+}
+
+class ComplementaryTaskRepo <<Repository>> {
+  +find(filter): ComplementaryTask[]
+  +save(task: ComplementaryTask): void
+}
+
+class ComplementaryTaskAuditRepo <<Repository>> {
+  +append(entry: ComplementaryTaskChangeLog): void
+  +findByTaskCode(code): ComplementaryTaskChangeLog[]
+}
+
+class ComplementaryTaskScheduler <<DomainService>> {
+  +checkConflicts(task: ComplementaryTask): Conflict[]
+  +markOngoingImpact(tasks: ComplementaryTask[]): ComplementaryTask[]
+  +validateCategoryActive(category): bool
+}
+
+class ComplementaryTaskMap <<Mapper>> {
+  +toDTO(task: ComplementaryTask): TaskDTO
+  +toDTO(tasks: ComplementaryTask[]): TaskDTO[]
+}
+
+class ComplementaryTask <<AggregateRoot>> {
+  +id: string
+  +code: string
+  +category: string
+  +staff: string
+  +vve: string
+  +status: string
+  +timeStart: Date
+  +timeEnd?: Date
+  +auditLog: ComplementaryTaskChangeLog[]
+  +applyPatch(dto): void
+}
+
+class ComplementaryTaskChangeLog <<Entity>> {
+  +logId: string
+  +changedAt: Date
+  +author: string
+  +reasonForChange: string
+  +diffSummary: string
+}
+
+ComplementaryTaskController --> ComplementaryTaskService
+ComplementaryTaskService --> ComplementaryTaskRepo
+ComplementaryTaskService --> ComplementaryTaskAuditRepo
+ComplementaryTaskService --> ComplementaryTaskScheduler
+ComplementaryTaskService --> ComplementaryTaskMap
+
+ComplementaryTask "1" *-- "0..*" ComplementaryTaskChangeLog
+
+@enduml

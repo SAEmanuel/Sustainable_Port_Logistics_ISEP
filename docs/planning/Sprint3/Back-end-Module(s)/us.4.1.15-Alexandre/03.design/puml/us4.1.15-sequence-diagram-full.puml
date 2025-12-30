@@ -1,0 +1,63 @@
+@startuml
+skinparam monochrome true
+skinparam shadowing false
+title Sequence Diagram – Manage Complementary Task (US4.1.15) – Full
+
+actor "Logistics Operator" as Operator
+boundary "SPA" as SPA
+control "ComplementaryTaskController" as Ctrl
+control "ComplementaryTaskService" as App
+entity "ComplementaryTaskRepo" as Repo
+entity "ComplementaryTaskCategoryRepo" as CatRepo
+control "ComplementaryTaskScheduler" as Scheduler
+entity "ComplementaryTaskAuditRepo" as AuditRepo
+control "ComplementaryTaskMap" as Map
+
+== Load task list ==
+Operator -> SPA : Open Complementary Tasks screen
+SPA -> Ctrl : GET /api/complementary-tasks
+Ctrl -> App : getAllTasks()
+App -> Repo : findAll()
+Repo --> App : ComplementaryTask[]
+App -> Map : toDTO(tasks)
+Map --> App : ComplementaryTaskDTO[]
+App --> Ctrl : 200 OK\nBody: ComplementaryTaskDTO[]
+Ctrl --> SPA : Display tasks
+
+== Create or Update Task ==
+Operator -> SPA : Fill form + reason
+SPA -> Ctrl : POST /api/complementary-tasks\nBody: task + reason
+Ctrl -> Ctrl : validate DTO
+alt Invalid
+  Ctrl --> SPA : 400 Bad Request
+else Valid
+  Ctrl -> App : createOrUpdateTask(taskDTO, author)
+  App -> CatRepo : findById(taskDTO.categoryId)
+  App -> Scheduler : checkConflicts(taskDTO)
+  alt Conflicts detected
+    Scheduler --> App : conflicts[]
+    App --> Ctrl : 409 Conflict\nBody: conflicts[]
+    Ctrl --> SPA : Show conflict
+  else No conflicts
+    App -> Repo : save(task)
+    App -> AuditRepo : append(taskId, author, reason, diff, changedAt)
+    App -> Map : toDTO(task)
+    Map --> App : ComplementaryTaskDTO
+    App --> Ctrl : 200 OK\nBody: ComplementaryTaskDTO
+    Ctrl --> SPA : Show updated task
+  end
+end
+
+== Fix Category ==
+Operator -> SPA : Select new category + reason
+SPA -> Ctrl : PATCH /api/complementary-tasks/{code}/fix-category\nBody: {newCategory, reason}
+Ctrl -> App : fixCategory(taskCode, newCategory, author)
+App -> CatRepo : validate newCategory
+App -> Repo : update task category
+App -> AuditRepo : append(taskId, author, reason, diff, changedAt)
+App -> Map : toDTO(task)
+Map --> App : ComplementaryTaskDTO
+App --> Ctrl : 200 OK\nBody: ComplementaryTaskDTO
+Ctrl --> SPA : Show updated category
+
+@enduml

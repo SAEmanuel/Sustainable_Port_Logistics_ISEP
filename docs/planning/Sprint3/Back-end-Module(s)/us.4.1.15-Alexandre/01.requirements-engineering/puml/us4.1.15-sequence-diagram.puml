@@ -1,0 +1,58 @@
+@startuml
+skinparam monochrome true
+skinparam shadowing false
+title System Sequence Diagram – Record and Manage Complementary Tasks (US4.1.15)
+
+actor "Logistics Operator" as Operator
+boundary "Complementary Task API" as System
+
+== Create a Complementary Task ==
+Operator -> System : POST /api/complementary-tasks\nBody: {code, category, staff, vve, status, timeStart, timeEnd}
+note right
+Requires:
+- Category must be active
+- timeEnd >= timeStart (if provided)
+- Linked VVE must exist
+end note
+
+System -> System : Validate task data
+alt Validation fails
+  System --> Operator : 400 Bad Request\nBody: {message: "Validation error"}
+else Validation passes
+  System -> CTRepo : Save new Complementary Task
+  CTRepo --> System : Persisted Task entity
+  System --> Operator : 201 Created\nBody: Task DTO
+end
+
+== Update a Complementary Task ==
+Operator -> System : PUT /api/complementary-tasks/{taskId}\nBody: {fieldsToUpdate, reasonForChange}
+System -> System : Validate update
+alt Validation fails
+  System --> Operator : 400 Bad Request\nBody: {message: "Validation error"}
+else Validation passes
+  System -> CTRepo : Fetch task by ID
+  CTRepo --> System : Task entity
+  System -> System : Apply updates, update audit log
+  System -> CTRepo : Save updated task
+  CTRepo --> System : Persisted Task entity
+  System --> Operator : 200 OK\nBody: Updated Task DTO
+end
+
+== Delete a Complementary Task ==
+Operator -> System : DELETE /api/complementary-tasks/{taskId}?reasonForChange=...
+System -> CTRepo : Fetch task by ID
+CTRepo --> System : Task entity
+System -> System : Mark as deleted / remove, update audit log
+System -> CTRepo : Save deletion
+CTRepo --> System : Confirm deletion
+System --> Operator : 200 OK\nBody: Deleted Task DTO
+
+== View Audit Log ==
+Operator -> System : GET /api/complementary-tasks/{taskId}/audit
+alt Audit found
+  System --> Operator : 200 OK\nBody: Task audit entries
+else Task not found
+  System --> Operator : 404 Not Found
+end
+
+@enduml

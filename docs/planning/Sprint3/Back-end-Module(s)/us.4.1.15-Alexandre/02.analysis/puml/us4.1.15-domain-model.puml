@@ -1,0 +1,91 @@
+@startuml
+skinparam monochrome true
+skinparam shadowing false
+title Domain Model – Complementary Task Management (US4.1.15)
+
+' =========================
+' Aggregate: ComplementaryTask
+' =========================
+class ComplementaryTask <<AggregateRoot>> {
+  +id: string
+  +code: string
+  +category: string
+  +staff: string
+  +vve: string
+  +status: string
+  +timeStart: Date
+  +timeEnd: Date
+  +createdAt: Date
+  +author: string
+}
+
+class ComplementaryTaskChangeLog <<Entity>> {
+  +logId: string
+  +changedAt: Date
+  +author: string
+  +reasonForChange: string
+  +diffSummary: string
+}
+
+' =========================
+' Supporting entities
+' =========================
+class ComplementaryTaskCategory <<Entity>> {
+  +id: string
+  +code: string
+  +name: string
+  +isActive: boolean
+}
+
+class StaffMember <<Entity>> {
+  +staffId: string
+  +name: string
+  +isActive: boolean
+}
+
+class VVE <<Entity>> {
+  +vveId: string
+  +vesselName: string
+  +status: string
+}
+
+' =========================
+' Domain service (cross-aggregate checks)
+' =========================
+class ComplementaryTaskScheduler <<DomainService>> {
+  +validate(task: ComplementaryTask): ConflictOrWarning[]
+}
+
+' =========================
+' Relationships
+' =========================
+ComplementaryTask "1" *-- "0..*" ComplementaryTaskChangeLog : auditTrail
+ComplementaryTask "1" --> "1" ComplementaryTaskCategory : assignedCategory
+ComplementaryTask "1" --> "1" StaffMember : assignedStaff
+ComplementaryTask "1" --> "1" VVE : belongsTo
+
+ComplementaryTaskScheduler ..> ComplementaryTask
+ComplementaryTaskScheduler ..> StaffMember
+ComplementaryTaskScheduler ..> ComplementaryTaskCategory
+ComplementaryTaskScheduler ..> VVE
+
+' =========================
+' Notes / invariants (optional)
+' =========================
+note right of ComplementaryTask
+Aggregate invariants:
+- category must exist and be active
+- timeEnd >= timeStart (if provided)
+- status progression valid
+Audit requirement:
+- every create/update/delete appends ChangeLog(changedAt, author, reason, diff)
+end note
+
+note right of ComplementaryTaskScheduler
+Cross-aggregate checks:
+- staff availability (no double-booking)
+- tasks that suspend cargo operations must not overlap with critical operations
+- category must be active
+end note
+
+@enduml
