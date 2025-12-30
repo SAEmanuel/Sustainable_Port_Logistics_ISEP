@@ -41,4 +41,20 @@ export default class OperationPlanService {
             return Result.fail<IOperationPlanDTO>(e.message || "Erro inesperado ao criar o plano.");
         }
     }
+
+    public async getPlansAsync(startDate?: string, endDate?: string, vessel?: string): Promise<Result<IOperationPlanDTO[]>> {
+        try {
+            const start = startDate ? new Date(startDate) : undefined;
+            const end = endDate ? new Date(endDate) : undefined;
+
+            const plans = await this.repo.search(start, end, vessel);
+
+            const dtos = plans.map(plan => this.operationPlanMap.toDTO(plan));
+
+            return Result.ok<IOperationPlanDTO[]>(dtos);
+        } catch (e) {
+            // @ts-ignore
+            return Result.fail<IOperationPlanDTO[]>(e.message || "Erro ao pesquisar planos.");
+        }
+    }
 }
