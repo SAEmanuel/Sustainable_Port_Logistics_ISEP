@@ -288,6 +288,10 @@ export default {
                 name: "GetVVEInRangeController",
                 path: "../controllers/vve/getVVEInRangeController",
             },
+            updateBerthDock: {
+                name: "UpdateVVEActualBerthAndDockController",
+                path: "../controllers/vve/updateVVEActualBerthAndDockController",
+            },
         },
 
         operationPlan: {
@@ -298,10 +302,6 @@ export default {
             list: {
                 name: "GetOperationPlansController",
                 path: "../controllers/operationPlan/getOperationPlansController",
-            },
-            updateBerthDock: {
-                name: "UpdateVVEActualBerthAndDockController",
-                path: "../controllers/vve/updateVVEActualBerthAndDockController",
             },
         },
     },

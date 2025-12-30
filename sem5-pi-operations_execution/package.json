@@ -5,7 +5,7 @@
   "type": "commonjs",
   "main": "dist/server.js",
   "scripts": {
-    "dev": "NODE_ENV=development ts-node-dev --respawn src/server.ts",
+    "dev": "cross-env NODE_ENV=development ts-node-dev --respawn src/server.ts",
     "build": "tsc",
     "start": "NODE_ENV=production node dist/server.js",
     "test": "vitest",

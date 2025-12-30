@@ -21,7 +21,7 @@ export default (app: Router) => {
     const getByCodeCtrl = Container.get(config.controllers.vesselVisitExecution.getByCode.name) as GetVVEByCodeController;
     const getByImoCtrl = Container.get(config.controllers.vesselVisitExecution.getByImo.name) as GetVVEByImoController;
     const getInRangeCtrl = Container.get(config.controllers.vesselVisitExecution.getInRange.name) as GetVVEInRangeController;
-   // const updateBerthDockCtrl =Container.get(config.controllers.vesselVisitExecution.updateBerthDock.name) as UpdateVVEActualBerthAndDockController;
+    const updateBerthDockCtrl =Container.get(config.controllers.vesselVisitExecution.updateBerthDock.name) as UpdateVVEActualBerthAndDockController;
 
     route.post(
         "/",
@@ -51,7 +51,7 @@ export default (app: Router) => {
     route.get("/code/:code", (req, res) => getByCodeCtrl.execute(req, res));
     route.get("/imo/:imo", (req, res) => getByImoCtrl.execute(req, res));
 
-    /*route.put(
+    route.put(
         "/:id/berth",
         celebrate({
             body: Joi.object({
@@ -61,7 +61,7 @@ export default (app: Router) => {
             })
         }),
         (req, res, next) => updateBerthDockCtrl.execute(req, res, next)
-    ); */
+    );
 
     route.get("/:id", (req, res) => getByIdCtrl.execute(req, res));
 };
