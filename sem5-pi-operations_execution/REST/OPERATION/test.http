@@ -20,3 +20,12 @@ Content-Type: application/json
     }
   ]
 }
+
+### Listar Todos (Sem filtros)
+GET http://localhost:3000/api/operation-plans
+
+### Listar por Data Específica (ex: Dezembro de 2025)
+GET http://localhost:3000/api/operation-plans?startDate=2025-12-02&endDate=2025-12-02
+
+### Pesquisa por Navio
+GET http://localhost:3000/api/operation-plans?vessel=Atlantic Trader

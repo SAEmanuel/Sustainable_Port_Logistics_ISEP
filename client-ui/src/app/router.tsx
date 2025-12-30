@@ -34,6 +34,7 @@ import SchedulePage from "../features/scheduling/pages/SchedulePage.tsx";
 import ComplementaryTaskCategoryPage
     from "../features/complementaryTaskCategory/pages/ComplementaryTaskCategoryPage.tsx";
 import ComplementaryTaskPage from "../features/complementaryTask/pages/ComplementaryTaskPage.tsx";
+import OperationPlanHistoryPage from "../features/scheduling/pages/OperationPlanHistoryPage.tsx";
 
 export const router = createBrowserRouter([
     {
@@ -62,6 +63,11 @@ export const router = createBrowserRouter([
                                 path: "planning-scheduling",
                                 element: <RequireRole roles={[Roles.ProjectManager, Roles.LogisticsOperator]} />,
                                 children: [{ index: true, element: <SchedulePage /> }],
+                            },
+                            {
+                                path: "operationLog",
+                                element: <RequireRole roles={[Roles.LogisticsOperator]} />,
+                                children: [{ index: true, element: < OperationPlanHistoryPage/> }],
                             },
                             {
                                 path: "datarights",

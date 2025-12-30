@@ -3,6 +3,7 @@ import { Container } from 'typedi';
 import { celebrate, Joi } from 'celebrate';
 import CreateOperationPlanController from '../../controllers/operationPlan/createOperationPlanController';
 import middlewares from '../middlewares';
+import GetOperationPlansController from "../../controllers/operationPlan/getOperationPlansController";
 
 const route = Router();
 
@@ -10,6 +11,7 @@ export default (app: Router) => {
     app.use('/operation-plans', route);
 
     const ctrl = Container.get("CreateOperationPlanController") as CreateOperationPlanController;
+    const listCtrl = Container.get("GetOperationPlansController") as GetOperationPlansController;
 
     route.post(
         '/',
@@ -27,5 +29,18 @@ export default (app: Router) => {
             }).unknown(true)
         }),
         (req, res) => ctrl.execute(req, res)
+    );
+
+    route.get(
+        '/',
+        //middlewares.attachCurrentUser,
+        celebrate({
+            query: Joi.object({
+                startDate: Joi.date().optional(),
+                endDate: Joi.date().optional(),
+                vessel: Joi.string().optional()
+            })
+        }),
+        (req, res) => listCtrl.execute(req, res)
     );
 };
