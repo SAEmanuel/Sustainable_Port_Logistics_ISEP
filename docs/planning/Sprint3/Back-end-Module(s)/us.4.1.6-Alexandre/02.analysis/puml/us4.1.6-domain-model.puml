@@ -1,0 +1,68 @@
+@startuml
+skinparam monochrome true
+skinparam shadowing false
+title Domain Model – Resource Allocation Query (US4.1.6)
+
+' =========================
+' Aggregate: OperationPlan
+' =========================
+class OperationPlan <<AggregateRoot>> {
+  +id: UniqueEntityID
+  +status: string
+  +planDate: Date
+}
+
+class Operation <<Entity>> {
+  +operationId: string
+  +vvnId: string
+  +dock: string
+  +startTime: number
+  +endTime: number
+  +crane: string
+  +craneCountUsed: number
+}
+
+class StaffAssignment <<ValueObject>> {
+  +staffId: string
+  +startTime: number
+  +endTime: number
+}
+
+' =========================
+' Resource entities
+' =========================
+class Dock <<Entity>> {
+  +dockId: string
+  +name: string
+}
+
+class Crane <<Entity>> {
+  +craneId: string
+  +dockId: string
+  +name: string
+}
+
+class StaffMember <<Entity>> {
+  +staffId: string
+  +name: string
+}
+
+' =========================
+' Relationships
+' =========================
+OperationPlan "1" *-- "0..*" Operation : operations
+Operation "1" *-- "0..*" StaffAssignment : staffAssignments
+
+Operation "0..*" --> "1" Dock : uses >
+Operation "0..*" --> "0..*" Crane : assigned >
+StaffAssignment "0..*" --> "1" StaffMember : assigns >
+
+' =========================
+' Notes
+' =========================
+note right of OperationPlan
+Only SAVED OperationPlans
+are included in aggregation
+end note
+
+@enduml

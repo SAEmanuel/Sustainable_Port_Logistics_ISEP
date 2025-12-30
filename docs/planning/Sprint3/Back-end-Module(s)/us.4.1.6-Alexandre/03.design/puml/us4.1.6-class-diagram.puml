@@ -1,0 +1,55 @@
+@startuml
+skinparam monochrome true
+skinparam shadowing false
+title Class Diagram – US4.1.6 Resource Allocation Query
+
+class PhysicalResourceController <<Controller>> {
+  +getAllocation(resourceType: string, resourceId: string, from: Date, to: Date): HttpResponse
+}
+
+class PhysicalResourceService <<ApplicationService>> {
+  +getAllocation(resourceType: string, resourceId: string, from: Date, to: Date): Result<ResourceAllocationSummaryDTO>
+}
+
+class OperationPlanRepo <<Repository>> {
+  +findSavedPlans(from: Date, to: Date): Promise<OperationPlan[]>
+}
+
+class OperationPlan <<AggregateRoot>> {
+  +id: UniqueEntityID
+  +status: string
+  +planDate: Date
+}
+
+class Operation <<Entity>> {
+  +operationId: string
+  +startTime: number
+  +endTime: number
+  +dock: string
+  +crane: string
+  +craneCountUsed: number
+  +staffAssignments: StaffAssignment[]
+}
+
+class StaffAssignment <<ValueObject>> {
+  +staffId: string
+  +startTime: number
+  +endTime: number
+}
+
+class ResourceAllocationSummaryDTO <<DTO>> {
+  +resourceType: string
+  +resourceId: string
+  +from: Date
+  +to: Date
+  +totalAllocatedTime: number
+  +numberOfOperations: number
+}
+
+PhysicalResourceController --> PhysicalResourceService
+PhysicalResourceService --> OperationPlanRepo
+
+OperationPlan "1" *-- "0..*" Operation
+Operation "1" *-- "0..*" StaffAssignment
+
+@enduml

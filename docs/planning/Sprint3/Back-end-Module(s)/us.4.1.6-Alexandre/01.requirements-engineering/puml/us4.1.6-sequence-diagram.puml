@@ -1,0 +1,20 @@
+@startuml
+skinparam monochrome true
+skinparam shadowing false
+title System Sequence Diagram – Query the total allocation time of a specific resource (US4.1.4)
+
+actor "Logistics Operator" as Operator
+boundary "Physical Resource Management API" as System
+
+== Get Current Operation Plans (by Resource and Date interval) ==
+Operator -> System : GET /api/vvns/{vvnId}/operation-plan?planDate={date}
+alt Plan found for Resource and Date interval
+  System --> System : 200 OK\nBody: OperationPlanDto
+  System --> Operator: Resource allocation in given Date interval
+else Plan not found for Resource and Date interval
+  System --> Operator : 404 Not Found\nBody: ProblemDetails
+else Resource not found
+  System --> Operator : 404 Not Found\nBody: ProblemDetails
+end
+
+@enduml

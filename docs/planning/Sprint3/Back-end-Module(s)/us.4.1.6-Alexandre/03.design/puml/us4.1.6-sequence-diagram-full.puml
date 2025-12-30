@@ -1,0 +1,40 @@
+@startuml
+skinparam monochrome true
+skinparam shadowing false
+title Sequence Diagram – Resource Allocation Query (US4.1.6)
+
+actor "Logistics Operator" as Operator
+boundary "SPA" as SPA
+control "PhysicalResourceController" as Ctrl
+control "PhysicalResourceService" as App
+entity "OperationPlanRepo" as Repo
+
+== Submit resource allocation query ==
+Operator -> SPA : Select resource + period
+SPA -> Ctrl : GET /api/resources/{resourceType}/{resourceId}/allocations?from={date}&to={date}
+
+Ctrl -> Ctrl : validate query params (types, presence)
+
+alt Invalid request (syntactic)
+  Ctrl --> SPA : 400 Bad Request\nProblemDetails (validation)
+else Valid request
+  Ctrl -> App : getAllocation(resourceType, resourceId, from, to)
+
+  App -> App : validate period (from < to)
+
+  alt Invalid period
+    App --> Ctrl : Result.fail(ValidationError)
+    Ctrl --> SPA : 400 Bad Request\nProblemDetails
+  else Valid period
+    App -> Repo : findSavedPlans(from, to)
+    Repo --> App : OperationPlan[]
+
+    App -> App : extract relevant operations
+    App -> App : aggregate allocation time + operation count
+
+    App --> Ctrl : Result.ok(ResourceAllocationSummaryDto)
+    Ctrl --> SPA : 200 OK\nBody: ResourceAllocationSummaryDto
+  end
+end
+
+@enduml
