@@ -293,14 +293,18 @@ export default {
         operationPlan: {
             create: {
                 name: "CreateOperationPlanController",
-                path: "../controllers/operationPlan/createOperationPlanController"
-            }
+                path: "../controllers/operationPlan/createOperationPlanController",
+            },
+            list: {
+                name: "GetOperationPlansController",
+                path: "../controllers/operationPlan/getOperationPlansController",
             },
             updateBerthDock: {
                 name: "UpdateVVEActualBerthAndDockController",
-                path: "../controllers/vve/updateVVEActualBerthAndDockController"
+                path: "../controllers/vve/updateVVEActualBerthAndDockController",
             },
         },
+    },
 
     repos: {
         user: { name: "UserRepo", path: "../repos/userRepo" },

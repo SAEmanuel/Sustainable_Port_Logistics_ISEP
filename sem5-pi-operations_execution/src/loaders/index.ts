@@ -102,6 +102,7 @@ export default async ({expressApp}: { expressApp: express.Application }) => {
             //OperationPlan
             config.controllers.operationPlan.create,
             config.controllers.incident.updateVEEList,
+            config.controllers.operationPlan.list
         ],
         repos: [
             config.repos.user,
