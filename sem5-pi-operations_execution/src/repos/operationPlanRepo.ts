@@ -12,6 +12,12 @@ export default class OperationPlanRepo {
         private operationPlanMap: OperationPlanMap
     ) {}
 
+    public async findByDomainId(domainId: string): Promise<OperationPlan | null> {
+        const record = await this.schema.findOne({ domainId });
+        if (!record) return null;
+        return this.operationPlanMap.toDomain(record);
+    }
+
     public async exists(plan: OperationPlan): Promise<boolean> {
         const idX = plan.id instanceof String ? plan.id : plan.id.toValue();
         const query = { domainId: plan.id.toString() };

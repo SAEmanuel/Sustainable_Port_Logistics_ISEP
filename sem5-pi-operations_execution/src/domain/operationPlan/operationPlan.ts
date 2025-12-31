@@ -43,4 +43,54 @@ export class OperationPlan extends AggregateRoot<OperationPlanProps> {
 
         return Result.ok<OperationPlan>(new OperationPlan(props, id));
     }
+    
+
+
+
+    public updateForVvn(vvnId: string, newOpsForVvn: IOperationDTO[], status?: string): Result<void> {
+        if (!vvnId || vvnId.trim().length === 0) {
+            return Result.fail<void>("vvnId é obrigatório.");
+        }
+
+        if (!Array.isArray(newOpsForVvn)) {
+            return Result.fail<void>("operations deve ser uma lista.");
+        }
+
+        // validações básicas por operação (podes enriquecer)
+        for (const op of newOpsForVvn) {
+            if (op.vvnId !== vvnId) {
+                return Result.fail<void>("Todas as operações atualizadas devem ter o mesmo vvnId do pedido.");
+            }
+            if (typeof op.startTime !== "number" || typeof op.endTime !== "number") {
+                return Result.fail<void>("startTime e endTime devem ser numéricos.");
+            }
+            if (op.startTime >= op.endTime) {
+                return Result.fail<void>(`Operação inválida: startTime >= endTime (vvnId=${vvnId}).`);
+            }
+            if (op.loadingDuration < 0 || op.unloadingDuration < 0) {
+                return Result.fail<void>("Durações não podem ser negativas.");
+            }
+            if (op.craneCountUsed < 0) {
+                return Result.fail<void>("craneCountUsed não pode ser negativo.");
+            }
+            if (op.totalCranesOnDock >= 0 && op.craneCountUsed > op.totalCranesOnDock) {
+                return Result.fail<void>("craneCountUsed excede totalCranesOnDock.");
+            }
+        }
+
+        // substitui subset do VVN
+        const others = this.props.operations.filter(o => o.vvnId !== vvnId);
+        const merged = [...others, ...newOpsForVvn].sort((a, b) => a.startTime - b.startTime);
+
+        // mutação controlada (o vosso AggregateRoot provavelmente permite)
+        (this.props as any).operations = merged;
+
+        if (status && status.trim().length > 0) {
+            (this.props as any).status = status;
+        }
+
+        return Result.ok<void>();
+    }
+
+
 }

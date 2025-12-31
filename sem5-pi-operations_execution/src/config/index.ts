@@ -288,6 +288,10 @@ export default {
                 name: "GetVVEInRangeController",
                 path: "../controllers/vve/getVVEInRangeController",
             },
+            update: {
+                name: "OperationPlanUpdateController",
+                path: "../controllers/operationPlan/operationPlanUpdateController",
+            },
             updateBerthDock: {
                 name: "UpdateVVEActualBerthAndDockController",
                 path: "../controllers/vve/updateVVEActualBerthAndDockController",
@@ -304,6 +308,7 @@ export default {
                 path: "../controllers/operationPlan/getOperationPlansController",
             },
         },
+
     },
 
     repos: {
@@ -328,9 +333,12 @@ export default {
             name: "incidentRepo",
             path: "../repos/incidentRepo",
         },
-        operationPlan: {
-            name: "OperationPlanRepo",
-            path: "../repos/operationPlanRepo" }
+        operationPlan: { name: "OperationPlanRepo", path: "../repos/operationPlanRepo" },
+
+        operationPlanChangeLog: {
+            name: "OperationPlanChangeLogRepo",
+            path: "../repos/operationPlanChangeLogRepo"
+        }
     },
 
     services: {
