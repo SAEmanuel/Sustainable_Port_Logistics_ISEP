@@ -5,6 +5,7 @@ import { celebrate, Joi } from "celebrate";
 import CreateOperationPlanController from "../../controllers/operationPlan/createOperationPlanController";
 import GetOperationPlansController from "../../controllers/operationPlan/getOperationPlansController";
 import OperationPlanUpdateController from "../../controllers/operationPlan/operationPlanUpdateController";
+import GetOperationPlansByPhysicalResourceController from "../../controllers/operationPlan/getOperationPlansByPhysicalResourceController";
 
 const route = Router();
 
@@ -14,6 +15,7 @@ export default (app: Router) => {
     const ctrl = Container.get(CreateOperationPlanController);
     const listCtrl = Container.get(GetOperationPlansController);
     const updateCtrl = Container.get(OperationPlanUpdateController);
+    const byResourceCtrl = Container.get(GetOperationPlansByPhysicalResourceController) ;
 
     // CREATE
     route.post(
@@ -81,5 +83,17 @@ export default (app: Router) => {
             }).unknown(true),
         }),
         (req, res, next) => updateCtrl.updateBatch(req, res, next)
+    );
+
+    route.get(
+        '/by-resource',
+        celebrate({
+            query: Joi.object({
+                crane: Joi.string().required(),
+                startDate: Joi.date().required(),
+                endDate: Joi.date().required()
+            })
+        }),
+        (req, res) => byResourceCtrl.execute(req, res)
     );
 };

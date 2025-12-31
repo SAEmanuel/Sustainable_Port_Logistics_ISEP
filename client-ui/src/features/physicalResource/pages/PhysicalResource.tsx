@@ -210,7 +210,6 @@ function PhysicalResourcePage() {
                     resource={selectedPhysicalResource}
                     isOpen={isAllocationOpen}
                     onClose={handleCloseAllocation}
-                    operations={[]}
                 />
             )}
 

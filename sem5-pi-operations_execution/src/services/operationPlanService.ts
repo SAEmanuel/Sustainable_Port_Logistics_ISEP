@@ -1,6 +1,6 @@
 import { Service, Inject } from 'typedi';
 import { Result } from "../core/logic/Result";
-import { IOperationPlanDTO } from '../dto/IOperationPlanDTO';
+import { IOperationDTO,IOperationPlanDTO } from '../dto/IOperationPlanDTO';
 import { OperationPlan } from '../domain/operationPlan/operationPlan';
 import OperationPlanRepo from '../repos/operationPlanRepo';
 import OperationPlanMap from '../mappers/OperationPlanMap';
@@ -8,6 +8,7 @@ import { IUpdateOperationPlanForVvnDTO, IUpdateOperationPlanResultDTO } from "..
 import OperationPlanChangeLogRepo from "../repos/operationPlanChangeLogRepo";
 import { checkPlanInconsistencies } from "./operationPlanConsistencyChecker";
 import { IUpdateOperationPlanBatchDTO, IUpdateOperationPlanBatchResultDTO } from "../dto/IUpdateOperationPlanBatchDTO";
+
 
 @Service()
 export default class OperationPlanService {
@@ -220,6 +221,59 @@ export default class OperationPlanService {
         } catch (e) {
             // @ts-ignore
             return Result.fail<IOperationPlanDTO[]>(e.message || "Erro ao pesquisar planos.");
+        }
+    }
+
+    
+    public async getPlansByCraneAsync(
+    crane: string,
+    startDate?: string,
+    endDate?: string
+    ): Promise<Result<IOperationPlanDTO[]>> {
+        try {
+            if (!startDate || !endDate) {
+                return Result.fail<IOperationPlanDTO[]>(
+                    "startDate and endDate are required"
+                );
+            }
+
+            const start = new Date(startDate);
+            const end = new Date(endDate);
+
+            const plans = await this.repo.searchByCraneAndInterval(
+                start,
+                end,
+                crane
+            );
+
+            const dtos = plans.map(plan => this.operationPlanMap.toDTO(plan));
+
+            return Result.ok<IOperationPlanDTO[]>(dtos);
+        } catch (e) {
+            // @ts-ignore
+            return Result.fail<IOperationPlanDTO[]>( e.message || "Erro ao pesquisar planos por recurso.");
+        }
+    }
+    
+
+    public async getOperationByVvnAsync(
+        vvnId: string
+    ): Promise<Result<IOperationDTO>> {
+        try {
+            const operation = await this.repo.findOperationByVvnId(vvnId);
+
+            if (!operation) {
+                return Result.fail<IOperationDTO>(
+                    `No operation found for VVN ${vvnId}`
+                );
+            }
+
+            return Result.ok<IOperationDTO>(operation);
+
+        } catch (e: any) {
+            return Result.fail<IOperationDTO>(
+                e?.message ?? "Failed to fetch operation for VVN"
+            );
         }
     }
 }

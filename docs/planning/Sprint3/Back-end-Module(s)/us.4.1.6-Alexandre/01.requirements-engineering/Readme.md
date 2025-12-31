@@ -1,4 +1,4 @@
-# USx - ???
+# US4.1.6 - Determine Physical resource Allocation
 
 
 ## 1. Requirements Engineering
@@ -41,9 +41,18 @@ As a **Logistics Operator**, I want to **query, for a given period, the total al
 ### 1.5 Input and Output Data
 
 **Input Data:**
-
+* `busyFrom` (Date) — start of the period to query.
+* `busyTo` (Date) — end of the period to query.
 
 **Output Data:**
+* For each plan:
+  * `planDate` (string/ISO) — date of the plan.
+  * `algorithm` (string) — algorithm used to generate the plan.
+  * `numberOfOperationsForCrane` (number) — number of operations assigned to the resource.
+  * `craneBusyTime` (number, in hours) — total busy time for the resource in this plan.
+  * `totalPlanTime` (number, in hours) — total duration of the plan including all operations.
+* `busyTime` (number, in hours) — total busy time of the resource across all plans.
+* If no plans are found, display the message: `"No operation plans found in selected time interval"`.
 
 
 ### 1.6. System Sequence Diagram (SSD)

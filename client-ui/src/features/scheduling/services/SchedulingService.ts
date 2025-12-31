@@ -2,6 +2,7 @@ import type {
     DailyScheduleResultDto,
     MultiCraneComparisonResultDto, OperationPlanFilterDTO,
     PrologFullResultDto, SaveScheduleDto,
+    SchedulingOperationDto,
     SmartScheduleResultDto, UpdateOperationPlanBatchResultDto, UpdateOperationPlanForVvnsBatchDto,
 } from '../dtos/scheduling.dtos';
 import type { UpdateOperationPlanForVvnDto, UpdateOperationPlanResultDto } from "../dtos/scheduling.dtos";
@@ -260,5 +261,36 @@ export const SchedulingService = {
 
     calculateTotalDelay(schedule: DailyScheduleResultDto): number {
         return schedule.operations.reduce((sum, op) => sum + (op.departureDelay || 0), 0);
+    },
+
+    async getPlansByCrane(
+        crane: string,
+        startDate: string,
+        endDate: string
+    ): Promise<SaveScheduleDto[]> {
+        if (!crane || !startDate || !endDate) {
+            throw new Error("Missing required parameters: crane, startDate, endDate");
+        }
+
+        const params = new URLSearchParams({ crane, startDate, endDate });
+        const url = `${BASE_OPERATIONS_URL}/api/operation-plans/by-resource?${params.toString()}`;
+
+        const response = await fetch(url, { headers: { "Content-Type": "application/json" } });
+        if (!response.ok) {
+            const errorData = await response.json().catch(() => ({}));
+            throw new Error(errorData.error || errorData.message || "Failed to fetch plans by crane");
+        }
+
+        const backendPlans: SaveScheduleDto[] = await response.json();
+
+        // Normalize backend DTO to frontend types
+        return backendPlans.map(plan => ({
+            ...plan,
+            planDate: new Date(plan.planDate).toISOString(),
+            operations: plan.operations.map(op => ({
+                ...op,
+                staffAssignments: op.staffAssignments ?? [],
+            })) as SchedulingOperationDto[],
+        }));
     }
 };

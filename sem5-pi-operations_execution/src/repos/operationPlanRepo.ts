@@ -118,4 +118,79 @@ export default class OperationPlanRepo {
             return false;
         });
     }
+
+    
+    public async searchByCraneAndInterval(
+        startDate: Date,
+        endDate: Date,
+        craneId?: string
+    ): Promise<OperationPlan[]> {
+
+        if (!startDate || !endDate) {
+            throw new Error("startDate and endDate are required");
+        }
+
+        // Normalize interval to full days
+        const start = new Date(startDate);
+        start.setHours(0, 0, 0, 0);
+
+        const end = new Date(endDate);
+        end.setHours(23, 59, 59, 999);
+
+        // Build MongoDB query
+        const query: any = {
+            planDate: {
+                $gte: start,
+                $lte: end
+            }
+        };
+
+        // Optional crane filter
+        if (craneId && craneId.trim().length > 0) {
+            query['operations.crane'] = { $regex: craneId, $options: 'i' };
+        }
+
+        // Fetch records
+        const records = await this.schema
+            .find(query)
+            .sort({ planDate: -1, createdAt: -1 });
+
+        // Map to domain
+        return records
+            .map(record => {
+                try {
+                    return this.operationPlanMap.toDomain(record);
+                } catch {
+                    return null;
+                }
+            })
+            .filter((p): p is OperationPlan => p !== null);
+    }
+
+    public async findOperationByVvnId(vvnId: string) {
+        const record = await this.schema.findOne({
+            'operations.vvnId': vvnId
+        });
+
+        if (!record) {
+            return null;
+        }
+
+        const plan = this.operationPlanMap.toDomain(record);
+
+        // 🔒 Type guard — this fixes the TS error
+        if (!plan) {
+            return null;
+        }
+
+        if (!plan.operations || plan.operations.length !== 1) {
+            throw new Error(
+            `Expected exactly one operation for VVN ${vvnId}, found ${plan.operations?.length ?? 0}`
+            );
+        }
+
+        return plan.operations[0];
+    }
+	
+	
 }

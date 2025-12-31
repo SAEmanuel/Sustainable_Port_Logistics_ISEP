@@ -572,7 +572,8 @@
       "saving": "A guardar...",
       "next": "Seguinte",
       "back": "Anterior",
-      "backToDashboard": "Voltar ao Dashboard"
+      "backToDashboard": "Voltar ao Dashboard",
+      "allocation":"Alocação"
     },
     "confirm": {
       "deactivate": "Tem a certeza que deseja desativar este recurso?",
@@ -596,6 +597,22 @@
       "loadQualificationDetails": "Nome da qualif. indisponível",
       "invalidCapacity": "A capacidade operacional deve ser um valor numérico positivo.",
       "invalidSetupTime": "O tempo de setup deve ser um valor numérico não negativo."
+    },
+    "Allocationform":{
+      "title": "Alocação de horas de {{code}}",
+      "busyFrom":"De: ",
+      "busyTo":"Até: ",
+      "occupancy": "Horas alocadas totais: ",
+      "operationsQuant": "Operações agendadas: ",
+      "noPlansFound":"Nenhum plano operacional encontrado para período selecionado",
+      "table":{
+        "planDate":"Data do Plano",
+        "algorithm":"Algoritmo",
+        "numOperations":"Número de Operações",
+        "craneBusyTime":"Alocação de Recurso Físico",
+        "totalPlanTime":"Duração do Plano"
+      },
+      "fetchPlansFailed":"Não foi possível obter planos operacionais"
     }
   },
   "common": {

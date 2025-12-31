@@ -18,7 +18,7 @@ class Operation <<Entity>> {
   +dock: string
   +startTime: number
   +endTime: number
-  +crane: string
+  +physicalResourceId: string
   +craneCountUsed: number
 }
 
@@ -36,10 +36,10 @@ class Dock <<Entity>> {
   +name: string
 }
 
-class Crane <<Entity>> {
-  +craneId: string
-  +dockId: string
+class PhysicalResource <<Entity>> {
+  +resourceId: string
   +name: string
+  +type: string
 }
 
 class StaffMember <<Entity>> {
@@ -54,7 +54,7 @@ OperationPlan "1" *-- "0..*" Operation : operations
 Operation "1" *-- "0..*" StaffAssignment : staffAssignments
 
 Operation "0..*" --> "1" Dock : uses >
-Operation "0..*" --> "0..*" Crane : assigned >
+Operation "0..*" --> "1" PhysicalResource : assigned >
 StaffAssignment "0..*" --> "1" StaffMember : assigns >
 
 ' =========================
@@ -63,6 +63,9 @@ StaffAssignment "0..*" --> "1" StaffMember : assigns >
 note right of OperationPlan
 Only SAVED OperationPlans
 are included in aggregation
+Derived metrics like craneBusyTime
+and totalPlanTime are computed
+for queries
 end note
 
 @enduml

@@ -140,4 +140,68 @@ describe("Physical Resources – E2E", () => {
         // Verifica se o texto atualizou na UI
         cy.get(".details-description").should("contain.text", updatedDesc);
     });
+
+
+    const mockPlans = [
+    {
+        "_id": "695030b96a1d0377ba399fa3",
+        "domainId": "9de2cebb-40a6-471b-b586-26bb803f4a57",
+        "algorithm": "Genético",
+        "totalDelay": 9,
+        "status": "ok",
+        "planDate": "2025-12-01T00:00:00.000Z",
+        "author": "sa.emanuel204@gmail.com",
+        "operations": [
+            {
+                "vvnId": "a3e352fa-415f-4ac7-b9fe-8619fa4dc6c3",
+                "vessel": "Global Titan",
+                "dock": "DK-0001",
+                "startTime": 0,
+                "endTime": 17,
+                "loadingDuration": 4,
+                "unloadingDuration": 7,
+                "crane": "TRUCK-001",
+                "craneCountUsed": 1,
+                "totalCranesOnDock": 1,
+                "optimizedOperationDuration": 11,
+                "realDepartureTime": 11,
+                "realArrivalTime": 1,
+                "departureDelay": 0,
+                "staffAssignments": [
+                    {
+                        "staffMemberName": "Emanuelly Lingjiyang",
+                        "intervalStart": "2025-12-01T01:00:00",
+                        "intervalEnd": "2025-12-01T08:00:00"
+                    }
+                ],
+                "theoreticalRequiredCranes": null,
+                "resourceSuggestion": null
+            }
+        ]
+    }
+    ];
+
+    it("6. Abre busy modal de TRUCK-001 e mostra alocação", () => {
+        cy.intercept("GET", "**/operation-plans/by-resource*", {
+            statusCode: 200,
+            body: mockPlans,
+        }).as("getPlans");
+
+        cy.contains("tr", "TRUCK-001").find(".pr-allocation-button").click();
+
+        cy.get(".pr-details-modal-content").should("be.visible");
+
+        cy.get(".react-datepicker__input-container input").first().clear().type("2025-12-01{enter}");
+        cy.get(".react-datepicker__input-container input").last().clear().type("2025-12-02{enter}");
+
+        cy.wait("@getPlans");
+
+        cy.get(".pr-table tbody").contains("Genético").should("exist"); 
+
+        const expectedOccupancy = 4 + 7;
+        cy.get(".pr-table tbody tr").eq(3).should("contain.text", `${expectedOccupancy} h`);
+
+        
+    });
+
 });

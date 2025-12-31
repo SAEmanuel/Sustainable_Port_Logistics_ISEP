@@ -561,7 +561,8 @@
       "saving": "Saving...",
       "next": "Next",
       "back": "Back",
-      "backToDashboard": "Back to Dashboard"
+      "backToDashboard": "Back to Dashboard",
+      "allocation":"Allocation"
     },
     "confirm": {
       "deactivate": "Are you sure you want to deactivate this resource?",
@@ -585,6 +586,22 @@
       "loadQualificationDetails": "Qualif. name unavailable",
       "invalidCapacity": "Operational capacity must be a positive numeric value.",
       "invalidSetupTime": "Setup time must be a non-negative numeric value."
+    },
+    "Allocationform":{
+      "title": "Allocation hours of {{code}}",
+      "busyFrom":"From: ",
+      "busyTo":"To: ",
+      "occupancy": "Total allocation time: ",
+      "operationsQuant": "Scheduled Operations: ",
+      "noPlansFound":"No operation plans found for selected period",
+      "table":{
+        "planDate":"Plan Date",
+        "algorithm":"Algorithm",
+        "numOperations":"Number of operations",
+        "craneBusyTime":"Physical Resource Allocation",
+        "totalPlanTime":"Plan Duration"
+      },
+      "fetchPlansFailed":"Não foi possível obter planos operacionais"
     }
   },
   "navExit": {

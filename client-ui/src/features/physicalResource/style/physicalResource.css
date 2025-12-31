@@ -71,6 +71,7 @@
 .pr-search-button,
 .pr-clear-button,
 .pr-details-button,
+.pr-allocation-button,
 .pr-cancel-button,
 .pr-submit-button,
 .pr-edit-button,
@@ -97,6 +98,7 @@
 .pr-activate-button:hover,
 .pr-deactivate-button:hover,
 .pr-details-button:hover,
+.pr-allocation-button:hover,
 .pr-edit-button:hover {
     transform: translateY(-2px);
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.08);
@@ -113,6 +115,7 @@
 .pr-search-button:focus-visible,
 .pr-clear-button:focus-visible,
 .pr-details-button:focus-visible,
+.pr-allocation-button:focus-visible,
 .pr-cancel-button:focus-visible,
 .pr-submit-button:focus-visible,
 .pr-edit-button:focus-visible,
@@ -167,6 +170,7 @@
 }
 
 .pr-details-button,
+.pr-allocation-button,
 .pr-edit-button {
     background-color: #4351ee;
     color: white;
@@ -542,6 +546,7 @@
     background-color: white;
     padding: 0;
     border-radius: 16px;
+    padding: 1.5rem; /* Adds inner spacing */
     width: 90%;
     max-width: 700px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);

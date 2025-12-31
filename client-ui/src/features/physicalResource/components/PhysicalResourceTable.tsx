@@ -66,7 +66,7 @@ function PhysicalResourceTable({ resources, onDetails,onAllocation }: PhysicalRe
 
                             <button
                                 onClick={() => onAllocation(resource)}
-                                className="pr-details-button"
+                                className="pr-allocation-button"
                             >
                                 {t("physicalResource.actions.allocation")}
                             </button>
