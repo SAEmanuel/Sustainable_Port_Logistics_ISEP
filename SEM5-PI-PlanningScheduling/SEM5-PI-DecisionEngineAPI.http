@@ -41,6 +41,11 @@ GET {{DecisionAddress}}/api/schedule/daily/smart?day=2025-12-01
 Accept: application/json
 
 ###
-# Dock Rebalancing Proposal
-GET {{DecisionAddress}}/api/schedule/rebalance/docks?day=2025-12-01
+# Get dto that goes to prolog
+GET {{DecisionAddress}}/api/rebalance/docks/candidates?day=2025-12-01
+Accept: application/json
+
+###
+# Compute Optimal Dock Rebalance Plan (calls Prolog)
+GET {{DecisionAddress}}/api/rebalance/docks/plan?day=2025-12-01
 Accept: application/json

@@ -1,4 +1,3 @@
-using System.Text.Json;
 using SEM5_PI_DecisionEngineAPI.DTOs;
 using SEM5_PI_DecisionEngineAPI.Exceptions;
 
@@ -519,6 +518,36 @@ public class SchedulingService
         return await _prologClient.SendToPrologAsync<PrologFullResultDto>("schedule/local_search", schedule);
     }
 
+    public async Task<DockRebalanceResultDto?> SendDockRebalanceToPrologAsync(
+        IEnumerable<DockRebalanceCandidateDto> candidates,
+        IEnumerable<string> docks)
+    {
+        var payload = new
+        {
+            docks = docks,
+            candidates = candidates.Select(c => new
+            {
+                id = c.VvnId,
+
+                eta = new DateTimeOffset(c.EstimatedTimeArrival)
+                    .ToUnixTimeSeconds(),
+
+                etd = new DateTimeOffset(c.EstimatedTimeDeparture)
+                    .ToUnixTimeSeconds(),
+
+                duration = c.OperationDurationHours,
+
+                currentDock = c.CurrentDock,
+                allowedDocks = c.AllowedDocks
+            })
+        };
+
+        return await _prologClient.SendToPrologAsync<DockRebalanceResultDto>(
+            "dock/rebalance",
+            payload
+        );
+    }
+
     public DailyScheduleResultDto UpdateScheduleFromPrologResult(
         DailyScheduleResultDto schedule,
         PrologFullResultDto? prologResult)
@@ -914,11 +943,12 @@ public class SchedulingService
         };
     }
 
-    public async Task<DockRebalanceProposalDto> ComputeDockRebalanceProposalAsync(DateOnly day)
+    public async Task<List<DockRebalanceCandidateDto>> BuildDockRebalanceCandidatesAsync(DateOnly day)
     {
         ClearCaches();
 
         var vvns = await _vvnClient.GetVisitNotifications();
+
         var vvnsForDay = vvns
             .Where(v => DateOnly.FromDateTime(v.EstimatedTimeArrival.Date) == day)
             .ToList();
@@ -926,162 +956,157 @@ public class SchedulingService
         if (vvnsForDay.Count == 0)
             throw new PlanningSchedulingException($"No approved visits for {day}");
 
-        var proposal = new DockRebalanceProposalDto { Day = day };
-
         var allDocks = await _dockClient.GetAllDocksAsync();
 
-        var vvnsByDock = allDocks.ToDictionary(
-            d => d.Code.Value,
-            d => vvnsForDay.Where(v => v.Dock == d.Code.Value).ToList()
-        );
+        var dockMeta = new Dictionary<string, List<PhysicalResourceDto>>();
+        foreach (var dock in allDocks)
+            dockMeta[dock.Code.Value] = await GetCachedDockCranesAsync(dock.Code.Value);
 
         var vessels = new Dictionary<string, VesselDto?>();
         foreach (var vvn in vvnsForDay)
             vessels[vvn.Id] = await GetCachedVesselAsync(vvn.VesselImo);
 
-        var dockMeta = new Dictionary<string, List<PhysicalResourceDto>>();
-        foreach (var dock in vvnsByDock.Keys)
-            dockMeta[dock] = await GetCachedDockCranesAsync(dock);
-
-        var dockLoad = vvnsByDock.ToDictionary(
-            kv => kv.Key,
-            kv => kv.Value.Sum(v =>
+        var ordered = vvnsForDay
+            .OrderByDescending(v =>
                 (v.EstimatedTimeDeparture - v.EstimatedTimeArrival).TotalHours)
-        );
-
-        foreach (var dockGroup in vvnsByDock)
-        {
-            var dockCode = dockGroup.Key;
-            var vvnList = dockGroup.Value
-                .OrderBy(v => v.EstimatedTimeArrival)
-                .ToList();
-
-            if (!dockMeta[dockCode].Any())
-            {
-                foreach (var vvn in vvnList)
-                {
-                    proposal.Reassignments.Add(new DockReassignmentEntryDto
-                    {
-                        VvnId = vvn.Id,
-                        VesselName = vessels[vvn.Id]?.Name ?? "Unknown",
-                        OriginalDock = dockCode,
-                        ProposedDock = dockCode,
-                        Rejected = true,
-                        RejectionReason = "Dock has no cranes",
-                        EvaluationNotes = "Immediate reassignment recommended",
-                        DecisionType = "invalid-dock"
-                    });
-                }
-
-                continue;
-            }
-
-            foreach (var vvn in vvnList)
-            {
-                var duration = (vvn.EstimatedTimeDeparture - vvn.EstimatedTimeArrival).TotalHours;
-
-                var move = await TryFindImprovedDockAsync(
-                    vvn,
-                    vessels[vvn.Id],
-                    vvnsByDock,
-                    dockMeta,
-                    dockLoad
-                );
-
-                if (move is not null &&
-                    move.IsProposedMove &&
-                    !move.Rejected &&
-                    move.BalanceImprovementScore > 0)
-                {
-                    dockLoad[vvn.Dock] -= duration;
-                    dockLoad[move.ProposedDock] += duration;
-
-                    proposal.Reassignments.Add(move);
-                    continue;
-                }
-
-                proposal.Reassignments.Add(new DockReassignmentEntryDto
-                {
-                    VvnId = vvn.Id,
-                    VesselName = vessels[vvn.Id]?.Name ?? "Unknown",
-                    OriginalDock = dockCode,
-                    ProposedDock = dockCode,
-                    DecisionType = "no-change",
-                    EvaluationNotes = "Move discarded — no net balance improvement"
-                });
-            }
-        }
-
-        proposal.OptimizationSummary =
-            $"Evaluated {vvnsForDay.Count} vessels across {vvnsByDock.Count} docks. " +
-            $"{proposal.TotalMoves} reassignment(s) suggested.";
-
-        return proposal;
-    }
-
-    private async Task<DockReassignmentEntryDto?> TryFindImprovedDockAsync(
-        VesselVisitNotificationPSDto vvn,
-        VesselDto? vessel,
-        Dictionary<string, List<VesselVisitNotificationPSDto>> vvnsByDock,
-        Dictionary<string, List<PhysicalResourceDto>> dockMeta,
-        Dictionary<string, double> dockLoad)
-    {
-        var duration = (vvn.EstimatedTimeDeparture - vvn.EstimatedTimeArrival).TotalHours;
-
-        var candidateDocks = vvnsByDock
-            .OrderBy(kv => kv.Value.Count == 0 ? 0 : 1)
-            .ThenBy(kv => dockLoad[kv.Key])
             .ToList();
 
-        foreach (var kv in candidateDocks)
+        var candidates = new List<DockRebalanceCandidateDto>();
+
+        foreach (var vvn in ordered)
         {
-            var dock = kv.Key;
-            var dockVessels = kv.Value;
+            var duration = Math.Max(
+                0,
+                (vvn.EstimatedTimeDeparture - vvn.EstimatedTimeArrival).TotalHours
+            );
 
-            if (dock == vvn.Dock)
-                continue;
+            var allowedDocks = new List<string>();
 
-            if (!dockMeta[dock].Any())
-                continue;
+            foreach (var dock in allDocks)
+            {
+                var dockCode = dock.Code.Value;
 
-            bool dockIsEmpty = dockVessels.Count == 0;
+                if (!dockMeta[dockCode].Any())
+                    continue;
 
-            bool conflict = dockVessels.Any(v =>
-                v.EstimatedTimeArrival < vvn.EstimatedTimeDeparture &&
-                vvn.EstimatedTimeArrival < v.EstimatedTimeDeparture);
+                allowedDocks.Add(dockCode);
+            }
 
-            if (conflict && !dockIsEmpty)
-                continue;
-
-            var loadOriginBefore = dockLoad[vvn.Dock];
-            var loadTargetBefore = dockLoad[dock];
-
-            var loadOriginAfter = loadOriginBefore - duration;
-            var loadTargetAfter = loadTargetBefore + duration;
-
-            var improvementScore =
-                (loadOriginBefore - loadTargetBefore) -
-                (loadOriginAfter - loadTargetAfter);
-
-            if (improvementScore <= 0 && !dockIsEmpty)
-                continue;
-
-            return new DockReassignmentEntryDto
+            candidates.Add(new DockRebalanceCandidateDto
             {
                 VvnId = vvn.Id,
-                VesselName = vessel?.Name ?? "Unknown",
-                OriginalDock = vvn.Dock,
-                ProposedDock = dock,
-                DecisionType = "proposed-move",
-                DockLoadBefore = loadTargetBefore,
-                DockLoadAfter = loadTargetAfter,
-                BalanceImprovementScore = improvementScore,
-                EvaluationNotes = dockIsEmpty
-                    ? "Selected empty dock to reduce congestion"
-                    : "Move reduces workload imbalance between docks"
-            };
+                VesselName = vessels[vvn.Id]?.Name ?? "Unknown",
+                CurrentDock = vvn.Dock,
+                EstimatedTimeArrival = vvn.EstimatedTimeArrival,
+                EstimatedTimeDeparture = vvn.EstimatedTimeDeparture,
+                OperationDurationHours = duration,
+                AllowedDocks = allowedDocks.Distinct().ToList()
+            });
         }
 
-        return null;
+        return candidates;
+    }
+
+    public async Task<DockRebalanceFinalDto> BuildDockRebalancePlanAsync(DateOnly day)
+    {
+        var candidates = await BuildDockRebalanceCandidatesAsync(day);
+
+        var docks = candidates
+            .SelectMany(c => c.AllowedDocks)
+            .Distinct()
+            .ToList();
+
+        var result = await SendDockRebalanceToPrologAsync(candidates, docks);
+
+        if (result == null || result.Assignments.Count == 0)
+            throw new PlanningSchedulingException("Prolog returned no assignments");
+
+        var loadsBefore = candidates
+            .GroupBy(c => c.CurrentDock)
+            .Select(g => new DockLoadInfoDto
+            {
+                Dock = g.Key,
+                TotalDurationHours = g.Sum(v => v.OperationDurationHours)
+            })
+            .ToList();
+
+        var loadsAfter = result.Assignments
+            .GroupBy(a => a.Dock)
+            .Select(g =>
+            {
+                var assignedShips = candidates
+                    .Where(c => g.Any(a => a.Id == c.VvnId));
+
+                return new DockLoadInfoDto
+                {
+                    Dock = g.Key,
+                    TotalDurationHours = assignedShips.Sum(v => v.OperationDurationHours)
+                };
+            })
+            .ToList();
+
+        foreach (var dock in docks)
+        {
+            if (!loadsBefore.Any(l => l.Dock == dock))
+                loadsBefore.Add(new DockLoadInfoDto { Dock = dock, TotalDurationHours = 0 });
+
+            if (!loadsAfter.Any(l => l.Dock == dock))
+                loadsAfter.Add(new DockLoadInfoDto { Dock = dock, TotalDurationHours = 0 });
+        }
+
+        var differences = loadsAfter
+            .Select(a =>
+            {
+                var before = loadsBefore.First(l => l.Dock == a.Dock);
+
+                return new DockLoadChangeDto
+                {
+                    Dock = a.Dock,
+                    Before = before.TotalDurationHours,
+                    After = a.TotalDurationHours
+                };
+            })
+            .ToList();
+
+        var beforeValues = loadsBefore.Select(l => l.TotalDurationHours);
+        var afterValues = loadsAfter.Select(l => l.TotalDurationHours);
+
+        var varianceBefore = Variance(beforeValues);
+        var varianceAfter = Variance(afterValues);
+
+        var improvement = varianceBefore == 0
+            ? 0
+            : (varianceBefore - varianceAfter) / varianceBefore * 100;
+
+        return new DockRebalanceFinalDto
+        {
+            Day = day,
+
+            Candidates = candidates,
+            Assignments = result.Assignments,
+
+            LoadsBefore = loadsBefore,
+            LoadsAfter = loadsAfter,
+            LoadDifferences = differences,
+
+            BalanceScore = varianceAfter,
+            ImprovementPercent = improvement,
+            StdDevBefore = StdDev(beforeValues),
+            StdDevAfter = StdDev(afterValues)
+        };
+    }
+
+    private static double Variance(IEnumerable<double> values)
+    {
+        var list = values.ToList();
+        if (!list.Any()) return 0;
+
+        var avg = list.Average();
+        return list.Sum(v => Math.Pow(v - avg, 2)) / list.Count;
+    }
+
+    private static double StdDev(IEnumerable<double> values)
+    {
+        return Math.Sqrt(Variance(values));
     }
 }

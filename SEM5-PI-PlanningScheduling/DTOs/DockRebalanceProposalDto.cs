@@ -1,39 +1,75 @@
-namespace SEM5_PI_DecisionEngineAPI.DTOs;
-
-public class DockRebalanceProposalDto
+namespace SEM5_PI_DecisionEngineAPI.DTOs
 {
-    public DateOnly Day { get; set; }
+    public class DockRebalanceCandidateDto
+    {
+        public string VvnId { get; set; } = default!;
+        public string VesselName { get; set; } = default!;
+        public string CurrentDock { get; set; } = default!;
 
-    public List<DockReassignmentEntryDto> Reassignments { get; set; } = new();
+        public DateTime EstimatedTimeArrival { get; set; }
+        public DateTime EstimatedTimeDeparture { get; set; }
 
-    public int TotalMoves => Reassignments.Count(r => r.IsProposedMove && !r.Rejected);
-
-    public string OptimizationSummary { get; set; }
-}
-
-public class DockReassignmentEntryDto
-{
-    public string VvnId { get; set; }
-    public string VesselName { get; set; }
-
-    public string OriginalDock { get; set; }
-    public string ProposedDock { get; set; }
-    
-    public string DecisionType { get; set; }
-
-    public bool IsProposedMove =>
-        !string.Equals(OriginalDock, ProposedDock, StringComparison.OrdinalIgnoreCase)
-        && !Rejected;
-
-    public bool Rejected { get; set; }
-    public string RejectionReason { get; set; }
+        public double OperationDurationHours { get; set; }
+        public List<string> AllowedDocks { get; set; } = new();
+    }
 
 
-    public double DockLoadBefore { get; set; }
-    public double DockLoadAfter { get; set; }
+    public class DockRebalanceAssignmentDto
+    {
+        public string Id { get; set; } = default!;
+        public string Dock { get; set; } = default!;
+    }
 
 
-    public double BalanceImprovementScore { get; set; }
+    public class DockRebalanceResultDto
+    {
+        public string Status { get; set; } = default!;
+        public string Algorithm { get; set; } = default!;
+        public double BalanceScore { get; set; }
 
-    public string EvaluationNotes { get; set; }
+        public List<DockRebalanceAssignmentDto> Assignments { get; set; } = new();
+    }
+
+
+    public class DockLoadInfoDto
+    {
+        public string Dock { get; set; } = default!;
+        public double TotalDurationHours { get; set; }
+    }
+
+
+    public class DockLoadChangeDto
+    {
+        public string Dock { get; set; } = default!;
+        public double Before { get; set; }
+        public double After { get; set; }
+
+        public double Difference => After - Before;
+    }
+
+
+    public class DockRebalanceFinalDto
+    {
+        public DateOnly Day { get; set; }
+
+        public List<DockLoadInfoDto> LoadsBefore { get; set; } = new();
+        public List<DockLoadInfoDto> LoadsAfter { get; set; } = new();
+        public List<DockLoadChangeDto> LoadDifferences { get; set; } = new();
+
+        public List<DockRebalanceCandidateDto> Candidates { get; set; } = new();
+        public List<DockRebalanceAssignmentDto> Assignments { get; set; } = new();
+
+
+        public double BalanceScore { get; set; }
+
+
+        public double VarianceBefore { get; set; }
+
+
+        public double ImprovementPercent { get; set; }
+
+
+        public double StdDevBefore { get; set; }
+        public double StdDevAfter { get; set; }
+    }
 }

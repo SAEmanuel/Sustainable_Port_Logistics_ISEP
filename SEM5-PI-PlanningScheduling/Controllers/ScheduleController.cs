@@ -128,13 +128,11 @@ public class ScheduleController : ControllerBase
     [HttpPost("save")]
     public async Task<IActionResult> SaveSchedule([FromBody] SaveScheduleDto dto)
     {
-       
         if (dto == null) return BadRequest("Dados inválidos.");
         if (dto.Operations == null || dto.Operations.Count == 0) return BadRequest("O plano não tem operações.");
 
         try
         {
-            
             await _oemClient.SaveOperationPlanAsync(dto);
 
             return Ok(new { Message = "Plano guardado com sucesso." });
@@ -146,13 +144,13 @@ public class ScheduleController : ControllerBase
     }
 
     [HttpGet("rebalance/docks")]
-    public async Task<ActionResult<DockRebalanceProposalDto>> GetDockRebalanceProposal(
+    public async Task<ActionResult<List<DockRebalanceCandidateDto>>> GetDockRebalanceCandidates(
         [FromQuery] DateOnly day)
     {
         try
         {
             var result = await _schedulingService
-                .ComputeDockRebalanceProposalAsync(day);
+                .BuildDockRebalanceCandidatesAsync(day);
 
             return Ok(result);
         }
@@ -163,6 +161,23 @@ public class ScheduleController : ControllerBase
         catch (Exception ex)
         {
             return StatusCode(500, new { error = ex.Message });
+        }
+    }
+    
+    [HttpGet("rebalance/docks/plan")]
+    public async Task<ActionResult<DockRebalanceResultDto>> GetDockRebalancePlan(
+        [FromQuery] DateOnly day)
+    {
+        try
+        {
+            var result = await _schedulingService
+                .BuildDockRebalancePlanAsync(day);
+
+            return Ok(result);
+        }
+        catch (PlanningSchedulingException e)
+        {
+            return BadRequest(new { error = e.Message });
         }
     }
 }
