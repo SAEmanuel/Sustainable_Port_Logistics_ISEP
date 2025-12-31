@@ -57,14 +57,14 @@ function makeContainerPlaceholderBox(L: number, H: number, W: number, paintColor
 function pickIndex3(key: string): number {
     let h = 5381;
     for (let i = 0; i < key.length; i++) h = ((h << 5) + h) + key.charCodeAt(i);
-    return Math.abs(h) % 3;
+    return Math.abs(h) % 2;
 }
 function pickContainerModel(c: ContainerDto): string {
     const key = String(c.id ?? c.isoCode ?? "");
     const models = [
         ASSETS_MODELS.containers.container,
         ASSETS_MODELS.containers.container2,
-        ASSETS_MODELS.containers.containerRealistic,
+        //ASSETS_MODELS.containers.containerRealistic,
     ];
     return models[pickIndex3(key)];
 }

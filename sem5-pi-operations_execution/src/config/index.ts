@@ -307,6 +307,10 @@ export default {
                 name: "GetOperationPlansController",
                 path: "../controllers/operationPlan/getOperationPlansController",
             },
+            update: {
+                name: "OperationPlanUpdateController",
+                path: "../controllers/operationPlan/operationPlanUpdateController",
+            },
         },
 
     },

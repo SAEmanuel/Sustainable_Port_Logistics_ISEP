@@ -8,10 +8,13 @@ export interface SchedulingOperationDto {
     vvnId: string;
     vessel: string;
     dock: string;
+
     startTime: number;
     endTime: number;
+
     loadingDuration: number;
     unloadingDuration: number;
+
     crane: string;
     staffAssignments: StaffAssignmentDto[];
 
@@ -27,72 +30,6 @@ export interface SchedulingOperationDto {
     resourceSuggestion?: string;
 }
 
-export interface DailyScheduleResultDto {
-    operations: SchedulingOperationDto[];
-}
-
-export interface OptimizationStepDto {
-    stepNumber: number;
-    totalDelay: number;
-    totalCranesUsed: number;
-    algorithmUsed: string;
-    changeDescription: string;
-}
-
-export interface MultiCraneComparisonResultDto {
-    singleCraneSchedule: DailyScheduleResultDto;
-    singleCraneProlog: any;
-
-    multiCraneSchedule: DailyScheduleResultDto;
-    multiCraneProlog: any;
-
-    singleTotalDelay: number;
-    multiTotalDelay: number;
-
-    singleCraneHours: number;
-    multiCraneHours: number;
-
-    optimizationSteps: OptimizationStepDto[];
-}
-
-
-export interface PrologOperationResultDto {
-    vessel: string;
-    start: number;
-    end: number;
-}
-
-
-export interface PrologFullResultDto {
-    algorithm: string;
-    total_delay: number;
-    best_sequence: PrologOperationResultDto[];
-    status: string;
-}
-
-export interface GeneticScheduleResultDto {
-    algorithm: 'genetic';
-    schedule: DailyScheduleResultDto;
-    prolog: PrologFullResultDto;
-
-    populationSize: number;
-    generations: number;
-    mutationRate: number;
-    crossoverRate: number;
-}
-
-export interface SmartScheduleResultDto {
-    selectedAlgorithm: 'optimal' | 'greedy' | 'local_search' | 'genetic';
-
-    schedule: DailyScheduleResultDto;
-    prolog: PrologFullResultDto;
-
-    problemSize: number;
-    vesselCount: number;
-    craneCount: number;
-
-    selectionReason: string;
-}
 export interface SaveScheduleDto {
     planDate: string;
     author: string;
@@ -106,4 +43,40 @@ export interface OperationPlanFilterDTO {
     startDate?: string;
     endDate?: string;
     vessel?: string;
+}
+
+export type OperationPlanWarningDto = {
+    code: string;
+    message: string;
+    severity: "info" | "warning" | "blocking";
+};
+
+export interface UpdateOperationPlanForVvnDto {
+    planDomainId: string;
+    vvnId: string;
+    reasonForChange: string;
+    author: string;
+    operations: SchedulingOperationDto[];
+}
+
+export interface UpdateOperationPlanResultDto {
+    plan: any;
+    warnings: OperationPlanWarningDto[];
+}
+export interface UpdateOperationPlanVvnChangeDto {
+    vvnId: string;
+    reasonForChange: string;
+    status?: string;
+    operations: any[];
+}
+
+export interface UpdateOperationPlanForVvnsBatchDto {
+    planDomainId: string;
+    author: string;
+    changes: UpdateOperationPlanVvnChangeDto[];
+}
+
+export interface UpdateOperationPlanBatchResultDto {
+    plan: any;
+    warnings: OperationPlanWarningDto[];
 }

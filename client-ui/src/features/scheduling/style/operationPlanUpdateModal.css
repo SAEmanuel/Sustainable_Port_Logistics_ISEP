@@ -1,0 +1,108 @@
+/* Wrapper geral */
+.opUpdateModal {
+    padding: 2px;
+}
+
+.opUpdateModal__content {
+    border-radius: 14px;
+}
+
+.opUpdateModal__header {
+    padding: 18px 22px;
+    border-bottom: 1px solid var(--mantine-color-gray-2);
+    background: linear-gradient(180deg, rgba(240, 249, 255, 0.9), rgba(255, 255, 255, 1));
+}
+
+.opUpdateModal__title {
+    font-weight: 800;
+    font-size: 18px;
+    letter-spacing: 0.2px;
+}
+
+.opUpdateModal__body {
+    padding: 18px 22px 22px 22px;
+}
+
+.opUpdateModal__close {
+    border-radius: 10px;
+}
+
+/* Top row */
+.opUpdateModal__topRow {
+    gap: 14px;
+}
+
+.opUpdateModal__vvnSelect {
+    flex: 1;
+    min-width: 520px;
+}
+
+.opUpdateModal__author {
+    width: 320px;
+}
+
+.opUpdateModal__reason textarea {
+    border-radius: 10px;
+}
+
+/* Section header */
+.opUpdateModal__sectionHeader {
+    margin-top: 2px;
+}
+
+/* Table wrap */
+.opUpdateModal__tableWrap {
+    border: 1px solid var(--mantine-color-gray-2);
+    border-radius: 12px;
+    overflow: hidden;
+    background: white;
+}
+
+.opUpdateModal__table th {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--mantine-color-gray-7);
+    background: var(--mantine-color-gray-0);
+}
+
+.opUpdateModal__cellStrong {
+    font-weight: 700;
+}
+
+.opUpdateModal__colSmall {
+    width: 140px;
+}
+
+.opUpdateModal__colCrane {
+    width: 190px;
+}
+
+.opUpdateModal__numberInput input,
+.opUpdateModal__textInput input {
+    border-radius: 10px;
+}
+
+.opUpdateModal__numberInput input {
+    text-align: center;
+    font-weight: 700;
+}
+
+/* Hours chip */
+.opUpdateModal__timeOk {
+    color: var(--mantine-color-blue-7);
+}
+
+.opUpdateModal__timeWarn {
+    color: var(--mantine-color-red-7);
+}
+
+/* Warnings block */
+.opUpdateModal__warnings {
+    margin-top: 6px;
+}
+
+/* Footer */
+.opUpdateModal__footer {
+    padding-top: 6px;
+}

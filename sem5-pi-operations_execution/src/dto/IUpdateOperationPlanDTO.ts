@@ -1,11 +1,12 @@
 import { IOperationDTO } from "./IOperationPlanDTO";
+import type { IOperationPlanDTO } from "./IOperationPlanDTO";
 
 export interface IUpdateOperationPlanForVvnDTO {
-    planDomainId: string;          // qual plano (por ex. o “best” desse dia)
-    vvnId: string;                 // VVN alvo da alteração
-    reasonForChange: string;       // obrigatório (AC)
-    status?: string;               // opcional
-    operations: IOperationDTO[];   // operações do VVN (substituição total do subset)
+    planDomainId: string;
+    vvnId: string;
+    reasonForChange: string;
+    author: string;
+    operations: IOperationDTO[];
 }
 
 export type InconsistencySeverity = "info" | "warning" | "blocking";
@@ -18,6 +19,6 @@ export interface IPlanInconsistencyDTO {
 }
 
 export interface IUpdateOperationPlanResultDTO {
-    plan: import("./IOperationPlanDTO").IOperationPlanDTO;
+    plan: IOperationPlanDTO;
     warnings: IPlanInconsistencyDTO[];
 }

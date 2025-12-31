@@ -9,6 +9,7 @@ export default class OperationPlanUpdateController {
             const service = Container.get(OperationPlanService);
 
             const author =
+                req.body?.author ||
                 (req as any).user?.name ||
                 (req as any).user?.id ||
                 "Unknown";
@@ -22,12 +23,35 @@ export default class OperationPlanUpdateController {
                         ? raw
                         : "Erro ao atualizar Operation Plan.";
 
-                const isConflict =
-                    msg.includes("inconsistências") ||
-                    msg.includes("Conflito") ||
-                    msg.includes("bloqueantes");
+                return res.status(409).json({ message: msg });
+            }
 
-                return res.status(isConflict ? 409 : 400).json({ message: msg });
+            return res.status(200).json(result.getValue());
+        } catch (e) {
+            return next(e);
+        }
+    }
+
+    public async updateBatch(req: Request, res: Response, next: NextFunction) {
+        try {
+            const service = Container.get(OperationPlanService);
+
+            const author =
+                req.body?.author ||
+                (req as any).user?.name ||
+                (req as any).user?.id ||
+                "Unknown";
+
+            const result = await service.updatePlanBatchAsync(req.body, author);
+
+            if (result.isFailure) {
+                const raw = (result as any).errorValue?.();
+                const msg =
+                    typeof raw === "string" && raw.trim().length > 0
+                        ? raw
+                        : "Erro ao atualizar Operation Plan (batch).";
+
+                return res.status(409).json({ message: msg });
             }
 
             return res.status(200).json(result.getValue());

@@ -47,7 +47,7 @@ export class OperationPlan extends AggregateRoot<OperationPlanProps> {
 
 
 
-    public updateForVvn(vvnId: string, newOpsForVvn: IOperationDTO[], status?: string): Result<void> {
+    public updateForVvn(vvnId: string, newOpsForVvn: IOperationDTO[]): Result<void> {
         if (!vvnId || vvnId.trim().length === 0) {
             return Result.fail<void>("vvnId é obrigatório.");
         }
@@ -84,10 +84,7 @@ export class OperationPlan extends AggregateRoot<OperationPlanProps> {
 
         // mutação controlada (o vosso AggregateRoot provavelmente permite)
         (this.props as any).operations = merged;
-
-        if (status && status.trim().length > 0) {
-            (this.props as any).status = status;
-        }
+        
 
         return Result.ok<void>();
     }

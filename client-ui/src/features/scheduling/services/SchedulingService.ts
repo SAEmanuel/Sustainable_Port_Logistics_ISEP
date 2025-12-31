@@ -2,8 +2,9 @@ import type {
     DailyScheduleResultDto,
     MultiCraneComparisonResultDto, OperationPlanFilterDTO,
     PrologFullResultDto, SaveScheduleDto,
-    SmartScheduleResultDto,
+    SmartScheduleResultDto, UpdateOperationPlanBatchResultDto, UpdateOperationPlanForVvnsBatchDto,
 } from '../dtos/scheduling.dtos';
+import type { UpdateOperationPlanForVvnDto, UpdateOperationPlanResultDto } from "../dtos/scheduling.dtos";
 
 export type ScheduleResponse = {
     algorithm: AlgorithmType;
@@ -36,7 +37,83 @@ export interface SmartParams {
 const BASE_URL = import.meta.env.VITE_PLANNING_URL;
 const BASE_OPERATIONS_URL = import.meta.env.VITE_OPERATIONS_URL;
 
+export type UpdateOperationPlanBatchDto = {
+    planDomainId: string;
+    reasonForChange: string;
+    author: string;
+    updates: Array<{ vvnId: string; operations: any[] }>;
+};
+
+
+
 export const SchedulingService = {
+
+    async updateOperationPlanBatch(payload: UpdateOperationPlanBatchDto, token?: string) {
+        const url = `${BASE_OPERATIONS_URL}/api/operation-plans/batch`;
+
+        const response = await fetch(url, {
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/json",
+                ...(token ? { Authorization: `Bearer ${token}` } : {}),
+            },
+            body: JSON.stringify(payload),
+        });
+
+        const body = await response.json().catch(() => ({}));
+        if (!response.ok) throw new Error(body.message || body.error || "Erro ao atualizar Operation Plan (batch).");
+        return body as UpdateOperationPlanResultDto;
+    },
+
+    async updateOperationPlanForVvn(
+        payload: UpdateOperationPlanForVvnDto,
+        token?: string
+    ): Promise<UpdateOperationPlanResultDto> {
+        const url = `${BASE_OPERATIONS_URL}/api/operation-plans/vvn`;
+
+        const response = await fetch(url, {
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/json",
+                ...(token ? { Authorization: `Bearer ${token}` } : {}),
+            },
+            body: JSON.stringify(payload),
+        });
+
+        const body = await response.json().catch(() => ({}));
+
+        if (!response.ok) {
+            // backend: { message: "..." }
+            throw new Error(body.message || body.error || "Erro ao atualizar Operation Plan.");
+        }
+
+        return body as UpdateOperationPlanResultDto;
+    },
+
+    async updateOperationPlanForVvnsBatch(
+        payload: UpdateOperationPlanForVvnsBatchDto,
+        token?: string
+    ): Promise<UpdateOperationPlanBatchResultDto> {
+        const url = `${BASE_OPERATIONS_URL}/api/operation-plans/vvns`;
+
+        const response = await fetch(url, {
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/json",
+                ...(token ? { Authorization: `Bearer ${token}` } : {}),
+            },
+            body: JSON.stringify(payload),
+        });
+
+        const body = await response.json().catch(() => ({}));
+
+        if (!response.ok) {
+            throw new Error(body.message || body.error || "Erro ao atualizar Operation Plan (batch).");
+        }
+
+        return body as UpdateOperationPlanBatchResultDto;
+    },
+
 
     async saveSchedule(data: SaveScheduleDto): Promise<void> {
         const url = `${BASE_URL}/api/schedule/save`;
