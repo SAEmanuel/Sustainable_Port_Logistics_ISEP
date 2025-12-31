@@ -8,7 +8,7 @@ import {
     FiShuffle, FiTablet, FiAnchor, FiBox, FiFileText, FiMapPin, FiGrid
 } from "react-icons/fi";
 import { BsBookmarksFill } from "react-icons/bs";
-import { BookAIcon } from "lucide-react";
+import {BookAIcon, ClipboardCheck, Lamp} from "lucide-react";
 import { RiHistoryFill} from "react-icons/ri";
 
 
@@ -45,7 +45,8 @@ const routeConfig: Record<string, JSX.Element> = {
     "/incidentType": <FiFileText />,
     "/incident": <FiFileText />,
     "/3dSecene": <FiBox />,
-    "/operationLog" : <RiHistoryFill />
+    "/operationLog" : <RiHistoryFill />,
+    "/vve" : <ClipboardCheck />
 };
 
 export type ModuleLink = {
@@ -82,6 +83,7 @@ export function useModuleLinks(t: (k: string) => string, role?: Role | string | 
                 add("dashboard.qualifications", "/qualifications");
                 add("dashboard.physicalResources", "/physical-resources");
                 add("dashboard.staffMembers", "/staff-members");
+                add("dashboard.vve", "/vve");
                 add("dashboard.planning", "/planning-scheduling");
                 add("dashboard.operationLog", "/operationLog");
                 add("dashboard.ct", "/ct");

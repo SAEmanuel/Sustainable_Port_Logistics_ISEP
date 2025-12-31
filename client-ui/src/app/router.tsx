@@ -35,6 +35,7 @@ import ComplementaryTaskCategoryPage
     from "../features/complementaryTaskCategory/pages/ComplementaryTaskCategoryPage.tsx";
 import ComplementaryTaskPage from "../features/complementaryTask/pages/ComplementaryTaskPage.tsx";
 import OperationPlanHistoryPage from "../features/scheduling/pages/OperationPlanHistoryPage.tsx";
+import VVE from "../features/vesselVisitExecution/components/CreateVVE.tsx";
 
 export const router = createBrowserRouter([
     {
@@ -68,6 +69,11 @@ export const router = createBrowserRouter([
                                 path: "operationLog",
                                 element: <RequireRole roles={[Roles.LogisticsOperator]} />,
                                 children: [{ index: true, element: < OperationPlanHistoryPage/> }],
+                            },
+                            {
+                                path: "vve",
+                                element: <RequireRole roles={[Roles.LogisticsOperator]} />,
+                                children: [{ index: true, element: < VVE/> }],
                             },
                             {
                                 path: "datarights",
