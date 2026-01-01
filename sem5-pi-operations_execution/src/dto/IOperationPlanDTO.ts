@@ -15,6 +15,14 @@ export interface IOperationDTO {
     realArrivalTime: number;
     departureDelay: number;
     staffAssignments?: any[];
+    executionStatus?: "started" | "completed" | "delayed";
+    actualStartTime?: number;
+    actualEndTime?: number;
+    resourcesUsed?: Array<{ resourceId: string; quantity?: number; hours?: number }>;
+    executionUpdatedAt?: number;
+    executionUpdatedBy?: string;
+    executionNote?: string;
+
 }
 
 export interface IOperationPlanDTO {

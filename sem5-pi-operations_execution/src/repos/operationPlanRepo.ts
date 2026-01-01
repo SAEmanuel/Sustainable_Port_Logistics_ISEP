@@ -3,9 +3,10 @@ import { Document, Model } from 'mongoose';
 import { IOperationPlanDTO } from '../dto/IOperationPlanDTO';
 import { OperationPlan } from '../domain/operationPlan/operationPlan';
 import OperationPlanMap from '../mappers/OperationPlanMap';
+import IOperationPlanRepo from "../services/IRepos/IOperationPlanRepo";
 
 @Service()
-export default class OperationPlanRepo {
+export default class OperationPlanRepo implements IOperationPlanRepo {
     constructor(
         @Inject('operationPlanSchema') private schema: Model<IOperationPlanDTO & Document>,
         @Inject('OperationPlanMap')
@@ -193,4 +194,14 @@ export default class OperationPlanRepo {
     }
 	
 	
+
+    public async findLatestByVvnId(vvnId: string): Promise<OperationPlan | null> {
+        const record = await this.schema
+            .findOne({ "operations.vvnId": vvnId })
+            .sort({ planDate: -1, createdAt: -1 });
+
+        if (!record) return null;
+        return this.operationPlanMap.toDomain(record);
+    }
+
 }

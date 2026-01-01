@@ -296,6 +296,10 @@ export default {
                 name: "UpdateVVEActualBerthAndDockController",
                 path: "../controllers/vve/updateVVEActualBerthAndDockController",
             },
+            updateExecutedOperations: {
+                name: "UpdateVVEExecutedOperationsController",
+                path: "../controllers/vve/updateVVEExecutedOperationsController"
+            },
         },
 
         operationPlan: {

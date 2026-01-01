@@ -19,6 +19,21 @@ export interface IVesselVisitExecutionPersistence {
         note?: string;
     }>;
 
+    executedOperations?: Array<{
+        plannedOperationId: string;
+        actualStart?: Date;
+        actualEnd?: Date;
+        resourcesUsed?: Array<{
+            resourceId: string;
+            quantity?: number;
+            hours?: number;
+        }>;
+        status: "started" | "completed" | "delayed";
+        note?: string;
+        updatedAt: Date;
+        updatedBy: string;
+    }>;
+
     creatorEmail: string;
     status: string;
 }

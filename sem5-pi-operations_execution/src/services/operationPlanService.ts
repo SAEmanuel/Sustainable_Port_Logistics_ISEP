@@ -9,7 +9,6 @@ import OperationPlanChangeLogRepo from "../repos/operationPlanChangeLogRepo";
 import { checkPlanInconsistencies } from "./operationPlanConsistencyChecker";
 import { IUpdateOperationPlanBatchDTO, IUpdateOperationPlanBatchResultDTO } from "../dto/IUpdateOperationPlanBatchDTO";
 
-
 @Service()
 export default class OperationPlanService {
     constructor(

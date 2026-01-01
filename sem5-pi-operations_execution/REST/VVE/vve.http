@@ -35,3 +35,32 @@ Content-Type: application/json
   "actualDockId": "DOCK-8",
   "updaterEmail": "emanuel@isep.ipp.pt"
 }
+
+### Atualizar executed operations de um VVE (In Progress)
+PUT http://localhost:3000/api/vve/6153757c-4db4-4e7b-bb92-e1eebe2264d3/executed-operations
+Content-Type: application/json
+
+{
+  "operatorId": "emanuel@isep.ipp.pt",
+  "operations": [
+    {
+      "plannedOperationId": "OP-001",
+      "actualStart": "2025-05-20T12:15:00Z",
+      "actualEnd": "2025-05-20T12:50:00Z",
+      "resourcesUsed": [
+        { "resourceId": "CRANE-2", "hours": 0.6 },
+        { "resourceId": "TEAM-A", "quantity": 4 }
+      ],
+      "note": "Operação executada sem incidentes",
+      "status": "completed"
+    },
+    {
+      "plannedOperationId": "OP-002",
+      "actualStart": "2025-05-20T13:10:00Z",
+      "resourcesUsed": [
+        { "resourceId": "FORKLIFT-1", "hours": 0.5 }
+      ],
+      "status": "started"
+    }
+  ]
+}

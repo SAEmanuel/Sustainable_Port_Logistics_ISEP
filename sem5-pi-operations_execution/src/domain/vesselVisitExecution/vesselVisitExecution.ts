@@ -4,6 +4,7 @@ import { VesselVisitExecutionCode } from "./vesselVisitExecutionCode";
 import { VesselVisitExecutionId } from "./vesselVisitExecutionId";
 import { Guard } from "../../core/logic/Guard";
 import { BusinessRuleValidationError } from "../../core/logic/BusinessRuleValidationError";
+import { ExecutedOperation, OperationExecutionStatus } from "./executedOperation";
 
 interface VesselVisitExecutionProps {
     code: VesselVisitExecutionCode;
@@ -25,6 +26,7 @@ interface VesselVisitExecutionProps {
         changes?: any;
         note?: string;
     }>;
+    executedOperations?: ExecutedOperation[];
 }
 
 
@@ -95,7 +97,8 @@ export class VesselVisitExecution extends AggregateRoot<VesselVisitExecutionProp
 
         return new VesselVisitExecution({
             ...props,
-            auditLog: props.auditLog ?? []
+            auditLog: props.auditLog ?? [],
+            executedOperations: props.executedOperations ?? []
         }, id);
     }
 
@@ -113,6 +116,10 @@ export class VesselVisitExecution extends AggregateRoot<VesselVisitExecutionProp
 
     get updatedAt(): Date | undefined {
         return this.props.updatedAt;
+    }
+
+    get executedOperations(): ExecutedOperation[] {
+        return this.props.executedOperations ?? [];
     }
 
     get auditLog(): any[] {
@@ -163,6 +170,73 @@ export class VesselVisitExecution extends AggregateRoot<VesselVisitExecutionProp
                 to: { actualBerthTime: berthTime, actualDockId: dockId }
             },
             note: discrepancyNote
+        });
+    }
+
+    public updateExecutedOperations(
+        operations: Array<{
+            plannedOperationId: string;
+            actualStart?: Date;
+            actualEnd?: Date;
+            resourcesUsed?: Array<{ resourceId: string; quantity?: number; hours?: number }>;
+            note?: string;
+            status?: OperationExecutionStatus;
+        }>,
+        operatorId: string
+    ): void {
+        if (this.props.status !== "In Progress") {
+            throw new BusinessRuleValidationError(
+                "Invalid status",
+                "Only 'In Progress' VVEs can be updated with executed operations."
+            );
+        }
+
+        if (!operations || operations.length === 0) {
+            throw new BusinessRuleValidationError(
+                "Invalid operations",
+                "At least one executed operation must be provided."
+            );
+        }
+
+        const now = new Date();
+
+        const previous = (this.props.executedOperations ?? []).map(o => ({ ...o }));
+        const current = this.props.executedOperations ?? [];
+
+        for (const op of operations) {
+            if (!op.plannedOperationId) {
+                throw new BusinessRuleValidationError("Invalid operation", "plannedOperationId is required.");
+            }
+
+            const status: OperationExecutionStatus =
+                op.status ?? (op.actualEnd ? "completed" : op.actualStart ? "started" : "started");
+
+            const idx = current.findIndex(x => x.plannedOperationId === op.plannedOperationId);
+
+            const updated: ExecutedOperation = {
+                plannedOperationId: op.plannedOperationId,
+                actualStart: op.actualStart,
+                actualEnd: op.actualEnd,
+                resourcesUsed: op.resourcesUsed ?? [],
+                status,
+                note: op.note,
+                updatedAt: now,
+                updatedBy: operatorId
+            };
+
+            if (idx >= 0) current[idx] = updated;
+            else current.push(updated);
+        }
+
+        this.props.executedOperations = current;
+        this.props.updatedAt = now;
+
+        this.props.auditLog = this.props.auditLog ?? [];
+        this.props.auditLog.push({
+            at: now,
+            by: operatorId,
+            action: "UPDATE_EXECUTED_OPERATIONS",
+            changes: { from: previous, to: this.props.executedOperations }
         });
     }
 

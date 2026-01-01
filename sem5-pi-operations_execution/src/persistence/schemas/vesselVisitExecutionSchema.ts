@@ -27,6 +27,30 @@ const VesselVisitExecutionSchema = new mongoose.Schema(
             ],
             default: [],
         },
+        executedOperations: {
+            type: [
+                {
+                    plannedOperationId: { type: String, required: true },
+                    actualStart: { type: Date, required: false },
+                    actualEnd: { type: Date, required: false },
+                    resourcesUsed: {
+                        type: [
+                            {
+                                resourceId: { type: String, required: true },
+                                quantity: { type: Number, required: false },
+                                hours: { type: Number, required: false },
+                            },
+                        ],
+                        default: [],
+                    },
+                    status: { type: String, required: true },
+                    note: { type: String, required: false },
+                    updatedAt: { type: Date, required: true },
+                    updatedBy: { type: String, required: true },
+                },
+            ],
+            default: [],
+        },
 
         creatorEmail: { type: String, required: true },
         status: { type: String, required: true },

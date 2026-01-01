@@ -11,6 +11,7 @@ import VvnService from "./ExternalData/vvnService";
 import VesselVisitExecutionMap from "../mappers/VesselVisitExecutionMap";
 import {VesselVisitExecutionId} from "../domain/vesselVisitExecution/vesselVisitExecutionId";
 import {VVEError} from "../domain/vesselVisitExecution/errors/vveErrors";
+import OperationPlanRepo from "../repos/operationPlanRepo";
 import {CTError} from "../domain/complementaryTask/errors/ctErrors";
 
 @Service()
@@ -27,8 +28,11 @@ export default class VesselVisitExecutionService implements IVesselVisitExecutio
         private logger: Logger,
 
         @Inject('VesselVisitExecutionMap')
-        private vesselVisitExecutionMap: VesselVisitExecutionMap
-    ) {}
+        private vesselVisitExecutionMap: VesselVisitExecutionMap,
+        
+        @Inject("OperationPlanRepo")
+        private operationPlanRepo: OperationPlanRepo
+) {}
 
     public async createAsync(dto: IVesselVisitExecutionDTO): Promise<Result<IVesselVisitExecutionDTO>> {
         this.logger.info("Creating Vessel Visit Execution (VVE)");
@@ -175,6 +179,95 @@ export default class VesselVisitExecutionService implements IVesselVisitExecutio
             plannedDockId,
             updaterEmail
         });
+
+        return Result.ok(this.vesselVisitExecutionMap.toDTO(vve));
+    }
+
+    public async updateExecutedOperationsAsync(
+        id: VesselVisitExecutionId,
+        operations: Array<{
+            plannedOperationId: string;
+            actualStart?: string | Date;
+            actualEnd?: string | Date;
+            resourcesUsed?: Array<{ resourceId: string; quantity?: number; hours?: number }>;
+            note?: string;
+            status?: "started" | "completed" | "delayed";
+        }>,
+        operatorId: string
+    ): Promise<Result<IVesselVisitExecutionDTO>> {
+
+        const vve = await this.repo.findById(id);
+        if (!vve) {
+            throw new BusinessRuleValidationError(
+                VVEError.NotFound,
+                "VVE not found",
+                `No VVE found with id ${id}`
+            );
+        }
+
+        const normalizedOps = operations.map(op => ({
+            plannedOperationId: op.plannedOperationId,
+            actualStart: op.actualStart ? new Date(op.actualStart) : undefined,
+            actualEnd: op.actualEnd ? new Date(op.actualEnd) : undefined,
+            resourcesUsed: op.resourcesUsed ?? [],
+            note: op.note,
+            status: op.status
+        }));
+
+        vve.updateExecutedOperations(normalizedOps, operatorId);
+
+        await this.repo.save(vve);
+
+        const plan = await this.operationPlanRepo.findLatestByVvnId(vve.vvnId);
+
+        if (plan) {
+            const now = Date.now();
+
+            const plannedOps = plan.operations.filter(o => o.vvnId === vve.vvnId);
+
+            const executedByKey = new Map<string, any>();
+            for (const ex of vve.executedOperations) {
+                executedByKey.set(ex.plannedOperationId, ex);
+            }
+
+            const updatedPlannedOps = plannedOps.map(op => {
+                const key = `${op.vvnId}:${op.startTime}`;
+                const ex = executedByKey.get(key);
+
+                if (!ex) return op;
+
+                const actualStartTime = ex.actualStart ? new Date(ex.actualStart).getTime() : undefined;
+                const actualEndTime = ex.actualEnd ? new Date(ex.actualEnd).getTime() : undefined;
+
+                let executionStatus: "started" | "completed" | "delayed" =
+                    ex.status ?? (actualEndTime ? "completed" : "started");
+
+                if (actualEndTime !== undefined && op.endTime !== undefined && actualEndTime > op.endTime) {
+                    executionStatus = "delayed";
+                }
+
+                return {
+                    ...op,
+                    executionStatus,
+                    actualStartTime,
+                    actualEndTime,
+                    resourcesUsed: ex.resourcesUsed ?? [],
+                    executionUpdatedAt: now,
+                    executionUpdatedBy: ex.updatedBy,
+                    executionNote: ex.note
+                };
+            });
+
+            const updateResult = plan.updateForVvn(vve.vvnId, updatedPlannedOps);
+
+            if (updateResult.isSuccess) {
+                await this.operationPlanRepo.save(plan);
+            } else {
+                this.logger.warn("Could not sync execution to operation plan", {
+                    vvnId: vve.vvnId
+                });
+            }
+        }
 
         return Result.ok(this.vesselVisitExecutionMap.toDTO(vve));
     }

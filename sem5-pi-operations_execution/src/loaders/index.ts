@@ -82,7 +82,7 @@ export default async ({expressApp}: { expressApp: express.Application }) => {
             config.controllers.vesselVisitExecution.getByImo,
             config.controllers.vesselVisitExecution.getInRange,
             config.controllers.vesselVisitExecution.updateBerthDock,
-
+            config.controllers.vesselVisitExecution.updateExecutedOperations,
 
             // Incident controllers
             config.controllers.incident.create,

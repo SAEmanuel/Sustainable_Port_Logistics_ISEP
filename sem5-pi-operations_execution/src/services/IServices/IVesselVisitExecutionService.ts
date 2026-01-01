@@ -22,4 +22,17 @@ export default interface IVesselVisitExecutionService {
         actualDockId: string,
         updaterEmail: string
     ): Promise<Result<IVesselVisitExecutionDTO>>;
+
+    updateExecutedOperationsAsync(
+        id: VesselVisitExecutionId,
+        operations: Array<{
+            plannedOperationId: string;
+            actualStart?: string | Date;
+            actualEnd?: string | Date;
+            resourcesUsed?: Array<{ resourceId: string; quantity?: number; hours?: number }>;
+            note?: string;
+            status?: "started" | "completed" | "delayed";
+        }>,
+        operatorId: string
+    ): Promise<Result<IVesselVisitExecutionDTO>>;
 }

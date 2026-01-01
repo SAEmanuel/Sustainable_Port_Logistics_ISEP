@@ -20,6 +20,7 @@ export default class VesselVisitExecutionMap extends Mapper<VesselVisitExecution
             dockDiscrepancyNote: vve.dockDiscrepancyNote,
             updatedAt: vve.updatedAt,
             auditLog: vve.auditLog,
+            executedOperations: vve.executedOperations,
 
             status: vve.status,
             creatorEmail: vve.creatorEmail
@@ -41,11 +42,22 @@ export default class VesselVisitExecutionMap extends Mapper<VesselVisitExecution
                 actualDockId: vve.actualDockId,
                 dockDiscrepancyNote: vve.dockDiscrepancyNote,
                 updatedAt: vve.updatedAt ? new Date(vve.updatedAt) : undefined,
-                auditLog: vve.auditLog ?? []
+                auditLog: vve.auditLog ?? [],
+
+                executedOperations: (vve.executedOperations ?? []).map((op: any) => ({
+                    plannedOperationId: op.plannedOperationId,
+                    actualStart: op.actualStart ? new Date(op.actualStart) : undefined,
+                    actualEnd: op.actualEnd ? new Date(op.actualEnd) : undefined,
+                    resourcesUsed: op.resourcesUsed ?? [],
+                    status: op.status,
+                    note: op.note,
+                    updatedAt: op.updatedAt ? new Date(op.updatedAt) : new Date(),
+                    updatedBy: op.updatedBy
+                }))
             },
             new UniqueEntityID(vve.domainId)
         );
-        
+
         return vveOrError;
     }
 
@@ -62,6 +74,7 @@ export default class VesselVisitExecutionMap extends Mapper<VesselVisitExecution
             dockDiscrepancyNote: vve.dockDiscrepancyNote,
             updatedAt: vve.updatedAt,
             auditLog: vve.auditLog,
+            executedOperations: vve.executedOperations,
 
             creatorEmail: vve.props.creatorEmail,
             status: vve.status,
