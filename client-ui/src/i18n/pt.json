@@ -1819,6 +1819,18 @@
     "applyErrorNotify": "Erro ao aplicar as alterações. Por favor, tente novamente.",
     "decisions": {
       "no-change" : "Sem alteração"
+    },
+    "history": {
+      "title": "Histórico de Reatribuições de Doca",
+      "description": "Registo de todas as alterações de doca efetuadas através do sistema de rebalanceamento.",
+      "timestamp": "Data/Hora",
+      "vessel": "Navio",
+      "reassignment": "Alteração de Doca",
+      "officer": "Oficial Responsável",
+      "empty": "Não foram encontrados registos de reatribuição.",
+      "close": "Fechar",
+      "viewHistory": "Ver Histórico de Alterações",
+      "loadError": "Erro ao carregar o histórico."
     }
   }
 }

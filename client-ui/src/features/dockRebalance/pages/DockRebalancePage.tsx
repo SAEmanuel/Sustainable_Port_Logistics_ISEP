@@ -4,13 +4,13 @@ import { useTranslation } from 'react-i18next';
 import { useAppStore } from "../../../app/store";
 import {
     Container, Title, Text, Group, Button, Stack, Grid, ThemeIcon, Paper,
-    LoadingOverlay, Box, RingProgress, Center, ActionIcon
+    LoadingOverlay, Box, RingProgress, Center, ActionIcon, Modal, Table, ScrollArea, Badge, Divider
 } from '@mantine/core';
 import {
-    IconRocket, IconAnalyze, IconScale, IconTrendingUp, IconArrowLeft, IconDeviceFloppy
+    IconRocket, IconAnalyze, IconScale, IconTrendingUp, IconArrowLeft, IconDeviceFloppy, IconHistory
 } from '@tabler/icons-react';
 
-import { getDockRebalanceProposal, createDockReassignmentLog } from '../services/dockRebalanceService';
+import { getDockRebalanceProposal, createDockReassignmentLog, getAllDockReassignmentLog } from '../services/dockRebalanceService';
 import { mapToDockRebalanceDomain } from '../mappers/dockRebalanceMapper';
 import type { DockRebalanceFinal } from '../domain/dockRebalance';
 import { RebalanceTable } from '../components/RebalanceTable';
@@ -19,11 +19,12 @@ import { notifyError, notifySuccess, notifyInfo } from '../../../utils/notify';
 import type { UpdateVesselVisitNotificationDto } from "../../vesselVisitNotification/types/vvnTypes.ts";
 import { updateVvn } from "../../vesselVisitNotification/service/vvnService.ts";
 import type { DockReassignmentLogDTO } from '../dto/dockReassignmentLogDTO';
+import type { DockReassignmentLog } from '../domain/dockReassignmentLog';
 
 const PRIMARY_COLOR = "#2a9d8f";
 
 export const DockRebalancePage = () => {
-    const { t } = useTranslation();
+    const { t, i18n } = useTranslation();
 
     const currentOfficerId = useAppStore((s) => s.user?.email) || "Unknown";
 
@@ -31,6 +32,11 @@ export const DockRebalancePage = () => {
     const [data, setData] = useState<DockRebalanceFinal | null>(null);
     const [loading, setLoading] = useState(false);
     const [applying, setApplying] = useState(false);
+
+    // Estados para o Modal de Histórico
+    const [historyOpened, setHistoryOpened] = useState(false);
+    const [logs, setLogs] = useState<DockReassignmentLog[]>([]);
+    const [loadingLogs, setLoadingLogs] = useState(false);
 
     const handleCompute = async () => {
         setLoading(true);
@@ -43,6 +49,19 @@ export const DockRebalancePage = () => {
             notifyError(t('dockRebalance.errorNotify'));
         } finally {
             setLoading(false);
+        }
+    };
+
+    const handleViewHistory = async () => {
+        setLoadingLogs(true);
+        try {
+            const res = await getAllDockReassignmentLog();
+            setLogs(res);
+            setHistoryOpened(true);
+        } catch (err) {
+            notifyError(t('dockRebalance.history.loadError'));
+        } finally {
+            setLoadingLogs(false);
         }
     };
 
@@ -104,6 +123,83 @@ export const DockRebalancePage = () => {
 
     return (
         <Container size="xl" py="xl">
+            {/* MODAL DE HISTÓRICO */}
+            <Modal
+                opened={historyOpened}
+                onClose={() => setHistoryOpened(false)}
+                title={
+                    <Group gap="xs">
+                        <IconHistory size={20} color={PRIMARY_COLOR} />
+                        <Text fw={700} size="lg">{t('dockRebalance.history.title')}</Text>
+                    </Group>
+                }
+                centered
+                size={900}
+                overlayProps={{ blur: 2 }}
+            >
+                <Stack gap="md">
+                    <Text size="sm" c="dimmed">
+                        {t('dockRebalance.history.description')}
+                    </Text>
+
+                    <Divider />
+
+                    <Box style={{ border: '1px solid var(--mantine-color-default-border)', borderRadius: '8px', overflow: 'hidden' }}>
+                        <ScrollArea h={450} type="auto">
+                            <Table striped highlightOnHover>
+                                <Table.Thead bg="var(--mantine-color-default-hover)">
+                                    <Table.Tr>
+                                        <Table.Th>{t('dockRebalance.history.timestamp')}</Table.Th>
+                                        <Table.Th>{t('dockRebalance.history.vessel')}</Table.Th>
+                                        <Table.Th>{t('dockRebalance.history.reassignment')}</Table.Th>
+                                        <Table.Th>{t('dockRebalance.history.officer')}</Table.Th>
+                                    </Table.Tr>
+                                </Table.Thead>
+                                <Table.Tbody>
+                                    {logs.length > 0 ? logs.map((log, i) => (
+                                        <Table.Tr key={log.id || i}>
+                                            <Table.Td>
+                                                <Text size="xs">
+                                                    {new Date(log.timestamp).toLocaleString(i18n.language === 'pt' ? 'pt-PT' : 'en-US')}
+                                                </Text>
+                                            </Table.Td>
+                                            <Table.Td>
+                                                <Text fw={700} size="sm">{log.vesselName}</Text>
+                                            </Table.Td>
+                                            <Table.Td>
+                                                <Group gap={6} wrap="nowrap">
+                                                    <Badge variant="light" color="gray" size="sm">{log.originalDock}</Badge>
+                                                    <IconScale size={14} style={{ opacity: 0.5 }} />
+                                                    <Badge variant="filled" color="teal" size="sm">{log.updatedDock}</Badge>
+                                                </Group>
+                                            </Table.Td>
+                                            <Table.Td>
+                                                <Text size="xs" fw={500}>{log.officerId}</Text>
+                                            </Table.Td>
+                                        </Table.Tr>
+                                    )) : (
+                                        <Table.Tr>
+                                            <Table.Td colSpan={4}>
+                                                <Center py="xl">
+                                                    <Text c="dimmed">{t('dockRebalance.history.empty')}</Text>
+                                                </Center>
+                                            </Table.Td>
+                                        </Table.Tr>
+                                    )}
+                                </Table.Tbody>
+                            </Table>
+                        </ScrollArea>
+                    </Box>
+
+                    <Group justify="flex-end" mt="md">
+                        <Button variant="default" onClick={() => setHistoryOpened(false)}>
+                            {t('dockRebalance.history.close')}
+                        </Button>
+                    </Group>
+                </Stack>
+            </Modal>
+
+            {/* HEADER */}
             <Group justify="space-between" mb="xl" pb="md" style={{ borderBottom: `1px solid var(--mantine-color-default-border)` }}>
                 <Group gap="sm">
                     <ActionIcon component={Link} to="/dashboard" variant="subtle" color="gray" size="xl">
@@ -151,7 +247,7 @@ export const DockRebalancePage = () => {
             </Group>
 
             <Box style={{ position: 'relative', minHeight: 400 }}>
-                <LoadingOverlay visible={loading || applying} overlayProps={{ blur: 2 }} />
+                <LoadingOverlay visible={loading || applying || loadingLogs} overlayProps={{ blur: 2 }} />
 
                 {data && (
                     <Stack gap="xl">
@@ -227,8 +323,20 @@ export const DockRebalancePage = () => {
 
                 {!data && !loading && !applying && (
                     <Paper withBorder p={100} radius="md" style={{ textAlign: 'center', borderStyle: 'dashed' }}>
-                        <IconAnalyze size={48} color="var(--mantine-color-gray-5)" />
-                        <Text c="dimmed">{t('dockRebalance.emptyState')}</Text>
+                        <Stack align="center" gap="sm">
+                            <IconAnalyze size={48} color="var(--mantine-color-gray-5)" />
+                            <Text c="dimmed">{t('dockRebalance.emptyState')}</Text>
+                            <Button
+                                variant="outline"
+                                color="gray"
+                                mt="md"
+                                leftSection={<IconHistory size={18} />}
+                                onClick={handleViewHistory}
+                                loading={loadingLogs}
+                            >
+                                {t('dockRebalance.history.viewHistory')}
+                            </Button>
+                        </Stack>
                     </Paper>
                 )}
             </Box>

@@ -1822,6 +1822,18 @@
     "applyErrorNotify": "Error applying changes. Please try again.",
     "decisions": {
       "no-change" : "No changes"
+    },
+    "history": {
+      "title": "Dock Reassignment History",
+      "description": "Record of all dock changes made through the rebalancing system.",
+      "timestamp": "Date/Time",
+      "vessel": "Vessel",
+      "reassignment": "Dock Change",
+      "officer": "Responsible Officer",
+      "empty": "No reassignment records found.",
+      "close": "Close",
+      "viewHistory": "View Change History",
+      "loadError": "Error loading history."
     }
   }
 }

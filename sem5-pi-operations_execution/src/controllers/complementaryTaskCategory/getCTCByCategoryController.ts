@@ -3,7 +3,7 @@ import { BaseController } from "../../core/infra/BaseController";
 import IComplementaryTaskCategoryService from "../../services/IServices/IComplementaryTaskCategoryService";
 import { Logger } from "winston";
 import { BusinessRuleValidationError } from "../../core/logic/BusinessRuleValidationError";
-import {Category, CategoryFactory} from "../../domain/complementaryTaskCategory/category";
+import {CategoryFactory} from "../../domain/complementaryTaskCategory/category";
 
 @Service()
 export default class GetCTCByCategoryController extends BaseController {
