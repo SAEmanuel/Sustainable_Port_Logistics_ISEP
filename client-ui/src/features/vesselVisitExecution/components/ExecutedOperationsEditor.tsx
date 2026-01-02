@@ -405,11 +405,7 @@ export function ExecutedOperationsEditor(props: { vveId: string; vvnId: string; 
                                 <Accordion.Control>
                                     <Group justify="space-between" w="100%">
                                         <Text fw={700}>Operação #{idx + 1}</Text>
-
                                         <Group gap="xs">
-                                            <Badge variant="light" color="blue">
-                                                PLANEADO {plannedLabel(op)}
-                                            </Badge>
                                             {statusBadge(d.status)}
                                         </Group>
                                     </Group>
