@@ -358,11 +358,8 @@ export default {
         operationPlanChangeLog: {
             name: "OperationPlanChangeLogRepo",
             path: "../repos/operationPlanChangeLogRepo"
-        }
-        operationPlan: {
-            name: "OperationPlanRepo",
-            path: "../repos/operationPlanRepo"
         },
+
         dockReassignmentLog: {
             name: "DockReassignmentLogRepo",
             path: "../repos/dockReassignmentLogRepo"

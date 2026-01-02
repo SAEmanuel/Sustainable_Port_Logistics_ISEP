@@ -1,25 +1,40 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Container, Title, Text, Group, Button, Stack, Grid, ThemeIcon, Paper, LoadingOverlay, Box, RingProgress, Center, ActionIcon } from '@mantine/core';
-import { IconRocket, IconAnalyze, IconScale, IconTrendingUp, IconArrowLeft } from '@tabler/icons-react';
-import { getDockRebalanceProposal } from '../services/dockRebalanceService';
+import { useAppStore } from "../../../app/store";
+import {
+    Container, Title, Text, Group, Button, Stack, Grid, ThemeIcon, Paper,
+    LoadingOverlay, Box, RingProgress, Center, ActionIcon
+} from '@mantine/core';
+import {
+    IconRocket, IconAnalyze, IconScale, IconTrendingUp, IconArrowLeft, IconDeviceFloppy
+} from '@tabler/icons-react';
+
+import { getDockRebalanceProposal, createDockReassignmentLog } from '../services/dockRebalanceService';
 import { mapToDockRebalanceDomain } from '../mappers/dockRebalanceMapper';
 import type { DockRebalanceFinal } from '../domain/dockRebalance';
 import { RebalanceTable } from '../components/RebalanceTable';
 import { LoadComparisonTable } from '../components/LoadComparisonTable';
-import { notifyError, notifySuccess } from '../../../utils/notify';
+import { notifyError, notifySuccess, notifyInfo } from '../../../utils/notify';
+import type { UpdateVesselVisitNotificationDto } from "../../vesselVisitNotification/types/vvnTypes.ts";
+import { updateVvn } from "../../vesselVisitNotification/service/vvnService.ts";
+import type { DockReassignmentLogDTO } from '../dto/dockReassignmentLogDTO';
 
 const PRIMARY_COLOR = "#2a9d8f";
 
 export const DockRebalancePage = () => {
     const { t } = useTranslation();
+
+    const currentOfficerId = useAppStore((s) => s.user?.email) || "Unknown";
+
     const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
     const [data, setData] = useState<DockRebalanceFinal | null>(null);
     const [loading, setLoading] = useState(false);
+    const [applying, setApplying] = useState(false);
 
     const handleCompute = async () => {
         setLoading(true);
+        setData(null);
         try {
             const res = await getDockRebalanceProposal(date);
             setData(mapToDockRebalanceDomain(res));
@@ -30,6 +45,62 @@ export const DockRebalancePage = () => {
             setLoading(false);
         }
     };
+
+    const handleApplyChanges = async () => {
+        if (!data) return;
+
+        const movesToApply = data.results.filter(item => item.isMoved);
+
+        if (movesToApply.length === 0) {
+            notifyInfo(t('dockRebalance.noMovesToApply'));
+            return;
+        }
+
+        setApplying(true);
+        let successCount = 0;
+        let failCount = 0;
+
+        try {
+            for (const item of movesToApply) {
+                try {
+                    const updateDto: UpdateVesselVisitNotificationDto = {
+                        dock: item.proposedDock
+                    };
+                    await updateVvn(item.vvnId, updateDto);
+
+                    const logDto: DockReassignmentLogDTO = {
+                        vvnId: item.vvnId,
+                        vesselName: item.vesselName,
+                        originalDock: item.originalDock,
+                        updatedDock: item.proposedDock,
+                        officerId: currentOfficerId,
+                        timestamp: new Date().toISOString()
+                    };
+                    await createDockReassignmentLog(logDto);
+
+                    successCount++;
+                } catch (err: unknown) {
+                    failCount++;
+                    const axiosError = err as { response?: { data?: { error?: string } }; message?: string };
+                    const errorMsg = axiosError.response?.data?.error || axiosError.message || String(err);
+                    console.error(`Falha ao processar VVN ${item.vvnId}:`, errorMsg);
+                }
+            }
+
+            if (failCount === 0) {
+                notifySuccess(t('dockRebalance.applySuccessNotify', { count: successCount }));
+                setData(null);
+            } else if (successCount > 0) {
+                notifyInfo(`Processamento parcial: ${successCount} aplicados, ${failCount} falhas.`);
+            } else {
+                notifyError(t('dockRebalance.applyErrorNotify'));
+            }
+        } finally {
+            setApplying(false);
+        }
+    };
+
+    const hasMovesToApply = data?.results.some(item => item.isMoved);
 
     return (
         <Container size="xl" py="xl">
@@ -47,19 +118,22 @@ export const DockRebalancePage = () => {
                     </Stack>
                 </Group>
 
-                <Group align="flex-end">
+                <Group align="flex-end" gap="sm">
                     <Stack gap={4}>
                         <Text size="xs" fw={700} tt="uppercase" c="dimmed">{t('dockRebalance.dateLabel')}</Text>
                         <input
                             type="date"
                             value={date}
                             onChange={(e) => setDate(e.target.value)}
+                            disabled={loading || applying}
                             style={{
                                 padding: '8px',
                                 borderRadius: '8px',
                                 border: '1px solid var(--mantine-color-default-border)',
                                 backgroundColor: 'var(--mantine-color-default)',
-                                color: 'var(--mantine-color-text)'
+                                color: 'var(--mantine-color-text)',
+                                cursor: (loading || applying) ? 'not-allowed' : 'auto',
+                                opacity: (loading || applying) ? 0.7 : 1
                             }}
                         />
                     </Stack>
@@ -69,6 +143,7 @@ export const DockRebalancePage = () => {
                         size="md"
                         onClick={handleCompute}
                         loading={loading}
+                        disabled={applying}
                     >
                         {t('dockRebalance.computeButton')}
                     </Button>
@@ -76,10 +151,31 @@ export const DockRebalancePage = () => {
             </Group>
 
             <Box style={{ position: 'relative', minHeight: 400 }}>
-                <LoadingOverlay visible={loading} overlayProps={{ blur: 2 }} />
+                <LoadingOverlay visible={loading || applying} overlayProps={{ blur: 2 }} />
 
                 {data && (
                     <Stack gap="xl">
+                        <Paper withBorder p="md" radius="md" bg="var(--mantine-color-default-hover)">
+                            <Group justify="space-between">
+                                <div>
+                                    <Text fw={700}>{t('dockRebalance.applyChangesTitle')}</Text>
+                                    <Text size="sm" c="dimmed">
+                                        {t('dockRebalance.applyChangesSubtitle', { count: data.results.filter(i => i.isMoved).length })}
+                                    </Text>
+                                </div>
+                                <Button
+                                    color="teal"
+                                    size="md"
+                                    leftSection={<IconDeviceFloppy size={20} />}
+                                    onClick={handleApplyChanges}
+                                    loading={applying}
+                                    disabled={loading || !hasMovesToApply}
+                                >
+                                    {t('dockRebalance.applyButton')}
+                                </Button>
+                            </Group>
+                        </Paper>
+
                         <Grid grow gutter="md">
                             <Grid.Col span={{ base: 12, md: 4 }}>
                                 <Paper withBorder p="md" radius="md">
@@ -129,7 +225,7 @@ export const DockRebalancePage = () => {
                     </Stack>
                 )}
 
-                {!data && !loading && (
+                {!data && !loading && !applying && (
                     <Paper withBorder p={100} radius="md" style={{ textAlign: 'center', borderStyle: 'dashed' }}>
                         <IconAnalyze size={48} color="var(--mantine-color-gray-5)" />
                         <Text c="dimmed">{t('dockRebalance.emptyState')}</Text>

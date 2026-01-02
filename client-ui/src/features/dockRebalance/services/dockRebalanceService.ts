@@ -1,5 +1,8 @@
 import type { DockRebalanceFinalDto } from "../dto/dockRebalanceDTO";
-import { planningApi } from "../../../services/api";
+import {operationsApi, planningApi} from "../../../services/api";
+import type {DockReassignmentLogDTO} from "../dto/dockReassignmentLogDTO.ts";
+import type {DockReassignmentLog} from "../domain/dockReassignmentLog.ts";
+import {mapDockReassignmentLogToDomain} from "../mappers/dockReassignmentLogMapper.ts";
 
 
 export async function getDockRebalanceProposal(day: string): Promise<DockRebalanceFinalDto> {
@@ -8,4 +11,14 @@ export async function getDockRebalanceProposal(day: string): Promise<DockRebalan
     });
 
     return res.data;
+}
+
+export async function createDockReassignmentLog(dto: DockReassignmentLogDTO): Promise<DockReassignmentLog> {
+    const res = await operationsApi.post("/api/dock-reassignment-log", dto);
+    return mapDockReassignmentLogToDomain(res.data);
+}
+
+export async function getAllDockReassignmentLog(): Promise<DockReassignmentLog[]> {
+    const res = await operationsApi.get("/api/dock-reassignment-log");
+    return res.data.map(mapDockReassignmentLogToDomain);
 }

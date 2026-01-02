@@ -1811,6 +1811,12 @@
     "emptyState": "Selecione uma data para analisar o equilíbrio do porto.",
     "successNotify": "Otimização concluída.",
     "errorNotify": "Erro ao calcular rebalanceamento.",
+    "applyChangesTitle": "Aplicar Rebalanceamento",
+    "applyChangesSubtitle": "Esta ação atualizará a doca de {{count}} navios agendados.",
+    "applyButton": "Aplicar Alterações Sugeridas",
+    "noMovesToApply": "Não existem sugestões de mudança de doca para aplicar.",
+    "applySuccessNotify": "{{count}} alterações aplicadas com sucesso!",
+    "applyErrorNotify": "Erro ao aplicar as alterações. Por favor, tente novamente.",
     "decisions": {
       "no-change" : "Sem alteração"
     }

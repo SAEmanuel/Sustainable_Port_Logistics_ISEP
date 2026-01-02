@@ -1814,6 +1814,12 @@
     "emptyState": "Select a date to analyze port balance.",
     "successNotify": "Optimization completed.",
     "errorNotify": "Error computing rebalance.",
+    "applyChangesTitle": "Apply Rebalancing",
+    "applyChangesSubtitle": "This action will update the dock for {{count}} scheduled vessels.",
+    "applyButton": "Apply Suggested Changes",
+    "noMovesToApply": "There are no suggested dock changes to apply.",
+    "applySuccessNotify": "Successfully applied {{count}} changes!",
+    "applyErrorNotify": "Error applying changes. Please try again.",
     "decisions": {
       "no-change" : "No changes"
     }

@@ -2,7 +2,6 @@ import type { DockRebalanceFinal, RebalanceResultEntry } from "../domain/dockReb
 import type { DockRebalanceFinalDto } from "../dto/dockRebalanceDTO";
 
 export function mapToDockRebalanceDomain(dto: DockRebalanceFinalDto): DockRebalanceFinal {
-    // Cruzar candidatos com atribuições finais
     const results: RebalanceResultEntry[] = dto.candidates.map(candidate => {
         const assignment = dto.assignments.find(a => a.id === candidate.vvnId);
         const proposedDock = assignment ? assignment.dock : candidate.currentDock;
