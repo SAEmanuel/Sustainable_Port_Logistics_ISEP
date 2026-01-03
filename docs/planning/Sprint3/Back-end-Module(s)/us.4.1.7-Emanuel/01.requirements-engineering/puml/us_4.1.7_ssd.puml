@@ -1,0 +1,29 @@
+@startuml
+skinparam actorStyle awesome
+autonumber
+
+actor "Logistics Operator" as User
+participant "System (SPA)" as System
+
+title SSD - US 4.1.7: Create VVE (Record Arrival)
+
+' O fluxo assume que o utilizador já selecionou um VVN na UI
+User -> System : Record Arrival (vvnId, actualArrivalTime)
+activate System
+
+alt Success (201 Created)
+    ' O sistema cria o registo, gera o ID e define status "In Progress"
+    System --> User : 201 Created (VVE Details)
+   
+
+else Validation Error (400)
+    ' Ex: Data futura, VVN inválido, ou dados em falta
+    System --> User : 400 Bad Request
+
+else Unauthorized (401)
+    System --> User : 401 Unauthorized
+
+end
+
+deactivate System
+@enduml
