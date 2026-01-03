@@ -3,7 +3,6 @@ import { Container } from "typedi";
 import { celebrate, Joi } from "celebrate";
 import config from "../../config";
 
-
 import CreateComplementaryTaskCategoryController from "../../controllers/complementaryTaskCategory/createComplementaryTaskCategoryController";
 import UpdateComplementaryTaskCategoryController from "../../controllers/complementaryTaskCategory/updateComplementaryTaskCategoryController";
 import GetCTCByCodeController from "../../controllers/complementaryTaskCategory/getCTCByCodeController";
@@ -13,6 +12,8 @@ import GetCTCByCategoryController from "../../controllers/complementaryTaskCateg
 import ActivateComplementaryTaskCategoryController from "../../controllers/complementaryTaskCategory/activateComplementaryTaskCategoryController";
 import DeactivateComplementaryTaskCategoryController from "../../controllers/complementaryTaskCategory/deactivateComplementaryTaskCategoryController";
 import GetAllComplementaryTaskCategoryController from "../../controllers/complementaryTaskCategory/getAllComplementaryTaskCategoryController";
+import { Role } from "../../domain/user/role";
+import { requireRole } from "../middlewares/requireRole";
 
 const route = Router();
 
@@ -62,6 +63,7 @@ export default (app: Router) => {
 
     route.post(
         "/",
+        requireRole(Role.PortOperationsSupervisor),
         celebrate({
             body: Joi.object({
                 code: Joi.string().required(),
@@ -77,6 +79,7 @@ export default (app: Router) => {
 
     route.put(
         "/:code",
+        requireRole(Role.PortOperationsSupervisor),
         celebrate({
             body: Joi.object({
                 name: Joi.string().required(),
@@ -88,20 +91,23 @@ export default (app: Router) => {
         (req, res) => updateCtrl.execute(req, res)
     );
 
-
     route.get(
         "/",
+        requireRole(Role.PortOperationsSupervisor,Role.LogisticsOperator),
         (req, res) => getAllCtrl.execute(req, res)
     );
 
 
     route.get(
         "/:code",
+        requireRole(Role.PortOperationsSupervisor,Role.LogisticsOperator),
         (req, res) => getByCodeCtrl.execute(req, res)
     );
 
+
     route.get(
         "/search/name",
+        requireRole(Role.PortOperationsSupervisor),
         celebrate({
             query: Joi.object({
                 name: Joi.string().required()
@@ -110,8 +116,10 @@ export default (app: Router) => {
         (req, res) => getByNameCtrl.execute(req, res)
     );
 
+
     route.get(
         "/search/description",
+        requireRole(Role.PortOperationsSupervisor),
         celebrate({
             query: Joi.object({
                 description: Joi.string().required()
@@ -120,8 +128,10 @@ export default (app: Router) => {
         (req, res) => getByDescriptionCtrl.execute(req, res)
     );
 
+
     route.get(
         "/search/category",
+        requireRole(Role.PortOperationsSupervisor),
         celebrate({
             query: Joi.object({
                 category: Joi.string().required()
@@ -133,13 +143,20 @@ export default (app: Router) => {
 
     route.patch(
         "/:code/activate",
+        requireRole(Role.PortOperationsSupervisor),
         (req, res) => activateCtrl.execute(req, res)
     );
 
+
     route.patch(
         "/:code/deactivate",
+        requireRole(Role.PortOperationsSupervisor),
         (req, res) => deactivateCtrl.execute(req, res)
     );
 
-    route.get("/search/id/:id", (req, res) => getByIdCtrl.execute(req, res));
+    route.get(
+        "/search/id/:id",
+        requireRole(Role.PortOperationsSupervisor, Role.LogisticsOperator),
+        (req, res) => getByIdCtrl.execute(req, res)
+    );
 };

@@ -18,6 +18,9 @@ import GetScheduledCTController from "../../controllers/complementaryTask/getSch
 import GetCTByCategoryCodeController from "../../controllers/complementaryTask/getCTByCategoryCodeController";
 import GetCTByVveCodeController from "../../controllers/complementaryTask/getCTByVveCodeController";
 
+import { requireRole } from "../middlewares/requireRole";
+import { Role } from "../../domain/user/role";
+
 const route = Router();
 
 export default (app: Router) => {
@@ -38,8 +41,10 @@ export default (app: Router) => {
     const getScheduledCtrl = Container.get(config.controllers.complementaryTask.getScheduled.name) as GetScheduledCTController;
 
 
+
     route.post(
         "/",
+        requireRole(Role.LogisticsOperator),
         celebrate({
             body: Joi.object({
                 category: Joi.string().required(),
@@ -52,8 +57,10 @@ export default (app: Router) => {
     );
 
 
+
     route.put(
         "/:code",
+        requireRole(Role.LogisticsOperator),
         celebrate({
             body: Joi.object({
                 category: Joi.string().required(),
@@ -66,42 +73,64 @@ export default (app: Router) => {
         (req, res) => updateCtrl.execute(req, res)
     );
 
-    route.get("/search/completed", (req, res) => getCompletedCtrl.execute(req, res));
-    route.get("/search/in-progress", (req, res) => getInProgressCtrl.execute(req, res));
-    route.get("/search/scheduled", (req, res) => getScheduledCtrl.execute(req, res));
+
+
+    route.get(
+        "/search/completed",
+        requireRole(Role.LogisticsOperator, Role.PortOperationsSupervisor),
+        (req, res) => getCompletedCtrl.execute(req, res)
+    );
+
+    route.get(
+        "/search/in-progress",
+        requireRole(Role.LogisticsOperator, Role.PortOperationsSupervisor),
+        (req, res) => getInProgressCtrl.execute(req, res)
+    );
+
+    route.get(
+        "/search/scheduled",
+        requireRole(Role.LogisticsOperator, Role.PortOperationsSupervisor),
+        (req, res) => getScheduledCtrl.execute(req, res)
+    );
 
     route.get(
         "/search/category",
+        requireRole(Role.LogisticsOperator, Role.PortOperationsSupervisor),
         celebrate({ query: Joi.object({ category: Joi.string().required() }) }),
         (req, res) => getByCategoryCtrl.execute(req, res)
     );
 
     route.get(
         "/search/categoryCode",
+        requireRole(Role.LogisticsOperator, Role.PortOperationsSupervisor),
         celebrate({ query: Joi.object({ category: Joi.string().required() }) }),
         (req, res) => getByCategoryCodeCtrl.execute(req, res)
     );
 
     route.get(
         "/search/staff",
+        requireRole(Role.LogisticsOperator, Role.PortOperationsSupervisor),
         celebrate({ query: Joi.object({ staff: Joi.string().required() }) }),
         (req, res) => getByStaffCtrl.execute(req, res)
     );
 
     route.get(
         "/search/vve",
+        requireRole(Role.LogisticsOperator, Role.PortOperationsSupervisor),
         celebrate({ query: Joi.object({ vve: Joi.string().required() }) }),
         (req, res) => getByVveCtrl.execute(req, res)
     );
 
     route.get(
         "/search/vveCode",
+        requireRole(Role.LogisticsOperator, Role.PortOperationsSupervisor),
         celebrate({ query: Joi.object({ vve: Joi.string().required() }) }),
         (req, res) => getByVveCodeCtrl.execute(req, res)
     );
 
     route.get(
         "/search/in-range",
+        requireRole(Role.LogisticsOperator, Role.PortOperationsSupervisor),
         celebrate({
             query: Joi.object({
                 timeStart: Joi.number().required(),
@@ -112,6 +141,15 @@ export default (app: Router) => {
     );
 
 
-    route.get("/", (req, res) => getAllCtrl.execute(req, res));
-    route.get("/search/code/:code", (req, res) => getByCodeCtrl.execute(req, res));
+    route.get(
+        "/",
+        requireRole(Role.LogisticsOperator, Role.PortOperationsSupervisor),
+        (req, res) => getAllCtrl.execute(req, res)
+    );
+
+    route.get(
+        "/search/code/:code",
+        requireRole(Role.LogisticsOperator, Role.PortOperationsSupervisor),
+        (req, res) => getByCodeCtrl.execute(req, res)
+    );
 };

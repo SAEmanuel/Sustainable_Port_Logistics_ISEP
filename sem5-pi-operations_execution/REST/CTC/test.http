@@ -26,7 +26,7 @@ Content-Type: application/json
 
 ###
 GET http://localhost:3000/api/complementary-task-categories
-
+x-user-email: xico.mofreitasantos@gmail.com
 ###
 GET http://localhost:3000/api/complementary-task-categories/CTC001
 
