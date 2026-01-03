@@ -1,0 +1,85 @@
+@startuml
+skinparam monochrome true
+skinparam shadowing false
+title Sequence Diagram (Design) – US 4.1.2: Store Operation Plan
+
+actor "Logistics Operator" as Operator
+boundary "SPA" as SPA
+boundary "OperationPlan Routes" as Routes
+control "CreateOperationPlanController" as Ctrl
+control "OperationPlanService" as Svc
+entity "OperationPlan (Domain)" as Domain
+entity "OperationPlanRepo" as Repo
+participant "OperationPlanMap" as Map
+database "MongoDB" as DB
+
+== Store Generated Plan ==
+
+' O operador já visualizou o plano e agora confirma
+Operator -> SPA : Confirm & Save Plan
+SPA -> Routes : POST /api/operation-plans
+
+Routes -> Routes : Middleware: Authentication
+
+alt Authorized
+    Routes -> Ctrl : execute(req, res)
+    activate Ctrl
+
+    ' Lógica específica do Controller que vimos no código
+    Ctrl -> Ctrl : Determine Author
+    
+    Ctrl -> Ctrl : Prepare DTO
+    
+    Ctrl -> Svc : createPlanAsync(dto)
+    activate Svc
+
+    ' 1. Criar o objeto de domínio
+    Svc -> Domain : create(props)
+    activate Domain
+
+    Domain --> Svc : Result<OperationPlan>
+    deactivate Domain
+
+    alt Plan Created Successfully
+        
+        ' 2. Persistir
+        Svc -> Repo : save(operationPlan)
+        activate Repo
+        
+        Repo -> Map : toPersistence(operationPlan)
+        activate Map
+        Map --> Repo : rawSchema
+        deactivate Map
+
+        Repo -> DB : save(rawSchema)
+        DB --> Repo : success
+        
+        Repo --> Svc : operationPlan
+        deactivate Repo
+
+        ' 3. Retornar DTO
+        Svc -> Map : toDTO(operationPlan)
+        activate Map
+        Map --> Svc : planDTO
+        deactivate Map
+
+        Svc --> Ctrl : Result.ok(planDTO)
+        deactivate Svc
+
+        Ctrl --> SPA : 200 OK (JSON)
+        deactivate Ctrl
+
+    else Domain Validation Error
+        activate Svc
+        Svc --> Ctrl : Result.fail(error)
+        deactivate Svc
+        activate Ctrl
+        Ctrl --> SPA : 400 Bad Request
+        deactivate Ctrl
+    end
+
+else Unauthorized
+    Routes --> SPA : 401 Unauthorized
+end
+
+@enduml
