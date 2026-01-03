@@ -1,0 +1,22 @@
+@startuml
+skinparam actorStyle awesome
+autonumber
+
+actor "LogisticsOperator" as User
+participant "System" as System
+
+title SSD: Search VVE in Date Range
+
+User -> System : GET /vve/range?start={startDate}&end={endDate}
+activate System
+
+alt Success Case
+    System --> User : 200 OK (List of VVEs)
+else Invalid Date Format / Missing Parameters
+    System --> User : 400 Bad Request
+else Unauthorized (Incorrect Role)
+    System --> User : 401 Unauthorized / 403 Forbidden
+end
+
+deactivate System
+@enduml

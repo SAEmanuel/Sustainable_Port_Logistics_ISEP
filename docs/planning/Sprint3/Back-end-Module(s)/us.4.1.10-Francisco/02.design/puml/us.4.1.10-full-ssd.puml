@@ -1,0 +1,60 @@
+@startuml
+skinparam monochrome true
+skinparam shadowing false
+title Sequence Diagram (Full) – US: Search VVEs in a Range
+
+actor "Logistics Operator" as Operator
+boundary "SPA" as SPA
+boundary "VVE Routes" as Routes
+control "GetVVEInRangeController" as Ctrl
+control "VVEService" as Svc
+entity "VVERepo" as Repo
+entity "VVEMap" as Map
+database "MongoDB (Mongoose)" as DB
+
+== Search VVEs by Date Range ==
+
+Operator -> SPA : Select dates + Search
+SPA -> Routes : GET /vve/range?start={startDate}&end={endDate}
+Routes -> Routes : celebrate/Joi Validation
+note right: Validates date formats in query params
+
+alt Authorized
+    Routes -> Ctrl : execute(req, res)
+    activate Ctrl
+
+    Ctrl -> Svc : getInRangeAsync(startDate, endDate)
+    activate Svc
+
+    Svc -> Repo : findInRange(startDate, endDate)
+    activate Repo
+    
+    Repo -> DB : find({ actualArrival: { $gte: start, $lte: end } })
+    note right: Query logic based on VVE schema
+    DB --> Repo : vveDocs[]
+    
+    Repo -> Map : toDomain(vveDocs[i])
+    activate Map
+    Map --> Repo : vveEntities[]
+    deactivate Map
+    
+    Repo --> Svc : vveEntities[]
+    deactivate Repo
+
+    Svc -> Map : toDTO(vveEntities[i])
+    activate Map
+    Map --> Svc : vveDTOs[]
+    deactivate Map
+
+    Svc --> Ctrl : Result.ok(vveDTOs)
+    deactivate Svc
+
+    Ctrl --> SPA : 200 OK\nList of VVE DTOs
+    deactivate Ctrl
+
+else Unauthorized / Forbidden
+    Routes --> SPA : 401 Unauthorized / 403 Forbidden
+    note right: Checked via requireRole middleware
+end
+
+@enduml
