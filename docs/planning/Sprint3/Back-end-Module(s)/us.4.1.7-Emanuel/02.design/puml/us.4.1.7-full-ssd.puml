@@ -1,0 +1,84 @@
+@startuml
+skinparam monochrome true
+skinparam shadowing false
+title Sequence Diagram (Design) – US 4.1.7: Create VVE Record
+
+actor "Logistics Operator" as Operator
+boundary "SPA" as SPA
+boundary "VVE Routes" as Routes
+control "CreateVVEController" as Ctrl
+control "VVEService" as Svc
+entity "VesselVisitExecution (Domain)" as Domain
+entity "VVERepo" as Repo
+participant "VVEMap" as Map
+database "MongoDB" as DB
+
+== Record Vessel Arrival ==
+
+Operator -> SPA : Select VVN & Confirm Arrival
+SPA -> Routes : POST /api/vve
+
+Routes -> Routes : Middleware: Auth Check
+
+alt Authorized
+    Routes -> Ctrl : execute(req, res)
+    activate Ctrl
+
+    ' Lógica do Controller
+    Ctrl -> Ctrl : Determine Creator
+
+    Ctrl -> Svc : createAsync(dto)
+    activate Svc
+
+    ' 1. Criação do Agregado (Domínio)
+    Svc -> Domain : create(props)
+    activate Domain
+    
+
+    
+    Domain --> Svc : Result<VVE>
+    deactivate Domain
+
+    alt Success
+        ' 2. Persistência
+        Svc -> Repo : save(vve)
+        activate Repo
+        
+        Repo -> Map : toPersistence(vve)
+        activate Map
+        Map --> Repo : rawData
+        deactivate Map
+
+        Repo -> DB : save(rawData)
+        note right: Automatic ID stored
+        DB --> Repo : success
+        
+        Repo --> Svc : vve
+        deactivate Repo
+
+        ' 3. Retorno
+        Svc -> Map : toDTO(vve)
+        activate Map
+        Map --> Svc : vveDTO
+        deactivate Map
+
+        Svc --> Ctrl : Result.ok(vveDTO)
+        deactivate Svc
+
+        Ctrl --> SPA : 201 Created (JSON)
+        deactivate Ctrl
+        
+    else Business Rule Violation
+        activate Svc
+        Svc --> Ctrl : Result.fail(error)
+        deactivate Svc
+        activate Ctrl
+        Ctrl --> SPA : 400 Bad Request
+        deactivate Ctrl
+    end
+
+else Unauthorized
+    Routes --> SPA : 401 Unauthorized
+end
+
+@enduml
