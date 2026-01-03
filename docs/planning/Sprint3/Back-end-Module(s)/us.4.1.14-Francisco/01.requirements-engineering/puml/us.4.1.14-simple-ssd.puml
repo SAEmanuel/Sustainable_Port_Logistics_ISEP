@@ -1,0 +1,86 @@
+@startuml
+skinparam actorStyle awesome
+autonumber
+
+actor "PortOperationsSupervisor" as User
+participant "System" as System
+
+title SSD: Complementary Task Category Management (with Authorization)
+
+== Creation and Modification ==
+
+User -> System : POST /complementary-task-categories (data)
+alt Authorized
+    System --> User : 201 Created / 400 Bad Request
+else Unauthorized
+    System --> User : 401 Unauthorized / 403 Forbidden
+end
+
+User -> System : PUT /complementary-task-categories/{code} (data)
+alt Authorized
+    System --> User : 200 OK / 404 Not Found
+else Unauthorized
+    System --> User : 401 Unauthorized / 403 Forbidden
+end
+
+== Status Management ==
+
+User -> System : PATCH /complementary-task-categories/{code}/activate
+alt Authorized
+    System --> User : 200 OK / 400 Bad Request
+else Unauthorized
+    System --> User : 401 Unauthorized / 403 Forbidden
+end
+
+User -> System : PATCH /complementary-task-categories/{code}/deactivate
+alt Authorized
+    System --> User : 200 OK / 400 Bad Request
+else Unauthorized
+    System --> User : 401 Unauthorized / 403 Forbidden
+end
+
+== Queries and Search ==
+
+User -> System : GET /complementary-task-categories
+alt Authorized
+    System --> User : 200 OK (List of categories)
+else Unauthorized
+    System --> User : 401 Unauthorized / 403 Forbidden
+end
+
+User -> System : GET /complementary-task-categories/{code}
+alt Authorized
+    System --> User : 200 OK / 404 Not Found
+else Unauthorized
+    System --> User : 401 Unauthorized / 403 Forbidden
+end
+
+User -> System : GET /complementary-task-categories/search/id/{id}
+alt Authorized
+    System --> User : 200 OK / 404 Not Found
+else Unauthorized
+    System --> User : 401 Unauthorized / 403 Forbidden
+end
+
+User -> System : GET /complementary-task-categories/search/name?name={name}
+alt Authorized
+    System --> User : 200 OK (Search results)
+else Unauthorized
+    System --> User : 401 Unauthorized / 403 Forbidden
+end
+
+User -> System : GET /complementary-task-categories/search/description?description={description}
+alt Authorized
+    System --> User : 200 OK (Search results)
+else Unauthorized
+    System --> User : 401 Unauthorized / 403 Forbidden
+end
+
+User -> System : GET /complementary-task-categories/search/category?category={category}
+alt Authorized
+    System --> User : 200 OK (Search results)
+else Unauthorized
+    System --> User : 401 Unauthorized / 403 Forbidden
+end
+
+@enduml

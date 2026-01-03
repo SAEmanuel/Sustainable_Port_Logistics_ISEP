@@ -1,0 +1,111 @@
+@startuml
+skinparam monochrome true
+skinparam shadowing false
+title Sequence Diagram (Full) – Manage Complementary Task Categories
+
+actor "Port Operations Supervisor" as Supervisor
+boundary "SPA" as SPA
+boundary "CTC Routes" as Routes
+control "CTC Controllers" as Ctrl
+control "CTC Service" as Svc
+entity "CTC Repo" as Repo
+entity "CTC Mapper" as Map
+database "MongoDB (Mongoose)" as DB
+
+== Create Complementary Task Category ==
+Supervisor -> SPA : Fill form + Submit
+SPA -> Routes : POST /complementary-task-categories\n(Create CTC DTO)
+Routes -> Ctrl : execute(req,res)
+Ctrl -> Svc : createAsync(dto)
+
+Svc -> Repo : findByCode(dto.code)
+Repo -> DB : findOne({code})
+DB --> Repo : record/null
+Repo --> Svc : CTC?/null
+
+alt code exists
+  Svc --> Ctrl : BusinessRuleValidationError(AlreadyExists)
+  Ctrl --> SPA : 400 Bad Request
+else code does not exist
+  Svc -> Svc : CategoryFactory.fromString(dto.category)
+  Svc -> Svc : CTC.create(props)
+  note right: Includes code format validation (CTC###)
+
+  Svc -> Repo : save(ctc)
+  Repo -> Map : toPersistence(ctc)
+  Repo -> DB : create(persistence)
+  DB --> Repo : createdDoc
+  Repo -> Map : toDomain(createdDoc)
+  Repo --> Svc : CTC
+
+  Svc -> Map : toDTO(CTC)
+  Svc --> Ctrl : Result.ok(dto)
+  Ctrl --> SPA : 201 Created\nCTCDTO
+end
+
+== Update Complementary Task Category ==
+Supervisor -> SPA : Edit + Submit
+SPA -> Routes : PUT /complementary-task-categories/{code}\n(Update CTC DTO)
+Routes -> Ctrl : execute(req,res)
+Ctrl -> Svc : updateAsync(code, dto)
+
+Svc -> Repo : findByCode(code)
+Repo -> DB : findOne({code})
+DB --> Repo : record/null
+Repo --> Svc : CTC?/null
+
+alt CTC not found
+  Svc --> Ctrl : BusinessRuleValidationError(NotFound)
+  Ctrl --> SPA : 404 Not Found
+else found
+  Svc -> Svc : CategoryFactory.fromString(dto.category)
+  Svc -> Svc : ctc.changeDetails(name, desc, duration, category)
+
+  Svc -> Repo : save(ctc)
+  Repo -> Map : toPersistence(ctc)
+  Repo -> DB : update/save(persistence)
+  DB --> Repo : updatedDoc
+  Repo -> Map : toDomain(updatedDoc)
+  Repo --> Svc : CTC
+
+  Svc -> Map : toDTO(CTC)
+  Svc --> Ctrl : Result.ok(dto)
+  Ctrl --> SPA : 200 OK\nCTCDTO
+end
+
+== Status Management (Activate/Deactivate) ==
+Supervisor -> SPA : Click Activate/Deactivate
+SPA -> Routes : PATCH /complementary-task-categories/{code}/activate (or deactivate)
+Routes -> Ctrl : execute(req,res)
+Ctrl -> Svc : activateAsync(code) (or deactivateAsync)
+
+Svc -> Repo : findByCode(code)
+Repo --> Svc : CTC
+Svc -> Svc : ctc.activate() (or deactivate())
+
+Svc -> Repo : save(ctc)
+Repo -> DB : update/save
+DB --> Repo : updatedDoc
+Repo --> Svc : CTC
+Svc --> Ctrl : Result.ok(dto)
+Ctrl --> SPA : 200 OK
+
+== Queries and Search ==
+Supervisor -> SPA : Search/List Categories
+SPA -> Routes : GET /complementary-task-categories (or search routes)
+note right: Supports filters by Name, Description, Category, or ID
+
+Routes -> Ctrl : execute(req,res)
+Ctrl -> Svc : getAllAsync() (or getByFieldAsync)
+
+Svc -> Repo : findAll() (or findByField)
+Repo -> DB : find(query)
+DB --> Repo : docs[]
+Repo -> Map : toDomain(docs[])
+Repo --> Svc : CTC[]
+
+Svc -> Map : toDTO(list)
+Svc --> Ctrl : Result.ok(list)
+Ctrl --> SPA : 200 OK\nCTCDTO[]
+
+@enduml
