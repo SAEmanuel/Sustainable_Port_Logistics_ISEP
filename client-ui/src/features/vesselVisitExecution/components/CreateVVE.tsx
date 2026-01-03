@@ -107,7 +107,6 @@ export default function VesselVisitExecutionPage() {
     const [history, setHistory] = useState<VesselVisitExecutionExtended[]>([]);
     const [loadingHistory, setLoadingHistory] = useState(true);
     const [vesselNames, setVesselNames] = useState<Record<string, string>>(GLOBAL_VESSEL_CACHE);
-    const [manualEmail] = useState("");
 
     const [detailsModalOpen, { open: openDetails, close: closeDetails }] = useDisclosure(false);
     const [selectedHistoryItem, setSelectedHistoryItem] = useState<VesselVisitExecutionExtended | null>(null);
