@@ -26,8 +26,12 @@ export default class GetOperationPlansController extends BaseController {
 
             return this.ok<IOperationPlanDTO[]>(this.res, result.getValue());
         } catch (e) {
-            // @ts-ignore
-            return this.fail(e);
+            if (!this.res.headersSent) {
+                // @ts-ignore
+                return this.fail(e);
+            } else {
+                console.error("Attempted to fail after headers sent:", e);
+            }
         }
     }
 }

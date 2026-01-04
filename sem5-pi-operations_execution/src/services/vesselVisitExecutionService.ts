@@ -274,18 +274,15 @@ export default class VesselVisitExecutionService implements IVesselVisitExecutio
 
     
     public async setCompletedAsync(
-    id: VesselVisitExecutionId,
+    code: VesselVisitExecutionCode,
     actualUnBerthTime: Date,
     actualLeavePortTime: Date,
     updaterEmail: string
     ): Promise<Result<IVesselVisitExecutionDTO>> {
 
-        const vve = await this.repo.findById(id);
+        const vve = await this.repo.findByCode(code);
         if (!vve) {
-            throw new BusinessRuleValidationError(
-                "VVE Not Found",
-                `No VVE found with id ${id.toString()}`
-            );
+            return Result.fail<IVesselVisitExecutionDTO>(`No VVE found with code ${code.toString()}`);
         }
 
         try {
@@ -295,7 +292,7 @@ export default class VesselVisitExecutionService implements IVesselVisitExecutio
             await this.repo.save(vve);
 
             this.logger.info("VVE marked as completed", {
-                vveId: id.toString(),
+                vveId: code.toString(),
                 actualUnBerthTime: actualUnBerthTime.toISOString(),
                 actualLeavePortTime: actualLeavePortTime.toISOString(),
                 updaterEmail

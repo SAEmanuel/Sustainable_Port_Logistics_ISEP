@@ -11,7 +11,7 @@ export interface VesselVisitExecution {
     actualDockId?: string;
     dockDiscrepancyNote?: string;
     	
-    actualUnBerthTime?: Date;
-    actualLeavePortTime?: Date;
+    actualUnBerthTime?: string;
+    actualLeavePortTime?: string;
     updatedAt?: string;
 }

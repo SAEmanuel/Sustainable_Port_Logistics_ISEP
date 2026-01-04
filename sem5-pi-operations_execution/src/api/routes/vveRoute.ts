@@ -11,6 +11,7 @@ import GetVVEByImoController from "../../controllers/vve/getVVEByImoController";
 import GetVVEInRangeController from "../../controllers/vve/getVVEInRangeController";
 import UpdateVVEActualBerthAndDockController from "../../controllers/vve/updateVVEActualBerthAndDockController";
 import UpdateVVEExecutedOperationsController from "../../controllers/vve/updateVVEExecutedOperationsController";
+import UpdateVVEToCompletedController from "../../controllers/vve/updateVVEToCompletedController";
 
 const route = Router();
 
@@ -190,7 +191,8 @@ export default (app: Router) => {
     const updateExecOpsCtrl = Container.get(
         config.controllers.vesselVisitExecution.updateExecutedOperations.name
     ) as UpdateVVEExecutedOperationsController;
-
+    
+    const completeCtrl = Container.get(UpdateVVEToCompletedController);
     /**
      * @openapi
      * /api/vve:
@@ -518,5 +520,63 @@ export default (app: Router) => {
             }),
         }),
         (req, res, next) => updateExecOpsCtrl.execute(req, res, next)
+    );
+
+    
+    /**
+     * @openapi
+     * /api/vve/{code}/complete:
+     *   put:
+     *     tags: [VesselVisitExecution]
+     *     summary: Complete a Vessel Visit Execution
+     *     description: Marks a VVE as completed by providing actual unberth and leave port times.
+     *     parameters:
+     *       - name: code
+     *         in: path
+     *         required: true
+     *         description: Code of the Vessel Visit Execution to complete
+     *         schema:
+     *           type: string
+     *     requestBody:
+     *       required: true
+     *       content:
+     *         application/json:
+     *           schema:
+     *             type: object
+     *             required:
+     *               - actualUnBerthTime
+     *               - actualLeavePortTime
+     *               - updaterEmail
+     *             properties:
+     *               actualUnBerthTime:
+     *                 type: string
+     *                 format: date-time
+     *                 description: Actual unberth time of the vessel
+     *               actualLeavePortTime:
+     *                 type: string
+     *                 format: date-time
+     *                 description: Actual time the vessel left the port
+     *               updaterEmail:
+     *                 type: string
+     *                 format: email
+     *                 description: Email of the user completing the VVE
+     *     responses:
+     *       200:
+     *         description: VVE completed successfully
+     *       400:
+     *         description: Invalid input or business rule violation (e.g., operations not completed)
+     *       404:
+     *         description: VVE not found
+     */
+    route.put(
+        "/:code/complete",
+        celebrate({
+            body: Joi.object({
+            actualUnBerthTime: Joi.date().iso().required(),
+            actualLeavePortTime: Joi.date().iso().required(),
+            updaterEmail: Joi.string().email().required(),
+            }),
+        }),
+        (req, res, next) => completeCtrl.execute(req, res, next)
     );
 };

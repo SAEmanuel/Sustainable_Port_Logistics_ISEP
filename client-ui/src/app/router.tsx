@@ -79,7 +79,7 @@ export const router = createBrowserRouter([
                             },
                             {
                                 path: "vve",
-                                element: <RequireRole roles={[Roles.LogisticsOperator]} />,
+                                element: <RequireRole roles={[Roles.LogisticsOperator,Roles.Administrator]} />,
                                 children: [{ index: true, element: < VVE/> }],
                             },
                             {

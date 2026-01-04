@@ -38,7 +38,7 @@ export default interface IVesselVisitExecutionService {
 
 
     setCompletedAsync(
-        id: VesselVisitExecutionId,
+        code: VesselVisitExecutionCode,
         actualUnBerthTime: Date,
         actualLeavePortTime: Date,
         updaterEmail: string

@@ -11,8 +11,8 @@ export interface VesselVisitExecutionDTO {
     actualDockId?: string;
 
     dockDiscrepancyNote?: string;
-    actualUnBerthTime?: Date;
-    actualLeavePortTime?: Date;
+    actualUnBerthTime?: string;
+    actualLeavePortTime?: string;
     note?: string;
 }
 
@@ -24,7 +24,6 @@ export interface CreateVesselVisitExecutionDto {
 }
 
 export interface CompleteVVEDto {
-    id: string;
     actualUnBerthTime: string;
     actualLeavePortTime: string;
     updaterEmail: string;

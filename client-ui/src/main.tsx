@@ -2,7 +2,8 @@ import React, {useEffect} from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App";
 import {Auth0Provider} from "@auth0/auth0-react";
-import './i18n';
+import { I18nextProvider } from "react-i18next";
+import i18n from "./i18n";
 import { useAppStore } from "./app/store";
 import "@mantine/core/styles.css";
 import { MantineProvider } from "@mantine/core";
@@ -35,20 +36,22 @@ function MantineThemeWrapper({ children }: { children: React.ReactNode }) {
 const root = ReactDOM.createRoot(document.getElementById("root") as HTMLElement);
 root.render(
     <React.StrictMode>
-        <Auth0Provider
-            domain={domain}
-            clientId={clientId}
-            authorizationParams={{
-                redirect_uri: `${window.location.origin}`,
-            }}
-            cacheLocation="localstorage"
-        >
-            <QueryClientProvider client={queryClient}>
-                {}
-                <MantineThemeWrapper>
-                    <App />
-                </MantineThemeWrapper>
-            </QueryClientProvider>
-        </Auth0Provider>
+        <I18nextProvider i18n={i18n}>
+            <Auth0Provider
+                domain={domain}
+                clientId={clientId}
+                authorizationParams={{
+                    redirect_uri: `${window.location.origin}`,
+                }}
+                cacheLocation="localstorage"
+            >
+                <QueryClientProvider client={queryClient}>
+                    {}
+                    <MantineThemeWrapper>
+                        <App />
+                    </MantineThemeWrapper>
+                </QueryClientProvider>
+            </Auth0Provider>
+        </I18nextProvider>
     </React.StrictMode>
 );

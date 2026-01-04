@@ -18,8 +18,13 @@ export default class VesselVisitExecutionMap extends Mapper<VesselVisitExecution
             actualBerthTime: vve.actualBerthTime,
             actualDockId: vve.actualDockId,
             dockDiscrepancyNote: vve.dockDiscrepancyNote,
-            actualUnBerthTime: vve.actualUnBerthTime,
-            actualLeavePortTime: vve.actualLeavePortTime,
+            actualUnBerthTime: vve.actualUnBerthTime
+            ? vve.actualUnBerthTime.toISOString()
+            : undefined,
+
+            actualLeavePortTime: vve.actualLeavePortTime
+            ? vve.actualLeavePortTime.toISOString()
+            : undefined,
             updatedAt: vve.updatedAt,
             auditLog: vve.auditLog,
             executedOperations: vve.executedOperations,

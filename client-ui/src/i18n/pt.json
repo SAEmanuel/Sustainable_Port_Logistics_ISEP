@@ -1664,13 +1664,30 @@
       "vesselImo": "IMO do Navio",
       "actualArrivalTime": "Chegada Real",
       "status": "Estado Atual",
-      "creatorEmail": "Criado por"
+      "creatorEmail": "Criado por",
+
+      "actualUnberthTime": "Hora real de desatracagem",
+      "actualLeavePortTime": "Hora real de saída do porto"
     },
     "status": {
       "scheduled": "Agendado",
       "in-progress": "Em Curso",
       "completed": "Concluído",
       "unknown": "Desconhecido"
+    },
+    "operations": "Operações",
+    "complete": {
+      "title": "Concluir visita do navio",
+      "NoOps": "Não existem operações associadas.",
+      "OpsLeft": "Ainda existem operações por concluir.",
+      "errors": {
+      "notAllOperationsCompleted": "Não é possível concluir a VVE: existem operações por concluir."
+    },"actions": {
+      "complete": "Concluir",
+      "cancel":"Cancelar"
+    },"common": {
+      "na": "N/D"
+    }
     }
   },
   "incident": {

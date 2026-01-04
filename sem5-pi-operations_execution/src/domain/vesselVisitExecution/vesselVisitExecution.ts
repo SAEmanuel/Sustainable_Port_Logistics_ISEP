@@ -101,10 +101,6 @@ export class VesselVisitExecution extends AggregateRoot<VesselVisitExecutionProp
             throw new BusinessRuleValidationError("Invalid date", "The actual arrival time cannot be in the future.");
         }
 
-        if (props.status !== "In Progress") {
-            props.status = "In Progress";
-        }
-
         return new VesselVisitExecution({
             ...props,
             auditLog: props.auditLog ?? [],
@@ -142,13 +138,6 @@ export class VesselVisitExecution extends AggregateRoot<VesselVisitExecutionProp
         updatedBy: string,
         discrepancyNote?: string
     ): void {
-
-        if (this.props.status !== "In Progress") {
-            throw new BusinessRuleValidationError(
-                "Invalid status",
-                "Only 'In Progress' VVEs can be updated with berth time and dock."
-            );
-        }
 
         if (berthTime.getTime() < this.props.actualArrivalTime.getTime()) {
             throw new BusinessRuleValidationError(
@@ -264,13 +253,6 @@ export class VesselVisitExecution extends AggregateRoot<VesselVisitExecutionProp
             );
         }
 
-        if (!this.areAllExecutedOperationsCompleted()) {
-        throw new BusinessRuleValidationError(
-            "Cargo Operations Incomplete",
-            "Cannot complete VVE until all cargo operations are completed."
-        );
-    }
-
         if (actualLeavePortTime.getTime() < actualUnBerthTime.getTime()) {
             throw new BusinessRuleValidationError(
                 "Invalid port departure time",
@@ -286,7 +268,7 @@ export class VesselVisitExecution extends AggregateRoot<VesselVisitExecutionProp
             status: this.props.status
         };
 
-         this.props.actualUnBerthTime = actualUnBerthTime;
+        this.props.actualUnBerthTime = actualUnBerthTime;
         this.props.actualLeavePortTime = actualLeavePortTime;
         this.props.status = "Completed";
 

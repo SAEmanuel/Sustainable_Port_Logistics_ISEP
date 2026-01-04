@@ -1674,7 +1674,22 @@
       "in-progress": "In Progress",
       "completed": "Completed",
       "unknown": "Unknown"
+    },
+    "complete": {
+    "title": "Complete vessel visit",
+    "NoOps": "There are no associated operations.",
+    "OpsLeft": "There are still operations to be completed.",
+    "errors": {
+      "notAllOperationsCompleted": "Cannot complete the VVE: there are operations that are not yet completed."
+    },
+    "actions": {
+      "complete": "Complete",
+      "cancel": "Cancel"
+    },
+    "common": {
+      "na": "N/A"
     }
+  }
   },
   "incident": {
     "title": "Incidents",

@@ -20,8 +20,8 @@ export async function createVVE(dto: CreateVesselVisitExecutionDto): Promise<Ves
     return mapToVVEDomain(res.data);
 }
 
-export async function completeVVE(dto: CompleteVVEDto): Promise<VesselVisitExecution> {
-    const res = await operationsApi.put(`/api/vve/${dto.id}/complete`, dto);
+export async function completeVVE(dto: CompleteVVEDto,code: string): Promise<VesselVisitExecution> {
+    const res = await operationsApi.put(`/api/vve/${code}/complete`, dto);
     return mapToVVEDomain(res.data);
 }
 
