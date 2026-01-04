@@ -136,6 +136,8 @@ export default function VesselVisitExecutionPage() {
     const [loadingDockOptions, setLoadingDockOptions] = useState(false);
 
     const [auditOpen, setAuditOpen] = useState(false);
+    const [loadingAudit, setLoadingAudit] = useState(false);
+    const [auditFetchedByVveId, setAuditFetchedByVveId] = useState<Record<string, boolean>>({});
 
     const [executedOpsOpen, { open: openExecutedOps, close: closeExecutedOps }] = useDisclosure(false);
 
@@ -147,6 +149,14 @@ export default function VesselVisitExecutionPage() {
     useEffect(() => {
         window.scrollTo(0, 0);
     }, []);
+
+    useEffect(() => {
+        if (!detailsModalOpen) return;
+
+        if (dockOptions.length === 0 && !loadingDockOptions) {
+            void fetchDockOptions();
+        }
+    }, [detailsModalOpen, dockOptions.length, loadingDockOptions]);
 
     const updateCache = (id: string, name: string) => {
         GLOBAL_VESSEL_CACHE[id] = name;
@@ -169,19 +179,20 @@ export default function VesselVisitExecutionPage() {
                 if (GLOBAL_VESSEL_CACHE[vve.vvnId]) continue;
                 try {
                     const vvn = await VvnService.getVvnById(vve.vvnId);
-                    if (vvn && vvn.vesselImo) {
-                        if (GLOBAL_VESSEL_CACHE[vvn.vesselImo]) {
-                            updateCache(vve.vvnId, GLOBAL_VESSEL_CACHE[vvn.vesselImo]);
+                    if (vvn && (vvn as any).vesselImo) {
+                        const imo = (vvn as any).vesselImo as string;
+                        if (GLOBAL_VESSEL_CACHE[imo]) {
+                            updateCache(vve.vvnId, GLOBAL_VESSEL_CACHE[imo]);
                         } else {
-                            const vessel = await apiGetVesselByIMO(vvn.vesselImo);
+                            const vessel = await apiGetVesselByIMO(imo);
                             if (vessel?.name) {
                                 updateCache(vve.vvnId, vessel.name);
-                                updateCache(vvn.vesselImo, vessel.name);
+                                updateCache(imo, vessel.name);
                             }
                         }
                     }
                 } catch {
-                    //ignore
+                    // ignore
                 }
                 await new Promise(r => setTimeout(r, 20));
             }
@@ -238,10 +249,133 @@ export default function VesselVisitExecutionPage() {
         return m;
     }, [dockOptions]);
 
+    const prettifyDockNote = (note?: string) => {
+        if (!note) return note;
+
+        const id = selectedHistoryItem?.actualDockId;
+        if (!id) return note;
+
+        const code = dockCodeById[id];
+        if (!code) return note;
+
+        return note.replaceAll(id, code);
+    };
+
+    const prettifyAnyDockNote = (note?: string) => {
+        if (!note) return note;
+
+        let out = note;
+        for (const [id, code] of Object.entries(dockCodeById)) {
+            if (!id || !code) continue;
+            out = out.replaceAll(id, code);
+        }
+        return out;
+    };
+
+    const getPlannedDockRaw = () => {
+        const anyVvn = selectedHistoryVvn as any;
+        return (
+            anyVvn?.dockId ??
+            anyVvn?.plannedDockId ??
+            anyVvn?.dock ??
+            anyVvn?.assignedDockId ??
+            anyVvn?.assignedDock ??
+            anyVvn?.plannedDock ??
+            ""
+        );
+    };
+
+    const resolveDockCode = (raw?: string) => {
+        if (!raw) return "";
+        const s = String(raw).trim();
+        if (!s) return "";
+        if (/^DK-\d+/i.test(s)) return s.toUpperCase();
+        const code = dockCodeById[s];
+        return code ? String(code).toUpperCase() : "";
+    };
+
+    const getActualDockCode = () => resolveDockCode(selectedHistoryItem?.actualDockId ?? "");
+    const getPlannedDockCode = () => resolveDockCode(getPlannedDockRaw());
+
+    const shouldShowDockDiscrepancy = () => {
+        const note = selectedHistoryItem?.dockDiscrepancyNote ?? selectedHistoryItem?.note;
+        if (!note) return false;
+
+        const plannedRaw = getPlannedDockRaw();
+        const actualId = selectedHistoryItem?.actualDockId ?? "";
+
+        if (plannedRaw && actualId && String(plannedRaw) === String(actualId)) return false;
+
+        const plannedCode = getPlannedDockCode();
+        const actualCode = getActualDockCode();
+        if (plannedCode && actualCode && plannedCode === actualCode) return false;
+
+        return true;
+    };
+
     const auditEntries = useMemo(() => {
         const list = selectedHistoryItem?.auditLog ?? [];
         return list.slice().reverse();
     }, [selectedHistoryItem]);
+
+    const fetchVveDetails = async (vveId: string) => {
+        setLoadingAudit(true);
+        try {
+            const svc: any = VesselVisitExecutionService as any;
+
+            const methodNames = [
+                "getById",
+                "getOne",
+                "getDetails",
+                "getVveById",
+                "findById",
+            ];
+
+            let detailed: VesselVisitExecutionExtended | null = null;
+
+            for (const name of methodNames) {
+                if (typeof svc[name] === "function") {
+                    detailed = await svc[name](vveId);
+                    break;
+                }
+            }
+
+            if (!detailed && typeof svc.getAll === "function") {
+                const all = await svc.getAll();
+                detailed = (all as VesselVisitExecutionExtended[]).find(x => x.id === vveId) ?? null;
+            }
+
+            if (!isMounted.current) return;
+
+            setAuditFetchedByVveId(prev => ({ ...prev, [vveId]: true }));
+
+            if (!detailed) return;
+
+            setSelectedHistoryItem(prev => (prev ? { ...prev, ...detailed } : detailed));
+            setHistory(prev => prev.map(x => x.id === vveId ? { ...x, ...detailed } : x));
+        } catch (e) {
+            console.error("Erro a carregar detalhes do VVE/auditLog:", e);
+            if (isMounted.current) {
+                setAuditFetchedByVveId(prev => ({ ...prev, [vveId]: true }));
+            }
+        } finally {
+            if (isMounted.current) setLoadingAudit(false);
+        }
+    };
+
+    useEffect(() => {
+        if (!auditOpen) return;
+        const vveId = selectedHistoryItem?.id;
+        if (!vveId) return;
+
+        const alreadyFetched = !!auditFetchedByVveId[vveId];
+        const hasAudit = (selectedHistoryItem?.auditLog?.length ?? 0) > 0;
+
+        if (!alreadyFetched && !hasAudit && !loadingAudit) {
+            void fetchVveDetails(vveId);
+        }
+    }, [auditOpen, selectedHistoryItem?.id, auditFetchedByVveId, loadingAudit]);
+
 
     const handleCardClick = async (vve: VesselVisitExecutionExtended) => {
         setSelectedHistoryItem(vve);
@@ -250,12 +384,18 @@ export default function VesselVisitExecutionPage() {
         setLoadingDetails(true);
         setSelectedHistoryVvn(null);
 
+        if (!vve.auditLog || vve.auditLog.length === 0) {
+            void fetchVveDetails(vve.id);
+        }
+
         try {
             const vvn = await VvnService.getVvnById(vve.vvnId);
             if (isMounted.current) setSelectedHistoryVvn(vvn);
-            if (vvn.vesselImo && !GLOBAL_VESSEL_CACHE[vvn.vesselImo]) {
-                const vessel = await apiGetVesselByIMO(vvn.vesselImo);
-                if (vessel?.name) updateCache(vvn.vesselImo, vessel.name);
+
+            const imo = (vvn as any)?.vesselImo;
+            if (imo && !GLOBAL_VESSEL_CACHE[imo]) {
+                const vessel = await apiGetVesselByIMO(imo);
+                if (vessel?.name) updateCache(imo, vessel.name);
             }
         } catch {
             notifyError(t('common.errorLoading'));
@@ -270,19 +410,20 @@ export default function VesselVisitExecutionPage() {
             const filter: FilterAcceptedVvnStatusDto = {};
             const approved = await VvnService.getAcceptedAll(filter);
             const processedVvnIds = new Set(history.map(h => h.vvnId));
-            const pending = approved.filter(vvn => !processedVvnIds.has(vvn.id));
+            const pending = approved.filter(vvn => !processedVvnIds.has((vvn as any).id));
 
             if (isMounted.current) setCandidates(pending);
 
             await (async () => {
                 for (const a of pending) {
                     if (!isMounted.current) break;
-                    if (a.vesselImo && !GLOBAL_VESSEL_CACHE[a.vesselImo]) {
+                    const imo = (a as any)?.vesselImo;
+                    if (imo && !GLOBAL_VESSEL_CACHE[imo]) {
                         try {
-                            const v = await apiGetVesselByIMO(a.vesselImo);
-                            if (v?.name) updateCache(a.vesselImo, v.name);
+                            const v = await apiGetVesselByIMO(imo);
+                            if (v?.name) updateCache(imo, v.name);
                         } catch {
-                            //ignore
+                            // ignore
                         }
                     }
                     await new Promise(r => setTimeout(r, 20));
@@ -308,9 +449,9 @@ export default function VesselVisitExecutionPage() {
     };
 
     const filteredCandidates = useMemo(() => {
-        return candidates.filter(c =>
-            (c.vesselImo && c.vesselImo.includes(searchTerm)) ||
-            (c.code && c.code.toLowerCase().includes(searchTerm.toLowerCase())) ||
+        return candidates.filter((c: any) =>
+            (c.vesselImo && String(c.vesselImo).includes(searchTerm)) ||
+            (c.code && String(c.code).toLowerCase().includes(searchTerm.toLowerCase())) ||
             (vesselNames[c.vesselImo]?.toLowerCase().includes(searchTerm.toLowerCase()))
         );
     }, [candidates, searchTerm, vesselNames]);
@@ -340,7 +481,7 @@ export default function VesselVisitExecutionPage() {
         setSubmitting(true);
         try {
             const payload = {
-                vvnId: selectedVvn.id,
+                vvnId: (selectedVvn as any).id,
                 actualArrivalTime: finalDate.toISOString(),
                 creatorEmail: finalEmail
             };
@@ -349,14 +490,15 @@ export default function VesselVisitExecutionPage() {
 
             const newHistoryItem = {
                 ...createdVVE,
-                vvnId: selectedVvn.id,
+                vvnId: (selectedVvn as any).id,
                 creatorEmail: finalEmail
             } as unknown as VesselVisitExecutionExtended;
 
             setHistory(prev => [newHistoryItem, ...prev]);
 
-            const knownName = vesselNames[selectedVvn.vesselImo];
-            if (knownName) updateCache(selectedVvn.id, knownName);
+            const imo = (selectedVvn as any).vesselImo;
+            const knownName = imo ? vesselNames[imo] : "";
+            if (knownName) updateCache((selectedVvn as any).id, knownName);
 
             notifySuccess(t('vesselVisitExecution.successRegister'));
             closeWizard();
@@ -455,13 +597,30 @@ export default function VesselVisitExecutionPage() {
                             <IconArrowLeft size={24} />
                         </ActionIcon>
                         <Stack gap={0}>
-                            <Title order={1} style={{ fontWeight: 900, letterSpacing: '-1px', background: '-webkit-linear-gradient(45deg, #087f5b, #63e6be)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+                            <Title
+                                order={1}
+                                style={{
+                                    fontWeight: 900,
+                                    letterSpacing: '-1px',
+                                    background: '-webkit-linear-gradient(45deg, #087f5b, #63e6be)',
+                                    WebkitBackgroundClip: 'text',
+                                    WebkitTextFillColor: 'transparent'
+                                }}
+                            >
                                 {t('vesselVisitExecution.title')}
                             </Title>
                             <Text c="dimmed" size="lg">{t('vesselVisitExecution.subtitle')}</Text>
                         </Stack>
                     </Group>
-                    <Button size="md" radius="xl" leftSection={<IconPlus size={20} />} onClick={handleOpenWizard} variant="gradient" gradient={{ from: 'teal', to: 'lime' }} style={{ boxShadow: '0 10px 20px rgba(9, 146, 104, 0.2)' }}>
+                    <Button
+                        size="md"
+                        radius="xl"
+                        leftSection={<IconPlus size={20} />}
+                        onClick={handleOpenWizard}
+                        variant="gradient"
+                        gradient={{ from: 'teal', to: 'lime' }}
+                        style={{ boxShadow: '0 10px 20px rgba(9, 146, 104, 0.2)' }}
+                    >
                         {t('vesselVisitExecution.registerNew')}
                     </Button>
                 </Group>
@@ -473,7 +632,9 @@ export default function VesselVisitExecutionPage() {
                         <Center style={{ flexDirection: 'column' }} py={50}>
                             <ThemeIcon size={80} radius="100%" variant="light" color="gray"><IconAnchor size={40} /></ThemeIcon>
                             <Text size="xl" fw={700} mt="md" c="dimmed">{t('vesselVisitExecution.noActiveVisits')}</Text>
-                            <Button mt="md" variant="subtle" color="teal" onClick={handleOpenWizard}>{t('vesselVisitExecution.registerNow')}</Button>
+                            <Button mt="md" variant="subtle" color="teal" onClick={handleOpenWizard}>
+                                {t('vesselVisitExecution.registerNow')}
+                            </Button>
                         </Center>
                     </Paper>
                 ) : (
@@ -493,7 +654,9 @@ export default function VesselVisitExecutionPage() {
                                         onMouseLeave={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none'; }}
                                     >
                                         <Group justify="space-between" mb="xs">
-                                            <Badge variant="light" color="teal" size="lg" radius="sm">{t('vesselVisitExecution.inPort')}</Badge>
+                                            <Badge variant="light" color="teal" size="lg" radius="sm">
+                                                {t('vesselVisitExecution.inPort')}
+                                            </Badge>
                                         </Group>
                                         <Group wrap="nowrap" mb="md">
                                             <Avatar size="lg" radius="md" variant="light" color="teal"><IconShip size={24} /></Avatar>
@@ -519,7 +682,12 @@ export default function VesselVisitExecutionPage() {
             <Modal
                 opened={detailsModalOpen}
                 onClose={closeDetails}
-                title={<Group gap="xs"><IconInfoCircle size={20} /><Text fw={700}>{t('vesselVisitExecution.arrivalDetails')}</Text></Group>}
+                title={
+                    <Group gap="xs">
+                        <IconInfoCircle size={20} />
+                        <Text fw={700}>{t('vesselVisitExecution.arrivalDetails')}</Text>
+                    </Group>
+                }
                 centered
                 radius="lg"
                 size="md"
@@ -535,9 +703,9 @@ export default function VesselVisitExecutionPage() {
                                 <div>
                                     <Text size="xs" c="dimmed" tt="uppercase" fw={700}>{t('vesselVisitExecution.vesselName')}</Text>
                                     <Text size="xl" fw={800} style={{ lineHeight: 1 }}>
-                                        {selectedHistoryVvn?.vesselImo && vesselNames[selectedHistoryVvn.vesselImo]
-                                            ? vesselNames[selectedHistoryVvn.vesselImo]
-                                            : (selectedHistoryVvn?.vesselImo || "Unknown")}
+                                        {(selectedHistoryVvn as any)?.vesselImo && vesselNames[(selectedHistoryVvn as any).vesselImo]
+                                            ? vesselNames[(selectedHistoryVvn as any).vesselImo]
+                                            : ((selectedHistoryVvn as any)?.vesselImo || "Unknown")}
                                     </Text>
                                     {selectedHistoryItem.updatedAt ? (
                                         <Text size="xs" c="dimmed">
@@ -597,24 +765,25 @@ export default function VesselVisitExecutionPage() {
                                     <Text size="sm">Dock usado</Text>
                                     <Text fw={600}>
                                         {selectedHistoryItem.actualDockId
-                                            ? (dockCodeById[selectedHistoryItem.actualDockId] ?? selectedHistoryItem.actualDockId)
+                                            ? (dockCodeById[selectedHistoryItem.actualDockId] ?? (loadingDockOptions ? "A carregar..." : "—"))
                                             : "-"}
                                     </Text>
                                 </Group>
 
-                                {((selectedHistoryItem.dockDiscrepancyNote ?? selectedHistoryItem.note) ? (
+                                {/* ✅ só mostra discrepância se planned != actual */}
+                                {shouldShowDockDiscrepancy() ? (
                                     <>
                                         <Divider my="xs" />
                                         <Paper p="sm" radius="md" bg="orange.0" style={{ border: "1px solid var(--mantine-color-orange-3)" }}>
                                             <Group gap="xs" align="start">
                                                 <IconInfoCircle size={18} color="var(--mantine-color-orange-7)" />
                                                 <Text size="sm" c="orange.8">
-                                                    {selectedHistoryItem.dockDiscrepancyNote ?? selectedHistoryItem.note}
+                                                    {prettifyAnyDockNote(prettifyDockNote(selectedHistoryItem.dockDiscrepancyNote ?? selectedHistoryItem.note))}
                                                 </Text>
                                             </Group>
                                         </Paper>
                                     </>
-                                ) : null)}
+                                ) : null}
                             </Card>
                         </Stack>
 
@@ -630,11 +799,6 @@ export default function VesselVisitExecutionPage() {
                                     Atualizar
                                 </Button>
                             </Group>
-                            <Card withBorder radius="md" padding="sm">
-                                <Text size="sm" c="dimmed">
-                                    Regista tempos reais, estado, recursos e notas para as operações planeadas.
-                                </Text>
-                            </Card>
                         </Stack>
 
                         <Stack gap={6}>
@@ -644,7 +808,7 @@ export default function VesselVisitExecutionPage() {
                                     size="xs"
                                     variant="light"
                                     onClick={() => setAuditOpen(v => !v)}
-                                    disabled={!selectedHistoryItem.auditLog || selectedHistoryItem.auditLog.length === 0}
+                                    disabled={false}
                                 >
                                     {auditOpen ? "Esconder histórico" : "Ver histórico"}
                                 </Button>
@@ -653,28 +817,43 @@ export default function VesselVisitExecutionPage() {
                             <Collapse in={auditOpen}>
                                 <Card withBorder radius="md" padding="sm">
                                     <Stack gap="sm">
-                                        {auditEntries.map((log, idx) => (
-                                            <Paper key={log._id ?? idx} withBorder p="sm" radius="md" bg="gray.0">
-                                                <Group justify="space-between" align="start">
-                                                    <div>
-                                                        <Text fw={700} size="sm">{log.action ?? "-"}</Text>
-                                                        <Text size="xs" c="dimmed">
-                                                            {log.at ? new Date(log.at).toLocaleString('pt-PT') : "-"}
-                                                        </Text>
-                                                    </div>
-                                                    <Badge variant="light" color="teal">
-                                                        {log.by ?? "-"}
-                                                    </Badge>
-                                                </Group>
+                                        {(() => {
+                                            const vveId = selectedHistoryItem?.id;
+                                            const alreadyFetched = vveId ? !!auditFetchedByVveId[vveId] : false;
 
-                                                {log.note ? (
-                                                    <>
-                                                        <Divider my="xs" />
-                                                        <Text size="sm">{log.note}</Text>
-                                                    </>
-                                                ) : null}
-                                            </Paper>
-                                        ))}
+                                            if (loadingAudit) return <Text c="dimmed" size="sm">A carregar histórico...</Text>;
+
+                                            if (auditEntries.length === 0 && !alreadyFetched) {
+                                                return <Text c="dimmed" size="sm">A carregar histórico...</Text>;
+                                            }
+
+                                            if (auditEntries.length === 0) {
+                                                return <Text c="dimmed" size="sm">Sem histórico.</Text>;
+                                            }
+
+                                            return auditEntries.map((log, idx) => (
+                                                <Paper key={log._id ?? idx} withBorder p="sm" radius="md" bg="gray.0">
+                                                    <Group justify="space-between" align="start">
+                                                        <div>
+                                                            <Text fw={700} size="sm">{log.action ?? "-"}</Text>
+                                                            <Text size="xs" c="dimmed">
+                                                                {log.at ? new Date(log.at).toLocaleString('pt-PT') : "-"}
+                                                            </Text>
+                                                        </div>
+                                                        <Badge variant="light" color="teal">
+                                                            {log.by ?? "-"}
+                                                        </Badge>
+                                                    </Group>
+
+                                                    {log.note ? (
+                                                        <>
+                                                            <Divider my="xs" />
+                                                            <Text size="sm">{prettifyAnyDockNote(log.note)}</Text>
+                                                        </>
+                                                    ) : null}
+                                                </Paper>
+                                            ));
+                                        })()}
                                     </Stack>
                                 </Card>
                             </Collapse>
@@ -686,19 +865,21 @@ export default function VesselVisitExecutionPage() {
                                 <Grid.Col span={6}>
                                     <Card withBorder radius="md" p="xs" bg="gray.0">
                                         <Text size="xs" c="dimmed">{t('vesselVisitExecution.imoNumber')}</Text>
-                                        <Text fw={600}>{selectedHistoryVvn?.vesselImo || "-"}</Text>
+                                        <Text fw={600}>{(selectedHistoryVvn as any)?.vesselImo || "-"}</Text>
                                     </Card>
                                 </Grid.Col>
                                 <Grid.Col span={6}>
                                     <Card withBorder radius="md" p="xs" bg="gray.0">
                                         <Text size="xs" c="dimmed">{t('vesselVisitExecution.vvnCode')}</Text>
-                                        <Text fw={600}>{selectedHistoryVvn?.code || "-"}</Text>
+                                        <Text fw={600}>{(selectedHistoryVvn as any)?.code || "-"}</Text>
                                     </Card>
                                 </Grid.Col>
                             </Grid>
                         </Stack>
 
-                        <Group justify="flex-end" mt="md"><Button variant="default" onClick={closeDetails}>Close</Button></Group>
+                        <Group justify="flex-end" mt="md">
+                            <Button variant="default" onClick={closeDetails}>Close</Button>
+                        </Group>
                     </Stack>
                 )}
             </Modal>
@@ -784,7 +965,15 @@ export default function VesselVisitExecutionPage() {
                 </Stack>
             </Modal>
 
-            <Modal opened={wizardOpen} onClose={closeWizard} size="xl" padding={0} radius="lg" withCloseButton={false} overlayProps={{ backgroundOpacity: 0.55, blur: 5 }}>
+            <Modal
+                opened={wizardOpen}
+                onClose={closeWizard}
+                size="xl"
+                padding={0}
+                radius="lg"
+                withCloseButton={false}
+                overlayProps={{ backgroundOpacity: 0.55, blur: 5 }}
+            >
                 <Box p="md" style={{ borderBottom: '1px solid #eee' }}>
                     <Group justify="space-between">
                         <Title order={3}>{t('vesselVisitExecution.wizardTitle')}</Title>
@@ -803,19 +992,38 @@ export default function VesselVisitExecutionPage() {
                     <Box p="md">
                         {activeStep === 0 && (
                             <Stack gap="md">
-                                <TextInput placeholder={t('vesselVisitExecution.searchPlaceholder')} leftSection={<IconSearch size={16} />} value={searchTerm} onChange={(e) => setSearchTerm(e.currentTarget.value)} size="md" radius="md" />
+                                <TextInput
+                                    placeholder={t('vesselVisitExecution.searchPlaceholder')}
+                                    leftSection={<IconSearch size={16} />}
+                                    value={searchTerm}
+                                    onChange={(e) => setSearchTerm(e.currentTarget.value)}
+                                    size="md"
+                                    radius="md"
+                                />
                                 {loadingCandidates ? (
                                     <Center py={40}><Loader color="teal" /></Center>
                                 ) : filteredCandidates.length === 0 ? (
                                     <Center py={40} c="dimmed">{t('vesselVisitExecution.noPending')}</Center>
                                 ) : (
                                     <Stack gap="sm">
-                                        {filteredCandidates.map(vvn => {
-                                            const isSelected = selectedVvn?.id === vvn.id;
+                                        {filteredCandidates.map((vvn: any) => {
+                                            const isSelected = (selectedVvn as any)?.id === vvn.id;
                                             const name = vesselNames[vvn.vesselImo] || vvn.vesselImo;
                                             const isExpanded = expandedVvnId === vvn.id;
                                             return (
-                                                <Paper key={vvn.id} withBorder p="md" radius="md" style={{ borderColor: isSelected ? 'var(--mantine-color-teal-6)' : undefined, backgroundColor: isSelected ? 'var(--mantine-color-teal-0)' : undefined, cursor: 'pointer', transition: 'all 0.2s' }} onClick={() => setSelectedVvn(vvn)}>
+                                                <Paper
+                                                    key={vvn.id}
+                                                    withBorder
+                                                    p="md"
+                                                    radius="md"
+                                                    style={{
+                                                        borderColor: isSelected ? 'var(--mantine-color-teal-6)' : undefined,
+                                                        backgroundColor: isSelected ? 'var(--mantine-color-teal-0)' : undefined,
+                                                        cursor: 'pointer',
+                                                        transition: 'all 0.2s'
+                                                    }}
+                                                    onClick={() => setSelectedVvn(vvn)}
+                                                >
                                                     <Group justify="space-between" align="start">
                                                         <Group>
                                                             <ThemeIcon size="lg" radius="xl" variant={isSelected ? "filled" : "light"} color={isSelected ? "teal" : "gray"}>
@@ -826,15 +1034,25 @@ export default function VesselVisitExecutionPage() {
                                                                 <Text size="xs" c="dimmed">IMO: {vvn.vesselImo}</Text>
                                                             </div>
                                                         </Group>
-                                                        <ActionIcon variant="subtle" color="gray" onClick={(e) => { e.stopPropagation(); setExpandedVvnId(isExpanded ? null : vvn.id); }}>
+                                                        <ActionIcon
+                                                            variant="subtle"
+                                                            color="gray"
+                                                            onClick={(e) => { e.stopPropagation(); setExpandedVvnId(isExpanded ? null : vvn.id); }}
+                                                        >
                                                             {isExpanded ? <IconChevronUp size={16} /> : <IconChevronDown size={16} />}
                                                         </ActionIcon>
                                                     </Group>
                                                     <Collapse in={isExpanded}>
                                                         <Divider my="sm" variant="dashed" />
                                                         <Grid>
-                                                            <Grid.Col span={4}><Group gap={4}><IconUsers size={14} color="gray" /><Text size="xs" c="dimmed">{t('vesselVisitExecution.crew')}</Text></Group><Text size="sm">{vvn.crewManifest ? 'Yes' : 'No'}</Text></Grid.Col>
-                                                            <Grid.Col span={4}><Group gap={4}><IconBox size={14} color="gray" /><Text size="xs" c="dimmed">{t('vesselVisitExecution.volume')}</Text></Group><Text size="sm">{vvn.volume} m³</Text></Grid.Col>
+                                                            <Grid.Col span={4}>
+                                                                <Group gap={4}><IconUsers size={14} color="gray" /><Text size="xs" c="dimmed">{t('vesselVisitExecution.crew')}</Text></Group>
+                                                                <Text size="sm">{vvn.crewManifest ? 'Yes' : 'No'}</Text>
+                                                            </Grid.Col>
+                                                            <Grid.Col span={4}>
+                                                                <Group gap={4}><IconBox size={14} color="gray" /><Text size="xs" c="dimmed">{t('vesselVisitExecution.volume')}</Text></Group>
+                                                                <Text size="sm">{vvn.volume} m³</Text>
+                                                            </Grid.Col>
                                                         </Grid>
                                                     </Collapse>
                                                 </Paper>
@@ -849,7 +1067,11 @@ export default function VesselVisitExecutionPage() {
                             <Stack gap="lg" align="center" pt={10}>
                                 <Text size="lg" ta="center">
                                     {t('vesselVisitExecution.confirmTimeTitle')}<br />
-                                    <Text span fw={800} c="teal.8">{selectedVvn?.vesselImo && vesselNames[selectedVvn.vesselImo] ? vesselNames[selectedVvn.vesselImo] : selectedVvn?.vesselImo}</Text>
+                                    <Text span fw={800} c="teal.8">
+                                        {(selectedVvn as any)?.vesselImo && vesselNames[(selectedVvn as any).vesselImo]
+                                            ? vesselNames[(selectedVvn as any).vesselImo]
+                                            : (selectedVvn as any)?.vesselImo}
+                                    </Text>
                                 </Text>
 
                                 <Group align="flex-start" justify="center" wrap="wrap" gap="xl">
@@ -873,7 +1095,14 @@ export default function VesselVisitExecutionPage() {
                                             value={timeVal}
                                             onChange={(e) => setTimeVal(e.currentTarget.value)}
                                             leftSection={
-                                                <ActionIcon variant="subtle" color="teal" onClick={() => { try { (timeInputRef.current as any).showPicker(); } catch { timeInputRef.current?.focus(); } }}>
+                                                <ActionIcon
+                                                    variant="subtle"
+                                                    color="teal"
+                                                    onClick={() => {
+                                                        try { (timeInputRef.current as any).showPicker(); }
+                                                        catch { timeInputRef.current?.focus(); }
+                                                    }}
+                                                >
                                                     <IconClockHour4 size={22} />
                                                 </ActionIcon>
                                             }
@@ -881,9 +1110,11 @@ export default function VesselVisitExecutionPage() {
                                             radius="md"
                                             label={t('vesselVisitExecution.timePlaceholder')}
                                             withSeconds={false}
-                                            onClick={() => { try { (timeInputRef.current as any).showPicker(); } catch {
-                                                //ignore
-                                            } }}
+                                            onClick={() => {
+                                                try { (timeInputRef.current as any).showPicker(); } catch {
+                                                    // ignore
+                                                }
+                                            }}
                                         />
                                         <Divider label={t('vesselVisitExecution.quickSelect')} labelPosition="center" w="100%" />
                                         <Group gap="xs" justify="center">
@@ -903,14 +1134,20 @@ export default function VesselVisitExecutionPage() {
                                     <ThemeIcon color="green" size={80} radius="100%" variant="light"><IconDeviceFloppy size={40} /></ThemeIcon>
                                     <Title order={3}>{t('vesselVisitExecution.confirmRegTitle')}</Title>
                                     <Paper withBorder p="md" bg="gray.0" radius="md" w="100%" miw={300}>
-                                        <Group justify="space-between"><Text c="dimmed">{t('vesselVisitExecution.vesselName')}:</Text><Text fw={600}>{vesselNames[selectedVvn?.vesselImo || ''] || selectedVvn?.vesselImo}</Text></Group>
+                                        <Group justify="space-between">
+                                            <Text c="dimmed">{t('vesselVisitExecution.vesselName')}:</Text>
+                                            <Text fw={600}>{vesselNames[(selectedVvn as any)?.vesselImo || ''] || (selectedVvn as any)?.vesselImo}</Text>
+                                        </Group>
                                         <Divider my="sm" />
                                         <Group justify="space-between">
                                             <Text c="dimmed">{t('vesselVisitExecution.arrivalLabel')}</Text>
                                             <Text fw={600}>{formatNumericDateTime(dateVal, timeVal)}</Text>
                                         </Group>
                                         <Divider my="sm" />
-                                        <Group justify="space-between"><Text c="dimmed">{t('vesselVisitExecution.operatorLabel')}</Text><Text fw={600}>{user?.email || "test@developer.com"}</Text></Group>
+                                        <Group justify="space-between">
+                                            <Text c="dimmed">{t('vesselVisitExecution.operatorLabel')}</Text>
+                                            <Text fw={600}>{user?.email || "test@developer.com"}</Text>
+                                        </Group>
                                     </Paper>
                                 </Stack>
                             </Center>
