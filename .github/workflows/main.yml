@@ -113,19 +113,3 @@ jobs:
         run: ./deploy-backends.sh
 
 
-  # ===========================
-  # DEPLOY FRONTEND
-  # ===========================
-  deploy-frontend:
-    runs-on: self-hosted
-    needs: deploy-backends
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Ensure script is executable
-        run: chmod +x ./deploy-frontend.sh
-
-      - name: Run frontend deploy script
-        run: ./deploy-frontend.sh
