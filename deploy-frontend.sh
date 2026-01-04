@@ -1,17 +1,17 @@
 #!/bin/bash
 
 set -e
+set -o pipefail
 
 # ===== Ensure PATH works inside GitHub Runner =====
 export DOTNET_ROOT="$HOME/.dotnet"
 export PATH="$DOTNET_ROOT:$HOME/node/bin:$PATH"
 
-# ===== Ensure SSH works non-interactive =====
-export SSH_OPTS="-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o LogLevel=ERROR"
-alias ssh="ssh $SSH_OPTS"
-alias scp="scp $SSH_OPTS"
+# ===== SSH non-interactive & safe =====
+SSH_OPTS="-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o LogLevel=ERROR -o RequestTTY=no"
+SSH="ssh $SSH_OPTS"
+SCP="scp $SSH_OPTS"
 
-# FRONTEND SERVERS
 SERVERS=(
   "root@10.9.22.90"
   "root@10.9.21.87"
@@ -28,7 +28,7 @@ echo "=========================="
 # ---------------------------------------------------------
 echo "Disabling monitoring on Guardian VM..."
 # ---------------------------------------------------------
-ssh $GUARDIAN << EOF
+$SSH "$GUARDIAN" << EOF
 systemctl stop frontend1-monitor 2>/dev/null
 systemctl stop frontend2-monitor 2>/dev/null
 systemctl stop nginx-monitor 2>/dev/null
@@ -37,41 +37,26 @@ EOF
 # ---------------------------------------------------------
 echo "Building frontend..."
 # ---------------------------------------------------------
-cd "$FRONTEND_DIR" || { echo "❌ Frontend directory missing"; exit 1; }
+cd "$FRONTEND_DIR"
 
-if [ ! -f package.json ]; then
-  echo "❌ package.json missing in $FRONTEND_DIR"
-  exit 1
-fi
+npm install
+npm run build
 
-npm install || { echo "❌ NPM INSTALL FAILED"; exit 1; }
-npm run build || { echo "❌ FRONTEND BUILD FAILED"; exit 1; }
-
-echo "Frontend build completed successfully."
+cd - > /dev/null
 
 # ---------------------------------------------------------
 echo "Deploying to frontend servers..."
 # ---------------------------------------------------------
 for SERVER in "${SERVERS[@]}"; do
-
   echo "-----------------------------------------"
   echo " Deploying to $SERVER"
   echo "-----------------------------------------"
 
-  ssh $SERVER "rm -rf $WEB_DIR/* && mkdir -p $WEB_DIR" || {
-    echo "❌ Failed clearing remote directory on $SERVER"
-    exit 1
-  }
+  $SSH "$SERVER" "rm -rf $WEB_DIR/* && mkdir -p $WEB_DIR"
 
-  scp -r dist/* "$SERVER:$WEB_DIR/" || {
-    echo "❌ Upload failed to $SERVER"
-    exit 1
-  }
+  $SCP -r client-ui/dist/* "$SERVER:$WEB_DIR/"
 
-  ssh $SERVER "nginx -t && systemctl reload nginx" || {
-    echo "❌ nginx reload failed on $SERVER"
-    exit 1
-  }
+  $SSH "$SERVER" "nginx -t && systemctl reload nginx"
 
   echo "Deployment finished on $SERVER"
 done
@@ -79,7 +64,7 @@ done
 # ---------------------------------------------------------
 echo "Re-enabling monitoring on Guardian VM..."
 # ---------------------------------------------------------
-ssh $GUARDIAN << EOF
+$SSH "$GUARDIAN" << EOF
 systemctl start frontend1-monitor 2>/dev/null
 systemctl start frontend2-monitor 2>/dev/null
 systemctl start nginx-monitor 2>/dev/null
