@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState, useEffect, useMemo, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import {
@@ -28,7 +29,6 @@ import { getDocks } from '../../docks/services/dockService';
 import { updateBerthDockVVE } from "../services/vveBerthDockService";
 
 import { useAppStore } from "../../../app/store";
-
 import { ExecutedOperationsEditor } from "../components/ExecutedOperationsEditor";
 
 const GLOBAL_VESSEL_CACHE: Record<string, string> = {};
@@ -52,7 +52,7 @@ const formatNumericDateTime = (date: any, timeStr?: string) => {
             t = `${dObj.getHours().toString().padStart(2, '0')}:${dObj.getMinutes().toString().padStart(2, '0')}`;
         }
         return `${dStr} ${t}`;
-    } catch (e) {
+    } catch {
         return "Erro Data";
     }
 };
@@ -74,7 +74,8 @@ const formatRelativeTime = (dateStr: string) => {
     return formatNumericDateTime(date);
 };
 
-interface VesselVisitExecutionExtended extends VesselVisitExecution {
+type VesselVisitExecutionExtended =
+    Omit<VesselVisitExecution, "vvnId" | "actualBerthTime" | "actualDockId" | "auditLog"> & {
     vvnId: string;
     creatorEmail?: string;
 
@@ -90,10 +91,10 @@ interface VesselVisitExecutionExtended extends VesselVisitExecution {
         by: string;
         action: string;
         note?: string;
-        changes?: any;
+        changes?: unknown;
         _id?: string;
     }>;
-}
+};
 
 export default function VesselVisitExecutionPage() {
     const { t } = useTranslation();
@@ -179,7 +180,9 @@ export default function VesselVisitExecutionPage() {
                             }
                         }
                     }
-                } catch (e) { }
+                } catch {
+                    //ignore
+                }
                 await new Promise(r => setTimeout(r, 20));
             }
         } catch (error) {
@@ -191,8 +194,8 @@ export default function VesselVisitExecutionPage() {
     };
 
     useEffect(() => {
-        if (effectRan.current === false) {
-            fetchHistory();
+        if (!effectRan.current) {
+            void fetchHistory();
             effectRan.current = true;
         }
     }, []);
@@ -222,7 +225,7 @@ export default function VesselVisitExecutionPage() {
             const docks = await getDocks();
             const options = normalizeDockOptions(docks as any);
             if (isMounted.current) setDockOptions(options);
-        } catch (e) {
+        } catch {
             notifyError("Erro ao carregar docks.");
         } finally {
             if (isMounted.current) setLoadingDockOptions(false);
@@ -254,23 +257,11 @@ export default function VesselVisitExecutionPage() {
                 const vessel = await apiGetVesselByIMO(vvn.vesselImo);
                 if (vessel?.name) updateCache(vvn.vesselImo, vessel.name);
             }
-        } catch (e) {
+        } catch {
             notifyError(t('common.errorLoading'));
         } finally {
             if (isMounted.current) setLoadingDetails(false);
         }
-    };
-
-    const handleOpenWizard = () => {
-        setActiveStep(0);
-        setSelectedVvn(null);
-
-        const now = new Date();
-        setDateVal(now);
-        setTimeVal(`${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`);
-
-        fetchCandidates();
-        openWizard();
     };
 
     const fetchCandidates = async () => {
@@ -290,16 +281,30 @@ export default function VesselVisitExecutionPage() {
                         try {
                             const v = await apiGetVesselByIMO(a.vesselImo);
                             if (v?.name) updateCache(a.vesselImo, v.name);
-                        } catch { }
+                        } catch {
+                            //ignore
+                        }
                     }
                     await new Promise(r => setTimeout(r, 20));
                 }
             })();
-        } catch (error) {
+        } catch {
             notifyError(t('common.errorLoading'));
         } finally {
             if (isMounted.current) setLoadingCandidates(false);
         }
+    };
+
+    const handleOpenWizard = () => {
+        setActiveStep(0);
+        setSelectedVvn(null);
+
+        const now = new Date();
+        setDateVal(now);
+        setTimeVal(`${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`);
+
+        void fetchCandidates();
+        openWizard();
     };
 
     const filteredCandidates = useMemo(() => {
@@ -571,7 +576,7 @@ export default function VesselVisitExecutionPage() {
                         <Stack gap={6}>
                             <Group justify="space-between" align="center">
                                 <Text size="sm" c="dimmed" tt="uppercase" fw={700}>Berço & Cais</Text>
-                                <Button size="xs" variant="light" onClick={() => openEditBerthModal()}>
+                                <Button size="xs" variant="light" onClick={() => void openEditBerthModal()}>
                                     Atualizar
                                 </Button>
                             </Group>
@@ -868,7 +873,7 @@ export default function VesselVisitExecutionPage() {
                                             value={timeVal}
                                             onChange={(e) => setTimeVal(e.currentTarget.value)}
                                             leftSection={
-                                                <ActionIcon variant="subtle" color="teal" onClick={() => { try { (timeInputRef.current as any).showPicker(); } catch (e) { timeInputRef.current?.focus(); } }}>
+                                                <ActionIcon variant="subtle" color="teal" onClick={() => { try { (timeInputRef.current as any).showPicker(); } catch { timeInputRef.current?.focus(); } }}>
                                                     <IconClockHour4 size={22} />
                                                 </ActionIcon>
                                             }
@@ -876,7 +881,9 @@ export default function VesselVisitExecutionPage() {
                                             radius="md"
                                             label={t('vesselVisitExecution.timePlaceholder')}
                                             withSeconds={false}
-                                            onClick={() => { try { (timeInputRef.current as any).showPicker(); } catch (e) { } }}
+                                            onClick={() => { try { (timeInputRef.current as any).showPicker(); } catch {
+                                                //ignore
+                                            } }}
                                         />
                                         <Divider label={t('vesselVisitExecution.quickSelect')} labelPosition="center" w="100%" />
                                         <Group gap="xs" justify="center">
