@@ -2,6 +2,7 @@
 import { render, screen, fireEvent } from "@testing-library/react";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import type { StorageAreaDto } from "../dto/storageAreaDtos";
+import StorageAreaPage from "../pages/StorageAreaPage.tsx";
 
 // ==== mocks globais ====
 const navMock = vi.fn();
@@ -75,7 +76,6 @@ vi.mock("../components/modals/StorageAreaContainerModal", () => ({
 }));
 
 // importar a page com o MESMO casing que no router
-import StorageAreaPage from "../pages/storageAreaPage";
 
 const sampleStorageArea: StorageAreaDto = {
     id: "A1",
