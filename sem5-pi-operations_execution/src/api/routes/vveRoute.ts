@@ -31,6 +31,7 @@ const route = Router();
  *
  *     ResourceUsed:
  *       type: object
+ *       required: [resourceId]
  *       properties:
  *         resourceId:
  *           type: string
@@ -44,6 +45,7 @@ const route = Router();
  *
  *     ExecutedOperation:
  *       type: object
+ *       required: [plannedOperationId]
  *       properties:
  *         plannedOperationId:
  *           type: string
@@ -149,6 +151,7 @@ const route = Router();
  *           example: user-123
  *         operations:
  *           type: array
+ *           minItems: 1
  *           items:
  *             $ref: "#/components/schemas/ExecutedOperation"
  */
@@ -215,6 +218,10 @@ export default (app: Router) => {
      *               $ref: "#/components/schemas/ErrorResponse"
      *       500:
      *         description: Internal server error
+     *         content:
+     *           application/json:
+     *             schema:
+     *               $ref: "#/components/schemas/ErrorResponse"
      *   get:
      *     tags: [VesselVisitExecution]
      *     summary: Get all vessel visit executions
@@ -229,6 +236,10 @@ export default (app: Router) => {
      *                 $ref: "#/components/schemas/VesselVisitExecution"
      *       500:
      *         description: Internal server error
+     *         content:
+     *           application/json:
+     *             schema:
+     *               $ref: "#/components/schemas/ErrorResponse"
      */
     route.post(
         "/",
@@ -276,6 +287,10 @@ export default (app: Router) => {
      *                 $ref: "#/components/schemas/VesselVisitExecution"
      *       400:
      *         description: Validation error
+     *         content:
+     *           application/json:
+     *             schema:
+     *               $ref: "#/components/schemas/ErrorResponse"
      */
     route.get(
         "/range",
@@ -310,6 +325,10 @@ export default (app: Router) => {
      *               $ref: "#/components/schemas/VesselVisitExecution"
      *       404:
      *         description: Not Found
+     *         content:
+     *           application/json:
+     *             schema:
+     *               $ref: "#/components/schemas/ErrorResponse"
      */
     route.get("/code/:code", (req, res) => getByCodeCtrl.execute(req, res));
 
@@ -359,6 +378,10 @@ export default (app: Router) => {
      *               $ref: "#/components/schemas/VesselVisitExecution"
      *       404:
      *         description: Not Found
+     *         content:
+     *           application/json:
+     *             schema:
+     *               $ref: "#/components/schemas/ErrorResponse"
      */
     route.get("/:id", (req, res) => getByIdCtrl.execute(req, res));
 
@@ -390,6 +413,22 @@ export default (app: Router) => {
      *               $ref: "#/components/schemas/VesselVisitExecution"
      *       400:
      *         description: Validation error
+     *         content:
+     *           application/json:
+     *             schema:
+     *               $ref: "#/components/schemas/ErrorResponse"
+     *       404:
+     *         description: Not Found
+     *         content:
+     *           application/json:
+     *             schema:
+     *               $ref: "#/components/schemas/ErrorResponse"
+     *       409:
+     *         description: Conflict - VVE not in progress (business rule)
+     *         content:
+     *           application/json:
+     *             schema:
+     *               $ref: "#/components/schemas/ErrorResponse"
      */
     route.put(
         "/:id/berth",
@@ -431,6 +470,22 @@ export default (app: Router) => {
      *               $ref: "#/components/schemas/VesselVisitExecution"
      *       400:
      *         description: Validation error
+     *         content:
+     *           application/json:
+     *             schema:
+     *               $ref: "#/components/schemas/ErrorResponse"
+     *       404:
+     *         description: Not Found
+     *         content:
+     *           application/json:
+     *             schema:
+     *               $ref: "#/components/schemas/ErrorResponse"
+     *       409:
+     *         description: Conflict - VVE not in progress (business rule)
+     *         content:
+     *           application/json:
+     *             schema:
+     *               $ref: "#/components/schemas/ErrorResponse"
      */
     route.put(
         "/:id/executed-operations",
@@ -443,7 +498,9 @@ export default (app: Router) => {
                             plannedOperationId: Joi.string().required(),
                             actualStart: Joi.date().iso().optional(),
                             actualEnd: Joi.date().iso().optional(),
-                            status: Joi.string().valid("started", "completed", "delayed").optional(),
+                            status: Joi.string()
+                                .valid("started", "completed", "delayed")
+                                .optional(),
                             note: Joi.string().optional(),
                             resourcesUsed: Joi.array()
                                 .items(
