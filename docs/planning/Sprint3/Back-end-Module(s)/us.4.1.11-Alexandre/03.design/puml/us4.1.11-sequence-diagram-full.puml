@@ -1,0 +1,47 @@
+@startuml
+skinparam monochrome true
+skinparam shadowing false
+title Sequence Diagram – Complete Vessel Visit Execution (US4.1.11)
+
+actor "Logistics Operator" as Operator
+boundary "SPA" as SPA
+control "UpdateVVEToCompletedController" as Ctrl
+control "VesselVisitExecutionService" as App
+entity "VesselVisitExecutionRepo" as Repo
+entity "VesselVisitExecution" as VVE
+
+== Complete Vessel Visit Execution ==
+Operator -> SPA : Select “Complete VVE”
+SPA -> Ctrl : PUT /api/vve/{code}/complete\n(actualUnBerthTime, actualLeavePortTime, updaterEmail)
+
+Ctrl -> Ctrl : validate request body (presence, types)
+
+alt Invalid request (syntactic)
+  Ctrl --> SPA : 400 Bad Request\nProblemDetails (validation)
+else Valid request
+  Ctrl -> App : setCompletedAsync(code, unberthTime, leavePortTime, updaterEmail)
+
+  App -> Repo : findByCode(code)
+  Repo --> App : VesselVisitExecution
+
+  alt VVE not found
+    App --> Ctrl : Result.fail(NotFound)
+    Ctrl --> SPA : 400 Bad Request\nProblemDetails
+  else VVE found
+    App -> VVE : setCompleted(unberthTime, leavePortTime, updaterEmail)
+
+    alt Business rule violation\n(not all operations completed / invalid times)
+      VVE --> App : throws DomainError
+      App --> Ctrl : Result.fail(BusinessRuleError)
+      Ctrl --> SPA : 400 Bad Request\nProblemDetails
+    else Completion valid
+      App -> Repo : save(VVE)
+      Repo --> App : persisted VVE
+
+      App --> Ctrl : Result.ok(VesselVisitExecutionDTO)
+      Ctrl --> SPA : 200 OK\nBody: VesselVisitExecutionDTO
+    end
+  end
+end
+
+@enduml

@@ -753,7 +753,6 @@ export default function VesselVisitExecutionPage() {
             <Paper withBorder p="md" radius="md" bg="teal.0" style={{ borderColor: 'var(--mantine-color-teal-2)' }}>
               <Group justify="space-between" align="start">
                 <Group>
-                    <h1>{selectedHistoryItem.status}</h1>
                   <ThemeIcon size={50} radius="xl" color="teal" variant="filled"><IconShip size={28} /></ThemeIcon>
                   <div>
                     <Text size="xs" c="dimmed" tt="uppercase" fw={700}>{t('vesselVisitExecution.vesselName')}</Text>

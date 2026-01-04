@@ -1,0 +1,41 @@
+@startuml
+skinparam monochrome true
+skinparam shadowing false
+title System Sequence Diagram – Mark VVE as Completed (US4.1.11)
+
+actor "Logistics Operator" as Operator
+boundary "VVE Management API" as System
+
+== Mark VVE as Completed ==
+Operator -> System : POST /api/vves/{vveId}/complete\nBody: {actualUnBerthTime, actualLeavePortTime, updaterEmail}
+note right
+Requires:
+- VVE must be "In Progress"
+- All cargo operations must be completed (checked via OperationPlanService)
+- Dates must satisfy:
+  actualUnBerthTime >= actualBerthTime
+  actualLeavePortTime >= actualUnBerthTime
+end note
+
+System -> System : Check all cargo operations completed for VVE
+alt Not all operations completed
+  System --> Operator : 400 Bad Request\nBody: { message: "Cannot complete VVE: unfinished cargo operations" }
+else All operations completed
+  System -> System : Call VesselVisitExecutionService.setCompletedAsync(vveId, actualUnBerthTime, actualLeavePortTime, updaterEmail)
+  System -> VVERepo : Fetch VVE by ID
+  VVERepo --> System : VVE entity
+  System -> System : Update VVE: set actualUnBerthTime, actualLeavePortTime, status = "Completed"
+  System -> VVERepo : Save updated VVE
+  VVERepo --> System : Persisted VVE
+  System --> Operator : 200 OK\nBody: Updated VVE DTO
+end
+
+== View Audit Log (optional) ==
+Operator -> System : GET /api/vves/{vveId}/audit
+alt Audit found
+  System --> Operator : 200 OK\nBody: VVE audit entries
+else VVE not found
+  System --> Operator : 404 Not Found
+end
+
+@enduml

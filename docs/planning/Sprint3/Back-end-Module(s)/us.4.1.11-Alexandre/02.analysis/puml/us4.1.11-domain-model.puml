@@ -1,0 +1,63 @@
+@startuml
+skinparam monochrome true
+skinparam shadowing false
+title Domain Model – VVE Completion (US4.1.11)
+
+' =========================
+' Aggregate: VesselVisitExecution
+' =========================
+class VesselVisitExecution <<AggregateRoot>> {
+  +id: UniqueEntityID
+  +vesselImo: string
+  +actualArrivalTime: Date
+  +actualBerthTime: Date
+  +actualDockId: string
+  +actualUnBerthTime: Date
+  +actualLeavePortTime: Date
+  +status: string
+  +creatorEmail: string
+  +updatedAt: Date
+}
+
+class AuditEntry <<Entity>> {
+  +entryId: string
+  +at: Date
+  +by: string
+  +action: string
+  +changes: string
+  +note: string
+}
+
+' =========================
+' Supporting entities (if any)
+' =========================
+' None needed for core completion, can add dock/crane references later if required
+
+' =========================
+' Relationships
+' =========================
+VesselVisitExecution "1" *-- "0..*" AuditEntry : auditLog
+
+' =========================
+' Notes / invariants
+' =========================
+note right of VesselVisitExecution
+Aggregate invariants (local):
+- status must be "In Progress" to allow completion
+- actualUnBerthTime >= actualBerthTime
+- actualLeavePortTime >= actualUnBerthTime
+- auditLog append-only
+Read-only post-completion:
+- Only admin users may modify after completion
+end note
+
+note right of AuditEntry
+Audit captures:
+- timestamp (at)
+- user (by)
+- action (SET_COMPLETED)
+- changes snapshot
+- optional note
+end note
+
+@enduml

@@ -1,0 +1,79 @@
+@startuml
+skinparam monochrome true
+skinparam shadowing false
+title Class Diagram – US4.1.11 Complete Vessel Visit Execution
+
+class UpdateVVEToCompletedController <<Controller>> {
+  +execute(req: Request, res: Response, next: NextFunction): HttpResponse
+}
+
+class VesselVisitExecutionService <<ApplicationService>> {
+  +setCompletedAsync(
+    code: VesselVisitExecutionCode,
+    actualUnBerthTime: Date,
+    actualLeavePortTime: Date,
+    updaterEmail: string
+  ): Result<VesselVisitExecutionDTO>
+}
+
+class VesselVisitExecutionRepo <<Repository>> {
+  +findByCode(code: VesselVisitExecutionCode): VesselVisitExecution
+  +save(vve: VesselVisitExecution): VesselVisitExecution
+}
+
+class VesselVisitExecution <<AggregateRoot>> {
+  +id: VesselVisitExecutionId
+  +code: VesselVisitExecutionCode
+  +vvnId: string
+  +status: string
+  +actualArrivalTime: Date
+  +actualUnBerthTime: Date
+  +actualLeavePortTime: Date
+  +updatedAt: Date
+  +setCompleted(
+    actualUnBerthTime: Date,
+    actualLeavePortTime: Date,
+    updaterEmail: string
+  )
+}
+
+class ExecutedOperation <<Entity>> {
+  +plannedOperationId: string
+  +actualStart: Date
+  +actualEnd: Date
+  +status: string
+  +updatedBy: string
+  +updatedAt: Date
+}
+
+class AuditEntry <<ValueObject>> {
+  +timestamp: Date
+  +user: string
+  +action: string
+}
+
+class VesselVisitExecutionCode <<ValueObject>> {
+  +value: string
+}
+
+class VesselVisitExecutionDTO <<DTO>> {
+  +id: string
+  +code: string
+  +status: string
+  +actualUnBerthTime: string
+  +actualLeavePortTime: string
+  +updatedAt: string
+}
+
+UpdateVVEToCompletedController --> VesselVisitExecutionService
+VesselVisitExecutionService --> VesselVisitExecutionRepo
+
+VesselVisitExecutionRepo --> VesselVisitExecution
+VesselVisitExecution --> VesselVisitExecutionCode
+
+VesselVisitExecution "1" *-- "0..*" ExecutedOperation
+VesselVisitExecution "1" *-- "0..*" AuditEntry
+
+VesselVisitExecutionService --> VesselVisitExecutionDTO
+
+@enduml
