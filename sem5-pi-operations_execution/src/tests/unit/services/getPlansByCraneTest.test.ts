@@ -13,7 +13,7 @@ const endDate = "2025-01-01";
 
 beforeEach(() => {
     vi.clearAllMocks();
-    service = new OperationPlanService(mockRepo as any, mockMap as any);
+    service = new OperationPlanService(mockRepo as any, mockMap as any, mockMap as any);
 });
 
 describe("OperationPlanService.getPlansByCraneAsync", () => {

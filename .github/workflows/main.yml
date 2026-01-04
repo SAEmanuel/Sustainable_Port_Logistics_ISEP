@@ -2,9 +2,9 @@ name: Backend & Frontend CI + Deploy
 
 on:
   push:
-    branches: ["main"]
+    branches: [ "main" ]
   pull_request:
-    branches: ["main"]
+    branches: [ "main" ]
   workflow_dispatch:
   schedule:
     - cron: "0 2 * * *"
@@ -68,3 +68,64 @@ jobs:
       - name: Run Operations Tests
         working-directory: ./sem5-pi-operations_execution
         run: npm test
+
+
+  # ===========================
+  # FRONTEND UI TESTS
+  # ===========================
+  test-client-ui:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install dependencies (Client UI)
+        working-directory: ./client-ui
+        run: npm ci
+
+      - name: Run UI Tests
+        working-directory: ./client-ui
+        run: npm test
+
+
+  # ===========================
+  # DEPLOY BACKENDS
+  # ===========================
+  deploy-backends:
+    runs-on: self-hosted
+    needs:
+      - test-webapi
+      - test-scheduling
+      - test-operations
+      - test-client-ui
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Ensure script is executable
+        run: chmod +x ./deploy-backends.sh
+
+      - name: Run backend deploy script
+        run: ./deploy-backends.sh
+
+
+  # ===========================
+  # DEPLOY FRONTEND
+  # ===========================
+  deploy-frontend:
+    runs-on: self-hosted
+    needs: deploy-backends
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Ensure script is executable
+        run: chmod +x ./deploy-frontend.sh
+
+      - name: Run frontend deploy script
+        run: ./deploy-frontend.sh

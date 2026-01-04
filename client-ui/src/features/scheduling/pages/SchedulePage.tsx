@@ -531,6 +531,28 @@ export default function SchedulePage() {
                                     onChange={(val) => setGeneticParams({...geneticParams, generations: val as number})}
                                 />
                             </Grid.Col>
+                            <Grid.Col span={{base: 6, md: 3}}>
+                                <NumberInput
+                                    label={t('planningScheduling.mutationRate')}
+                                    min={0}
+                                    max={1}
+                                    step={0.01}
+                                    decimalScale={2}
+                                    value={geneticParams.mutationRate}
+                                    onChange={(val) => setGeneticParams({...geneticParams, mutationRate: val as number})}
+                                />
+                            </Grid.Col>
+                            <Grid.Col span={{base: 6, md: 3}}>
+                                <NumberInput
+                                    label={t('planningScheduling.crossoverRate')}
+                                    min={0}
+                                    max={1}
+                                    step={0.01}
+                                    decimalScale={2}
+                                    value={geneticParams.crossoverRate}
+                                    onChange={(val) => setGeneticParams({...geneticParams, crossoverRate: val as number})}
+                                />
+                            </Grid.Col>
                         </Grid>
                     </Box>
                 </Collapse>
